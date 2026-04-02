@@ -204,7 +204,7 @@ Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
 
   try {
     const response = await ai.chat.completions.create({
-      model: "qwen/qwen2.5-coder-32b-instruct",
+      model: "qwen/qwen3.5-122b-a10b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
