@@ -39452,16 +39452,19 @@ router2.post("/generate-song", async (req, res) => {
     res.status(400).json({ error: "topic is required" });
     return;
   }
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    logger.error("OPENAI_API_KEY not configured");
+    logger.error("DEEPSEEK_API_KEY not configured");
     res.status(500).json({ error: "AI service not configured" });
     return;
   }
   const selectedGenre = genre || "Afrobeats";
   const selectedMood = mood || "Uplifting";
   const genreMoodContext = buildGenreMoodContext(selectedGenre, selectedMood);
-  const ai = new OpenAI({ apiKey });
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://api.deepseek.com"
+  });
   const userPrompt = `Write a premium AfroMuse song draft. Here are the artist's inputs:
 
 TOPIC / THEME: ${topic}
@@ -39483,12 +39486,13 @@ QUALITY CHECKLIST before you write:
 Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
   try {
     const response = await ai.chat.completions.create({
-      model: "o4-mini",
+      model: "deepseek-chat",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt }
       ],
-      max_completion_tokens: 2e3
+      temperature: 0.92,
+      max_tokens: 2e3
     });
     const raw = response.choices[0]?.message?.content ?? "";
     let draft;
@@ -39496,13 +39500,13 @@ Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       draft = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
     } catch {
-      logger.error({ raw }, "Failed to parse OpenAI response as JSON");
+      logger.error({ raw }, "Failed to parse DeepSeek response as JSON");
       res.status(500).json({ error: "Failed to parse AI response" });
       return;
     }
     res.json({ draft });
   } catch (err) {
-    logger.error({ err }, "OpenAI API error");
+    logger.error({ err }, "DeepSeek API error");
     const status = err.status;
     if (status === 429) {
       res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
