@@ -30,12 +30,32 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => (
 );
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const [location] = useLocation();
+
+  if (isLoading) return null;
 
   if (!isLoggedIn) {
     const encoded = encodeURIComponent(location);
     return <Redirect to={`/auth?from=${encoded}`} />;
+  }
+
+  return <>{children}</>;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn, isLoading, user } = useAuth();
+  const [location] = useLocation();
+
+  if (isLoading) return null;
+
+  if (!isLoggedIn) {
+    const encoded = encodeURIComponent(location);
+    return <Redirect to={`/auth?from=${encoded}`} />;
+  }
+
+  if (user?.role !== "admin") {
+    return <Redirect to="/" />;
   }
 
   return <>{children}</>;
@@ -69,9 +89,9 @@ function Router() {
       </Route>
 
       <Route path="/admin">
-        <ProtectedRoute>
+        <AdminRoute>
           <Admin />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
 
       <Route>

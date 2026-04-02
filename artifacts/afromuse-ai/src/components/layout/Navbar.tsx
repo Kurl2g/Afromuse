@@ -91,8 +91,8 @@ function UserMenu() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setOpen(false);
     navigate("/");
   };
@@ -138,14 +138,16 @@ function UserMenu() {
               Open Studio
             </Link>
             <div className="border-t border-white/5 my-1" />
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/8 transition-all"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              Admin Panel
-            </Link>
+            {user?.role === "admin" && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/8 transition-all"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                Admin Panel
+              </Link>
+            )}
             <div className="border-t border-white/5 mt-1 pt-1">
               <button
                 onClick={handleLogout}
@@ -186,13 +188,13 @@ export function Navbar() {
   const authLinks = [
     { name: "Studio", href: "/studio" },
     { name: "Projects", href: "/projects" },
-    { name: "Admin", href: "/admin" },
+    ...(user?.role === "admin" ? [{ name: "Admin", href: "/admin" }] : []),
   ];
 
   const navLinks = isLoggedIn ? [...publicLinks, ...authLinks] : publicLinks;
 
-  const handleMobileLogout = () => {
-    logout();
+  const handleMobileLogout = async () => {
+    await logout();
     setMobileMenuOpen(false);
     navigate("/");
   };

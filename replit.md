@@ -94,3 +94,27 @@ Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHea
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+
+- `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
+
+## Authentication System
+
+Real server-side authentication using JWT cookies.
+
+- **Users table**: `lib/db/src/schema/users.ts` — stores name, email, bcrypt password hash, role (`user` | `admin`)
+- **Auth routes** (`/api/auth/*`):
+  - `POST /api/auth/register` — create account, returns user + sets httpOnly JWT cookie
+  - `POST /api/auth/login` — verify credentials, returns user + sets httpOnly JWT cookie
+  - `POST /api/auth/logout` — clears the auth cookie
+  - `GET /api/auth/me` — returns current user from cookie (used on app load to restore session)
+- **JWT**: signed with `SESSION_SECRET` env var, 7-day expiry, stored in httpOnly cookie
+- **Password hashing**: bcryptjs, 12 rounds
+- **Frontend AuthContext** (`artifacts/afromuse-ai/src/context/AuthContext.tsx`):
+  - Calls `/api/auth/me` on mount to restore session
+  - `login()` and `signup()` are async, return `{success, error?}`
+  - `user` object includes `role` field
+- **Route guards**:
+  - `ProtectedRoute` — redirects to `/auth` if not logged in
+  - `AdminRoute` — redirects to `/` if not admin (role !== 'admin')
+- **Admin visibility**: Admin link and panel only shown when `user.role === 'admin'`
+- **Create admin**: Run `pnpm --filter @workspace/scripts run create-admin` in Shell tab
