@@ -39452,9 +39452,9 @@ router2.post("/generate-song", async (req, res) => {
     res.status(400).json({ error: "topic is required" });
     return;
   }
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+  const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    logger.error("DEEPSEEK_API_KEY not configured");
+    logger.error("NVIDIA_API_KEY not configured");
     res.status(500).json({ error: "AI service not configured" });
     return;
   }
@@ -39463,7 +39463,7 @@ router2.post("/generate-song", async (req, res) => {
   const genreMoodContext = buildGenreMoodContext(selectedGenre, selectedMood);
   const ai = new OpenAI({
     apiKey,
-    baseURL: "https://api.deepseek.com"
+    baseURL: "https://integrate.api.nvidia.com/v1"
   });
   const userPrompt = `Write a premium AfroMuse song draft. Here are the artist's inputs:
 
@@ -39486,13 +39486,14 @@ QUALITY CHECKLIST before you write:
 Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
   try {
     const response = await ai.chat.completions.create({
-      model: "deepseek-chat",
+      model: "deepseek-ai/deepseek-r1",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.92,
-      max_tokens: 2e3
+      temperature: 0.6,
+      top_p: 0.7,
+      max_tokens: 4096
     });
     const raw = response.choices[0]?.message?.content ?? "";
     let draft;
@@ -39500,13 +39501,13 @@ Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       draft = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
     } catch {
-      logger.error({ raw }, "Failed to parse DeepSeek response as JSON");
+      logger.error({ raw }, "Failed to parse DeepSeek R1 response as JSON");
       res.status(500).json({ error: "Failed to parse AI response" });
       return;
     }
     res.json({ draft });
   } catch (err) {
-    logger.error({ err }, "DeepSeek API error");
+    logger.error({ err }, "DeepSeek R1 API error");
     const status = err.status;
     if (status === 429) {
       res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
