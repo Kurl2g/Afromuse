@@ -75,3 +75,4 @@ externalPort = 3001
 PORT = "5000"
 BASE_PATH = "/"
 VAPI_API_KEY = "vapi-V_jKcx3kKvSzdj60d8HoT-suNG2f7UGelbK8oEONjlsPHDSINyoSodKyhjuXUp_b0wZ"
+NVIDIA_API_KEY = "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"
