@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -166,9 +166,9 @@ router.post("/generate-song", async (req, res) => {
     return;
   }
 
-  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    logger.error("GOOGLE_API_KEY not configured");
+    logger.error("OPENAI_API_KEY not configured");
     res.status(500).json({ error: "AI service not configured" });
     return;
   }
@@ -177,7 +177,7 @@ router.post("/generate-song", async (req, res) => {
   const selectedMood = mood || "Uplifting";
   const genreMoodContext = buildGenreMoodContext(selectedGenre, selectedMood);
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new OpenAI({ apiKey });
 
   const userPrompt = `Write a premium AfroMuse song draft. Here are the artist's inputs:
 
@@ -200,31 +200,31 @@ QUALITY CHECKLIST before you write:
 Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: userPrompt,
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        temperature: 0.92,
-        maxOutputTokens: 1800,
-      },
+    const response = await ai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.92,
+      max_tokens: 1800,
     });
 
-    const raw = response.text ?? "";
+    const raw = response.choices[0]?.message?.content ?? "";
 
     let draft: unknown;
     try {
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       draft = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
     } catch {
-      logger.error({ raw }, "Failed to parse Gemini response as JSON");
+      logger.error({ raw }, "Failed to parse OpenAI response as JSON");
       res.status(500).json({ error: "Failed to parse AI response" });
       return;
     }
 
     res.json({ draft });
   } catch (err) {
-    logger.error({ err }, "Gemini API error");
+    logger.error({ err }, "OpenAI API error");
     const status = (err as { status?: number }).status;
     if (status === 429) {
       res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
