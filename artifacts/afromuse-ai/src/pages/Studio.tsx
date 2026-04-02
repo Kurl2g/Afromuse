@@ -622,13 +622,24 @@ export default function Studio() {
 
                     <div className="p-6 md:p-10 space-y-10">
 
-                      {/* HOOK */}
-                      <LyricsSection
-                        label="⚡ Hook / Chorus"
-                        labelClass="bg-primary/15 text-primary border-primary/20"
-                        lines={draft.hook}
-                        isHook
-                      />
+                      {/* INTRO */}
+                      {draft.intro && draft.intro.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-3 mb-4">
+                            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-white/8 text-white/50 border border-white/10">
+                              Intro
+                            </span>
+                            <div className="flex-1 h-px bg-white/5" />
+                          </div>
+                          <div className="rounded-xl bg-white/[0.02] border border-white/6 p-5">
+                            <p className="font-sans text-base text-white/50 leading-8 italic text-center">
+                              {draft.intro.map((line, i) => (
+                                <span key={i}>{line}{i < (draft.intro?.length ?? 0) - 1 && <br />}</span>
+                              ))}
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* VERSE 1 */}
                       <LyricsSection
@@ -637,13 +648,12 @@ export default function Studio() {
                         lines={draft.verse1}
                       />
 
-                      {/* HOOK REPEAT */}
+                      {/* CHORUS */}
                       <LyricsSection
-                        label="⚡ Hook / Chorus"
+                        label="⚡ Chorus"
                         labelClass="bg-primary/15 text-primary border-primary/20"
                         lines={draft.hook}
                         isHook
-                        repeat
                       />
 
                       {/* VERSE 2 */}
@@ -651,6 +661,15 @@ export default function Studio() {
                         label="Verse 2"
                         labelClass="bg-secondary/12 text-secondary border-secondary/20"
                         lines={draft.verse2}
+                      />
+
+                      {/* CHORUS REPEAT */}
+                      <LyricsSection
+                        label="⚡ Chorus"
+                        labelClass="bg-primary/15 text-primary border-primary/20"
+                        lines={draft.hook}
+                        isHook
+                        repeat
                       />
 
                       {/* BRIDGE */}
@@ -670,14 +689,23 @@ export default function Studio() {
                         </div>
                       </div>
 
-                      {/* HOOK FINAL */}
-                      <LyricsSection
-                        label="⚡ Hook / Chorus"
-                        labelClass="bg-primary/15 text-primary border-primary/20"
-                        lines={draft.hook}
-                        isHook
-                        repeat
-                      />
+                      {/* OUTRO / FINAL CHORUS */}
+                      {draft.outro && draft.outro.length > 0 ? (
+                        <LyricsSection
+                          label="⚡ Outro / Final Chorus"
+                          labelClass="bg-primary/15 text-primary border-primary/20"
+                          lines={draft.outro}
+                          isHook
+                        />
+                      ) : (
+                        <LyricsSection
+                          label="⚡ Final Chorus"
+                          labelClass="bg-primary/15 text-primary border-primary/20"
+                          lines={draft.hook}
+                          isHook
+                          repeat
+                        />
+                      )}
 
                       {/* PRODUCTION NOTES */}
                       <div className="border-t border-white/6 pt-8">
