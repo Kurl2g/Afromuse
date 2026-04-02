@@ -39510,30 +39510,6 @@ Minimum line counts: intro (2-4), verse1 (8+), hook (4-8), verse2 (8+), bridge (
 
 AfroMuse should feel like a premium songwriting assistant, not a generic text generator.
 The final output should feel like a believable artist draft \u2014 emotionally and musically alive \u2014 something a creator could actually build on.`;
-function buildGenreMoodContext(genre, mood) {
-  const genreGuides = {
-    Afrobeats: "Apply full Afrobeats DNA: melodic bounce, natural Pidgin/English blend, staccato verse lines, call-and-response chorus energy. Write like Wizkid or Burna Boy would approach this topic \u2014 effortless, cultural, groove-first.",
-    Afropop: "Apply Afropop DNA: bright pan-African accessibility, radio-friendly melodic arcs, universally relatable emotions, celebratory energy. Write like Mr Eazi or Yemi Alade \u2014 feel-good, open, high-replay.",
-    Amapiano: "Apply Amapiano DNA: chant-heavy, spacious, log-drum-rhythm-aware phrasing. Less is more. Repetition is power. English + South African flavor naturally. Write like Focalistic or Sha Sha \u2014 unhurried, confident, culturally rooted.",
-    Dancehall: "Apply Dancehall DNA: punchy rhythmic verse delivery, confident and bold attitude, melodic chorus contrast, Patois-influenced phrasing where natural. Write with Popcaan or Skillibeng's rawness \u2014 every syllable locks to the riddim.",
-    "R&B": "Apply Afro R&B DNA: intimate and warm, specific sensory details, smooth vocal delivery, emotional vulnerability at the core. Write like Tems or Adekunle Gold \u2014 close, personal, soulful.",
-    "Afro-fusion": "Apply Afro-fusion DNA: emotionally rich, melodically expansive, literary verse writing, deep personal narrative. Write like Omah Lay or Tems \u2014 layered, honest, genre-fluid."
-  };
-  const moodGuides = {
-    Uplifting: "Mood: Uplifting and motivational. Write with collective pride, earned confidence, and forward momentum. Every section should escalate the belief. Specific \u2014 not generic positivity. Real growth. Real victory.",
-    Romantic: "Mood: Romantic and intimate. Write about a specific moment between two real people. Sensory details \u2014 what it feels like, smells like, sounds like. Devotion that's earned, not declared. Warmth that's shown, not told.",
-    Energetic: "Mood: Energetic and party-ready. High energy from line one. Crowd-ready phrasing, movement language, cultural celebration. Write for a dance floor packed with people who know every word.",
-    Spiritual: "Mood: Spiritual and soulful. Sincere, not preachy. Gratitude, purpose, ancestry, elevation. Connect the personal journey to something larger. Write like a prayer, not a sermon.",
-    Sad: "Mood: Sad / heartbreak. Honest and specific. Go to the real memory \u2014 the empty side of the bed, the song that still plays, the thing they said that can't be unsaid. Quiet devastation. Earned vulnerability.",
-    "Street anthem": "Mood: Street anthem. Bold, defiant, community-proud. Write with resilience and earned self-assurance. Real places, real barriers, real triumph. Verses carry the struggle \u2014 chorus carries the win.",
-    Sensual: "Mood: Sensual. Slow-burning and cinematic. Imagery does the work. Tastefully suggestive \u2014 every line a held breath. Let the listener feel the temperature of the room."
-  };
-  const genreGuide = genreGuides[genre] ?? genreGuides["Afrobeats"];
-  const moodGuide = moodGuides[mood] ?? moodGuides["Uplifting"];
-  return `GENRE DIRECTION: ${genreGuide}
-
-MOOD DIRECTION: ${moodGuide}`;
-}
 router2.post("/generate-song", async (req, res) => {
   const { topic, genre, mood, style, notes } = req.body;
   if (!topic || typeof topic !== "string") {
@@ -39546,43 +39522,28 @@ router2.post("/generate-song", async (req, res) => {
     res.status(500).json({ error: "AI service not configured" });
     return;
   }
-  const selectedGenre = genre || "Afrobeats";
-  const selectedMood = mood || "Uplifting";
-  const genreMoodContext = buildGenreMoodContext(selectedGenre, selectedMood);
+  const selectedGenre = genre?.trim() || "Afrobeats";
+  const selectedMood = mood?.trim() || "Uplifting";
   const ai = new OpenAI({
     apiKey,
     baseURL: "https://integrate.api.nvidia.com/v1"
   });
-  const userPrompt = `Write a full, premium AfroMuse song draft. Here are the artist's inputs:
-
-TOPIC / THEME: ${topic}
-GENRE: ${selectedGenre}
-MOOD: ${selectedMood}
-${style ? `SOUND REFERENCE / INSPIRATION: ${style}` : ""}
-${notes ? `EXTRA DIRECTION FROM THE ARTIST: ${notes}` : ""}
-
-${genreMoodContext}
-
-BEFORE YOU WRITE \u2014 RUN THIS CHECKLIST:
-\u2713 Does the intro set the scene and tease the emotional world?
-\u2713 Does Verse 1 have at least 8 lines that build a clear story opening?
-\u2713 Is the chorus 4\u20138 lines and instantly singable after one listen?
-\u2713 Does Verse 2 go deeper than Verse 1 \u2014 new angle, new emotion?
-\u2713 Does the bridge shift the energy \u2014 emotionally or structurally?
-\u2713 Does the outro feel like a satisfying resolution, not just a repeat?
-\u2713 Are ALL lines free from generic AI filler?
-\u2713 Can every line pass the "can an artist deliver this in a studio?" test?
-\u2713 Do the production notes include specific BPM, key, and real instruments?
-
-STRUCTURE REMINDER \u2014 every section is required:
-- intro: 2\u20134 lines
-- verse1: minimum 8 lines
-- hook (chorus): 4\u20138 lines
-- verse2: minimum 8 lines
-- bridge: 4\u20136 lines
-- outro: 3\u20136 lines
-
-Respond with ONLY the JSON object. No markdown. No code fences. No extra text.`;
+  const userPromptLines = [
+    `TOPIC: ${topic}`,
+    `GENRE: ${selectedGenre}`,
+    `MOOD: ${selectedMood}`
+  ];
+  if (style?.trim()) {
+    userPromptLines.push(`STYLE / CREATIVE INSPIRATION: ${style.trim()}`);
+  }
+  if (notes?.trim()) {
+    userPromptLines.push(`EXTRA NOTES: ${notes.trim()}`);
+  }
+  userPromptLines.push(
+    "",
+    "Using the inputs above, generate the full AfroMuse song draft following all songwriting rules. Respond with ONLY the JSON object."
+  );
+  const userPrompt = userPromptLines.join("\n");
   try {
     const response = await ai.chat.completions.create({
       model: "qwen/qwen3.5-122b-a10b",

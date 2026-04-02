@@ -214,32 +214,6 @@ Minimum line counts: intro (2-4), verse1 (8+), hook (4-8), verse2 (8+), bridge (
 AfroMuse should feel like a premium songwriting assistant, not a generic text generator.
 The final output should feel like a believable artist draft — emotionally and musically alive — something a creator could actually build on.`;
 
-function buildGenreMoodContext(genre: string, mood: string): string {
-  const genreGuides: Record<string, string> = {
-    Afrobeats: "Apply full Afrobeats DNA: melodic bounce, natural Pidgin/English blend, staccato verse lines, call-and-response chorus energy. Write like Wizkid or Burna Boy would approach this topic — effortless, cultural, groove-first.",
-    Afropop: "Apply Afropop DNA: bright pan-African accessibility, radio-friendly melodic arcs, universally relatable emotions, celebratory energy. Write like Mr Eazi or Yemi Alade — feel-good, open, high-replay.",
-    Amapiano: "Apply Amapiano DNA: chant-heavy, spacious, log-drum-rhythm-aware phrasing. Less is more. Repetition is power. English + South African flavor naturally. Write like Focalistic or Sha Sha — unhurried, confident, culturally rooted.",
-    Dancehall: "Apply Dancehall DNA: punchy rhythmic verse delivery, confident and bold attitude, melodic chorus contrast, Patois-influenced phrasing where natural. Write with Popcaan or Skillibeng's rawness — every syllable locks to the riddim.",
-    "R&B": "Apply Afro R&B DNA: intimate and warm, specific sensory details, smooth vocal delivery, emotional vulnerability at the core. Write like Tems or Adekunle Gold — close, personal, soulful.",
-    "Afro-fusion": "Apply Afro-fusion DNA: emotionally rich, melodically expansive, literary verse writing, deep personal narrative. Write like Omah Lay or Tems — layered, honest, genre-fluid.",
-  };
-
-  const moodGuides: Record<string, string> = {
-    Uplifting: "Mood: Uplifting and motivational. Write with collective pride, earned confidence, and forward momentum. Every section should escalate the belief. Specific — not generic positivity. Real growth. Real victory.",
-    Romantic: "Mood: Romantic and intimate. Write about a specific moment between two real people. Sensory details — what it feels like, smells like, sounds like. Devotion that's earned, not declared. Warmth that's shown, not told.",
-    Energetic: "Mood: Energetic and party-ready. High energy from line one. Crowd-ready phrasing, movement language, cultural celebration. Write for a dance floor packed with people who know every word.",
-    Spiritual: "Mood: Spiritual and soulful. Sincere, not preachy. Gratitude, purpose, ancestry, elevation. Connect the personal journey to something larger. Write like a prayer, not a sermon.",
-    Sad: "Mood: Sad / heartbreak. Honest and specific. Go to the real memory — the empty side of the bed, the song that still plays, the thing they said that can't be unsaid. Quiet devastation. Earned vulnerability.",
-    "Street anthem": "Mood: Street anthem. Bold, defiant, community-proud. Write with resilience and earned self-assurance. Real places, real barriers, real triumph. Verses carry the struggle — chorus carries the win.",
-    Sensual: "Mood: Sensual. Slow-burning and cinematic. Imagery does the work. Tastefully suggestive — every line a held breath. Let the listener feel the temperature of the room.",
-  };
-
-  const genreGuide = genreGuides[genre] ?? genreGuides["Afrobeats"];
-  const moodGuide = moodGuides[mood] ?? moodGuides["Uplifting"];
-
-  return `GENRE DIRECTION: ${genreGuide}\n\nMOOD DIRECTION: ${moodGuide}`;
-}
-
 router.post("/generate-song", async (req, res) => {
   const { topic, genre, mood, style, notes } = req.body as {
     topic?: string;
@@ -261,45 +235,34 @@ router.post("/generate-song", async (req, res) => {
     return;
   }
 
-  const selectedGenre = genre || "Afrobeats";
-  const selectedMood = mood || "Uplifting";
-  const genreMoodContext = buildGenreMoodContext(selectedGenre, selectedMood);
+  const selectedGenre = genre?.trim() || "Afrobeats";
+  const selectedMood = mood?.trim() || "Uplifting";
 
   const ai = new OpenAI({
     apiKey,
     baseURL: "https://integrate.api.nvidia.com/v1",
   });
 
-  const userPrompt = `Write a full, premium AfroMuse song draft. Here are the artist's inputs:
+  const userPromptLines = [
+    `TOPIC: ${topic}`,
+    `GENRE: ${selectedGenre}`,
+    `MOOD: ${selectedMood}`,
+  ];
 
-TOPIC / THEME: ${topic}
-GENRE: ${selectedGenre}
-MOOD: ${selectedMood}
-${style ? `SOUND REFERENCE / INSPIRATION: ${style}` : ""}
-${notes ? `EXTRA DIRECTION FROM THE ARTIST: ${notes}` : ""}
+  if (style?.trim()) {
+    userPromptLines.push(`STYLE / CREATIVE INSPIRATION: ${style.trim()}`);
+  }
 
-${genreMoodContext}
+  if (notes?.trim()) {
+    userPromptLines.push(`EXTRA NOTES: ${notes.trim()}`);
+  }
 
-BEFORE YOU WRITE — RUN THIS CHECKLIST:
-✓ Does the intro set the scene and tease the emotional world?
-✓ Does Verse 1 have at least 8 lines that build a clear story opening?
-✓ Is the chorus 4–8 lines and instantly singable after one listen?
-✓ Does Verse 2 go deeper than Verse 1 — new angle, new emotion?
-✓ Does the bridge shift the energy — emotionally or structurally?
-✓ Does the outro feel like a satisfying resolution, not just a repeat?
-✓ Are ALL lines free from generic AI filler?
-✓ Can every line pass the "can an artist deliver this in a studio?" test?
-✓ Do the production notes include specific BPM, key, and real instruments?
+  userPromptLines.push(
+    "",
+    "Using the inputs above, generate the full AfroMuse song draft following all songwriting rules. Respond with ONLY the JSON object."
+  );
 
-STRUCTURE REMINDER — every section is required:
-- intro: 2–4 lines
-- verse1: minimum 8 lines
-- hook (chorus): 4–8 lines
-- verse2: minimum 8 lines
-- bridge: 4–6 lines
-- outro: 3–6 lines
-
-Respond with ONLY the JSON object. No markdown. No code fences. No extra text.`;
+  const userPrompt = userPromptLines.join("\n");
 
   try {
     const response = await ai.chat.completions.create({
