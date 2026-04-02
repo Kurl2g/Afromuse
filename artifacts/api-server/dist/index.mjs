@@ -39486,7 +39486,7 @@ QUALITY CHECKLIST before you write:
 Respond with ONLY the JSON object. No markdown, no code fences, no extra text.`;
   try {
     const response = await ai.chat.completions.create({
-      model: "deepseek-ai/deepseek-r1",
+      model: "deepseek-ai/deepseek-v3.2",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt }
