@@ -58,3 +58,4 @@ externalPort = 3001
 [userenv.shared]
 PORT = "5000"
 BASE_PATH = "/"
+VAPI_API_KEY = "vapi-V_jKcx3kKvSzdj60d8HoT-suNG2f7UGelbK8oEONjlsPHDSINyoSodKyhjuXUp_b0wZ"
