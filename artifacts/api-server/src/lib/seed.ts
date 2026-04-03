@@ -3,31 +3,50 @@ import { eq } from "drizzle-orm";
 import bcryptjs from "bcryptjs";
 import { logger } from "./logger";
 
-export async function seedAdminAccount() {
-  const email = "afromuseai@gmail.com";
-  const name = "AfroMuse Admin";
-  const password = "naesakim";
-  const plan = "Gold";
-  const role = "admin";
+const SEED_ACCOUNTS = [
+  {
+    email: "afromuseai@gmail.com",
+    name: "AfroMuse Admin",
+    password: "naesakim",
+    role: "admin",
+    plan: "Gold",
+  },
+  {
+    email: "jayla2g5@gmail.com",
+    name: "Jayla",
+    password: "tester123",
+    role: "user",
+    plan: "Gold",
+  },
+];
 
-  try {
-    const existing = await db
-      .select({ id: usersTable.id })
-      .from(usersTable)
-      .where(eq(usersTable.email, email))
-      .limit(1);
+export async function seedAccounts() {
+  for (const account of SEED_ACCOUNTS) {
+    try {
+      const existing = await db
+        .select({ id: usersTable.id })
+        .from(usersTable)
+        .where(eq(usersTable.email, account.email))
+        .limit(1);
 
-    if (existing.length > 0) {
-      logger.info({ email }, "Admin account already exists — skipping seed");
-      return;
+      if (existing.length > 0) {
+        logger.info({ email: account.email }, "Seed account already exists — skipping");
+        continue;
+      }
+
+      const passwordHash = await bcryptjs.hash(account.password, 12);
+
+      await db.insert(usersTable).values({
+        name: account.name,
+        email: account.email,
+        passwordHash,
+        role: account.role,
+        plan: account.plan,
+      });
+
+      logger.info({ email: account.email, role: account.role, plan: account.plan }, "Seed account created");
+    } catch (err) {
+      logger.error({ err, email: account.email }, "Failed to seed account");
     }
-
-    const passwordHash = await bcryptjs.hash(password, 12);
-
-    await db.insert(usersTable).values({ name, email, passwordHash, role, plan });
-
-    logger.info({ email, role, plan }, "Admin account seeded successfully");
-  } catch (err) {
-    logger.error({ err }, "Failed to seed admin account");
   }
 }

@@ -69685,23 +69685,42 @@ var app_default = app;
 
 // src/lib/seed.ts
 var import_bcryptjs2 = __toESM(require_bcryptjs(), 1);
-async function seedAdminAccount() {
-  const email3 = "afromuseai@gmail.com";
-  const name = "AfroMuse Admin";
-  const password = "naesakim";
-  const plan = "Gold";
-  const role = "admin";
-  try {
-    const existing = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email3)).limit(1);
-    if (existing.length > 0) {
-      logger.info({ email: email3 }, "Admin account already exists \u2014 skipping seed");
-      return;
+var SEED_ACCOUNTS = [
+  {
+    email: "afromuseai@gmail.com",
+    name: "AfroMuse Admin",
+    password: "naesakim",
+    role: "admin",
+    plan: "Gold"
+  },
+  {
+    email: "jayla2g5@gmail.com",
+    name: "Jayla",
+    password: "tester123",
+    role: "user",
+    plan: "Gold"
+  }
+];
+async function seedAccounts() {
+  for (const account of SEED_ACCOUNTS) {
+    try {
+      const existing = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, account.email)).limit(1);
+      if (existing.length > 0) {
+        logger.info({ email: account.email }, "Seed account already exists \u2014 skipping");
+        continue;
+      }
+      const passwordHash = await import_bcryptjs2.default.hash(account.password, 12);
+      await db.insert(usersTable).values({
+        name: account.name,
+        email: account.email,
+        passwordHash,
+        role: account.role,
+        plan: account.plan
+      });
+      logger.info({ email: account.email, role: account.role, plan: account.plan }, "Seed account created");
+    } catch (err) {
+      logger.error({ err, email: account.email }, "Failed to seed account");
     }
-    const passwordHash = await import_bcryptjs2.default.hash(password, 12);
-    await db.insert(usersTable).values({ name, email: email3, passwordHash, role, plan });
-    logger.info({ email: email3, role, plan }, "Admin account seeded successfully");
-  } catch (err) {
-    logger.error({ err }, "Failed to seed admin account");
   }
 }
 
@@ -69722,7 +69741,7 @@ app_default.listen(port, (err) => {
     process.exit(1);
   }
   logger.info({ port }, "Server listening");
-  seedAdminAccount().catch((err2) => {
+  seedAccounts().catch((err2) => {
     logger.error({ err: err2 }, "Seed failed");
   });
 });
