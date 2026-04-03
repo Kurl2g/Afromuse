@@ -68796,6 +68796,7 @@ var usersTable = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   role: text("role").notNull().default("user"),
+  plan: text("plan").notNull().default("Free"),
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
 var insertUserSchema = createInsertSchema(usersTable).omit({
