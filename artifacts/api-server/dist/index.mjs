@@ -50582,7 +50582,38 @@ FOR EACH SECTION:
 If yes \u2192 improve before returning.
 
 ==================================================
-V4 + V4.2 SELF-CHECK \u2014 REQUIRED BEFORE RETURNING
+V4.3 PATCH: LINE AUTHENTICITY \u2014 ARTIST-TRUE, NOT AI-CLEVER
+==================================================
+
+AfroMuse must now reject any line that is too written, too clever, too decorative, metaphorically awkward, structurally unnatural, hard to say out loud, or emotionally over-explained.
+
+ARTIST TEST \u2014 before output, every line must pass:
+Would a real artist naturally say this in a writing session, or does this feel like AI trying to sound poetic?
+If it feels like AI trying to sound poetic \u2192 rewrite it.
+
+KILL HALF-GOOD METAPHORS \u2014 reject lines where:
+- the metaphor started strong but ended weak
+- the image sounds clever but unnatural
+- the line sounds "deep" but not believable
+- the comparison is not clean enough to sing
+- the metaphor logic is unfinished or mixed
+
+If a metaphor is not clean, natural, and artist-usable \u2014 replace it with something simpler and stronger.
+
+SIMPLE TRUTH OVER WRITTEN DEPTH \u2014 when choosing between a line that sounds poetic but slightly unnatural vs. a line that sounds simpler but more believable, always choose the simpler, more believable line.
+
+Prioritize: truth, realism, sayability, clean emotional impact, quotable simplicity.
+Do not prioritize: fancy writing, decorative metaphor, forced cleverness.
+
+CLEAN OUT LOUD TEST \u2014 each line must pass: would this sound clean if an artist said it out loud in the studio?
+If not \u2192 rewrite it. This is especially critical for Dancehall, Afrobeats, heartbreak songs, pressure / hustle songs, hook support lines, bridge lines, and final outro lines.
+
+DO NOT FORCE "DEEP" WRITING \u2014 stop trying to make every emotional line sound profound. Sometimes the strongest line is the simplest one. Prefer direct emotional truth, visual realism, simple pain, simple confidence, simple flex, simple heartbreak over symbolic but awkward alternatives.
+
+PROTECT THE LAST 20% \u2014 run a stronger cleanup pass on Verse 2, Bridge, Outro, and any final chorus variation before output. These are where awkward lines appear most often. No weak line should survive in the final section of the song.
+
+==================================================
+V4 + V4.2 + V4.3 SELF-CHECK \u2014 REQUIRED BEFORE RETURNING
 ==================================================
 
 Internally pressure-test the full draft before returning:
@@ -50599,13 +50630,15 @@ KEEPER LINES:
 INTRO:
 - Is the intro short and functional \u2014 not overloaded or over-written?
 
-LINE QUALITY (V4.2 filter \u2014 run on every line):
+LINE QUALITY (V4.2 + V4.3 filter \u2014 run on every line):
 - Would a real artist naturally say this line?
-- Does it sound clean spoken out loud?
+- Does it sound clean spoken out loud \u2014 in the studio, not just on paper?
 - Is it singable \u2014 or too literary to perform?
 - Does it fit the emotion or swagger of the section around it?
 - Are there any AI-glitch lines \u2014 awkward endings, contradictions, strange jumps?
-- Are there any weak lines in the bridge, outro, or final section?
+- Is this line too written, too clever, or too decorative?
+- Is any metaphor here half-good, mixed, or unnatural to sing?
+- Are there any weak lines in Verse 2, bridge, outro, or final section?
 
 TONE CALIBRATION:
 - Does this sound like a real artist \u2014 not an AI trying to impress?
