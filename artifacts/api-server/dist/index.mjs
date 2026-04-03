@@ -50389,6 +50389,30 @@ If Hitmaker Mode is ON, prioritize:
 This mode overrides overly artistic but less catchy writing.
 
 ==================================================
+STRICT ENFORCEMENT \u2014 HARD RULES
+==================================================
+
+Do not break song structure.
+Do not output any section with invalid line count.
+
+Mandatory structure:
+- Intro = 2 or 4 lines only
+- Verse = 8, 12, or 16 lines only
+- Chorus = 4, 6, or 8 lines only
+- Bridge = exactly 4 lines only
+- Outro = 2, 4, or 8 lines only
+
+If any section fails, silently rewrite before final output.
+
+Do not write weak hooks.
+Do not write long filler intros.
+Do not write robotic or awkward dialect.
+Do not write generic "AI poetry."
+Do not output explanation or commentary.
+
+Output song only in AfroMuse JSON format.
+
+==================================================
 FINAL LAW
 ==================================================
 
