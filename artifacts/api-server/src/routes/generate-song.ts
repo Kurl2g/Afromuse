@@ -527,8 +527,19 @@ function buildUserPrompt(params: {
   songLength?: string;
   languageFlavor?: string;
   customFlavor?: string;
+  commercialMode?: boolean;
+  lyricalDepth?: string;
+  hookRepeat?: string;
 }): string {
-  const { topic, genre, mood, style, notes, songLength = "Standard", languageFlavor = "Global English", customFlavor } = params;
+  const {
+    topic, genre, mood, style, notes,
+    songLength = "Standard",
+    languageFlavor = "Global English",
+    customFlavor,
+    commercialMode = false,
+    lyricalDepth = "Balanced",
+    hookRepeat = "Medium",
+  } = params;
 
   const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim()
     ? `Custom: ${customFlavor.trim()}`
@@ -583,6 +594,24 @@ function buildUserPrompt(params: {
     lines.push(`EXTRA NOTES / DIRECTION (HIGHEST PRIORITY — honor fully): ${notes.trim()}`);
   }
 
+  if (commercialMode) {
+    lines.push(`GENERATION MODE: COMMERCIAL / HIT MODE — maximize hook stickiness, keep all lines short and singable, prioritize chant energy and first-listen memorability above all else`);
+  }
+
+  const depthInstructions: Record<string, string> = {
+    Simple: "LYRICAL DEPTH: SIMPLE — use clean, easy phrasing, minimal metaphor, prioritize mainstream singability and hook clarity",
+    Balanced: "LYRICAL DEPTH: BALANCED — blend commercial catchiness with artistic depth, the default premium balance",
+    Deep: "LYRICAL DEPTH: DEEP — allow richer imagery, stronger emotional detail, more layered verse writing and introspection, while remaining musical and recordable",
+  };
+  lines.push(depthInstructions[lyricalDepth] ?? depthInstructions["Balanced"]);
+
+  const hookRepeatInstructions: Record<string, string> = {
+    Low: "HOOK REPEAT LEVEL: LOW — favor lyrical variation in the chorus, less exact repetition, more melodic development across each chorus pass",
+    Medium: "HOOK REPEAT LEVEL: MEDIUM — balanced repetition and variation for commercial replay value",
+    High: "HOOK REPEAT LEVEL: HIGH — maximize chantability, use strong anchor phrase repetition throughout the chorus, build for first-listen memory and crowd singalong",
+  };
+  lines.push(hookRepeatInstructions[hookRepeat] ?? hookRepeatInstructions["Medium"]);
+
   lines.push(
     "",
     "==== V6 GENERATION CHECKLIST ====",
@@ -615,7 +644,7 @@ function buildUserPrompt(params: {
 }
 
 router.post("/generate-song", async (req, res) => {
-  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor } = req.body as {
+  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat } = req.body as {
     topic?: string;
     genre?: string;
     mood?: string;
@@ -624,6 +653,9 @@ router.post("/generate-song", async (req, res) => {
     songLength?: string;
     languageFlavor?: string;
     customFlavor?: string;
+    commercialMode?: boolean;
+    lyricalDepth?: string;
+    hookRepeat?: string;
   };
 
   if (!topic || typeof topic !== "string") {
@@ -657,6 +689,9 @@ router.post("/generate-song", async (req, res) => {
     songLength: selectedLength,
     languageFlavor: selectedFlavor,
     customFlavor,
+    commercialMode: commercialMode === true,
+    lyricalDepth: lyricalDepth ?? "Balanced",
+    hookRepeat: hookRepeat ?? "Medium",
   });
 
   try {

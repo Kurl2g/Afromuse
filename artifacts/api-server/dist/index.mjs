@@ -50604,7 +50604,19 @@ All sections must be present. Arrays must contain actual lyric lines, never plac
 
 AfroMuse V6 is a premium songwriting assistant. Every output must feel musically alive, emotionally specific, culturally grounded, and genuinely usable by a recording artist.`;
 function buildUserPrompt(params) {
-  const { topic, genre, mood, style, notes, songLength = "Standard", languageFlavor = "Global English", customFlavor } = params;
+  const {
+    topic,
+    genre,
+    mood,
+    style,
+    notes,
+    songLength = "Standard",
+    languageFlavor = "Global English",
+    customFlavor,
+    commercialMode = false,
+    lyricalDepth = "Balanced",
+    hookRepeat = "Medium"
+  } = params;
   const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
   const lengthRules = {
     Short: [
@@ -50650,6 +50662,21 @@ function buildUserPrompt(params) {
   if (notes?.trim()) {
     lines.push(`EXTRA NOTES / DIRECTION (HIGHEST PRIORITY \u2014 honor fully): ${notes.trim()}`);
   }
+  if (commercialMode) {
+    lines.push(`GENERATION MODE: COMMERCIAL / HIT MODE \u2014 maximize hook stickiness, keep all lines short and singable, prioritize chant energy and first-listen memorability above all else`);
+  }
+  const depthInstructions = {
+    Simple: "LYRICAL DEPTH: SIMPLE \u2014 use clean, easy phrasing, minimal metaphor, prioritize mainstream singability and hook clarity",
+    Balanced: "LYRICAL DEPTH: BALANCED \u2014 blend commercial catchiness with artistic depth, the default premium balance",
+    Deep: "LYRICAL DEPTH: DEEP \u2014 allow richer imagery, stronger emotional detail, more layered verse writing and introspection, while remaining musical and recordable"
+  };
+  lines.push(depthInstructions[lyricalDepth] ?? depthInstructions["Balanced"]);
+  const hookRepeatInstructions = {
+    Low: "HOOK REPEAT LEVEL: LOW \u2014 favor lyrical variation in the chorus, less exact repetition, more melodic development across each chorus pass",
+    Medium: "HOOK REPEAT LEVEL: MEDIUM \u2014 balanced repetition and variation for commercial replay value",
+    High: "HOOK REPEAT LEVEL: HIGH \u2014 maximize chantability, use strong anchor phrase repetition throughout the chorus, build for first-listen memory and crowd singalong"
+  };
+  lines.push(hookRepeatInstructions[hookRepeat] ?? hookRepeatInstructions["Medium"]);
   lines.push(
     "",
     "==== V6 GENERATION CHECKLIST ====",
@@ -50680,7 +50707,7 @@ function buildUserPrompt(params) {
   return lines.join("\n");
 }
 router2.post("/generate-song", async (req, res) => {
-  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor } = req.body;
+  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat } = req.body;
   if (!topic || typeof topic !== "string") {
     res.status(400).json({ error: "topic is required" });
     return;
@@ -50707,7 +50734,10 @@ router2.post("/generate-song", async (req, res) => {
     notes,
     songLength: selectedLength,
     languageFlavor: selectedFlavor,
-    customFlavor
+    customFlavor,
+    commercialMode: commercialMode === true,
+    lyricalDepth: lyricalDepth ?? "Balanced",
+    hookRepeat: hookRepeat ?? "Medium"
   });
   try {
     const response = await ai.chat.completions.create({

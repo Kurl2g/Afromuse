@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
-  Mic2, Wand2, FileText, RotateCcw,
+  Mic2, Wand2, FileText, RotateCcw, ChevronUp, Zap,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -92,6 +92,10 @@ export default function Studio() {
   const [seed, setSeed] = useState(0);
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [commercialMode, setCommercialMode] = useState(false);
+  const [lyricalDepth, setLyricalDepth] = useState<"Simple" | "Balanced" | "Deep">("Balanced");
+  const [hookRepeat, setHookRepeat] = useState<"Low" | "Medium" | "High">("Medium");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
@@ -116,7 +120,7 @@ export default function Studio() {
       const res = await fetch("/api/generate-song", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor }),
+        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat }),
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -174,6 +178,9 @@ export default function Studio() {
     setCustomFlavor("");
     setStyle("");
     setNotes("");
+    setCommercialMode(false);
+    setLyricalDepth("Balanced");
+    setHookRepeat("Medium");
     setStatus("idle");
     setDraft(null);
     setSeed(0);
@@ -497,6 +504,98 @@ export default function Studio() {
                     onChange={(e) => setNotes(e.target.value)}
                     className="w-full rounded-xl bg-white/4 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none min-h-[90px]"
                   />
+                </div>
+
+                {/* ── Advanced Options ─────────────────────── */}
+                <div className="border border-white/6 rounded-2xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvanced((v) => !v)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-white/40 hover:text-white/60 transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5" />
+                      Advanced Options
+                    </span>
+                    {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                  </button>
+
+                  {showAdvanced && (
+                    <div className="px-4 pb-4 space-y-4 border-t border-white/5">
+
+                      {/* Commercial / Hit Mode */}
+                      <div className="pt-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs font-semibold text-white/70 uppercase tracking-wider">Commercial / Hit Mode</p>
+                            <p className="text-[11px] text-white/25 mt-0.5">Prioritizes hooks, singability, and replay value</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setCommercialMode((v) => !v)}
+                            className={`relative w-10 h-5 rounded-full transition-all duration-200 ${commercialMode ? "bg-primary shadow-[0_0_12px_rgba(245,158,11,0.4)]" : "bg-white/10"}`}
+                          >
+                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-200 shadow-sm ${commercialMode ? "left-5.5 left-[22px]" : "left-0.5"}`} />
+                          </button>
+                        </div>
+                        {commercialMode && (
+                          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-primary/70 bg-primary/8 border border-primary/15 rounded-lg px-2.5 py-1.5">
+                            <Zap className="w-3 h-3 shrink-0" />
+                            Hit mode on — short hooks, max stickiness, chant-friendly lines
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Lyrical Depth */}
+                      <div>
+                        <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">Lyrical Depth</label>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {(["Simple", "Balanced", "Deep"] as const).map((d) => (
+                            <button
+                              key={d}
+                              type="button"
+                              onClick={() => setLyricalDepth(d)}
+                              className={`h-9 rounded-xl text-xs font-bold tracking-wide transition-all border ${
+                                lyricalDepth === d
+                                  ? "bg-primary/15 border-primary/50 text-primary"
+                                  : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20"
+                              }`}
+                            >
+                              {d}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-white/25 mt-1.5">
+                          {lyricalDepth === "Simple" ? "Clean, easy hooks — most mainstream" : lyricalDepth === "Deep" ? "Layered meaning, richer imagery" : "Balanced commercial + artistic"}
+                        </p>
+                      </div>
+
+                      {/* Hook Repeat Level */}
+                      <div>
+                        <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">Hook Repeat Level</label>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {(["Low", "Medium", "High"] as const).map((h) => (
+                            <button
+                              key={h}
+                              type="button"
+                              onClick={() => setHookRepeat(h)}
+                              className={`h-9 rounded-xl text-xs font-bold tracking-wide transition-all border ${
+                                hookRepeat === h
+                                  ? "bg-primary/15 border-primary/50 text-primary"
+                                  : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20"
+                              }`}
+                            >
+                              {h}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-white/25 mt-1.5">
+                          {hookRepeat === "Low" ? "More lyrical variation in the chorus" : hookRepeat === "High" ? "Max chantability — built to stick" : "Balanced repetition and variation"}
+                        </p>
+                      </div>
+
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2.5 pt-1">
