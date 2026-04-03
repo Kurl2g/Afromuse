@@ -18,11 +18,13 @@ import { usePlan, PLAN_LIMITS, type Plan } from "@/context/PlanContext";
 type GenerationStatus = "idle" | "generating" | "done";
 
 const generatingSteps = [
-  "Reading your vibe...",
-  "Writing the hook...",
+  "Finding your keeper line...",
+  "Engineering the hook...",
   "Building your verses...",
+  "Running the tightness filter...",
   "Shaping the bridge...",
-  "Putting it all together...",
+  "Running quality check...",
+  "Finalising your draft...",
 ];
 
 const GENRES = [
@@ -338,7 +340,13 @@ export default function Studio() {
                 Describe your vibe, pick your sound, and get a full song structure — hook, verses, bridge, and production notes — in seconds.
               </p>
             </div>
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-2">
+              {commercialMode && status !== "generating" && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 border border-primary/30 text-[10px] font-bold tracking-widest uppercase text-primary">
+                  <Zap className="w-3 h-3" />
+                  Hitmaker Mode
+                </div>
+              )}
               <div className={`flex items-center gap-2.5 px-4 py-2 rounded-full border text-xs font-semibold transition-all ${
                 status === "idle" ? "bg-white/3 border-white/8 text-muted-foreground" :
                 status === "generating" ? "bg-amber-500/10 border-amber-500/25 text-amber-400" :
@@ -539,9 +547,10 @@ export default function Studio() {
                           </button>
                         </div>
                         {commercialMode && (
-                          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-primary/70 bg-primary/8 border border-primary/15 rounded-lg px-2.5 py-1.5">
-                            <Zap className="w-3 h-3 shrink-0" />
-                            Hit mode on — short hooks, max stickiness, chant-friendly lines
+                          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-primary/80 bg-primary/10 border border-primary/20 rounded-lg px-2.5 py-1.5">
+                            <Zap className="w-3 h-3 shrink-0 text-primary" />
+                            <span className="font-bold text-primary">HITMAKER MODE</span>
+                            <span className="text-primary/60">— short hooks, max stickiness, keeper line first</span>
                           </div>
                         )}
                       </div>
@@ -622,7 +631,7 @@ export default function Studio() {
                       {status === "generating" ? (
                         <><Loader2 className="w-5 h-5 animate-spin relative z-10" /><span className="relative z-10">Composing your draft...</span></>
                       ) : (
-                        <><Sparkles className="w-5 h-5 relative z-10" /><span className="relative z-10">{draft ? "Generate Again" : "Write My Song"}</span></>
+                        <><Sparkles className="w-5 h-5 relative z-10" /><span className="relative z-10">{draft ? "Generate Again" : commercialMode ? "Write a Hit" : "Write My Song"}</span></>
                       )}
                     </button>
                   )}
@@ -726,9 +735,13 @@ export default function Studio() {
                       <Sparkles className="w-8 h-8 text-primary/80 animate-pulse" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-display font-bold text-white mb-2">Writing your song...</h3>
+                  <h3 className="text-xl font-display font-bold text-white mb-2">
+                    {commercialMode ? "Engineering your hit..." : "Writing your song..."}
+                  </h3>
                   <p className="text-white/40 text-sm mb-8 max-w-xs">
-                    AfroMuse AI is channeling your vibe into a full song structure.
+                    {commercialMode
+                      ? "AfroMuse V5 Hitmaker is finding your keeper line and building a hook-first record."
+                      : "AfroMuse AI is channeling your vibe into a full song structure."}
                   </p>
                   <div className="w-52 h-[3px] bg-white/6 rounded-full overflow-hidden mb-4">
                     <motion.div
@@ -771,6 +784,11 @@ export default function Studio() {
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-primary/80 bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
                             <Sparkles className="w-2.5 h-2.5" /> AI Draft
                           </span>
+                          {commercialMode && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-primary bg-primary/15 border border-primary/30 px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                              <Zap className="w-2.5 h-2.5" /> Hitmaker
+                            </span>
+                          )}
                           <span className="text-[11px] text-white/35">{genre}</span>
                           <span className="text-[11px] text-white/20">·</span>
                           <span className="text-[11px] text-white/35">{mood}</span>
