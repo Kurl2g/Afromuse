@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PlanProvider } from "@/context/PlanContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { PlanSync } from "@/context/PlanSync";
 
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -107,6 +108,7 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <PlanProvider>
+            <PlanSync />
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
               <Router />
             </WouterRouter>

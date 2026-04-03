@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Lock } from "lucide-react";
 import { Link } from "wouter";
-import { usePlan, PLAN_COLORS, type Plan } from "@/context/PlanContext";
+import { PLAN_COLORS, type Plan } from "@/context/PlanContext";
 
 interface UpgradeModalProps {
   open: boolean;
@@ -20,7 +20,6 @@ export function UpgradeModal({
   featureDesc,
   requiredPlan,
 }: UpgradeModalProps) {
-  const { setPlan } = usePlan();
   const colors = PLAN_COLORS[requiredPlan];
   const isGold = requiredPlan === "Gold";
 
@@ -103,7 +102,7 @@ export function UpgradeModal({
                   </ul>
                 </div>
 
-                {/* CTAs */}
+                {/* CTA only — no demo switcher */}
                 <div className="flex flex-col gap-2">
                   <Link href="/pricing" onClick={onClose}>
                     <button className={`w-full h-12 rounded-2xl font-bold text-sm tracking-wide transition-all hover:-translate-y-0.5 ${
@@ -114,13 +113,11 @@ export function UpgradeModal({
                       Upgrade to {requiredPlan} — See Pricing
                     </button>
                   </Link>
-
-                  {/* Demo mode switcher — clearly labelled */}
                   <button
-                    onClick={() => { setPlan(requiredPlan); onClose(); }}
+                    onClick={onClose}
                     className="w-full h-10 rounded-xl border border-white/8 text-xs text-muted-foreground/60 hover:text-muted-foreground hover:border-white/15 transition-all"
                   >
-                    Demo only: preview as {requiredPlan} plan →
+                    Maybe Later
                   </button>
                 </div>
               </div>

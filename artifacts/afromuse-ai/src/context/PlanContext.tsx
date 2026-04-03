@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 
 export type Plan = "Free" | "Pro" | "Gold";
 
@@ -21,7 +21,6 @@ interface UsageState {
 
 interface PlanContextType {
   plan: Plan;
-  setPlan: (plan: Plan) => void;
   hasAccess: (required: Plan) => boolean;
   planIndex: number;
   generationsUsed: number;
@@ -34,11 +33,11 @@ interface PlanContextType {
   useAudioTrial: () => boolean;
   useCollabTrial: () => boolean;
   resetUsage: () => void;
+  syncPlanFromServer: (serverPlan: Plan) => void;
 }
 
 const defaultCtx: PlanContextType = {
   plan: "Free",
-  setPlan: () => {},
   hasAccess: () => false,
   planIndex: 0,
   generationsUsed: 0,
@@ -51,11 +50,11 @@ const defaultCtx: PlanContextType = {
   useAudioTrial: () => false,
   useCollabTrial: () => false,
   resetUsage: () => {},
+  syncPlanFromServer: () => {},
 };
 
 const PlanContext = createContext<PlanContextType>(defaultCtx);
 
-const PLAN_STORAGE_KEY = "afromuse_plan";
 const USAGE_STORAGE_KEY = "afromuse_usage";
 
 function loadUsage(): UsageState {
@@ -71,17 +70,22 @@ function saveUsage(u: UsageState) {
 }
 
 export function PlanProvider({ children }: { children: ReactNode }) {
-  const [plan, setPlanState] = useState<Plan>(() => {
-    const stored = localStorage.getItem(PLAN_STORAGE_KEY);
-    return (PLAN_ORDER.includes(stored as Plan) ? stored : "Free") as Plan;
-  });
+  // Plan is always "Free" by default and only ever set from the server
+  const [plan, setPlanState] = useState<Plan>("Free");
 
   const [usage, setUsage] = useState<UsageState>(loadUsage);
 
-  const setPlan = (newPlan: Plan) => {
-    setPlanState(newPlan);
-    localStorage.setItem(PLAN_STORAGE_KEY, newPlan);
-  };
+  // Wipe any leftover localStorage plan tampering on mount
+  useEffect(() => {
+    localStorage.removeItem("afromuse_plan");
+  }, []);
+
+  // Called by AuthContext/auth flow to sync the real plan from the server
+  const syncPlanFromServer = useCallback((serverPlan: Plan) => {
+    if (PLAN_ORDER.includes(serverPlan)) {
+      setPlanState(serverPlan);
+    }
+  }, []);
 
   const planIndex = PLAN_ORDER.indexOf(plan);
   const hasAccess = (required: Plan) => planIndex >= PLAN_ORDER.indexOf(required);
@@ -138,7 +142,6 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     <PlanContext.Provider
       value={{
         plan,
-        setPlan,
         hasAccess,
         planIndex,
         generationsUsed,
@@ -151,6 +154,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
         useAudioTrial,
         useCollabTrial,
         resetUsage,
+        syncPlanFromServer,
       }}
     >
       {children}

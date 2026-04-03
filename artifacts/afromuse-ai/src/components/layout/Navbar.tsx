@@ -1,78 +1,25 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui-elements";
-import { Menu, X, ChevronDown, Sparkles, LogOut, User, Shield } from "lucide-react";
+import { Menu, X, Sparkles, LogOut, User, Shield } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePlan, PLAN_COLORS, type Plan } from "@/context/PlanContext";
+import { usePlan, PLAN_COLORS } from "@/context/PlanContext";
 import { useAuth } from "@/context/AuthContext";
 
-const ALL_PLANS: Plan[] = ["Free", "Pro", "Gold"];
-
-function PlanSwitcher() {
-  const { plan, setPlan } = usePlan();
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+function PlanBadge() {
+  const { plan } = usePlan();
   const colors = PLAN_COLORS[plan];
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "flex items-center gap-1.5 h-8 px-3 rounded-full border text-[11px] font-bold tracking-wider uppercase transition-all",
-          colors.pill, colors.glow
-        )}
-      >
-        {plan === "Gold" && <Sparkles className="w-3 h-3" />}
-        {plan}
-        <ChevronDown className={cn("w-3 h-3 transition-transform", open && "rotate-180")} />
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 top-10 w-48 rounded-2xl border border-white/10 bg-[#0d0d1a] shadow-2xl p-2 z-50"
-          >
-            <p className="text-[9px] font-bold tracking-widest uppercase text-muted-foreground/40 px-2 pb-2 pt-1">
-              Demo plan switcher
-            </p>
-            {ALL_PLANS.map((p) => {
-              const c = PLAN_COLORS[p];
-              const isActive = plan === p;
-              return (
-                <button
-                  key={p}
-                  onClick={() => { setPlan(p); setOpen(false); }}
-                  className={cn(
-                    "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all",
-                    isActive
-                      ? "bg-white/8 text-white"
-                      : "text-muted-foreground hover:text-white hover:bg-white/5"
-                  )}
-                >
-                  <span className={isActive ? c.badge : ""}>{p}</span>
-                  {isActive && (
-                    <span className={cn("text-[10px] font-bold tracking-wide", c.badge)}>Active</span>
-                  )}
-                </button>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div
+      className={cn(
+        "flex items-center gap-1.5 h-8 px-3 rounded-full border text-[11px] font-bold tracking-wider uppercase",
+        colors.pill, colors.glow
+      )}
+    >
+      {plan === "Gold" && <Sparkles className="w-3 h-3" />}
+      {plan}
     </div>
   );
 }
@@ -107,7 +54,6 @@ function UserMenu() {
           <User className="w-3 h-3 text-primary" />
         </div>
         <span className="text-xs font-semibold text-white/90 max-w-[100px] truncate">{user?.name}</span>
-        <ChevronDown className={cn("w-3 h-3 text-muted-foreground transition-transform", open && "rotate-180")} />
       </button>
 
       <AnimatePresence>
@@ -168,7 +114,7 @@ export function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { plan, setPlan } = usePlan();
+  const { plan } = usePlan();
   const { isLoggedIn, user, logout } = useAuth();
   const [, navigate] = useLocation();
 
@@ -248,7 +194,7 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <PlanSwitcher />
+            <PlanBadge />
             {isLoggedIn ? (
               <UserMenu />
             ) : (
@@ -285,22 +231,14 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-background/95 backdrop-blur-3xl pt-24 px-6 md:hidden flex flex-col h-[100dvh] overflow-y-auto pb-6"
           >
-            {/* Mobile plan indicator */}
+            {/* Mobile plan indicator — read only */}
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
               <span className="text-xs text-muted-foreground">Current plan</span>
-              <div className="flex items-center gap-2">
-                {ALL_PLANS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPlan(p)}
-                    className={cn(
-                      "text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full border transition-all",
-                      plan === p ? PLAN_COLORS[p].pill : "border-white/8 text-muted-foreground/50 bg-transparent"
-                    )}
-                  >
-                    {p}
-                  </button>
-                ))}
+              <div className={cn(
+                "text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full border",
+                PLAN_COLORS[plan].pill
+              )}>
+                {plan}
               </div>
             </div>
 

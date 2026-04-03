@@ -68858,7 +68858,7 @@ router3.post("/auth/register", async (req, res) => {
     const [user] = await db.insert(usersTable).values({ name, email: email3.toLowerCase(), passwordHash, role: "user" }).returning();
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
   } catch (err) {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
@@ -68882,7 +68882,7 @@ router3.post("/auth/login", async (req, res) => {
     }
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
   } catch (err) {
     res.status(500).json({ error: "Login failed. Please try again." });
   }
@@ -68910,7 +68910,7 @@ router3.get("/auth/me", async (req, res) => {
       res.status(401).json({ error: "User not found." });
       return;
     }
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
   } catch {
     res.status(500).json({ error: "Failed to fetch user." });
   }

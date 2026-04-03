@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import type { Plan } from "@/context/PlanContext";
 
 export interface AuthUser {
   id: number;
   name: string;
   email: string;
   role: "user" | "admin";
+  plan: Plan;
 }
 
 interface AuthResult {
