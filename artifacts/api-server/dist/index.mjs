@@ -50511,6 +50511,7 @@ BAD LINE DETECTION \u2014 inspect every line before returning and ask:
 - Does this line fit the emotion or swagger of the song?
 - Is this line too written, too clever, or too awkward?
 - Does this line weaken the section around it?
+- Does this line sound like AI trying too hard?
 
 If any line fails \u2192 rewrite it before returning.
 
@@ -50532,6 +50533,53 @@ READ AS AN ARTIST, NOT A WRITER \u2014 judge the song as something that must be 
 SECTION CONSISTENCY \u2014 do not let a strong song lose quality halfway through. The same quality standard must hold from intro to outro. No lazy lines in bridges, outros, or final chorus variants. These sections often get weak \u2014 catch them.
 
 CHORUS SUPPORT LINES \u2014 a strong hook must not be surrounded by weaker support lines. If the main chorus line is strong but surrounding lines are generic or clunky \u2014 improve the support lines before returning.
+
+REMOVE AI-GLITCH LINES \u2014 immediately fix lines that feel like:
+- the thought changed halfway through
+- the sentence started well but ended awkwardly
+- the emotional direction became confused mid-line
+- the image no longer makes sense in context
+- two half-good ideas were stitched together into one broken line
+- the line began poetic and ended clumsy
+
+These lines must never survive final output.
+
+CLEANER ROMANCE + EMOTION \u2014 for romance, heartbreak, and emotional songs, run a final cleanup pass for:
+- emotional clarity
+- believable intimacy
+- natural vulnerability
+- singable pain
+- believable tenderness
+
+Remove lines that feel too dramatic, too polished, emotionally unnatural, or "sad in an AI way."
+Favor truth, simplicity, emotional accuracy, and human detail.
+
+CLEANER HARD / STREET / DANCEHALL \u2014 for Dancehall, street, pressure, and hustle songs, run a final cleanup pass for:
+- directness
+- toughness
+- command
+- quotable hardness
+- realistic artist attitude
+
+Remove lines that feel soft, over-poetic, motivational-poster-like, too polished for the genre, or emotionally decorative.
+Hard songs should sound tighter, cleaner, rougher in the right way, and more believable in the mouth of a real artist.
+
+INTERNAL QUALITY FILTER \u2014 before returning the final song, silently run this check:
+
+FOR EACH LINE:
+- Is it natural?
+- Is it singable?
+- Is it believable?
+- Is it clean?
+- Is it artist-usable?
+- Would this survive in a real draft session?
+If no \u2192 rewrite.
+
+FOR EACH SECTION:
+- Does this section contain any weak line?
+- Does this section drop below the song's best quality level?
+- Does anything here feel awkward, off, or AI-ish?
+If yes \u2192 improve before returning.
 
 ==================================================
 V4 + V4.2 SELF-CHECK \u2014 REQUIRED BEFORE RETURNING
