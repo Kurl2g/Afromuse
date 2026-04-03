@@ -245,32 +245,60 @@ MANDATORY VERSE RHYTHM RULES:
 6. VERSE ESCALATION: Verse 2 must go further than Verse 1 — new angle, new depth, never a restatement.
 
 ══════════════════════════════════════════════
-INTRO FIX ENGINE
+INTRO FIX ENGINE — V5 HARD ENFORCE
 ══════════════════════════════════════════════
 
-MANDATORY INTRO RULES:
+INTRO IS THE MOST RESTRICTED SECTION. HARD RULES:
 
-- 2 to 4 lines max
-- Mood-setting only — not a mini-chorus, not a mini-verse
-- Should feel like atmosphere, entry, or emotional setup
+- 2 to 4 lines MAXIMUM — this is non-negotiable
+- Mood-setting ONLY — atmospheric, teasing, cinematic
+- Must feel like: a spoken thought / a chant fragment / a mood teaser / an emotional entry / a cinematic opening
+- Must NOT be: a mini-chorus / a mini-verse / a hidden hook / an over-explained opening
 
-GOOD: "Big yard. Empty room." / "Nobody come, but You stay." / "She dey here… but e no be her." / "No more talking. Just watch." / "Same roof. Different world."
-BAD: 6–8 line explanatory intros / over-poetic monologues / intros that already contain the whole song
+GOOD INTRO ENERGY:
+"Yeah… you don change." / "No light for here tonight." / "Same roof. Different world." / "Mi nuh explain." / "She dey here… but e no be her." / "Big yard. Empty room." / "Nobody came… but You stayed." / "Only silence know wetin I know."
 
-If the song does not need an intro — omit it and write an empty array.
+BAD INTRO (HARD REJECT — rewrite if detected):
+- 5+ line intros → cut to 2–4
+- Intros that already contain the main chorus idea → remove or restructure
+- Intros that over-explain the song's meaning → simplify
+- Intros that are just a longer verse → restructure as mood setup only
+- Intros that start with full lyrical payload → strip back to atmosphere
+
+INTRO SELF-CHECK before finalizing:
+- Is this 2–4 lines? If not → trim
+- Does this feel like a teaser or opening? If not → rewrite
+- Could this be mistaken for the chorus or verse? If yes → rewrite
+
+If the song does not need an intro — omit it and write an empty array [].
 
 ══════════════════════════════════════════════
-TITLE STRENGTH ENGINE
+TITLE STRENGTH ENGINE — V5 HARD FILTER
 ══════════════════════════════════════════════
 
-Every song title must feel: memorable, artist-worthy, emotionally sticky, easy to say, easy to remember, marketable.
+Every song title must come from or directly echo the MAIN KEEPER LINE.
 
-The title must come from or closely echo the hook's anchor phrase. It should make someone curious enough to press play and carry weight in one breath.
+MANDATORY TITLE RULES:
+- Short: 1 to 4 words is ideal, 5 words maximum
+- Emotionally sharp — names the FEELING, not the topic
+- Instantly memorable — sounds like a real artist's single
+- Makes someone curious enough to press play
+- Easy to say, easy to remember, marketable
 
-Strong title examples: BIG YARD EMPTY ROOM / SAME ROOF DIFFERENT WORLD / PAIN A MI GLORY / NA YOU STAY / NO THINKING / SOFT PRESSURE / NUH EXPLAIN / BROKEN MIRROR
+STRONG TITLE STYLE:
+Broken Mirror / Same Roof Different World / Na You Stay / Nuh Explain / Pain A Mi Glory / Soft Pressure / Top Corner / No Thinking / Big Yard Empty Room / Last Call / Cold Side / She Moved On
 
-AVOID: generic topic summaries ("Love Song", "Hustle Hard", "We Rise")
-Weak titles should be upgraded automatically before output.
+WEAK TITLE STYLE (auto-reject):
+- Love in the Night → reject (generic + wordy)
+- Rise Again Today → reject (motivational poster)
+- Dancing in the Vibe → reject (topic description, not a title)
+- Feeling Emotional Tonight → reject (explains instead of hits)
+- Our Beautiful Journey → reject (too soft, too generic)
+
+TITLE FILTER — HARD ENFORCE:
+Before returning, ask: "Would a real artist release a single with this title?"
+If no → rewrite the title to echo the keeper line before output.
+A weak title MUST be upgraded. Never return a generic title.
 
 ══════════════════════════════════════════════
 PRODUCTION DIRECTION — BE SPECIFIC
@@ -721,12 +749,12 @@ function buildUserPrompt(params: {
     ...selectedLengthRules,
     `✓ LANGUAGE / FLAVOR: ${effectiveFlavor} — apply naturally from first line to last, think in the culture, do not translate into it`,
     "✓ PRE-GENERATE: silently create 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing the song",
-    "✓ TITLE: must come from or echo the keeper line — emotionally sticky, specific, artist-brandable, marketable, not a generic description",
+    "✓ TITLE FILTER: title must come from the keeper line — 1 to 5 words, emotionally sharp, artist-worthy — if generic → rewrite before output",
     "✓ ANCHOR PHRASE: the MAIN KEEPER LINE woven into the chorus, intro, bridge or outro — song feels unified",
     "✓ CHORUS HOOK: run the 5-question enforcer — if any answer is NO, rewrite the chorus before returning",
     "✓ CHORUS STRENGTH: simpler, more singable, and more memorable than every verse — the emotional peak of the record",
     "✓ KEEPER LINES: at least 2–4 lines a real artist would quote, caption, or build from — scattered across verses",
-    "✓ INTRO CONTROL: 2–4 lines MAX — mood-setting atmosphere only — not a mini-verse, not a mini-chorus",
+    "✓ INTRO HARD ENFORCE: 2–4 lines MAX only — atmosphere/mood-setting, never a mini-chorus or mini-verse — run intro self-check",
     "✓ VERSE RHYTHM: alternate short, medium, and punch lines — no robotic equal-length bars — pockets that feel performable",
     "✓ VERSE ESCALATION: Verse 2 must go further than Verse 1 — new angle, new depth, never a restatement",
     "✓ SONG TIGHTNESS: every line must earn its place — fewer, stronger lines beat more, weaker lines",
