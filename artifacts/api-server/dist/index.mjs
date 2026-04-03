@@ -69013,6 +69013,9 @@ function getJwtSecret() {
 function signToken(payload) {
   return import_jsonwebtoken.default.sign(payload, getJwtSecret(), { expiresIn: "7d" });
 }
+function effectivePlan(user) {
+  return user.role === "admin" ? "Gold" : user.plan;
+}
 function verifyToken(token) {
   try {
     return import_jsonwebtoken.default.verify(token, getJwtSecret());
@@ -69040,7 +69043,7 @@ router3.post("/auth/register", async (req, res) => {
     const [user] = await db.insert(usersTable).values({ name, email: email3.toLowerCase(), passwordHash, role: "user" }).returning();
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
+    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
   } catch (err) {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
@@ -69064,7 +69067,7 @@ router3.post("/auth/login", async (req, res) => {
     }
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
   } catch (err) {
     res.status(500).json({ error: "Login failed. Please try again." });
   }
@@ -69092,7 +69095,7 @@ router3.get("/auth/me", async (req, res) => {
       res.status(401).json({ error: "User not found." });
       return;
     }
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: user.plan });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
   } catch {
     res.status(500).json({ error: "Failed to fetch user." });
   }
