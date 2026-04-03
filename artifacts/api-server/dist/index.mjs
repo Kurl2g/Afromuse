@@ -69683,6 +69683,28 @@ app.use(import_express5.default.urlencoded({ extended: true }));
 app.use("/api", routes_default);
 var app_default = app;
 
+// src/lib/seed.ts
+var import_bcryptjs2 = __toESM(require_bcryptjs(), 1);
+async function seedAdminAccount() {
+  const email3 = "afromuseai@gmail.com";
+  const name = "AfroMuse Admin";
+  const password = "naesakim";
+  const plan = "Gold";
+  const role = "admin";
+  try {
+    const existing = await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email3)).limit(1);
+    if (existing.length > 0) {
+      logger.info({ email: email3 }, "Admin account already exists \u2014 skipping seed");
+      return;
+    }
+    const passwordHash = await import_bcryptjs2.default.hash(password, 12);
+    await db.insert(usersTable).values({ name, email: email3, passwordHash, role, plan });
+    logger.info({ email: email3, role, plan }, "Admin account seeded successfully");
+  } catch (err) {
+    logger.error({ err }, "Failed to seed admin account");
+  }
+}
+
 // src/index.ts
 var rawPort = process.env["PORT"];
 if (!rawPort) {
@@ -69700,6 +69722,9 @@ app_default.listen(port, (err) => {
     process.exit(1);
   }
   logger.info({ port }, "Server listening");
+  seedAdminAccount().catch((err2) => {
+    logger.error({ err: err2 }, "Seed failed");
+  });
 });
 /*! Bundled license information:
 
