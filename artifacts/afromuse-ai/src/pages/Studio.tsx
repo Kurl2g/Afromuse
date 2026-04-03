@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
+  Mic2, Wand2, FileText, RotateCcw,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
@@ -20,7 +21,28 @@ const generatingSteps = [
   "Reading your vibe...",
   "Writing the hook...",
   "Building your verses...",
+  "Shaping the bridge...",
   "Putting it all together...",
+];
+
+const GENRES = [
+  { value: "Afrobeats", label: "Afrobeats" },
+  { value: "Afropop", label: "Afropop" },
+  { value: "Amapiano", label: "Amapiano" },
+  { value: "Dancehall", label: "Dancehall" },
+  { value: "R&B", label: "Afro R&B" },
+  { value: "Afro-fusion", label: "Afro-fusion" },
+  { value: "Street Anthem", label: "Street Anthem" },
+  { value: "Spiritual", label: "Spiritual / Gospel" },
+];
+
+const MOODS = [
+  { value: "Uplifting", label: "Uplifting" },
+  { value: "Romantic", label: "Romantic" },
+  { value: "Energetic", label: "Energetic / Party" },
+  { value: "Sad", label: "Sad / Heartbreak" },
+  { value: "Spiritual", label: "Spiritual / Deep" },
+  { value: "Confident", label: "Confident / Flex" },
 ];
 
 export default function Studio() {
@@ -59,7 +81,7 @@ export default function Studio() {
       const interval = setInterval(() => {
         i = (i + 1) % generatingSteps.length;
         setGeneratingStep(i);
-      }, 600);
+      }, 700);
       return () => clearInterval(interval);
     }
   }, [status]);
@@ -167,9 +189,10 @@ export default function Studio() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 bg-background relative">
-      <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-secondary/10 blur-[150px] pointer-events-none rounded-full" />
-      <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[150px] pointer-events-none rounded-full" />
+    <div className="min-h-screen pt-24 pb-20 bg-background relative overflow-x-hidden">
+      {/* Ambient glows */}
+      <div className="fixed top-0 left-0 w-[600px] h-[600px] bg-secondary/8 blur-[180px] pointer-events-none rounded-full -translate-x-1/2 -translate-y-1/2" />
+      <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[180px] pointer-events-none rounded-full translate-x-1/3 translate-y-1/3" />
 
       {/* Upgrade Modal */}
       <AnimatePresence>
@@ -178,37 +201,25 @@ export default function Studio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
             onClick={() => setShowUpgradeModal(false)}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
               className={`w-full max-w-sm rounded-3xl border shadow-2xl p-8 text-center relative overflow-hidden ${
-                upgradeTo === "Gold"
-                  ? "border-yellow-500/30 bg-[#0f0f0a]"
-                  : "border-primary/30 bg-[#0d0d1a]"
+                upgradeTo === "Gold" ? "border-yellow-500/30 bg-[#0f0f0a]" : "border-primary/30 bg-[#0d0d1a]"
               }`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 blur-3xl pointer-events-none ${
-                upgradeTo === "Gold" ? "bg-yellow-500/20" : "bg-primary/20"
-              }`} />
+              <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 blur-3xl pointer-events-none ${upgradeTo === "Gold" ? "bg-yellow-500/20" : "bg-primary/20"}`} />
               <div className="relative z-10">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 ${
-                  upgradeTo === "Gold"
-                    ? "bg-yellow-500/15 border border-yellow-500/30"
-                    : "bg-primary/10 border border-primary/20"
-                }`}>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 ${upgradeTo === "Gold" ? "bg-yellow-500/15 border border-yellow-500/30" : "bg-primary/10 border border-primary/20"}`}>
                   <Sparkles className={`w-6 h-6 ${upgradeTo === "Gold" ? "text-yellow-400" : "text-primary"}`} />
                 </div>
-                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border mb-4 ${
-                  upgradeTo === "Gold"
-                    ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400"
-                    : "bg-primary/15 border-primary/30 text-primary"
-                }`}>
+                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border mb-4 ${upgradeTo === "Gold" ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400" : "bg-primary/15 border-primary/30 text-primary"}`}>
                   Upgrade to {upgradeTo}
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
@@ -223,18 +234,11 @@ export default function Studio() {
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link href="/pricing">
-                    <button className={`w-full h-12 rounded-xl font-semibold text-sm transition-all ${
-                      upgradeTo === "Gold"
-                        ? "bg-gradient-to-r from-yellow-500 to-amber-400 text-black hover:from-yellow-400 hover:to-amber-300 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
-                        : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_28px_rgba(245,158,11,0.4)]"
-                    }`}>
+                    <button className={`w-full h-12 rounded-xl font-semibold text-sm transition-all ${upgradeTo === "Gold" ? "bg-gradient-to-r from-yellow-500 to-amber-400 text-black hover:from-yellow-400 hover:to-amber-300 shadow-[0_0_20px_rgba(234,179,8,0.3)]" : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(245,158,11,0.25)]"}`}>
                       See Plans & Pricing
                     </button>
                   </Link>
-                  <button
-                    onClick={() => setShowUpgradeModal(false)}
-                    className="w-full h-10 rounded-xl border border-white/8 text-sm text-muted-foreground hover:text-white hover:border-white/20 transition-all"
-                  >
+                  <button onClick={() => setShowUpgradeModal(false)} className="w-full h-10 rounded-xl border border-white/8 text-sm text-muted-foreground hover:text-white hover:border-white/20 transition-all">
                     Maybe Later
                   </button>
                 </div>
@@ -251,13 +255,13 @@ export default function Studio() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
             onClick={() => setShowLoginModal(false)}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
               className="w-full max-w-sm rounded-3xl border border-white/10 bg-[#0d0d1a] shadow-2xl p-8 text-center"
               onClick={(e) => e.stopPropagation()}
@@ -265,20 +269,17 @@ export default function Studio() {
               <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
                 <Lock className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Please log in to continue</h3>
+              <h3 className="text-xl font-bold text-white mb-2">Log in to save your work</h3>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Save your projects and access them anywhere. Create a free account to get started.
+                Save your song drafts and access them from anywhere. Create a free account to get started.
               </p>
               <div className="flex flex-col gap-3">
                 <Link href="/auth?from=/studio">
-                  <button className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_28px_rgba(245,158,11,0.4)] transition-all">
+                  <button className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all">
                     Log In or Sign Up
                   </button>
                 </Link>
-                <button
-                  onClick={() => setShowLoginModal(false)}
-                  className="w-full h-10 rounded-xl border border-white/8 text-sm text-muted-foreground hover:text-white hover:border-white/20 transition-all"
-                >
+                <button onClick={() => setShowLoginModal(false)} className="w-full h-10 rounded-xl border border-white/8 text-sm text-muted-foreground hover:text-white hover:border-white/20 transition-all">
                   Maybe Later
                 </button>
               </div>
@@ -287,258 +288,286 @@ export default function Studio() {
         )}
       </AnimatePresence>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 max-w-7xl">
 
         {/* PAGE HEADER */}
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <div className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase mb-2">AfroMuse Studio</div>
-            <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-white">AfroMuse Studio</h1>
-            <p className="text-muted-foreground text-sm md:text-base">Describe your vibe. Choose your sound. Get a full song structure — in seconds.</p>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 shrink-0">
-            {status === "idle" && (
-              <><div className="w-2 h-2 rounded-full bg-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">Ready to Create</span></>
-            )}
-            {status === "generating" && (
-              <><div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /><span className="text-xs font-medium text-amber-500">Writing your song...</span></>
-            )}
-            {status === "done" && (
-              <><div className="w-2 h-2 rounded-full bg-green-500" /><span className="text-xs font-medium text-green-500">Draft Ready</span></>
-            )}
+        <div className="mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center">
+                  <Mic2 className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-[11px] font-bold tracking-widest text-primary/70 uppercase">AfroMuse Studio</span>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2 leading-tight">
+                Your Creative Workspace
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base max-w-lg">
+                Describe your vibe, pick your sound, and get a full song structure — hook, verses, bridge, and production notes — in seconds.
+              </p>
+            </div>
+            <div className="shrink-0">
+              <div className={`flex items-center gap-2.5 px-4 py-2 rounded-full border text-xs font-semibold transition-all ${
+                status === "idle" ? "bg-white/3 border-white/8 text-muted-foreground" :
+                status === "generating" ? "bg-amber-500/10 border-amber-500/25 text-amber-400" :
+                "bg-green-500/10 border-green-500/25 text-green-400"
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  status === "idle" ? "bg-muted-foreground/50" :
+                  status === "generating" ? "bg-amber-400 animate-pulse" :
+                  "bg-green-400"
+                }`} />
+                {status === "idle" && "Ready to Create"}
+                {status === "generating" && "Composing..."}
+                {status === "done" && "Draft Ready"}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className="grid lg:grid-cols-12 gap-6 xl:gap-8 items-start">
 
-          {/* LEFT PANEL: Form */}
-          <div className="lg:col-span-4 lg:sticky lg:top-28 rounded-3xl border border-white/8 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl p-5 md:p-7 shadow-2xl">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-xs font-bold tracking-widest text-primary uppercase">Tell Us Your Story</span>
-            </div>
+          {/* ── LEFT PANEL: Form ──────────────────────────────────────── */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28">
+            <div className="rounded-3xl border border-white/8 bg-gradient-to-b from-[#0e0e1a] to-[#090912] backdrop-blur-xl shadow-2xl overflow-hidden">
 
-            <form onSubmit={handleGenerate}>
-              {/* Topic */}
-              <div className="space-y-1.5 mb-5">
-                <label className="text-sm font-medium text-white/80 mb-1.5 block">Your Song Idea</label>
-                <input
-                  type="text"
-                  placeholder="e.g. love in Lagos, hustle, heartbreak at 3am"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  className="w-full h-12 rounded-xl bg-white/5 border border-white/10 px-4 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
-                />
-              </div>
-
-              {/* Genre */}
-              <div className="space-y-1.5 mb-5">
-                <label className="text-sm font-medium text-white/80 mb-1.5 block">Genre</label>
-                <div className="relative">
-                  <select
-                    value={genre}
-                    onChange={(e) => setGenre(e.target.value)}
-                    className="w-full h-12 rounded-xl bg-[#1a1a2e] border border-white/10 px-4 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="Afrobeats" className="bg-[#1a1a2e] text-white">Afrobeats</option>
-                    <option value="Afropop" className="bg-[#1a1a2e] text-white">Afropop</option>
-                    <option value="Amapiano" className="bg-[#1a1a2e] text-white">Amapiano</option>
-                    <option value="Dancehall" className="bg-[#1a1a2e] text-white">Dancehall</option>
-                    <option value="R&B" className="bg-[#1a1a2e] text-white">Afro R&B</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              {/* Form header */}
+              <div className="px-6 pt-6 pb-5 border-b border-white/5">
+                <div className="flex items-center gap-2">
+                  <Wand2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-white">Song Details</span>
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">Tell AfroMuse your story</p>
               </div>
 
-              {/* Mood */}
-              <div className="space-y-1.5 mb-5">
-                <label className="text-sm font-medium text-white/80 mb-1.5 block">Energy & Mood</label>
-                <div className="relative">
-                  <select
-                    value={mood}
-                    onChange={(e) => setMood(e.target.value)}
-                    className="w-full h-12 rounded-xl bg-[#1a1a2e] border border-white/10 px-4 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="Uplifting" className="bg-[#1a1a2e] text-white">Uplifting</option>
-                    <option value="Romantic" className="bg-[#1a1a2e] text-white">Romantic</option>
-                    <option value="Energetic" className="bg-[#1a1a2e] text-white">Energetic / Party</option>
-                    <option value="Spiritual" className="bg-[#1a1a2e] text-white">Spiritual / Deep</option>
-                    <option value="Sad" className="bg-[#1a1a2e] text-white">Sad / Heartbreak</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                </div>
-              </div>
+              <form onSubmit={handleGenerate} className="p-6 space-y-5">
 
-              {/* Style */}
-              <div className="space-y-1.5 mb-5">
-                <label className="text-sm font-medium text-white/80 mb-1.5 block">Sound Reference</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Burna Boy's 'Last Last' energy, or Wizkid slow-wave vibes"
-                  value={style}
-                  onChange={(e) => setStyle(e.target.value)}
-                  className="w-full h-12 rounded-xl bg-white/5 border border-white/10 px-4 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
-                />
-              </div>
-
-              {/* Notes */}
-              <div className="space-y-1.5 mb-5">
-                <label className="text-sm font-medium text-white/80 mb-1.5 block">Extra Direction</label>
-                <textarea
-                  placeholder="Anything else — a story, a line you want in, a specific feeling to capture"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none min-h-[100px]"
-                />
-              </div>
-
-              <div className="pt-2 flex flex-col gap-3">
-                {!canGenerate() ? (
-                  <button
-                    type="button"
-                    onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }}
-                    className="w-full h-14 rounded-2xl border border-primary/30 bg-primary/10 text-primary font-bold text-base tracking-wide transition-all hover:bg-primary/20 flex items-center justify-center gap-2"
-                  >
-                    <Lock className="w-5 h-5" />
-                    Upgrade to Generate More
-                  </button>
-                ) : (
-                <button
-                  type="submit"
-                  disabled={status === "generating"}
-                  className="relative overflow-hidden w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base tracking-wide transition-all duration-200 shadow-[0_0_30px_rgba(245,158,11,0.25)] hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] hover:scale-[1.02] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
-                >
-                  <motion.div
-                    className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
-                    animate={{ x: ["-100%", "100%"] }}
-                    transition={{ repeat: Infinity, duration: 2.5, ease: "linear" }}
+                {/* Topic */}
+                <div>
+                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
+                    Your Song Idea <span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. love in Lagos, hustle, heartbreak at 3am"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    className="w-full h-12 rounded-xl bg-white/4 border border-white/10 px-4 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                   />
-                  {status === "generating" ? (
-                    <><Loader2 className="w-5 h-5 animate-spin relative z-10" /><span className="relative z-10">Composing your draft...</span></>
+                  <p className="text-[11px] text-white/25 mt-1.5">The theme or story at the heart of the song</p>
+                </div>
+
+                {/* Genre + Mood grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">Genre</label>
+                    <div className="relative">
+                      <select
+                        value={genre}
+                        onChange={(e) => setGenre(e.target.value)}
+                        className="w-full h-12 rounded-xl bg-[#13131f] border border-white/10 px-3 pr-8 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                      >
+                        {GENRES.map((g) => (
+                          <option key={g.value} value={g.value} className="bg-[#13131f]">{g.label}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">Mood</label>
+                    <div className="relative">
+                      <select
+                        value={mood}
+                        onChange={(e) => setMood(e.target.value)}
+                        className="w-full h-12 rounded-xl bg-[#13131f] border border-white/10 px-3 pr-8 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                      >
+                        {MOODS.map((m) => (
+                          <option key={m.value} value={m.value} className="bg-[#13131f]">{m.label}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Style / Sound Reference */}
+                <div>
+                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
+                    Sound Reference <span className="text-white/30 font-normal normal-case tracking-normal">optional</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Burna Boy energy, late-night slow wave"
+                    value={style}
+                    onChange={(e) => setStyle(e.target.value)}
+                    className="w-full h-12 rounded-xl bg-white/4 border border-white/10 px-4 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                  />
+                  <p className="text-[11px] text-white/25 mt-1.5">Captures sonic feel, not exact style cloning</p>
+                </div>
+
+                {/* Extra Direction / Notes */}
+                <div>
+                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
+                    Extra Direction <span className="text-white/30 font-normal normal-case tracking-normal">optional</span>
+                  </label>
+                  <textarea
+                    placeholder="A specific line you want, language preference (Pidgin, Patois...), a story to tell, a feeling to chase..."
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    className="w-full rounded-xl bg-white/4 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none min-h-[90px]"
+                  />
+                </div>
+
+                <div className="space-y-2.5 pt-1">
+                  {!canGenerate() ? (
+                    <button
+                      type="button"
+                      onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }}
+                      className="w-full h-14 rounded-2xl border border-primary/30 bg-primary/10 text-primary font-bold text-sm tracking-wide transition-all hover:bg-primary/20 flex items-center justify-center gap-2"
+                    >
+                      <Lock className="w-4 h-4" />
+                      Upgrade to Generate More
+                    </button>
                   ) : (
-                    <><Sparkles className="w-5 h-5 relative z-10" /><span className="relative z-10">Write My Song</span></>
-                  )}
-                </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  disabled={status === "generating"}
-                  className="w-full h-10 rounded-xl border border-white/8 text-sm text-muted-foreground hover:text-white hover:border-white/20 transition-all bg-transparent"
-                >
-                  Clear Form
-                </button>
-
-                {/* Usage indicator */}
-                {generationsLimit !== Infinity && (
-                  <div className="rounded-xl bg-white/[0.03] border border-white/6 p-3">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                        Song Generations
-                      </span>
-                      <span className={`text-[10px] font-bold ${generationsRemaining <= 1 ? "text-red-400" : "text-muted-foreground"}`}>
-                        {generationsUsed} of {generationsLimit} used
-                      </span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          generationsRemaining === 0 ? "bg-red-500" :
-                          generationsRemaining <= 1 ? "bg-amber-500" : "bg-primary"
-                        }`}
-                        style={{ width: `${Math.min(100, (generationsUsed / generationsLimit) * 100)}%` }}
+                    <button
+                      type="submit"
+                      disabled={status === "generating"}
+                      className="relative overflow-hidden w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base tracking-wide transition-all duration-200 shadow-[0_4px_30px_rgba(245,158,11,0.28)] hover:shadow-[0_4px_40px_rgba(245,158,11,0.42)] hover:scale-[1.02] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2.5"
+                    >
+                      <motion.div
+                        className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none"
+                        animate={{ x: ["-100%", "100%"] }}
+                        transition={{ repeat: Infinity, duration: 2.5, ease: "linear" }}
                       />
+                      {status === "generating" ? (
+                        <><Loader2 className="w-5 h-5 animate-spin relative z-10" /><span className="relative z-10">Composing your draft...</span></>
+                      ) : (
+                        <><Sparkles className="w-5 h-5 relative z-10" /><span className="relative z-10">{draft ? "Generate Again" : "Write My Song"}</span></>
+                      )}
+                    </button>
+                  )}
+
+                  {draft && status !== "generating" && (
+                    <button
+                      type="button"
+                      onClick={handleClear}
+                      className="w-full h-10 rounded-xl border border-white/7 text-xs text-white/35 hover:text-white/60 hover:border-white/15 transition-all bg-transparent flex items-center justify-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      Clear & Start Over
+                    </button>
+                  )}
+
+                  {/* Usage indicator */}
+                  {generationsLimit !== Infinity && (
+                    <div className="rounded-xl bg-white/[0.02] border border-white/6 p-3.5 mt-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Generations</span>
+                        <span className={`text-[10px] font-bold ${generationsRemaining <= 1 ? "text-red-400" : "text-white/40"}`}>
+                          {generationsUsed}/{generationsLimit} used
+                        </span>
+                      </div>
+                      <div className="h-1 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-700 ${
+                            generationsRemaining === 0 ? "bg-red-500" :
+                            generationsRemaining <= 1 ? "bg-amber-500" : "bg-primary"
+                          }`}
+                          style={{ width: `${Math.min(100, (generationsUsed / generationsLimit) * 100)}%` }}
+                        />
+                      </div>
+                      <p className={`text-[10px] mt-2 ${generationsRemaining === 0 ? "text-red-400/80" : generationsRemaining === 1 ? "text-amber-400/70" : "text-white/25"}`}>
+                        {generationsRemaining === 0
+                          ? <><span>Limit reached · </span><button onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }} className="underline">Upgrade to Pro</button></>
+                          : generationsRemaining === 1
+                            ? <><span>1 generation left · </span><button onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }} className="underline">Upgrade</button></>
+                            : `${generationsRemaining} remaining on Free`}
+                      </p>
                     </div>
-                    {generationsRemaining === 0 ? (
-                      <p className="text-[10px] text-red-400/80 mt-1.5">Limit reached · <button onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }} className="underline hover:text-red-400">Upgrade to Pro</button></p>
-                    ) : generationsRemaining === 1 ? (
-                      <p className="text-[10px] text-amber-400/70 mt-1.5">1 generation left · <button onClick={() => { setUpgradeTo("Pro"); setShowUpgradeModal(true); }} className="underline hover:text-amber-400">Upgrade to Pro</button></p>
-                    ) : (
-                      <p className="text-[10px] text-muted-foreground/40 mt-1.5">{generationsRemaining} remaining on Free plan</p>
-                    )}
-                  </div>
-                )}
-
-                {generationsLimit === Infinity && (
-                  <div className="flex items-center gap-2 rounded-xl bg-white/[0.02] border border-white/5 px-3 py-2">
-                    <Sparkles className="w-3 h-3 text-yellow-400 shrink-0" />
-                    <span className="text-[10px] text-yellow-400/70 font-medium">Unlimited generations · Gold</span>
-                  </div>
-                )}
-
-                <p className="text-[10px] text-muted-foreground/40 text-center mt-1">
-                  AfroMuse AI · Creative first drafts for human artists
-                </p>
-              </div>
-            </form>
+                  )}
+                  {generationsLimit === Infinity && (
+                    <div className="flex items-center gap-2 rounded-xl bg-white/[0.02] border border-white/5 px-3 py-2">
+                      <Sparkles className="w-3 h-3 text-yellow-400 shrink-0" />
+                      <span className="text-[10px] text-yellow-400/70 font-medium">Unlimited generations · Gold</span>
+                    </div>
+                  )}
+                </div>
+              </form>
+            </div>
           </div>
 
-          {/* RIGHT PANEL: Output */}
-          <div className="lg:col-span-8 min-h-[300px] lg:min-h-[600px]">
+          {/* ── RIGHT PANEL: Output ──────────────────────────────────── */}
+          <div className="lg:col-span-8 min-h-[400px]">
             <AnimatePresence mode="wait">
 
-              {/* IDLE */}
+              {/* IDLE STATE */}
               {status === "idle" && (
                 <motion.div
                   key="idle"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="w-full flex flex-col items-center justify-center p-8 md:p-16 text-center rounded-3xl border border-dashed border-white/8 bg-white/[0.015] min-h-[300px] md:min-h-[600px]"
+                  className="w-full flex flex-col items-center justify-center p-10 md:p-20 text-center rounded-3xl border border-dashed border-white/7 bg-white/[0.012] min-h-[400px] md:min-h-[640px]"
                 >
-                  <div className="relative w-24 h-24 mb-8">
-                    <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping opacity-60" />
-                    <div className="relative w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.08)]">
-                      <Music className="w-10 h-10 text-primary/70" />
+                  <div className="relative w-20 h-20 mb-8">
+                    <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping opacity-40" style={{ animationDuration: "2.5s" }} />
+                    <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20 flex items-center justify-center shadow-[0_0_50px_rgba(245,158,11,0.1)]">
+                      <Music className="w-9 h-9 text-primary/60" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-white mb-3">Your Canvas is Blank — Fill It</h3>
-                  <p className="text-muted-foreground max-w-sm leading-relaxed">
-                    Tell AfroMuse your story. We'll craft the full song structure — hook, verses, bridge, and production notes — in seconds.
+                  <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-3">Your canvas is blank</h3>
+                  <p className="text-muted-foreground text-sm md:text-base max-w-sm leading-relaxed mb-2">
+                    Fill in your song idea on the left. AfroMuse will craft a full song structure in seconds.
                   </p>
-                  <div className="flex flex-wrap gap-2 justify-center mt-8">
-                    {["✦ Hook", "✦ Verse 1 & 2", "✦ Bridge", "✦ Chord Notes", "✦ Melody Direction", "✦ Arrangement"].map((tag) => (
-                      <span key={tag} className="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/8 text-muted-foreground">{tag}</span>
+                  <p className="text-white/20 text-xs mb-8 italic">Hooks · Verses · Bridge · Chorus · Production Notes</p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {["Intro", "Verse 1", "Chorus", "Verse 2", "Bridge", "Outro", "Chord Vibe", "Melody Direction", "Arrangement"].map((tag) => (
+                      <span key={tag} className="text-[11px] px-3 py-1 rounded-full bg-white/4 border border-white/7 text-white/35">
+                        {tag}
+                      </span>
                     ))}
                   </div>
                 </motion.div>
               )}
 
-              {/* GENERATING */}
+              {/* GENERATING STATE */}
               {status === "generating" && (
                 <motion.div
                   key="generating"
-                  initial={{ opacity: 0, scale: 0.97 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  className="w-full flex flex-col items-center justify-center p-8 md:p-16 text-center rounded-3xl border border-white/8 bg-[#080810] min-h-[300px] md:min-h-[600px] shadow-2xl"
+                  className="w-full flex flex-col items-center justify-center p-10 md:p-20 text-center rounded-3xl border border-white/7 bg-[#07070f] min-h-[400px] md:min-h-[640px] shadow-2xl"
                 >
-                  <div className="relative w-28 h-28 mb-8">
-                    <div className="absolute inset-0 rounded-full border-[3px] border-white/5 border-t-primary animate-spin" />
-                    <div className="absolute inset-3 rounded-full border-[3px] border-white/5 border-b-secondary animate-[spin_2.5s_linear_infinite_reverse]" />
+                  <div className="relative w-24 h-24 mb-10">
+                    <div className="absolute inset-0 rounded-full border-[2px] border-white/5 border-t-primary/70 animate-spin" />
+                    <div className="absolute inset-3 rounded-full border-[2px] border-white/5 border-b-secondary/70 animate-[spin_2s_linear_infinite_reverse]" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-primary animate-pulse" />
+                      <Sparkles className="w-8 h-8 text-primary/80 animate-pulse" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-white mb-2">Writing your song...</h3>
-                  <p className="text-muted-foreground text-sm mb-8 max-w-xs">AfroMuse AI is channeling your vibe into a full song structure.</p>
-                  <div className="w-56 h-1 bg-white/8 rounded-full overflow-hidden mb-3">
+                  <h3 className="text-xl font-display font-bold text-white mb-2">Writing your song...</h3>
+                  <p className="text-white/40 text-sm mb-8 max-w-xs">
+                    AfroMuse AI is channeling your vibe into a full song structure.
+                  </p>
+                  <div className="w-52 h-[3px] bg-white/6 rounded-full overflow-hidden mb-4">
                     <motion.div
                       className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
                       animate={{ width: ["0%", "100%"] }}
-                      transition={{ duration: 2.6, ease: "linear" }}
+                      transition={{ duration: 3, ease: "easeInOut" }}
                     />
                   </div>
-                  <div className="h-5 flex items-center justify-center">
+                  <div className="h-6 flex items-center justify-center">
                     <AnimatePresence mode="wait">
                       <motion.span
                         key={generatingStep}
-                        initial={{ opacity: 0, y: 5 }}
+                        initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
+                        exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.2 }}
-                        className="text-sm text-muted-foreground font-medium"
+                        className="text-sm text-white/50 font-medium"
                       >
                         {generatingSteps[generatingStep]}
                       </motion.span>
@@ -547,42 +576,52 @@ export default function Studio() {
                 </motion.div>
               )}
 
-              {/* DONE */}
+              {/* DONE STATE */}
               {status === "done" && draft && (
                 <motion.div
                   key="done"
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="space-y-4"
+                  transition={{ duration: 0.5 }}
+                  className="space-y-5"
                 >
-                  {/* Header + Actions */}
-                  <div className="rounded-2xl border border-white/8 bg-card/50 backdrop-blur-xl px-5 py-4">
-                    <div className="mb-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-primary/80 bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
-                          <Sparkles className="w-2.5 h-2.5" /> AI Generated Draft
-                        </span>
-                        <span className="text-[10px] text-muted-foreground/50">{genre} · {mood}</span>
+                  {/* Song title + action bar */}
+                  <div className="rounded-2xl border border-white/8 bg-gradient-to-r from-[#0d0d1a] to-[#0a0a14] px-5 py-5">
+                    <div className="flex items-start gap-3 mb-5">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-primary/80 bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+                            <Sparkles className="w-2.5 h-2.5" /> AI Draft
+                          </span>
+                          <span className="text-[11px] text-white/35">{genre}</span>
+                          <span className="text-[11px] text-white/20">·</span>
+                          <span className="text-[11px] text-white/35">{mood}</span>
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-display font-bold text-white capitalize leading-tight">
+                          {draft.title}
+                        </h2>
                       </div>
-                      <h2 className="text-2xl md:text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 capitalize leading-tight">
-                        {draft.title}
-                      </h2>
+                      <span className="text-[10px] text-white/20 font-mono bg-white/3 border border-white/6 px-2 py-1 rounded-lg shrink-0">
+                        v{seed}
+                      </span>
                     </div>
+
+                    {/* Action buttons */}
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={handleRegenerate}
-                        className="flex items-center gap-2 rounded-xl h-10 px-4 text-sm border border-white/10 hover:bg-white/5 text-muted-foreground hover:text-white transition-all"
+                        disabled={status === "generating"}
+                        className="flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border border-white/10 hover:bg-white/5 text-white/50 hover:text-white transition-all disabled:opacity-40"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Regenerate
                       </button>
                       <button
                         onClick={copyToClipboard}
-                        className={`flex items-center gap-2 rounded-xl h-10 px-4 text-sm border transition-all ${
+                        className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all ${
                           copied
                             ? "border-green-500/40 bg-green-500/10 text-green-400"
-                            : "border-white/10 hover:bg-white/5 text-muted-foreground hover:text-white"
+                            : "border-white/10 hover:bg-white/5 text-white/50 hover:text-white"
                         }`}
                       >
                         {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -591,116 +630,112 @@ export default function Studio() {
                       <button
                         onClick={saveProject}
                         disabled={saved}
-                        className={`flex items-center gap-2 rounded-xl h-10 px-5 text-sm font-semibold transition-all ${
+                        className={`flex items-center gap-1.5 rounded-xl h-10 px-5 text-sm font-semibold transition-all ${
                           saved
-                            ? "bg-green-500/20 border border-green-500/30 text-green-400 cursor-default"
-                            : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_28px_rgba(245,158,11,0.4)] hover:-translate-y-0.5"
+                            ? "bg-green-500/15 border border-green-500/25 text-green-400 cursor-default"
+                            : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_2px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_2px_30px_rgba(245,158,11,0.4)] hover:-translate-y-0.5"
                         }`}
                       >
-                        {saved ? <><Check className="w-3.5 h-3.5" />Saved!</> : <><Save className="w-3.5 h-3.5" />Save Project</>}
+                        {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Project</>}
                       </button>
                     </div>
                   </div>
 
-                  {/* Lyrics Card */}
-                  <div className="rounded-3xl border border-white/8 bg-[#07070f] overflow-hidden shadow-2xl">
-                    <div className="flex items-center justify-between bg-[#0d0d1a] border-b border-white/5 px-5 py-3">
+                  {/* ── LYRICS CARD ─────────────────────────────────── */}
+                  <div className="rounded-3xl border border-white/8 bg-[#06060e] overflow-hidden shadow-2xl">
+
+                    {/* Card toolbar */}
+                    <div className="flex items-center justify-between bg-[#0c0c18] border-b border-white/5 px-5 py-3">
                       <div className="flex items-center gap-3">
                         <div className="flex gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/60" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
                         </div>
-                        <span className="font-mono text-[11px] text-muted-foreground/60">
-                          {draft.title.toLowerCase().replace(/\s+/g, "_")}_draft.txt
+                        <span className="font-mono text-[11px] text-white/30">
+                          {draft.title.toLowerCase().replace(/\s+/g, "_")}.draft
                         </span>
                       </div>
-                      <span className="text-[10px] text-muted-foreground/40 bg-white/4 border border-white/5 px-2.5 py-0.5 rounded-full">
-                        AfroMuse AI · v{seed}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-3 h-3 text-white/20" />
+                        <span className="text-[10px] text-white/25 font-medium">Lyrics Document</span>
+                      </div>
                     </div>
 
+                    {/* Lyrics content */}
                     <div className="p-6 md:p-10 space-y-10">
 
                       {/* INTRO */}
                       {draft.intro && draft.intro.length > 0 && (
-                        <div>
-                          <div className="flex items-center gap-3 mb-4">
-                            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-white/8 text-white/50 border border-white/10">
-                              Intro
-                            </span>
-                            <div className="flex-1 h-px bg-white/5" />
-                          </div>
-                          <div className="rounded-xl bg-white/[0.02] border border-white/6 p-5">
-                            <p className="font-sans text-base text-white/50 leading-8 italic text-center">
-                              {draft.intro.map((line, i) => (
-                                <span key={i}>{line}{i < (draft.intro?.length ?? 0) - 1 && <br />}</span>
-                              ))}
-                            </p>
-                          </div>
-                        </div>
+                        <LyricsSection
+                          sectionNumber="00"
+                          label="Intro"
+                          color="ghost"
+                          lines={draft.intro}
+                          italic
+                        />
                       )}
 
                       {/* VERSE 1 */}
                       <LyricsSection
+                        sectionNumber="01"
                         label="Verse 1"
-                        labelClass="bg-secondary/12 text-secondary border-secondary/20"
+                        color="blue"
                         lines={draft.verse1}
                       />
 
                       {/* CHORUS */}
                       <LyricsSection
-                        label="⚡ Chorus"
-                        labelClass="bg-primary/15 text-primary border-primary/20"
+                        sectionNumber="02"
+                        label="Chorus"
+                        color="gold"
                         lines={draft.hook}
                         isHook
                       />
 
                       {/* VERSE 2 */}
                       <LyricsSection
+                        sectionNumber="03"
                         label="Verse 2"
-                        labelClass="bg-secondary/12 text-secondary border-secondary/20"
+                        color="blue"
                         lines={draft.verse2}
                       />
 
                       {/* CHORUS REPEAT */}
                       <LyricsSection
-                        label="⚡ Chorus"
-                        labelClass="bg-primary/15 text-primary border-primary/20"
+                        sectionNumber="04"
+                        label="Chorus"
+                        color="gold"
                         lines={draft.hook}
                         isHook
                         repeat
                       />
 
                       {/* BRIDGE */}
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-violet-500/12 text-violet-400 border border-violet-500/20">
-                            Bridge
-                          </span>
-                          <div className="flex-1 h-px bg-white/5" />
-                        </div>
-                        <div className="rounded-xl bg-violet-500/5 border border-violet-500/10 p-5">
-                          <p className="font-sans text-base text-white/70 leading-8 italic text-center">
-                            {draft.bridge.map((line, i) => (
-                              <span key={i}>{line}{i < draft.bridge.length - 1 && <br />}</span>
-                            ))}
-                          </p>
-                        </div>
-                      </div>
+                      {draft.bridge && draft.bridge.length > 0 && (
+                        <LyricsSection
+                          sectionNumber="05"
+                          label="Bridge"
+                          color="violet"
+                          lines={draft.bridge}
+                          italic
+                        />
+                      )}
 
                       {/* OUTRO / FINAL CHORUS */}
                       {draft.outro && draft.outro.length > 0 ? (
                         <LyricsSection
-                          label="⚡ Outro / Final Chorus"
-                          labelClass="bg-primary/15 text-primary border-primary/20"
+                          sectionNumber="06"
+                          label="Outro / Final Chorus"
+                          color="gold"
                           lines={draft.outro}
                           isHook
                         />
                       ) : (
                         <LyricsSection
-                          label="⚡ Final Chorus"
-                          labelClass="bg-primary/15 text-primary border-primary/20"
+                          sectionNumber="06"
+                          label="Final Chorus"
+                          color="gold"
                           lines={draft.hook}
                           isHook
                           repeat
@@ -710,23 +745,55 @@ export default function Studio() {
                       {/* PRODUCTION NOTES */}
                       <div className="border-t border-white/6 pt-8">
                         <div className="flex items-center gap-2 mb-5">
-                          <Sliders className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Production Notes</span>
+                          <Sliders className="w-4 h-4 text-white/30" />
+                          <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Production Notes</span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          <div className="rounded-2xl bg-white/[0.025] border border-white/6 p-5 hover:border-primary/20 transition-colors">
-                            <div className="text-primary text-[10px] tracking-widest font-bold mb-2 uppercase">Chord / Vibe</div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{draft.chordVibe}</p>
-                          </div>
-                          <div className="rounded-2xl bg-white/[0.025] border border-white/6 p-5 hover:border-secondary/20 transition-colors">
-                            <div className="text-secondary text-[10px] tracking-widest font-bold mb-2 uppercase">Melody Direction</div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{draft.melodyDirection}</p>
-                          </div>
-                          <div className="rounded-2xl bg-white/[0.025] border border-white/6 p-5 hover:border-violet-500/20 transition-colors">
-                            <div className="text-violet-400 text-[10px] tracking-widest font-bold mb-2 uppercase">Arrangement</div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{draft.arrangement}</p>
-                          </div>
+                          <ProductionNoteCard
+                            color="gold"
+                            title="Chord / Vibe"
+                            content={draft.chordVibe}
+                          />
+                          <ProductionNoteCard
+                            color="violet"
+                            title="Melody Direction"
+                            content={draft.melodyDirection}
+                          />
+                          <ProductionNoteCard
+                            color="blue"
+                            title="Arrangement"
+                            content={draft.arrangement}
+                          />
                         </div>
+                      </div>
+
+                      {/* Bottom actions */}
+                      <div className="border-t border-white/4 pt-6 flex flex-wrap gap-2 justify-center">
+                        <button
+                          onClick={copyToClipboard}
+                          className={`flex items-center gap-1.5 rounded-xl h-9 px-4 text-xs border transition-all ${
+                            copied ? "border-green-500/40 bg-green-500/10 text-green-400" : "border-white/8 hover:bg-white/5 text-white/40 hover:text-white"
+                          }`}
+                        >
+                          {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                          {copied ? "Copied!" : "Copy Full Draft"}
+                        </button>
+                        <button
+                          onClick={saveProject}
+                          disabled={saved}
+                          className={`flex items-center gap-1.5 rounded-xl h-9 px-4 text-xs border transition-all ${
+                            saved ? "border-green-500/30 bg-green-500/8 text-green-400 cursor-default" : "border-white/8 hover:bg-white/5 text-white/40 hover:text-white"
+                          }`}
+                        >
+                          {saved ? <><Check className="w-3 h-3" /> Saved</> : <><Save className="w-3 h-3" /> Save to Projects</>}
+                        </button>
+                        <button
+                          onClick={handleRegenerate}
+                          className="flex items-center gap-1.5 rounded-xl h-9 px-4 text-xs border border-white/8 hover:bg-white/5 text-white/40 hover:text-white transition-all"
+                        >
+                          <RefreshCw className="w-3 h-3" />
+                          Generate Again
+                        </button>
                       </div>
 
                     </div>
@@ -752,7 +819,169 @@ export default function Studio() {
   );
 }
 
-// ── Plan-gated features panel ──────────────────────────────────────────────
+// ── LyricsSection component ─────────────────────────────────────────────────
+
+type SectionColor = "gold" | "blue" | "violet" | "ghost";
+
+const colorMap: Record<SectionColor, {
+  label: string;
+  labelBg: string;
+  labelBorder: string;
+  labelText: string;
+  cardBg: string;
+  cardBorder: string;
+  leftBorder: string;
+  numColor: string;
+}> = {
+  gold: {
+    label: "",
+    labelBg: "bg-primary/12",
+    labelBorder: "border-primary/25",
+    labelText: "text-primary",
+    cardBg: "bg-gradient-to-br from-primary/8 via-primary/4 to-transparent",
+    cardBorder: "border-primary/15",
+    leftBorder: "border-primary/30",
+    numColor: "text-primary/40",
+  },
+  blue: {
+    label: "",
+    labelBg: "bg-sky-500/10",
+    labelBorder: "border-sky-500/20",
+    labelText: "text-sky-400",
+    cardBg: "",
+    cardBorder: "",
+    leftBorder: "border-sky-500/20",
+    numColor: "text-sky-500/30",
+  },
+  violet: {
+    label: "",
+    labelBg: "bg-violet-500/10",
+    labelBorder: "border-violet-500/20",
+    labelText: "text-violet-400",
+    cardBg: "bg-gradient-to-br from-violet-500/6 to-transparent",
+    cardBorder: "border-violet-500/12",
+    leftBorder: "border-violet-500/25",
+    numColor: "text-violet-500/30",
+  },
+  ghost: {
+    label: "",
+    labelBg: "bg-white/5",
+    labelBorder: "border-white/10",
+    labelText: "text-white/40",
+    cardBg: "",
+    cardBorder: "",
+    leftBorder: "border-white/10",
+    numColor: "text-white/20",
+  },
+};
+
+function LyricsSection({
+  sectionNumber,
+  label,
+  color,
+  lines,
+  isHook = false,
+  repeat = false,
+  italic = false,
+}: {
+  sectionNumber: string;
+  label: string;
+  color: SectionColor;
+  lines: string[];
+  isHook?: boolean;
+  repeat?: boolean;
+  italic?: boolean;
+}) {
+  const c = colorMap[color];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      {/* Section header */}
+      <div className="flex items-center gap-3 mb-4">
+        <span className={`font-mono text-[10px] font-bold ${c.numColor}`}>{sectionNumber}</span>
+        <span className={`inline-flex items-center text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border ${c.labelBg} ${c.labelBorder} ${c.labelText}`}>
+          {label}
+        </span>
+        {repeat && <span className="text-[10px] text-white/20 italic">— repeat</span>}
+        <div className="flex-1 h-px bg-white/4" />
+      </div>
+
+      {/* Chorus / Hook — special card treatment */}
+      {isHook ? (
+        <div className={`relative rounded-2xl border p-6 md:p-8 overflow-hidden ${c.cardBg} ${c.cardBorder}`}>
+          {color === "gold" && (
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+          )}
+          <div className="absolute top-3 left-5 text-primary/10 text-6xl font-serif leading-none select-none">"</div>
+          <div className="relative space-y-2 pl-4">
+            {lines.map((line, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, x: -4 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.04, duration: 0.3 }}
+                className={`text-lg md:text-xl leading-relaxed font-semibold text-white/90 ${italic ? "italic" : ""}`}
+              >
+                {line}
+              </motion.p>
+            ))}
+          </div>
+          <div className="absolute bottom-2 right-5 text-primary/8 text-5xl font-serif leading-none select-none rotate-180">"</div>
+        </div>
+      ) : (
+        /* Verse / Intro / Bridge — line-by-line */
+        <div className={`pl-5 border-l-2 ${c.leftBorder} space-y-2`}>
+          {lines.map((line, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.03, duration: 0.3 }}
+              className="flex items-baseline gap-3 group"
+            >
+              <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${c.numColor} group-hover:opacity-70 transition-opacity select-none`}>
+                {i + 1}
+              </span>
+              <p className={`text-sm md:text-base text-white/75 leading-relaxed ${italic ? "italic text-white/50" : ""} group-hover:text-white/90 transition-colors`}>
+                {line}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+// ── Production Note Card ─────────────────────────────────────────────────────
+
+function ProductionNoteCard({
+  color,
+  title,
+  content,
+}: {
+  color: "gold" | "violet" | "blue";
+  title: string;
+  content: string;
+}) {
+  const styles = {
+    gold: { title: "text-primary", border: "border-primary/10 hover:border-primary/20", bg: "bg-primary/3" },
+    violet: { title: "text-violet-400", border: "border-violet-500/10 hover:border-violet-500/20", bg: "bg-violet-500/3" },
+    blue: { title: "text-sky-400", border: "border-sky-500/10 hover:border-sky-500/20", bg: "bg-sky-500/3" },
+  }[color];
+
+  return (
+    <div className={`rounded-2xl border p-5 transition-colors ${styles.bg} ${styles.border}`}>
+      <div className={`text-[10px] font-bold tracking-widest uppercase mb-3 ${styles.title}`}>{title}</div>
+      <p className="text-xs text-white/50 leading-relaxed">{content}</p>
+    </div>
+  );
+}
+
+// ── Plan-gated features panel ───────────────────────────────────────────────
 
 function PlanFeaturesPanel({
   plan,
@@ -771,92 +1000,42 @@ function PlanFeaturesPanel({
   const isGold = hasAccess("Gold");
 
   const proFeatures = [
-    {
-      icon: <Volume2 className="w-5 h-5 text-amber-400" />,
-      title: "AI Audio Generation",
-      desc: "Turn lyrics into a full audio track",
-      trial: plan === "Free" ? `${audioTrialsLeft} trial${audioTrialsLeft !== 1 ? "s" : ""} left` : null,
-      locked: !isPro,
-      upgradeTarget: "Pro" as Plan,
-    },
-    {
-      icon: <Music2 className="w-5 h-5 text-purple-400" />,
-      title: "Downloadable Stems",
-      desc: "Vocal, beat & melody separate tracks",
-      trial: null,
-      locked: !isPro,
-      upgradeTarget: "Pro" as Plan,
-    },
-    {
-      icon: <Download className="w-5 h-5 text-emerald-400" />,
-      title: "Priority Access",
-      desc: "First access to all upcoming features",
-      trial: null,
-      locked: !isPro,
-      upgradeTarget: "Pro" as Plan,
-    },
+    { icon: <Volume2 className="w-4 h-4 text-amber-400" />, title: "AI Audio Generation", desc: "Turn lyrics into a full audio track", trial: plan === "Free" ? `${audioTrialsLeft} trial${audioTrialsLeft !== 1 ? "s" : ""} left` : null, locked: !isPro, upgradeTarget: "Pro" as Plan },
+    { icon: <Music2 className="w-4 h-4 text-purple-400" />, title: "Downloadable Stems", desc: "Vocal, beat & melody as separate tracks", trial: null, locked: !isPro, upgradeTarget: "Pro" as Plan },
+    { icon: <Download className="w-4 h-4 text-emerald-400" />, title: "Priority Access", desc: "First access to all upcoming features", trial: null, locked: !isPro, upgradeTarget: "Pro" as Plan },
   ];
 
   const goldFeatures = [
-    {
-      icon: <span className="text-xl">🤝</span>,
-      title: "Collaboration Mode",
-      desc: "Co-write with producers in real-time",
-      trial: plan !== "Gold" ? `${collabTrialsLeft} trial${collabTrialsLeft !== 1 ? "s" : ""} left` : null,
-      locked: !isGold,
-    },
-    {
-      icon: <span className="text-xl">🎹</span>,
-      title: "Upload Instrumental",
-      desc: "Generate lyrics fitted to your beat",
-      trial: null,
-      locked: !isGold,
-    },
-    {
-      icon: <span className="text-xl">🎤</span>,
-      title: "Voice Clone",
-      desc: "Hear lyrics in a generated vocal style",
-      trial: null,
-      locked: !isGold,
-    },
+    { icon: <span className="text-base">🤝</span>, title: "Collaboration Mode", desc: "Co-write with producers in real-time", trial: plan !== "Gold" ? `${collabTrialsLeft} trial${collabTrialsLeft !== 1 ? "s" : ""} left` : null, locked: !isGold },
+    { icon: <span className="text-base">🎹</span>, title: "Upload Instrumental", desc: "Generate lyrics fitted to your beat", trial: null, locked: !isGold },
+    { icon: <span className="text-base">🎤</span>, title: "Voice Clone", desc: "Hear lyrics in a generated vocal style", trial: null, locked: !isGold },
   ];
 
   return (
     <div className="space-y-4">
-      {/* PRO SECTION */}
       {!isPro && (
-        <div className="rounded-3xl border border-amber-500/15 bg-gradient-to-br from-amber-500/5 via-background to-primary/5 p-5 md:p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-24 bg-amber-500/10 blur-3xl pointer-events-none" />
+        <div className="rounded-3xl border border-amber-500/12 bg-gradient-to-br from-amber-500/4 via-background to-primary/4 p-5 md:p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-24 bg-amber-500/8 blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 mb-2">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-amber-500/12 border border-amber-500/25 text-amber-400 mb-2">
                   <Sparkles className="w-2.5 h-2.5" /> Pro Features
                 </div>
-                <p className="text-white/60 text-xs">Unlock with AfroMuse Pro · $20/mo</p>
+                <p className="text-white/40 text-xs">Unlock with AfroMuse Pro · $20/mo</p>
               </div>
-              <button
-                onClick={() => onUpgrade("Pro")}
-                className="shrink-0 h-9 px-4 rounded-xl bg-primary/15 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/25 transition-all"
-              >
+              <button onClick={() => onUpgrade("Pro")} className="shrink-0 h-9 px-4 rounded-xl bg-primary/12 border border-primary/25 text-primary text-xs font-semibold hover:bg-primary/22 transition-all">
                 Upgrade →
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {proFeatures.map((f) => (
-                <div key={f.title} className="rounded-2xl bg-white/[0.03] border border-white/8 p-4 flex items-start gap-3 relative">
-                  <div className="mt-0.5 shrink-0 opacity-50">{f.icon}</div>
+                <div key={f.title} className="rounded-2xl bg-white/[0.025] border border-white/7 p-4 flex items-start gap-3">
+                  <div className="mt-0.5 shrink-0 opacity-45">{f.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-semibold text-white/50 text-sm mb-0.5 flex items-center gap-1.5">
-                      {f.title}
-                      <Lock className="w-3 h-3 text-white/20" />
-                    </h5>
-                    <p className="text-xs text-muted-foreground/50">{f.desc}</p>
-                    {f.trial && (
-                      <span className="text-[10px] inline-block mt-2 bg-amber-500/10 border border-amber-500/20 text-amber-400/70 px-2 py-0.5 rounded-full">
-                        {f.trial}
-                      </span>
-                    )}
+                    <h5 className="font-semibold text-white/45 text-sm mb-0.5 flex items-center gap-1.5">{f.title}<Lock className="w-3 h-3 text-white/20" /></h5>
+                    <p className="text-xs text-white/25">{f.desc}</p>
+                    {f.trial && <span className="text-[10px] inline-block mt-2 bg-amber-500/8 border border-amber-500/18 text-amber-400/60 px-2 py-0.5 rounded-full">{f.trial}</span>}
                   </div>
                 </div>
               ))}
@@ -866,21 +1045,21 @@ function PlanFeaturesPanel({
       )}
 
       {isPro && !isGold && (
-        <div className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/5 via-background to-transparent p-5 md:p-6">
+        <div className="rounded-3xl border border-primary/18 bg-gradient-to-br from-primary/4 via-background to-transparent p-5 md:p-6">
           <div className="flex items-center gap-2 mb-4">
-            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary">
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-primary/12 border border-primary/25 text-primary">
               <Sparkles className="w-2.5 h-2.5" /> Pro — Active
             </div>
-            <span className="text-xs text-muted-foreground">You have full Pro access</span>
+            <span className="text-xs text-white/30">You have full Pro access</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {proFeatures.map((f) => (
-              <div key={f.title} className="rounded-2xl bg-primary/5 border border-primary/15 p-4 flex items-start gap-3">
+              <div key={f.title} className="rounded-2xl bg-primary/4 border border-primary/12 p-4 flex items-start gap-3">
                 <div className="mt-0.5 shrink-0">{f.icon}</div>
                 <div>
                   <h5 className="font-semibold text-white text-sm mb-0.5">{f.title}</h5>
-                  <p className="text-xs text-muted-foreground">{f.desc}</p>
-                  <span className="text-[10px] inline-block mt-2 bg-primary/15 border border-primary/20 text-primary px-2 py-0.5 rounded-full">Pro Unlocked</span>
+                  <p className="text-xs text-white/40">{f.desc}</p>
+                  <span className="text-[10px] inline-block mt-2 bg-primary/12 border border-primary/20 text-primary px-2 py-0.5 rounded-full">Unlocked</span>
                 </div>
               </div>
             ))}
@@ -888,40 +1067,29 @@ function PlanFeaturesPanel({
         </div>
       )}
 
-      {/* GOLD SECTION */}
       {!isGold && (
-        <div className="rounded-3xl border border-yellow-500/15 bg-gradient-to-br from-yellow-500/5 via-background to-amber-500/5 p-5 md:p-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-24 bg-yellow-500/10 blur-3xl pointer-events-none" />
+        <div className="rounded-3xl border border-yellow-500/12 bg-gradient-to-br from-yellow-500/4 via-background to-amber-500/4 p-5 md:p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-24 bg-yellow-500/8 blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 mb-2">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-yellow-500/12 border border-yellow-500/25 text-yellow-400 mb-2">
                   ✦ Gold Features
                 </div>
-                <p className="text-white/60 text-xs">Unlock with AfroMuse Gold · $40/mo</p>
+                <p className="text-white/40 text-xs">Unlock with AfroMuse Gold · $40/mo</p>
               </div>
-              <button
-                onClick={() => onUpgrade("Gold")}
-                className="shrink-0 h-9 px-4 rounded-xl bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 text-xs font-semibold hover:bg-yellow-500/25 transition-all"
-              >
+              <button onClick={() => onUpgrade("Gold")} className="shrink-0 h-9 px-4 rounded-xl bg-yellow-500/12 border border-yellow-500/25 text-yellow-400 text-xs font-semibold hover:bg-yellow-500/22 transition-all">
                 Go Gold →
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {goldFeatures.map((f) => (
-                <div key={f.title} className="rounded-2xl bg-white/[0.02] border border-yellow-500/10 p-4 flex items-start gap-3">
-                  <div className="mt-0.5 shrink-0 opacity-40">{f.icon}</div>
+                <div key={f.title} className="rounded-2xl bg-white/[0.018] border border-yellow-500/8 p-4 flex items-start gap-3">
+                  <div className="mt-0.5 shrink-0 opacity-35">{f.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-semibold text-white/40 text-sm mb-0.5 flex items-center gap-1.5">
-                      {f.title}
-                      <Lock className="w-3 h-3 text-white/20" />
-                    </h5>
-                    <p className="text-xs text-muted-foreground/40">{f.desc}</p>
-                    {f.trial && (
-                      <span className="text-[10px] inline-block mt-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400/70 px-2 py-0.5 rounded-full">
-                        {f.trial}
-                      </span>
-                    )}
+                    <h5 className="font-semibold text-white/35 text-sm mb-0.5 flex items-center gap-1.5">{f.title}<Lock className="w-3 h-3 text-white/18" /></h5>
+                    <p className="text-xs text-white/22">{f.desc}</p>
+                    {f.trial && <span className="text-[10px] inline-block mt-2 bg-yellow-500/8 border border-yellow-500/18 text-yellow-400/60 px-2 py-0.5 rounded-full">{f.trial}</span>}
                   </div>
                 </div>
               ))}
@@ -931,70 +1099,25 @@ function PlanFeaturesPanel({
       )}
 
       {isGold && (
-        <div className="rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/8 via-background to-amber-500/5 p-5 md:p-6">
+        <div className="rounded-3xl border border-yellow-500/18 bg-gradient-to-br from-yellow-500/6 via-background to-amber-500/4 p-5 md:p-6">
           <div className="flex items-center gap-2 mb-4">
-            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/30 text-yellow-400">
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-yellow-500/12 border border-yellow-500/25 text-yellow-400">
               ✦ Gold — All Features Unlocked
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {goldFeatures.map((f) => (
-              <div key={f.title} className="rounded-2xl bg-yellow-500/5 border border-yellow-500/15 p-4 flex items-start gap-3">
+              <div key={f.title} className="rounded-2xl bg-yellow-500/4 border border-yellow-500/12 p-4 flex items-start gap-3">
                 <div className="mt-0.5 shrink-0">{f.icon}</div>
                 <div>
                   <h5 className="font-semibold text-white text-sm mb-0.5">{f.title}</h5>
-                  <p className="text-xs text-muted-foreground">{f.desc}</p>
-                  <span className="text-[10px] inline-block mt-2 bg-yellow-500/15 border border-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">Gold Unlocked</span>
+                  <p className="text-xs text-white/40">{f.desc}</p>
+                  <span className="text-[10px] inline-block mt-2 bg-yellow-500/12 border border-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">Unlocked</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      )}
-    </div>
-  );
-}
-
-// ── Sub-component for lyric sections ────────────────────────────────────────
-
-function LyricsSection({
-  label,
-  labelClass,
-  lines,
-  isHook = false,
-  repeat = false,
-}: {
-  label: string;
-  labelClass: string;
-  lines: string[];
-  isHook?: boolean;
-  repeat?: boolean;
-}) {
-  return (
-    <div className="relative">
-      <div className="flex items-center gap-2 mb-4">
-        <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border ${labelClass}`}>
-          {label}
-        </span>
-        {!isHook && <div className="flex-1 h-px bg-white/5" />}
-        {repeat && <span className="text-[10px] text-muted-foreground/40 italic">repeat</span>}
-      </div>
-      {isHook ? (
-        <div className="relative rounded-2xl bg-gradient-to-br from-primary/8 via-primary/5 to-transparent border border-primary/15 p-6 overflow-hidden">
-          <div className="absolute top-4 left-4 text-primary/10 text-7xl font-serif leading-none select-none">"</div>
-          <p className="relative font-sans text-lg md:text-xl text-white/90 leading-relaxed italic font-medium">
-            {lines.map((line, i) => (
-              <span key={i}>{line}{i < lines.length - 1 && <br />}</span>
-            ))}
-          </p>
-          <div className="absolute bottom-3 right-5 text-primary/10 text-5xl font-serif leading-none select-none rotate-180">"</div>
-        </div>
-      ) : (
-        <p className="font-sans text-base text-white/75 leading-8 pl-4 border-l border-white/10">
-          {lines.map((line, i) => (
-            <span key={i}>{line}{i < lines.length - 1 && <br />}</span>
-          ))}
-        </p>
       )}
     </div>
   );
