@@ -50359,6 +50359,82 @@ INTRO SELF-CHECK before finalizing:
 If the song does not need an intro \u2014 omit it and write an empty array [].
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+V5.1 HARD STRUCTURE ENGINE \u2014 BAR COUNT VALIDATOR
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+AfroMuse V5.1 now writes with REAL SONGWRITING BAR-GROUP STRUCTURE.
+Commercial Afrobeats / Dancehall / Amapiano / Afro-fusion is built in 4-bar phrase groupings.
+All sections must follow this logic. These are HARD LAWS \u2014 not guidelines.
+
+TREAT: 1 lyric line = 1 bar / phrase unit.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+INTRO STRUCTURE LAW
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Allowed: 2 lines OR 4 lines ONLY
+NEVER: 3 lines / 5+ lines
+Default: 2 lines for Short songs, 4 lines for Standard/Full songs
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+VERSE STRUCTURE LAW
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Verses MUST follow 4-line grouping multiples.
+Allowed verse lengths: 8 lines / 12 lines / 16 lines ONLY
+NEVER: 7 / 9 / 10 / 11 / 13 / 14 / 15 / any uneven count
+
+Selection logic:
+- Short songs \u2192 8-line verses
+- Standard songs \u2192 8 or 12-line verses (based on lyrical depth)
+- Full / Deep songs \u2192 12 or 16-line verses
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+CHORUS STRUCTURE LAW
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Allowed chorus lengths: 4 lines / 6 lines (special) / 8 lines ONLY
+- 4 lines = default commercial preference \u2014 cleaner, stickier
+- 8 lines = fuller melodic chorus for emotional records
+- 6 lines ONLY if clearly structured as: 4 core hook lines + 2 repeated tag/chant lines
+NEVER: odd or uneven chorus counts outside of these three options
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+BRIDGE STRUCTURE LAW
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Bridge MUST be EXACTLY 4 LINES. No less. No more. This is a hard law.
+Bridge = emotional shift / tension reset / lyrical pivot / final lift setup
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+OUTRO STRUCTURE LAW
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Allowed outro lengths: 2 lines / 4 lines / 8 lines ONLY
+NEVER random or uneven outro counts
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+STRUCTURE SELF-CHECK \u2014 MANDATORY BEFORE OUTPUT
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+Before returning, silently validate every section's line count:
+
+1. INTRO: count lines \u2192 must be 2 or 4 \u2192 if wrong \u2192 rewrite to fit
+2. VERSE 1: count lines \u2192 must be 8, 12, or 16 \u2192 if wrong \u2192 expand or trim to nearest valid count
+3. CHORUS: count lines \u2192 must be 4, 6, or 8 \u2192 if wrong \u2192 rewrite to fit
+4. VERSE 2: count lines \u2192 must be 8, 12, or 16 \u2192 if wrong \u2192 expand or trim to nearest valid count
+5. BRIDGE: count lines \u2192 MUST be exactly 4 \u2192 if wrong \u2192 rewrite to be exactly 4
+6. OUTRO: count lines \u2192 must be 2, 4, or 8 \u2192 if wrong \u2192 rewrite to fit
+
+If ANY section fails its count \u2192 REWRITE that section before returning output.
+This is a HARD FAIL / REWRITE system. Do not skip it.
+
+QUALITY PRESERVATION: Structure must be fixed WITHOUT sacrificing:
+- emotional sharpness
+- natural flow
+- keeper lines
+- replay value
+- hook quality
+- genre realism
+
+Structure and quality must coexist. Add or remove lines to fit the count while maintaining or improving quality.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 TITLE STRENGTH ENGINE \u2014 V5 HARD FILTER
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
@@ -50750,30 +50826,30 @@ function buildUserPrompt(params) {
   const lengthRules = {
     Short: [
       "\u2713 SONG LENGTH is SHORT \u2014 lean and concise, but still catchy and fully usable",
-      "\u2713 Intro: 1\u20132 lines MAX (or omit entirely if it would be weak \u2014 do NOT pad the intro)",
-      "\u2713 Verse 1: 4\u20136 lines MAXIMUM \u2014 tight, punchy, every line must count",
-      "\u2713 Chorus: 4\u20136 lines \u2014 must be the most memorable and singable part of the song",
-      "\u2713 Verse 2: 4\u20136 lines MAXIMUM \u2014 new angle, never a repeat of Verse 1",
-      "\u2713 Bridge: 2\u20133 lines or omit entirely",
-      "\u2713 Outro: 2\u20134 lines"
+      "\u2713 Intro: EXACTLY 2 lines \u2014 atmospheric teaser ONLY \u2014 no padding, no exceptions",
+      "\u2713 Verse 1: EXACTLY 8 lines \u2014 4-bar grouping law \u2014 NOT 7, NOT 9, NOT 10 \u2014 exactly 8",
+      "\u2713 Chorus: EXACTLY 4 lines \u2014 the cleanest, stickiest commercial hook format",
+      "\u2713 Verse 2: EXACTLY 8 lines \u2014 new angle, never a repeat of Verse 1, exactly 8 lines",
+      "\u2713 Bridge: EXACTLY 4 lines \u2014 hard law, no exceptions",
+      "\u2713 Outro: EXACTLY 2 or 4 lines \u2014 clean close, no random counts"
     ],
     Standard: [
       "\u2713 SONG LENGTH is STANDARD \u2014 full balanced draft",
-      "\u2713 Intro: 2\u20134 lines MAX \u2014 short, atmospheric, functional \u2014 do NOT over-write the intro",
-      "\u2713 Verse 1: minimum 8 lines \u2014 do NOT write a 4-line verse",
-      "\u2713 Chorus: 4\u20138 lines \u2014 the emotional and melodic peak of the song",
-      "\u2713 Verse 2: minimum 8 lines \u2014 new angle, deeper emotional territory",
-      "\u2713 Bridge: 4\u20136 lines \u2014 tonal or emotional contrast",
-      "\u2713 Outro: 4\u20138 lines"
+      "\u2713 Intro: EXACTLY 2 or 4 lines \u2014 short, atmospheric, functional \u2014 never 3 lines",
+      "\u2713 Verse 1: EXACTLY 8 or 12 lines (choose based on lyrical depth) \u2014 4-bar grouping law \u2014 no odd counts",
+      "\u2713 Chorus: EXACTLY 4 or 8 lines \u2014 the emotional and melodic peak \u2014 no odd counts allowed",
+      "\u2713 Verse 2: EXACTLY 8 or 12 lines (match Verse 1 length) \u2014 new angle, deeper emotional territory",
+      "\u2713 Bridge: EXACTLY 4 lines \u2014 hard law, no exceptions, no more, no less",
+      "\u2713 Outro: EXACTLY 4 or 8 lines \u2014 structured close, no random counts"
     ],
     Full: [
       "\u2713 SONG LENGTH is FULL \u2014 the most complete and developed draft possible",
-      "\u2713 Intro: 3\u20134 lines MAX \u2014 atmosphere-building, but still lean \u2014 do NOT over-write the intro",
-      "\u2713 Verse 1: minimum 10 lines \u2014 rich storytelling, full emotional development",
-      "\u2713 Chorus: 6\u201310 lines \u2014 strong, fully developed hook with a clear anchor phrase",
-      "\u2713 Verse 2: minimum 10 lines \u2014 deep new angle, elevated lyrical detail",
-      "\u2713 Bridge: 5\u20138 lines \u2014 fully developed tonal shift",
-      "\u2713 Outro: 6\u201310 lines \u2014 extended emotional release"
+      "\u2713 Intro: EXACTLY 4 lines \u2014 atmosphere-building, cinematic opening, never more",
+      "\u2713 Verse 1: EXACTLY 12 or 16 lines (choose based on depth) \u2014 4-bar grouping law \u2014 rich storytelling",
+      "\u2713 Chorus: EXACTLY 8 lines \u2014 fully developed hook with anchor phrase and chant energy",
+      "\u2713 Verse 2: EXACTLY 12 or 16 lines (match Verse 1 length) \u2014 deep new angle, elevated lyrical detail",
+      "\u2713 Bridge: EXACTLY 4 lines \u2014 hard law, no exceptions",
+      "\u2713 Outro: EXACTLY 4 or 8 lines \u2014 extended emotional release, structured count only"
     ]
   };
   const selectedLengthRules = lengthRules[songLength] ?? lengthRules["Standard"];
@@ -50819,7 +50895,8 @@ function buildUserPrompt(params) {
     "\u2713 CHORUS HOOK: run the 5-question enforcer \u2014 if any answer is NO, rewrite the chorus before returning",
     "\u2713 CHORUS STRENGTH: simpler, more singable, and more memorable than every verse \u2014 the emotional peak of the record",
     "\u2713 KEEPER LINES: at least 2\u20134 lines a real artist would quote, caption, or build from \u2014 scattered across verses",
-    "\u2713 INTRO HARD ENFORCE: 2\u20134 lines MAX only \u2014 atmosphere/mood-setting, never a mini-chorus or mini-verse \u2014 run intro self-check",
+    "\u2713 INTRO HARD ENFORCE: EXACTLY 2 or 4 lines ONLY \u2014 atmosphere/mood-setting, never a mini-chorus or mini-verse \u2014 run intro self-check",
+    "\u2713 V5.1 STRUCTURE VALIDATOR \u2014 MANDATORY: Before returning, count lines in EVERY section and enforce: Intro=2or4 / Verse=8,12,or16 / Chorus=4,6,or8 / Bridge=EXACTLY4 / Outro=2,4,or8 \u2014 if ANY section fails \u2192 rewrite that section before output \u2014 this is a HARD FAIL system",
     "\u2713 VERSE RHYTHM: alternate short, medium, and punch lines \u2014 no robotic equal-length bars \u2014 pockets that feel performable",
     "\u2713 VERSE ESCALATION: Verse 2 must go further than Verse 1 \u2014 new angle, new depth, never a restatement",
     "\u2713 SONG TIGHTNESS: every line must earn its place \u2014 fewer, stronger lines beat more, weaker lines",
