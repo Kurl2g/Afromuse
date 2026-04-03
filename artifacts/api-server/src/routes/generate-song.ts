@@ -542,14 +542,14 @@ router.post("/generate-song", async (req, res) => {
 
   try {
     const response = await ai.chat.completions.create({
-      model: "qwen/qwen3.5-122b-a10b",
+      model: "meta/llama-3.1-70b-instruct",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
       ],
       temperature: 0.93,
       top_p: 0.95,
-      max_tokens: 6000,
+      max_tokens: 3500,
     });
 
     const raw = response.choices[0]?.message?.content ?? "";
