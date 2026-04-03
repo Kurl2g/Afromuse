@@ -50135,51 +50135,96 @@ STYLE \u2014 Capture the broad creative energy only. NEVER copy, quote, or clone
 
 NOTES \u2014 Highest-priority creative direction. Honor it fully. If it conflicts with quality, find a creative solution \u2014 don't ignore either.
 
+SONG LENGTH \u2014 Controls how developed and complete the output is. Follow the structure spec exactly.
+
+LANGUAGE / FLAVOR \u2014 Controls phrasing style, dialect tone, slang level, and cultural texture. Honor it throughout the full draft.
+
 ==================================================
-SONG STRUCTURE \u2014 NON-NEGOTIABLE
+SONG LENGTH BEHAVIOR \u2014 STRICTLY ENFORCED
 ==================================================
 
-Generate a COMPLETE song draft with ALL of the following sections:
+SHORT:
+- Goal: a lean, concise creative starting point \u2014 useful for quick ideas and rough concepts
+- Intro: optional, 1\u20132 lines or omit entirely (still output the field, just keep it short or use 1 line)
+- Verse 1: 4\u20136 lines maximum
+- Chorus: 4\u20136 lines
+- Verse 2: 4\u20136 lines maximum
+- Bridge: omit or keep to 2\u20133 lines
+- Outro: 2\u20134 lines
+- Keep every section tight. Prioritize impact over length.
 
-[Intro]
-- 2 to 4 lines
-- Sets the vibe and sonic world
-- Can be repeated, melodic, chant-style, or atmospheric \u2014 whatever fits the genre
+STANDARD (default):
+- Goal: a balanced, full song draft \u2014 the recommended creative output
+- Intro: 2\u20134 lines
+- Verse 1: minimum 8 lines, aim for 10 if the topic is rich
+- Chorus: 4\u20138 lines \u2014 the emotional and melodic peak
+- Verse 2: minimum 8 lines \u2014 new angle, new emotional territory
+- Bridge: 4\u20136 lines \u2014 tonal or emotional contrast
+- Outro: 4\u20138 lines \u2014 resolution or peak release
 
-[Verse 1]
-- MINIMUM 8 lines. Aim for 10 if the topic is rich.
-- Tells the story, sets up the emotional foundation
-- Lyrical but groove-aware \u2014 verses move, they don't sit still
-- DO NOT default to 4-line verses. This is a failure condition.
+FULL:
+- Goal: the most developed, detailed, and complete song draft possible
+- Intro: 3\u20135 lines \u2014 fully atmosphere-building
+- Verse 1: minimum 10 lines \u2014 rich storytelling, full emotional development
+- Chorus: 6\u201310 lines \u2014 strong, fully developed hook
+- Verse 2: minimum 10 lines \u2014 deep new angle, elevated detail
+- Bridge: 5\u20138 lines \u2014 fully developed tonal shift
+- Outro: 6\u201310 lines \u2014 strong resolution, extended emotional release
+- Every section should feel fully written, not a starting point
 
-[Chorus]
-- 4 to 8 lines
-- The emotional peak. The replayable moment. The part people remember.
-- Simpler and more direct than the verses
-- More singable, more memorable, more hook-driven
+ENFORCEMENT: Match the line counts exactly to the Song Length selected. Shorter is not better for FULL. More developed is not better for SHORT.
 
-[Verse 2]
-- MINIMUM 8 lines
-- Deepens the story. Does not repeat Verse 1 themes lazily.
-- Introduces a new angle, perspective, or emotional development.
+==================================================
+LANGUAGE / FLAVOR BEHAVIOR \u2014 STRICTLY ENFORCED
+==================================================
 
-[Chorus]
-- Repeat of the chorus or a natural variation. Must still feel like the emotional peak.
+Priority order (follow this exactly):
+1. Explicit language request in the user's NOTES or CUSTOM flavor \u2192 overrides everything
+2. LANGUAGE / FLAVOR selected \u2192 apply throughout
+3. GENRE-based language defaults \u2192 apply when no flavor is specified
+4. MOOD / STYLE nuance \u2192 secondary color only
 
-[Bridge]
-- 4 to 6 lines
-- A tonal or emotional shift \u2014 contrast from the verse and chorus
-- Not every song needs a bridge, but use one if it adds value
+GLOBAL ENGLISH:
+- Broadly accessible, modern, globally understandable English
+- Subtle cultural flavor only where it arises completely naturally
+- No heavy slang or localized dialect
+- Polished but real \u2014 not sterile
 
-[Final Chorus / Outro]
-- 4 to 8 lines
-- Can be a repeat, extension, or vocal variation of the main chorus
-- Should feel like an emotional resolution or peak release
+ENGLISH + PIDGIN:
+- Mix natural English with light-to-moderate Nigerian Pidgin flavor
+- Examples: "no wahala", "e be like", "e don happen", "we go rise"
+- Keep it musical and readable \u2014 not a Pidgin translation
+- Avoid over-forcing slang to the point of inauthenticity
 
-STRUCTURE ENFORCEMENT:
-- If any verse has fewer than 8 lines, the output is incomplete.
-- If the chorus has fewer than 4 lines, the output is incomplete.
-- If the outro is missing, the output is incomplete.
+ENGLISH + TWI FLAVOR:
+- Mainly English with natural Twi-inspired phrasing or selected Twi words where they fit
+- Examples: "mo ne mo", "bra", "wos\u0254", terms of endearment or emphasis
+- Do not overdo it \u2014 it should feel natural, not performative
+- Make the song fully readable while carrying Ghanaian cultural texture
+
+JAMAICAN PATOIS:
+- Use natural light-to-moderate patois flavor throughout
+- Examples: "mi", "yuh", "di", "nuh", "suh", "ting", "dutty", "ah"
+- Readable and musically believable \u2014 not an exaggerated caricature
+- Unless the user specifically requests heavy patois, keep it culturally authentic, not staged
+
+STREET URBAN:
+- Street-coded, punchy, raw, confident phrasing
+- Modern urban music energy \u2014 direct, declarative, swagger-driven
+- Short and impactful lines, high confidence tone
+- Avoid over-explaining \u2014 let the attitude do the work
+
+CLEAN INTERNATIONAL:
+- Polished, clear, globally accessible songwriting language
+- Minimal slang, minimal localized cultural phrasing
+- Premium feel \u2014 still emotional and artistic, just broadly understood
+- Think international pop or crossover Afro music aesthetic
+
+CUSTOM (user provides their own direction):
+- Follow the user's custom language/flavor input as primary guidance
+- If no custom text is provided, default to Global English
+
+AUTHENTICITY RULE: Language adaptation must increase believability and musicality. If applying the flavor makes a line worse or unnatural, use the cleaner version. The song must always sound like it was written by a real artist, not generated by a machine trying to sound authentic.
 
 ==================================================
 HOOK AND CHORUS CRAFTSMANSHIP
@@ -50334,29 +50379,60 @@ MINIMUM LINE COUNTS (failure if not met):
 
 AfroMuse is a premium songwriting assistant. Every output must feel musically alive, emotionally real, and genuinely usable by a recording artist.`;
 function buildUserPrompt(params) {
-  const { topic, genre, mood, style, notes } = params;
+  const { topic, genre, mood, style, notes, songLength = "Standard", languageFlavor = "Global English", customFlavor } = params;
+  const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
+  const lengthRules = {
+    Short: [
+      "\u2713 SONG LENGTH is SHORT \u2014 keep every section lean and concise",
+      "\u2713 Intro: 1\u20132 lines (or skip)",
+      "\u2713 Verse 1: 4\u20136 lines MAXIMUM \u2014 tight, punchy, high-impact",
+      "\u2713 Chorus: 4\u20136 lines",
+      "\u2713 Verse 2: 4\u20136 lines MAXIMUM",
+      "\u2713 Bridge: 2\u20133 lines or omit",
+      "\u2713 Outro: 2\u20134 lines"
+    ],
+    Standard: [
+      "\u2713 SONG LENGTH is STANDARD \u2014 full balanced draft",
+      "\u2713 Verse 1: minimum 8 lines \u2014 do NOT write a 4-line verse",
+      "\u2713 Verse 2: minimum 8 lines \u2014 introduce new emotional territory",
+      "\u2713 Chorus: 4\u20138 lines \u2014 the emotional and melodic peak",
+      "\u2713 Bridge: 4\u20136 lines",
+      "\u2713 Outro: 4\u20138 lines"
+    ],
+    Full: [
+      "\u2713 SONG LENGTH is FULL \u2014 most complete and developed draft possible",
+      "\u2713 Intro: 3\u20135 lines \u2014 fully atmosphere-building",
+      "\u2713 Verse 1: minimum 10 lines \u2014 rich storytelling, full emotional development",
+      "\u2713 Chorus: 6\u201310 lines \u2014 strong, fully developed hook",
+      "\u2713 Verse 2: minimum 10 lines \u2014 deep new angle, elevated lyrical detail",
+      "\u2713 Bridge: 5\u20138 lines \u2014 fully developed tonal shift",
+      "\u2713 Outro: 6\u201310 lines \u2014 extended emotional release"
+    ]
+  };
+  const selectedLengthRules = lengthRules[songLength] ?? lengthRules["Standard"];
   const lines = [
     "==== SONG REQUEST ====",
     `TOPIC: ${topic}`,
     `GENRE: ${genre}`,
-    `MOOD: ${mood}`
+    `MOOD: ${mood}`,
+    `SONG LENGTH: ${songLength}`,
+    `LANGUAGE / FLAVOR: ${effectiveFlavor}`
   ];
   if (style?.trim()) {
     lines.push(`STYLE / CREATIVE INSPIRATION: ${style.trim()}`);
   }
   if (notes?.trim()) {
-    lines.push(`EXTRA NOTES / LANGUAGE DIRECTION: ${notes.trim()}`);
+    lines.push(`EXTRA NOTES / LANGUAGE DIRECTION (HIGHEST PRIORITY): ${notes.trim()}`);
   }
   lines.push(
     "",
     "==== GENERATION CHECKLIST (follow all of these) ====",
-    `\u2713 Genre is ${genre} \u2014 write with the correct energy, phrasing weight, and cultural texture for this genre`,
-    `\u2713 Mood is ${mood} \u2014 every line must feel this mood, not just reference it`,
-    "\u2713 Verse 1 must have at least 8 lines \u2014 do NOT write a 4-line verse",
-    "\u2713 Verse 2 must have at least 8 lines \u2014 introduce new emotional territory, do not repeat Verse 1",
+    `\u2713 Genre is ${genre} \u2014 write with the correct energy, phrasing weight, and cultural texture`,
+    `\u2713 Mood is ${mood} \u2014 every single line must feel this mood, not just reference it`,
+    ...selectedLengthRules,
+    `\u2713 Language/Flavor is ${effectiveFlavor} \u2014 apply this throughout the entire draft naturally and musically`,
     "\u2713 Chorus must be the emotional and melodic peak \u2014 simpler, more direct, more singable than the verses",
-    "\u2713 Apply genre-specific language/phrasing defaults unless notes specify otherwise",
-    "\u2713 All sections (intro, verse1, hook, verse2, bridge, outro) must be included",
+    "\u2713 All sections (intro, verse1, hook, verse2, bridge, outro) must be present in the JSON output",
     "\u2713 Respond with ONLY the JSON object \u2014 no text before or after",
     "",
     "Generate the full AfroMuse song draft now."
@@ -50364,7 +50440,7 @@ function buildUserPrompt(params) {
   return lines.join("\n");
 }
 router2.post("/generate-song", async (req, res) => {
-  const { topic, genre, mood, style, notes } = req.body;
+  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor } = req.body;
   if (!topic || typeof topic !== "string") {
     res.status(400).json({ error: "topic is required" });
     return;
@@ -50377,6 +50453,8 @@ router2.post("/generate-song", async (req, res) => {
   }
   const selectedGenre = genre?.trim() || "Afrobeats";
   const selectedMood = mood?.trim() || "Uplifting";
+  const selectedLength = ["Short", "Standard", "Full"].includes(songLength ?? "") ? songLength : "Standard";
+  const selectedFlavor = languageFlavor?.trim() || "Global English";
   const ai = new OpenAI({
     apiKey,
     baseURL: "https://integrate.api.nvidia.com/v1"
@@ -50386,7 +50464,10 @@ router2.post("/generate-song", async (req, res) => {
     genre: selectedGenre,
     mood: selectedMood,
     style,
-    notes
+    notes,
+    songLength: selectedLength,
+    languageFlavor: selectedFlavor,
+    customFlavor
   });
   try {
     const response = await ai.chat.completions.create({

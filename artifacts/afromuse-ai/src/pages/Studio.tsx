@@ -45,6 +45,24 @@ const MOODS = [
   { value: "Confident", label: "Confident / Flex" },
 ];
 
+const SONG_LENGTHS = [
+  { value: "Short", label: "Short", hint: "Quick idea / rough concept" },
+  { value: "Standard", label: "Standard", hint: "Full balanced draft (recommended)" },
+  { value: "Full", label: "Full", hint: "Most developed & detailed" },
+] as const;
+
+type SongLength = "Short" | "Standard" | "Full";
+
+const LANGUAGE_FLAVORS = [
+  { value: "Global English", label: "Global English" },
+  { value: "English + Pidgin", label: "English + Pidgin" },
+  { value: "English + Twi Flavor", label: "English + Twi Flavor" },
+  { value: "Jamaican Patois", label: "Jamaican Patois" },
+  { value: "Street Urban", label: "Street Urban" },
+  { value: "Clean International", label: "Clean International" },
+  { value: "Custom", label: "Custom..." },
+] as const;
+
 export default function Studio() {
   const { toast } = useToast();
   const { isLoggedIn } = useAuth();
@@ -64,6 +82,9 @@ export default function Studio() {
   const [topic, setTopic] = useState("");
   const [genre, setGenre] = useState("Afrobeats");
   const [mood, setMood] = useState("Uplifting");
+  const [songLength, setSongLength] = useState<SongLength>("Standard");
+  const [languageFlavor, setLanguageFlavor] = useState("Global English");
+  const [customFlavor, setCustomFlavor] = useState("");
   const [style, setStyle] = useState("");
   const [notes, setNotes] = useState("");
   const [generatingStep, setGeneratingStep] = useState(0);
@@ -95,7 +116,7 @@ export default function Studio() {
       const res = await fetch("/api/generate-song", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, genre, mood, style, notes }),
+        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor }),
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -148,6 +169,9 @@ export default function Studio() {
     setTopic("");
     setGenre("Afrobeats");
     setMood("Uplifting");
+    setSongLength("Standard");
+    setLanguageFlavor("Global English");
+    setCustomFlavor("");
     setStyle("");
     setNotes("");
     setStatus("idle");
@@ -390,6 +414,61 @@ export default function Studio() {
                       <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
                     </div>
                   </div>
+                </div>
+
+                {/* Song Length */}
+                <div>
+                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
+                    Song Length
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {SONG_LENGTHS.map((l) => (
+                      <button
+                        key={l.value}
+                        type="button"
+                        onClick={() => setSongLength(l.value)}
+                        className={`h-10 rounded-xl text-xs font-bold tracking-wide transition-all border ${
+                          songLength === l.value
+                            ? "bg-primary/15 border-primary/50 text-primary shadow-[0_0_12px_rgba(245,158,11,0.15)]"
+                            : "bg-white/3 border-white/8 text-white/40 hover:text-white/70 hover:border-white/20 hover:bg-white/5"
+                        }`}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-white/25 mt-1.5">
+                    {SONG_LENGTHS.find((l) => l.value === songLength)?.hint}
+                  </p>
+                </div>
+
+                {/* Language / Flavor */}
+                <div>
+                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
+                    Language / Flavor
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={languageFlavor}
+                      onChange={(e) => setLanguageFlavor(e.target.value)}
+                      className="w-full h-12 rounded-xl bg-[#13131f] border border-white/10 px-3 pr-8 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                    >
+                      {LANGUAGE_FLAVORS.map((f) => (
+                        <option key={f.value} value={f.value} className="bg-[#13131f]">{f.label}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                  </div>
+                  {languageFlavor === "Custom" && (
+                    <input
+                      type="text"
+                      placeholder="Describe your language / flavor preference..."
+                      value={customFlavor}
+                      onChange={(e) => setCustomFlavor(e.target.value)}
+                      className="w-full h-11 rounded-xl bg-white/4 border border-white/10 px-4 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mt-2"
+                    />
+                  )}
+                  <p className="text-[11px] text-white/25 mt-1.5">Shapes dialect, slang level, and cultural tone</p>
                 </div>
 
                 {/* Style / Sound Reference */}
