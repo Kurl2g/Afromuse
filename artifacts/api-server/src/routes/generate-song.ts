@@ -107,7 +107,17 @@ The JSON must use this exact structure:
     "melodyDirection": "Vocal guidance per section: verse delivery, chorus lift, bridge turn"
   },
   "instrumentalGuidance": "Detailed instrumental description for a music producer — drum pattern, bass line, lead melody, pads, percussion, effects, and how the arrangement evolves section by section",
-  "vocalDemoGuidance": "Detailed vocal performance guide — tone, delivery style per section, ad-lib placements, emotion projection, breath control, and how vocal energy shifts from verse to chorus to bridge"
+  "vocalDemoGuidance": "Detailed vocal performance guide — tone, delivery style per section, ad-lib placements, emotion projection, breath control, and how vocal energy shifts from verse to chorus to bridge",
+  "stemsBreakdown": {
+    "kick": "Kick drum description — pattern, placement, punch (e.g. Four-on-the-floor with an extra hit on beat 3 — punchy, sub-heavy, side-chained to bass)",
+    "snare": "Snare description — placement and texture (e.g. Rimshot on 2 and 4, ghost notes on upbeats, light reverb tail)",
+    "bass": "Bass line description — pattern, tone, groove (e.g. Sub-bass lock on kick, melodic fill on 4th bar, warm mid-bass presence)",
+    "pads": "Pads/chords description — voicing, texture, movement (e.g. Lush minor 7 pads — filter sweep opens on chorus, close on bridge)",
+    "leadSynth": "Lead synth or guitar melody — pattern, tone, character (e.g. Lead flute melody on chorus — delay 1/8, reverb large room, panned center)",
+    "guitarOther": "Guitar or additional melodic element — role, style, placement (e.g. Nylon acoustic rhythm — panned L 20%, plays on offbeats through verse only)",
+    "effects": "Global effects and panning notes — reverb, delay, sidechain, stereo placement (e.g. Drum room reverb, vocal delay throw on hook endings, wide stereo pads, mono kick/bass)"
+  },
+  "exportNotes": "Producer-friendly instructions to make the track immediately recordable — session tempo, key, suggested DAW setup, reference track energy, how to prepare a vocal booth session, and any special production or arrangement reminders"
 }
 
 All sections must be present. Lyric arrays must contain actual lines, never placeholders.
@@ -212,6 +222,8 @@ function buildUserPrompt(params: {
     "✓ NATURALNESS: reject any line that sounds robotic, formal, or AI-generated — every line must be singable",
     "✓ TIGHTNESS: fewer, stronger lines — every line must earn its place",
     "✓ PRODUCTION: include complete productionNotes, instrumentalGuidance, and vocalDemoGuidance in output",
+    "✓ STEMS BREAKDOWN: include stemsBreakdown with kick, snare, bass, pads, leadSynth, guitarOther, and effects — be specific about patterns, panning, and processing",
+    "✓ EXPORT NOTES: include exportNotes with producer-friendly session setup — BPM, key, DAW tips, vocal booth prep, reference energy, and arrangement reminders",
     "✓ OUTPUT: ONLY the JSON object — no text, explanation, or commentary before or after",
     "",
     "Generate the full AfroMuse V5 HITMAKER V2 song draft now.",

@@ -23,6 +23,16 @@ export interface SongDraft {
   };
   instrumentalGuidance?: string;
   vocalDemoGuidance?: string;
+  stemsBreakdown?: {
+    kick?: string;
+    snare?: string;
+    bass?: string;
+    pads?: string;
+    leadSynth?: string;
+    guitarOther?: string;
+    effects?: string;
+  };
+  exportNotes?: string;
 }
 
 function pick<T>(arr: T[], seed: number, offset = 0): T {
@@ -782,6 +792,22 @@ export function formatDraftForClipboard(draft: SongDraft, genre: string, mood: s
 
   if (draft.vocalDemoGuidance) {
     sections.push("", line, "VOCAL DEMO GUIDANCE", line, draft.vocalDemoGuidance);
+  }
+
+  if (draft.stemsBreakdown) {
+    const sb = draft.stemsBreakdown;
+    sections.push("", line, "STEMS BREAKDOWN", line);
+    if (sb.kick) sections.push(`Kick: ${sb.kick}`);
+    if (sb.snare) sections.push(`Snare: ${sb.snare}`);
+    if (sb.bass) sections.push(`Bass: ${sb.bass}`);
+    if (sb.pads) sections.push(`Pads: ${sb.pads}`);
+    if (sb.leadSynth) sections.push(`Lead Synth: ${sb.leadSynth}`);
+    if (sb.guitarOther) sections.push(`Guitar / Other: ${sb.guitarOther}`);
+    if (sb.effects) sections.push(`Effects & Panning: ${sb.effects}`);
+  }
+
+  if (draft.exportNotes) {
+    sections.push("", line, "EXPORT NOTES", line, draft.exportNotes);
   }
 
   sections.push("", "─ Created with AfroMuse AI V5 HITMAKER V2 ─");

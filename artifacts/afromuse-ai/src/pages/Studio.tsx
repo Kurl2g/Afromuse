@@ -1060,6 +1060,73 @@ export default function Studio() {
                         </div>
                       )}
 
+                      {/* STEMS BREAKDOWN — V2 */}
+                      {draft.stemsBreakdown && Object.values(draft.stemsBreakdown).some(Boolean) && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <svg className="w-4 h-4 text-sky-400/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="8" width="4" height="8" rx="1"/><rect x="9" y="4" width="4" height="16" rx="1"/><rect x="16" y="10" width="4" height="6" rx="1"/></svg>
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Stems Breakdown</span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {draft.stemsBreakdown.kick && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-primary mb-2">Kick</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.kick}</p>
+                              </div>
+                            )}
+                            {draft.stemsBreakdown.snare && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-sky-400 mb-2">Snare</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.snare}</p>
+                              </div>
+                            )}
+                            {draft.stemsBreakdown.bass && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-violet-400 mb-2">Bass</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.bass}</p>
+                              </div>
+                            )}
+                            {draft.stemsBreakdown.pads && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-green-400 mb-2">Pads</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.pads}</p>
+                              </div>
+                            )}
+                            {draft.stemsBreakdown.leadSynth && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-primary mb-2">Lead Synth</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.leadSynth}</p>
+                              </div>
+                            )}
+                            {draft.stemsBreakdown.guitarOther && (
+                              <div className="rounded-2xl border border-white/6 bg-white/2 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-orange-400 mb-2">Guitar / Other</div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.guitarOther}</p>
+                              </div>
+                            )}
+                          </div>
+                          {draft.stemsBreakdown.effects && (
+                            <div className="mt-3 rounded-2xl border border-sky-500/10 bg-sky-500/3 p-4">
+                              <div className="text-[10px] font-bold tracking-widest uppercase text-sky-400 mb-2">Effects & Panning</div>
+                              <p className="text-xs text-white/60 leading-relaxed">{draft.stemsBreakdown.effects}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* EXPORT NOTES — V2 */}
+                      {draft.exportNotes && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <svg className="w-4 h-4 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Export Notes</span>
+                          </div>
+                          <div className="rounded-2xl border border-primary/10 bg-primary/3 p-5">
+                            <p className="text-sm text-white/60 leading-relaxed">{draft.exportNotes}</p>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Bottom actions */}
                       <div className="border-t border-white/4 pt-6 flex flex-wrap gap-2 justify-center">
                         <button
