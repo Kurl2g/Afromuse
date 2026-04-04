@@ -50435,6 +50435,7 @@ function createJob(type) {
     audioUrl: null,
     duration: null,
     metadata: null,
+    sessionData: null,
     error: null,
     createdAt: Date.now()
   };
@@ -50491,11 +50492,94 @@ function getVocalStyle(mood) {
   };
   return map2[mood] ?? "Warm / Melodic";
 }
+var INSTRUMENTAL_SYSTEM_PROMPT = `You are AfroMuse Audio Intelligence \u2014 a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+You receive a session configuration and return a detailed instrumental session brief as structured JSON.
+Your output shapes the sonic direction for real studio sessions and beat builds.
+
+Rules:
+- Write like a top-tier record producer, not a text generator
+- Be genre-specific, culturally grounded, and musically precise
+- Every description must be actionable in a real studio session
+- ALWAYS return valid JSON only \u2014 no markdown, no explanation, no code fences`;
+function buildInstrumentalPrompt(payload) {
+  const genre = payload.genre ?? "Afrobeats";
+  const mood = payload.mood ?? "Uplifting";
+  const energy = payload.energy ?? "Medium";
+  const bpm = payload.bpm ?? 96;
+  const key = payload.key ?? "F# Minor";
+  const style = payload.soundReference ?? payload.styleReference ?? "";
+  const mixFeel = payload.mixFeel ?? "Balanced";
+  const introBehavior = payload.introBehavior ?? "Build up";
+  const chorusLift = payload.chorusLift ?? "Gradual swell";
+  const drumDensity = payload.drumDensity ?? "Mid";
+  const bassWeight = payload.bassWeight ?? "Punchy sub";
+  return `Generate an instrumental session brief for this configuration:
+
+GENRE: ${genre}
+BPM: ${bpm}
+KEY: ${key}
+ENERGY: ${energy}
+MOOD/ATMOSPHERE: ${mood}
+SOUND / ARTIST REFERENCE: ${style || "original AfroMuse direction \u2014 no specific reference"}
+MIX FEEL: ${mixFeel}
+INTRO BEHAVIOR: ${introBehavior}
+CHORUS LIFT: ${chorusLift}
+DRUM DENSITY: ${drumDensity}
+BASS WEIGHT: ${bassWeight}
+
+Return ONLY this JSON object with no markdown, no code fences, no extra text:
+{
+  "beatSummary": "One compelling line (max 20 words) describing this beat's groove character and feel \u2014 be specific to genre + BPM",
+  "arrangementMap": "Full arrangement breakdown with specific producer notes for each section: Intro \u2192 Verse \u2192 Chorus/Hook \u2192 Bridge \u2192 Outro. 3-4 sentences total.",
+  "producerNotes": "Detailed production direction \u2014 instruments, layering approach, sonic signature, recording tips. 4-6 sentences. Write as if handing notes to a session engineer.",
+  "hookFocus": "One sentence on where the hook hits hardest and how to engineer maximum replay value for this specific genre at this energy level",
+  "arrangementStyle": "One sentence describing the overall arrangement philosophy and structural feel of this track",
+  "sonicIdentity": {
+    "coreBounce": "The exact rhythmic feel and groove pocket \u2014 be specific to ${genre} at ${bpm} BPM with ${energy} energy",
+    "atmosphere": "The tonal and spatial atmosphere \u2014 reverb depth, density, emotional temperature of the mix",
+    "mainTexture": "Primary sonic texture \u2014 list 2-3 key layered ingredients that define this session's sound identity"
+  },
+  "sessionBrief": "2-3 sentence quick producer brief written as if handing notes to a session engineer walking into the studio right now for this exact record"
+}`;
+}
+async function callNvidiaForSessionBrief(payload) {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.warn("NVIDIA_API_KEY not set \u2014 skipping AI session brief generation");
+    return null;
+  }
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1"
+  });
+  const response = await ai.chat.completions.create({
+    model: "qwen/qwen3.5-122b-a10b",
+    messages: [
+      { role: "system", content: INSTRUMENTAL_SYSTEM_PROMPT },
+      { role: "user", content: buildInstrumentalPrompt(payload) }
+    ],
+    temperature: 0.75,
+    max_tokens: 1200
+  });
+  const raw = response.choices[0]?.message?.content ?? "";
+  const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
+  const jsonStart = cleaned.indexOf("{");
+  const jsonEnd = cleaned.lastIndexOf("}");
+  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in model response");
+  const parsed = JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1));
+  return parsed;
+}
 async function runInstrumentalProvider(job, payload) {
-  await new Promise((resolve) => setTimeout(resolve, 3e3 + Math.random() * 2e3));
   const genre = payload.genre ?? "Afrobeats";
   const mood = payload.mood ?? "Uplifting";
   const chordVibe = payload.productionNotes?.chordVibe ?? "";
+  try {
+    const sessionData = await callNvidiaForSessionBrief(payload);
+    job.sessionData = sessionData;
+  } catch (err) {
+    logger.warn({ err, jobId: job.id }, "AI session brief failed \u2014 continuing with metadata only");
+  }
   job.status = "completed";
   job.audioUrl = null;
   job.duration = getDuration(payload.songLength);
@@ -50504,7 +50588,7 @@ async function runInstrumentalProvider(job, payload) {
     mood,
     bpm: payload.bpm ?? parseBpm(chordVibe, genre),
     key: payload.key ?? parseKey(chordVibe, mood),
-    energy: getEnergy(mood),
+    energy: payload.energy ?? getEnergy(mood),
     duration: job.duration,
     hitmakerMode: payload.hitmakerMode ?? false,
     hookRepeatLevel: payload.hookRepeatLevel ?? "Medium",
@@ -50564,16 +50648,13 @@ router3.get("/audio-job/:jobId", (req, res) => {
       status: "completed",
       audioUrl: job.audioUrl,
       duration: job.duration,
-      metadata: job.metadata
+      metadata: job.metadata,
+      sessionData: job.sessionData
     });
     return;
   }
   if (job.status === "failed") {
-    res.json({
-      jobId: job.id,
-      status: "failed",
-      error: job.error ?? "Unknown error"
-    });
+    res.json({ jobId: job.id, status: "failed", error: job.error ?? "Unknown error" });
     return;
   }
   res.json({ jobId: job.id, status: "processing" });
