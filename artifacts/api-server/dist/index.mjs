@@ -50587,7 +50587,7 @@ router2.post("/generate-song", async (req, res) => {
   });
   try {
     const response = await ai.chat.completions.create({
-      model: "meta/llama-3.1-70b-instruct",
+      model: "qwen/qwen3-6b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt }
