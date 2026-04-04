@@ -781,6 +781,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [includeArrangementNotes,  setIncludeArrangementNotes]  = useState(true);
   const [includeStemsBreakdown,    setIncludeStemsBreakdown]    = useState(false);
   const [useHitmakerHookPriority,  setUseHitmakerHookPriority]  = useState(false);
+  const [mixFeel,                  setMixFeel]                  = useState("Balanced");
+  const [generateMasteredExport,   setGenerateMasteredExport]   = useState(false);
 
   const [introBehavior,   setIntroBehavior]   = useState(INTRO_BEHAVIORS[0]);
   const [chorusLift,      setChorusLift]      = useState(CHORUS_LIFTS[0]);
@@ -1313,6 +1315,26 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 </div>
               </div>
 
+              {/* Mix Feel */}
+              <div className="sm:col-span-2 lg:col-span-3">
+                <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">
+                  Mix Feel
+                  <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">production flavour</span>
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Balanced", "Dry & Punchy", "Lush & Reverb-Heavy", "Lo-Fi Warmth", "Bright & Crisp", "Dark & Gritty", "Club-Ready"].map((feel) => (
+                    <button key={feel} type="button" onClick={() => setMixFeel(feel)}
+                      className={`h-7 px-3 rounded-xl text-[10px] font-semibold transition-all ${
+                        mixFeel === feel
+                          ? "bg-amber-500/15 border border-amber-500/35 text-amber-300"
+                          : "bg-white/3 border border-white/6 text-white/30 hover:border-white/15 hover:text-white/55"
+                      }`}
+                    >{feel}</button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-white/18 mt-1.5 italic">Shapes the tonal and spatial direction of the session build</p>
+              </div>
+
             </div>
 
             <div className="px-5 pb-4 border-t border-white/4 pt-3">
@@ -1520,6 +1542,13 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   sub: "Optimises hook structure and replay value in this session",
                   checked: useHitmakerHookPriority,
                   onToggle: (v: boolean) => setUseHitmakerHookPriority(v),
+                },
+                {
+                  id: "masteredExport",
+                  label: isProducer ? "Generate Mastered Export Notes (Engineer)" : "Generate Mastered Export Notes",
+                  sub: "Adds mastering chain guidance and export recommendations to your blueprint",
+                  checked: generateMasteredExport,
+                  onToggle: (v: boolean) => setGenerateMasteredExport(v),
                 },
               ] as const).map(({ id, label, sub, checked, onToggle }) => (
                 <label key={id} className="flex items-start gap-3 cursor-pointer group p-3 rounded-xl hover:bg-white/[0.03] transition-colors">

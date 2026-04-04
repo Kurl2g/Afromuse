@@ -33,6 +33,19 @@ export interface SongDraft {
     effects?: string;
   };
   exportNotes?: string;
+  // V5 fields
+  arrangementBlueprint?: string;
+  sessionNotes?: string;
+  sonicIdentity?: {
+    coreBounce?: string;
+    atmosphere?: string;
+    mainTexture?: string;
+  };
+  vocalIdentity?: {
+    leadType?: string;
+    deliveryStyle?: string;
+    emotionalTone?: string;
+  };
 }
 
 function pick<T>(arr: T[], seed: number, offset = 0): T {

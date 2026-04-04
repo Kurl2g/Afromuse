@@ -50223,7 +50223,19 @@ The JSON must use this exact structure:
     "guitarOther": "Guitar or additional melodic element \u2014 role, style, placement (e.g. Nylon acoustic rhythm \u2014 panned L 20%, plays on offbeats through verse only)",
     "effects": "Global effects and panning notes \u2014 reverb, delay, sidechain, stereo placement (e.g. Drum room reverb, vocal delay throw on hook endings, wide stereo pads, mono kick/bass)"
   },
-  "exportNotes": "Producer-friendly instructions to make the track immediately recordable \u2014 session tempo, key, suggested DAW setup, reference track energy, how to prepare a vocal booth session, and any special production or arrangement reminders"
+  "exportNotes": "Producer-friendly instructions to make the track immediately recordable \u2014 session tempo, key, suggested DAW setup, reference track energy, how to prepare a vocal booth session, and any special production or arrangement reminders",
+  "arrangementBlueprint": "Step-by-step recording and arrangement map \u2014 section order with bar counts, section transition cues, vocal double placement, ad-lib placement guides, and engineering setup markers for the full song",
+  "sessionNotes": "One tight paragraph session brief \u2014 tempo, key, mood, DAW template suggestion, reference track energy recommendation, and priority recording order",
+  "sonicIdentity": {
+    "coreBounce": "The rhythmic DNA \u2014 what drives the groove and makes the body move (e.g. Afrobeats pocket at 100 BPM, kick-snare locked with talking drum, swung 16ths)",
+    "atmosphere": "The sonic landscape \u2014 the vibe, feel, and sonic world of the track (e.g. Late-night Lagos warmth, hazy and intimate with reverb depth)",
+    "mainTexture": "The primary sonic element heard most clearly in the mix (e.g. Plucked guitar lead over sub-bass foundation, lush pad underneath)"
+  },
+  "vocalIdentity": {
+    "leadType": "Lead vocal type and character (e.g. Afrobeats Tenor \u2014 warm, slightly husky, conversational delivery)",
+    "deliveryStyle": "How the vocals should be delivered \u2014 breathy, punchy, smooth, melodic, gritty, etc. (e.g. Smooth and melodic in verse, punchy and chant-ready on chorus)",
+    "emotionalTone": "The emotional feel the vocal performance should project (e.g. Longing with underlying warmth, never desperate \u2014 controlled vulnerability)"
+  }
 }
 
 All sections must be present. Lyric arrays must contain actual lines, never placeholders.
@@ -50241,7 +50253,10 @@ function buildUserPrompt(params) {
     customFlavor,
     commercialMode = false,
     lyricalDepth = "Balanced",
-    hookRepeat = "Medium"
+    hookRepeat = "Medium",
+    lyricsSource = "Studio Lyrics",
+    genderVoiceModel = "Random",
+    performanceFeel = "Smooth"
   } = params;
   const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
   const v2StructureRules = [
@@ -50290,6 +50305,20 @@ function buildUserPrompt(params) {
     High: "HOOK REPEAT LEVEL: HIGH \u2014 maximum chantability, strong anchor phrase repetition, crowd singalong energy"
   };
   lines.push(hookRepeatInstructions[hookRepeat] ?? hookRepeatInstructions["Medium"]);
+  const lyricsSourceLabel = {
+    "Studio Lyrics": "LYRICS SOURCE: STUDIO LYRICS \u2014 generate all lyrical content fresh from the brief",
+    "Paste My Own": "LYRICS SOURCE: ARTIST-PROVIDED \u2014 honour the artist's own lyrical voice and style",
+    "Instrumental Only": "LYRICS SOURCE: INSTRUMENTAL ONLY \u2014 skip lyrical content, focus session notes and production output only"
+  };
+  lines.push(lyricsSourceLabel[lyricsSource] ?? lyricsSourceLabel["Studio Lyrics"]);
+  const genderMap = {
+    Male: "VOCAL GENDER / MODEL: MALE \u2014 write for a male vocal register, delivery cues and ad-lib placement accordingly",
+    Female: "VOCAL GENDER / MODEL: FEMALE \u2014 write for a female vocal register, warm and expressive delivery",
+    Mixed: "VOCAL GENDER / MODEL: MIXED \u2014 designed for a duet or call-and-response between male and female voices",
+    Random: "VOCAL GENDER / MODEL: OPEN \u2014 flexible vocal writing, producer will cast the right voice"
+  };
+  lines.push(genderMap[genderVoiceModel] ?? genderMap["Random"]);
+  lines.push(`PERFORMANCE FEEL: ${performanceFeel.toUpperCase()} \u2014 every vocal direction, delivery cue, and ad-lib must match this performance register`);
   lines.push(
     "",
     ...v2StructureRules,
@@ -50316,7 +50345,7 @@ function buildUserPrompt(params) {
   return lines.join("\n");
 }
 router2.post("/generate-song", async (req, res) => {
-  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat } = req.body;
+  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel } = req.body;
   if (!topic || typeof topic !== "string") {
     res.status(400).json({ error: "topic is required" });
     return;
@@ -50346,7 +50375,10 @@ router2.post("/generate-song", async (req, res) => {
     customFlavor,
     commercialMode: commercialMode === true,
     lyricalDepth: lyricalDepth ?? "Balanced",
-    hookRepeat: hookRepeat ?? "Medium"
+    hookRepeat: hookRepeat ?? "Medium",
+    lyricsSource: lyricsSource ?? "Studio Lyrics",
+    genderVoiceModel: genderVoiceModel ?? "Random",
+    performanceFeel: performanceFeel ?? "Smooth"
   });
   try {
     const response = await ai.chat.completions.create({
