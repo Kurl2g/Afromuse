@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mic2, Music2, Wand2, Loader2, Check, AlertCircle,
@@ -12,6 +12,12 @@ interface Props {
   draft: SongDraft | null;
   genre: string;
   mood: string;
+}
+
+export type QuickMode = "default" | "instrumental" | "hook-only" | "afrobeats-demo";
+
+export interface AudioStudioV2Handle {
+  sendLyrics: (text: string, mode?: QuickMode) => void;
 }
 
 type CardStatus = "idle" | "loading" | "success" | "error";
@@ -237,9 +243,10 @@ function getGenreDefaults(g: string): { bpm: string; key: string } {
   return map[g] ?? { bpm: "98–104", key: "F# minor" };
 }
 
-export default function AudioStudioV2({ draft, genre, mood }: Props) {
+const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudioV2({ draft, genre, mood }, ref) {
   const { toast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [highlighted, setHighlighted] = useState(false);
 
   // ── Controlled state ──────────────────────────────────────────────────────
   const [audioLyrics, setAudioLyrics] = useState("");
@@ -295,6 +302,38 @@ export default function AudioStudioV2({ draft, genre, mood }: Props) {
     toast({ title: "Lyrics loaded", description: "Your generated lyrics are ready for audio production." });
     textareaRef.current?.focus();
   };
+
+  // ── Imperative handle for parent bridging ─────────────────────────────────
+  useImperativeHandle(ref, () => ({
+    sendLyrics(text: string, mode?: QuickMode) {
+      setAudioLyrics(text);
+      setUseGeneratedLyrics(true);
+
+      if (mode === "instrumental") {
+        setGenerationMode("instrumental");
+        setGenerateOnlyInstrumental(true);
+      } else if (mode === "hook-only") {
+        setSectionMode("hook");
+        setGenerationMode("full");
+        setGenerateOnlyInstrumental(false);
+      } else if (mode === "afrobeats-demo") {
+        setAudioGenre("Afrobeats");
+        setGenerationMode("full");
+        setGenerateOnlyInstrumental(false);
+        setSectionMode("full");
+      } else {
+        setGenerationMode("full");
+        setGenerateOnlyInstrumental(false);
+      }
+
+      setHighlighted(true);
+      setTimeout(() => setHighlighted(false), 2000);
+
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 400);
+    },
+  }), []);
 
   // ── Toggle "use generated lyrics" checkbox ────────────────────────────────
   const handleToggleAutoLyrics = (next: boolean) => {
@@ -432,7 +471,14 @@ export default function AudioStudioV2({ draft, genre, mood }: Props) {
   const genreDefaults = getGenreDefaults(audioGenre);
 
   return (
-    <section className="mt-14 rounded-3xl border border-sky-500/15 bg-gradient-to-b from-[#080c15] via-[#07090f] to-[#060810] overflow-hidden shadow-[0_0_80px_rgba(14,165,233,0.04)]">
+    <section
+      id="audio-studio-v2"
+      className={`mt-14 rounded-3xl border bg-gradient-to-b from-[#080c15] via-[#07090f] to-[#060810] overflow-hidden transition-all duration-700 ${
+        highlighted
+          ? "border-sky-400/50 shadow-[0_0_80px_rgba(14,165,233,0.18),0_0_0_2px_rgba(14,165,233,0.12)]"
+          : "border-sky-500/15 shadow-[0_0_80px_rgba(14,165,233,0.04)]"
+      }`}
+    >
 
       {/* ── Header ── */}
       <div className="relative px-6 md:px-8 py-6 border-b border-white/5 overflow-hidden">
@@ -934,4 +980,6 @@ export default function AudioStudioV2({ draft, genre, mood }: Props) {
       </div>
     </section>
   );
-}
+});
+
+export default AudioStudioV2;

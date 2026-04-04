@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
@@ -6,7 +6,8 @@ import {
   Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key,
 } from "lucide-react";
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
-import AudioStudioV2 from "@/components/studio/AudioStudioV2";
+import SendToAudioCard from "@/components/audio/SendToAudioCard";
+import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import {
@@ -102,6 +103,22 @@ export default function Studio() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
+
+  const audioStudioRef = useRef<AudioStudioV2Handle>(null);
+
+  const handleSendToAudio = (mode: QuickMode) => {
+    if (!draft) return;
+    const text = formatDraftForClipboard(draft, genre, mood);
+    audioStudioRef.current?.sendLyrics(text, mode);
+    setTimeout(() => {
+      const el = document.getElementById("audio-studio-v2");
+      if (el) {
+        const offset = 80;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 120);
+  };
 
   useEffect(() => {
     if (status === "generating") {
@@ -1160,6 +1177,14 @@ export default function Studio() {
                     </div>
                   </div>
 
+                  {/* SEND TO AUDIO BRIDGE */}
+                  <SendToAudioCard
+                    draft={draft}
+                    genre={genre}
+                    mood={mood}
+                    onSendToAudio={handleSendToAudio}
+                  />
+
                   {/* BRING IT TO LIFE — V2 AUDIO MVP */}
                   <BringToLifeCard
                     draft={draft}
@@ -1192,7 +1217,7 @@ export default function Studio() {
         </div>
 
         {/* ── V2 AUDIO STUDIO — full width below main grid ── */}
-        <AudioStudioV2 draft={draft} genre={genre} mood={mood} />
+        <AudioStudioV2 ref={audioStudioRef} draft={draft} genre={genre} mood={mood} />
 
       </div>
     </div>
