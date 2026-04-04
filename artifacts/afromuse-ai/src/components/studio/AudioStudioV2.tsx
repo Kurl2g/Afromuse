@@ -8,7 +8,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
 import { formatDraftForClipboard } from "@/lib/songGenerator";
-import { buildFullIntelligence, type FullIntelligence } from "@/lib/audioIntelligence";
+import { buildFullIntelligence, type FullIntelligence, type ExportNoteBlock } from "@/lib/audioIntelligence";
 
 interface Props {
   draft: SongDraft | null;
@@ -237,6 +237,147 @@ function ProducerSelect({
         <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-violet-400/40 pointer-events-none" />
       </div>
     </div>
+  );
+}
+
+function formatBlockForClipboard(block: ExportNoteBlock): string {
+  return `== ${block.title.toUpperCase()} ==\n\n` +
+    block.items.map((item) => `${item.label}:\n${item.value}`).join("\n\n");
+}
+
+function ExportSection({
+  block, accent = "white", onCopy,
+}: {
+  block: ExportNoteBlock;
+  accent?: "amber" | "violet" | "sky" | "green" | "white";
+  onCopy: (text: string) => void;
+}) {
+  const [open, setOpen] = useState(true);
+  const accentColors = {
+    amber:  { badge: "bg-amber-500/10 border-amber-500/20 text-amber-400/80",  dot: "bg-amber-400",  btn: "hover:text-amber-300" },
+    violet: { badge: "bg-violet-500/10 border-violet-500/20 text-violet-400/80", dot: "bg-violet-400", btn: "hover:text-violet-300" },
+    sky:    { badge: "bg-sky-500/10 border-sky-500/20 text-sky-400/80",         dot: "bg-sky-400",   btn: "hover:text-sky-300" },
+    green:  { badge: "bg-green-500/10 border-green-500/20 text-green-400/80",   dot: "bg-green-400", btn: "hover:text-green-300" },
+    white:  { badge: "bg-white/5 border-white/10 text-white/60",               dot: "bg-white/40",  btn: "hover:text-white/80" },
+  };
+  const c = accentColors[accent];
+  return (
+    <div className="border border-white/5 rounded-xl overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-white/[0.018] hover:bg-white/[0.026] transition-colors"
+      >
+        <div className="flex items-center gap-2.5">
+          <div className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
+          <span className="text-xs font-bold tracking-widest uppercase text-white/50">{block.title}</span>
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${c.badge}`}>
+            {block.items.length} items
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onCopy(formatBlockForClipboard(block)); }}
+            className={`text-[9px] font-semibold text-white/25 ${c.btn} transition-colors flex items-center gap-1`}
+          >
+            <Copy className="w-2.5 h-2.5" /> Copy
+          </button>
+          <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        </div>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 py-3 space-y-3 bg-white/[0.01]">
+              {block.items.map(({ label, value }) => (
+                <div key={label} className="grid grid-cols-[140px_1fr] gap-3 items-start">
+                  <span className="text-[10px] font-bold text-white/30 uppercase tracking-wide leading-relaxed pt-0.5 shrink-0">{label}</span>
+                  <p className="text-xs text-white/55 leading-relaxed">{value}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function StudioExportNotesCard({
+  exportNotes, isProducer, onCopyAll, onCopyBlock,
+}: {
+  exportNotes: import("@/lib/audioIntelligence").StudioExportNotes;
+  isProducer: boolean;
+  onCopyAll: () => void;
+  onCopyBlock: (block: ExportNoteBlock) => void;
+}) {
+  const footerButtons: { key: keyof typeof exportNotes; label: string; accent: string }[] = [
+    { key: "artist",    label: "Copy Artist Notes",    accent: "text-amber-400/70" },
+    { key: "producer",  label: "Copy Producer Notes",  accent: "text-sky-400/70" },
+    { key: "recording", label: "Copy Recording Notes", accent: "text-violet-400/70" },
+    { key: "session",   label: "Copy Session Notes",   accent: "text-green-400/70" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.35 }}
+      className="rounded-2xl border border-amber-500/15 bg-gradient-to-b from-amber-500/[0.04] to-transparent overflow-hidden"
+    >
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/12 border border-amber-500/20 flex items-center justify-center">
+            <FileText className="w-4 h-4 text-amber-400/80" />
+          </div>
+          <div>
+            <div className="text-xs font-bold tracking-widest uppercase text-amber-400/80">Studio Export Notes</div>
+            <div className="text-[10px] text-white/30 mt-0.5">
+              {isProducer
+                ? "Full production brief — artist, producer, recording & engineering"
+                : "Artist & producer brief — vocal, recording & session guidance"}
+            </div>
+          </div>
+        </div>
+        <button type="button" onClick={onCopyAll}
+          className="h-8 px-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[10px] font-semibold text-amber-400/80 hover:bg-amber-500/18 hover:text-amber-300 transition-all flex items-center gap-1.5"
+        >
+          <Copy className="w-3 h-3" /> Copy All Notes
+        </button>
+      </div>
+
+      {/* Note Sections */}
+      <div className="p-4 space-y-2">
+        <ExportSection block={exportNotes.artist}    accent="amber"  onCopy={onCopyBlock} />
+        <ExportSection block={exportNotes.producer}  accent="sky"    onCopy={onCopyBlock} />
+        <ExportSection block={exportNotes.recording} accent="violet" onCopy={onCopyBlock} />
+        <ExportSection block={exportNotes.session}   accent="green"  onCopy={onCopyBlock} />
+        {exportNotes.producerDeep && (
+          <ExportSection block={exportNotes.producerDeep} accent="white" onCopy={onCopyBlock} />
+        )}
+      </div>
+
+      {/* Footer copy row */}
+      <div className="px-4 pb-4 pt-3 border-t border-white/4 flex flex-wrap gap-2">
+        {footerButtons.map(({ key, label, accent }) => {
+          const block = exportNotes[key] as ExportNoteBlock | undefined;
+          if (!block) return null;
+          return (
+            <button key={key} type="button" onClick={() => onCopyBlock(block)}
+              className={`h-7 px-3 rounded-lg bg-white/3 border border-white/6 text-[10px] font-semibold ${accent} hover:bg-white/6 hover:border-white/12 transition-all flex items-center gap-1.5`}
+            >
+              <Copy className="w-2.5 h-2.5" /> {label}
+            </button>
+          );
+        })}
+      </div>
+    </motion.div>
   );
 }
 
@@ -1053,6 +1194,31 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
           </ResultCard>
 
         </div>
+
+        {/* ── Studio Export Notes ── */}
+        <AnimatePresence>
+          {intelligence?.exportNotes && instrumentalStatus === "success" && (
+            <StudioExportNotesCard
+              exportNotes={intelligence.exportNotes}
+              isProducer={isProducer}
+              onCopyAll={() => {
+                const notes = intelligence.exportNotes;
+                const all = [notes.artist, notes.producer, notes.recording, notes.session, ...(notes.producerDeep ? [notes.producerDeep] : [])]
+                  .map(formatBlockForClipboard).join("\n\n" + "─".repeat(60) + "\n\n");
+                navigator.clipboard.writeText(all).then(
+                  () => toast({ title: "All notes copied", description: "Paste into your DAW notes, Notion, or producer email." }),
+                  () => toast({ title: "Copy failed", variant: "destructive" }),
+                );
+              }}
+              onCopyBlock={(block) => {
+                navigator.clipboard.writeText(formatBlockForClipboard(block)).then(
+                  () => toast({ title: `${block.title} copied`, description: "Ready to paste." }),
+                  () => toast({ title: "Copy failed", variant: "destructive" }),
+                );
+              }}
+            />
+          )}
+        </AnimatePresence>
 
         {/* ── Session export bar ── */}
         <AnimatePresence>

@@ -667,6 +667,245 @@ export function buildArrangementMap(opts: {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Studio Export Notes Builder
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ExportNoteItem {
+  label: string;
+  value: string;
+}
+
+export interface ExportNoteBlock {
+  title: string;
+  items: ExportNoteItem[];
+}
+
+export interface StudioExportNotes {
+  artist: ExportNoteBlock;
+  producer: ExportNoteBlock;
+  recording: ExportNoteBlock;
+  session: ExportNoteBlock;
+  producerDeep?: ExportNoteBlock;
+}
+
+function emotionalDirection(tone: LyricsTone, genre: string): string {
+  const toneMap: Record<LyricsTone, string> = {
+    spiritual:  "Carry reverence through every phrase — this song lifts, it doesn't just play. The emotional arc should feel like prayer answered.",
+    intimate:   "This is a song for one person. The emotional direction is closeness — keep the delivery private, like you're speaking only to them.",
+    street:     "Confidence is the emotion here — not aggression, not sadness, just the quiet power of someone who has survived and is still standing.",
+    party:      "Pure joy and collective energy. The emotion is release — freedom on the dancefloor, bodies moving, no thinking needed.",
+    defiant:    "This song pushes back. The emotional direction is resilience — let every line feel like it cost something to say.",
+    neutral:    `Stay true to the ${genre} emotional palette — let the genre carry the feeling where the lyrics leave space.`,
+  };
+  return toneMap[tone];
+}
+
+function hookProtection(tone: LyricsTone, genre: string, styleInfluence: StyleInfluence): string {
+  const base: Record<LyricsTone, string> = {
+    spiritual:  "Protect the simplicity of the hook — a worship hook should be easy for a congregation to sing back immediately.",
+    intimate:   "Protect the vulnerability of the hook — if it sounds too polished, it loses its emotional weight.",
+    street:     "Protect the punch of the hook — it must land on the 1, sound confident on a phone speaker, and work in a crowd.",
+    party:      "Protect the repetition — a party hook lives on its chant-ability, not lyrical depth.",
+    defiant:    "Protect the rawness — don't over-produce the hook or you'll lose what makes it powerful.",
+    neutral:    "Protect the melodic identity of the hook — it should be immediately identifiable after one listen.",
+  };
+  const styleExtra = styleInfluence !== "neutral"
+    ? ` The ${styleInfluence.replace("-", " ")} production direction adds context — honor that feel when finalising the hook.`
+    : "";
+  return base[tone] + styleExtra;
+}
+
+function genreHarmonyIdea(genre: string): string {
+  const map: Record<string, string> = {
+    Afrobeats:    "Double-track the hook at the unison — same key, slight timing drift. Harmony a 3rd above on the long notes only.",
+    Dancehall:    "Harmony is rare in Dancehall — use it sparingly, only on sustained hook notes. A detuned layer panned wide creates space without crowding.",
+    Amapiano:     "Keep the vocal dry and isolated. Harmony arrives late — a 4th above, fading in at the second chorus only.",
+    Gospel:       "Stack a full choir — soprano, alto, and tenor layers. Spread across the stereo field. The harmony IS the song.",
+    "Afro-fusion": "Tight harmony a 3rd above the hook. Keep it intimate — no wide stacks, the intimacy must stay intact.",
+    "R&B Afro":   "Ad-lib harmony: call-and-response between the lead and a double a semitone above. Keeps it modern and personal.",
+    "Street Pop": "Double-track for thickness — same line, tight double. Harmony a 5th above on the biggest hook word only.",
+  };
+  return map[genre] ?? "Harmonise the hook a major third above — keep the double-track tight and panned within ±15L/R.";
+}
+
+function genreStereoWidth(genre: string, isProducer: boolean): string {
+  const map: Record<string, string> = {
+    Afrobeats:    "Kick and bass stay mono. Pad spread: ±60L/R. Percussion: ±40. Melody at ±25. Keep the low end tight for system translation.",
+    Dancehall:    "Everything below 200Hz stays mono. Skank guitar: hard pan ±70L/R. Rim clicks: center. Hi-hats: ±35.",
+    Amapiano:     "Piano at ±55L/R. Log drum: center with slight room reverb. Melody fills: ±45. Preserve the club mono compatibility.",
+    Gospel:       "Choir spread: full ±90L/R for the outer layers. Inner choir: ±45. Piano: center. Reverb tails: wide and long.",
+    "Afro-fusion": "Everything stays intimate — max ±50L/R. Reverb tails handle the width, not hard panning. Mid-heavy mix.",
+    "R&B Afro":   "808 and bass: mono. Synth pads: ±65. Melody: ±30. Ad-libs: wide ±75 for depth. Modern RnB width profile.",
+    "Street Pop": "Bass mono. Synth chords: ±60. Hi-hats and percussion: ±45. Hook doubles: ±25. Mastering limiter at -1.5 LUFS.",
+  };
+  return map[genre] ?? "Keep bass and kick mono. Spread pads and melody across the stereo field. Check mono compatibility before mixing.";
+}
+
+function tensionRelease(genre: string, transitionStyle: string, chorusLift: string, energy: string): string {
+  const energyWord = energy === "Low" ? "subtle" : energy === "High" ? "maximum" : "measured";
+  return `Tension builds in the pre-chorus — ${energyWord} layering toward the drop. ` +
+    `Release arrives at the chorus with "${chorusLift}" approach. ` +
+    `Section transitions handled via ${transitionStyle} — this is the track's main tension arc.`;
+}
+
+function introBehaviorDetail(introBehavior: string, genre: string): string {
+  const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
+  const map: Record<string, string> = {
+    "Cold open":           `No build — the first bar hits immediately with the main groove. ${profile.arrangement.split("→")[0].trim()}. Hook-first energy.`,
+    "Build up":            `Gradual layering from a single element — ${profile.arrangement.split("→")[0].trim()}. Layers stack over 8 bars before the verse locks in.`,
+    "Atmospheric fade-in": `Reverb-soaked pad opens — the first 4 bars exist purely in atmosphere. Groove enters at bar 5 without warning.`,
+    "Drum roll in":        `Snare roll or percussion build for 2 bars, then the main groove lands on the 1. Creates immediate physical impact.`,
+    "Acapella intro":      `Vocal opens alone — no music for the first 4–8 bars. The arrangement enters only after the hook is established vocally.`,
+  };
+  return map[introBehavior] ?? `Intro behavior: ${introBehavior}. Follow the ${genre} arrangement convention.`;
+}
+
+function dropBehaviorDetail(chorusLift: string, energy: string, genre: string): string {
+  const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
+  const map: Record<string, string> = {
+    "Sudden drop":          `The chorus hits with zero build — full arrangement immediately on the 1. The impact IS the drop. ${energy === "High" ? "Maximum weight." : "Controlled impact."}`,
+    "Gradual swell":        `Layers stack over 4 bars — pads, then melody, then bass, then kick. The chorus arrives feeling inevitable.`,
+    "Strip-back & explode": `Pre-chorus strips everything to a single element, then the chorus detonates on the 1. The silence creates the impact.`,
+    "Key change lift":      `A half-step or whole-step key change at the chorus entry. The pitch shift carries the emotional lift. ${profile.hookStyle}.`,
+    "Layer stack":          `Each chorus adds one new layer — first chorus minimal, second chorus half-stack, final chorus full arrangement.`,
+  };
+  return map[chorusLift] ?? `Chorus drop: ${chorusLift}. Follow the natural ${genre} lift convention.`;
+}
+
+function outroLandingDetail(outroStyle: string, genre: string): string {
+  const map: Record<string, string> = {
+    "Fade out":       "Traditional fade — the groove continues, volume drops over 8–16 bars. Works for streaming and radio formats.",
+    "Cold cut":       "The track ends on a specific beat — no tail, no fade. Intentional and impactful. Common in modern Afrobeats and Dancehall.",
+    "Loop decay":     "The last 4 bars loop while layers are progressively removed. The kick is always the last element to leave.",
+    "Outro chant":    "The hook line repeats as a chant — stripped of the main arrangement. Ad-libs and crowd response fill the space.",
+    "Breakdown end":  "Full strip-down in the final 8 bars — minimal arrangement, raw vocal or percussion, then a clean cut.",
+  };
+  return map[outroStyle] ?? `Outro: ${outroStyle}. Consider how this landing feels in the context of the full session.`;
+}
+
+export function buildStudioExportNotes(opts: {
+  genre: string;
+  bpm: string;
+  key: string;
+  energy: string;
+  section: string;
+  vocalLabel: string;
+  isInstrumentalMode: boolean;
+  isProducer: boolean;
+  lyricsTone: LyricsTone;
+  styleInfluence: StyleInfluence;
+  styleDesc: string;
+  hookFocus: string;
+  arrangementStyle: string;
+  introBehavior?: string;
+  chorusLift?: string;
+  drumDensity?: string;
+  bassWeight?: string;
+  transitionStyle?: string;
+  outroStyle?: string;
+}): StudioExportNotes {
+  const {
+    genre, bpm, key, energy, section, vocalLabel, isInstrumentalMode, isProducer,
+    lyricsTone, styleInfluence, styleDesc, hookFocus, arrangementStyle,
+    introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
+  } = opts;
+
+  const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
+  const e = energy as "Low" | "Medium" | "High";
+  const tone = toneTag(lyricsTone);
+  const intensity = vocalIntensity(energy);
+  const cl = chorusLift ?? "Gradual swell";
+  const ts = transitionStyle ?? "Filter sweep";
+  const os = outroStyle ?? "Fade out";
+  const ib = introBehavior ?? "Build up";
+  const dd = drumDensity ?? "Mid";
+  const bw = bassWeight ?? "Punchy sub";
+
+  const sectionGoal = section === "hook"   ? "Nail the hook — one take, maximum replay energy, crowd-chant ready"
+    : section === "verse"  ? "Get the verse pocket locked — cadence, phrasing, and rhythm over everything"
+    : section === "chorus" ? "Build the chorus — lift, emotion, and replay value are the only priorities"
+    : "Full production session — track, arrange, and lock the complete song structure";
+
+  const strongestSection = section === "hook" || section === "chorus"
+    ? `The hook is engineered as the centrepiece — ${profile.hookStyle}`
+    : energy === "High"
+    ? `Chorus and final drop — high energy coded in, these sections carry the most impact`
+    : `The verse and hook together — the phrasing and melodic lift are where this session shines`;
+
+  const replaySection = lyricsTone === "party" || styleInfluence === "club-pressure"
+    ? "The drop/chorus — replay-coded for dancefloor context. Loop it 3x in the session to feel if it holds."
+    : lyricsTone === "spiritual" || styleInfluence === "spiritual-lift"
+    ? "The bridge — the emotional peak of the arrangement. This is what listeners will return to."
+    : "The hook — protect it, replay it, and ask yourself after every take: would a stranger hum this?";
+
+  const artistBlock: ExportNoteBlock = {
+    title: "Artist Notes",
+    items: [
+      { label: "Emotional Direction",   value: emotionalDirection(lyricsTone, genre) },
+      { label: "Vocal Delivery Summary",value: `${vocalLabel} — ${profile.vocalCharacter}. Delivery intensity: ${intensity}.` },
+      { label: "Hook Focus",            value: hookFocus },
+      { label: "Ad-lib Behavior",       value: `${profile.vocalCharacter.split(",")[0].trim()} — ad-libs should ghost the main line, sitting just above it in the pocket. ${lyricsTone === "party" ? "High-energy crowd chants encouraged." : lyricsTone === "spiritual" ? "Keep ad-libs reverent — no performative runs." : "Let the ad-libs breathe, never overcrowd the hook."}` },
+    ],
+  };
+
+  const producerBlock: ExportNoteBlock = {
+    title: "Producer Notes",
+    items: [
+      { label: "Groove Pocket",         value: `${profile.kick[e]} — ${profile.snare[e]}` },
+      { label: "Drum Behavior",         value: `${dd} density. ${profile.kick[e]}. Snare: ${profile.snare[e]}.` },
+      { label: "Bass Movement",         value: `${bw} weight. ${profile.bass[e]}` },
+      { label: "Texture Suggestions",   value: profile.pads },
+      { label: "Arrangement Build",     value: arrangementStyle },
+      { label: "Percussion Layer",      value: profile.perc },
+      ...(styleInfluence !== "neutral" ? [{ label: "Style Reference Signal", value: styleDesc }] : []),
+    ],
+  };
+
+  const recordingBlock: ExportNoteBlock = {
+    title: "Recording Notes",
+    items: [
+      { label: "Verse Delivery",        value: `${profile.verseStyle} — tone reads ${tone}. ${intensity} delivery.` },
+      { label: "Chorus Stack",          value: `${profile.hookStyle} — chorus approach: ${cl}. Push to full projection.` },
+      { label: "Harmony & Double Ideas",value: genreHarmonyIdea(genre) },
+      { label: "Vocal Tone",            value: `${profile.vocalCharacter}. ${isInstrumentalMode ? "No vocal booth session needed." : `Booth setup: close-mic dynamic, minimal tracking reverb, leave 6dB headroom.`}` },
+    ],
+  };
+
+  const sessionBlock: ExportNoteBlock = {
+    title: "Session Notes",
+    items: [
+      { label: "Ideal Session Goal",    value: sectionGoal },
+      { label: "Strongest Section",     value: strongestSection },
+      { label: "Replay Section",        value: replaySection },
+      { label: "What to Protect",       value: hookProtection(lyricsTone, genre, styleInfluence) },
+    ],
+  };
+
+  let producerDeepBlock: ExportNoteBlock | undefined;
+  if (isProducer) {
+    producerDeepBlock = {
+      title: "Engineering Deep Notes",
+      items: [
+        { label: "Intro Bar Feel",          value: introBehaviorDetail(ib, genre) },
+        { label: "Drop Behavior",           value: dropBehaviorDetail(cl, energy, genre) },
+        { label: "Bridge Strip-down",       value: `${profile.bridgeStyle}. This is the emotional vulnerability point — protect the space here.` },
+        { label: "Outro Landing",           value: outroLandingDetail(os, genre) },
+        { label: "Stereo Width",            value: genreStereoWidth(genre, isProducer) },
+        { label: "Tension / Release",       value: tensionRelease(genre, ts, cl, energy) },
+      ],
+    };
+  }
+
+  return {
+    artist: artistBlock,
+    producer: producerBlock,
+    recording: recordingBlock,
+    session: sessionBlock,
+    producerDeep: producerDeepBlock,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Full Intelligence Builder — called once on generate, returns all card data
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -681,6 +920,7 @@ export interface FullIntelligence {
   lyricsTone: LyricsTone;
   styleInfluence: StyleInfluence;
   styleDesc: string;
+  exportNotes: StudioExportNotes;
 }
 
 export function buildFullIntelligence(opts: {
@@ -750,8 +990,17 @@ export function buildFullIntelligence(opts: {
     transitionStyle: transitionStyle ?? "Filter sweep",
   });
 
+  const exportNotes = buildStudioExportNotes({
+    genre, bpm, key, energy, section, vocalLabel,
+    isInstrumentalMode, isProducer,
+    lyricsTone, styleInfluence, styleDesc, hookFocus, arrangementStyle,
+    ...(isProducer
+      ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle }
+      : {}),
+  });
+
   return {
     stems, vocalSections, arrangementStyle, hookFocus, producerNotes,
-    beatSummary, arrangementMap, lyricsTone, styleInfluence, styleDesc,
+    beatSummary, arrangementMap, lyricsTone, styleInfluence, styleDesc, exportNotes,
   };
 }
