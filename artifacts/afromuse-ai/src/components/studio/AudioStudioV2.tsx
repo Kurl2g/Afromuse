@@ -109,6 +109,31 @@ interface MixMasterSessionData {
   stemsNotes: string | null;
 }
 
+interface StemTrackData {
+  name: string;
+  extractionNotes: string;
+  gainLevel: string;
+  fileSpec: string;
+}
+
+interface StemExtractionSessionData {
+  extractionBrief: string;
+  stems: StemTrackData[];
+  phaseAlignmentNotes: string;
+  dawImportGuide: string;
+  recommendedTool: string;
+}
+
+const ALL_STEMS = ["Drums", "Bass", "Synths", "Vocals", "Effects"] as const;
+
+const STEM_COLORS: Record<string, { bg: string; border: string; text: string; sub: string }> = {
+  "Drums":   { bg: "bg-orange-500/[0.04]",  border: "border-orange-500/12",  text: "text-orange-400/65", sub: "text-orange-300/55"  },
+  "Bass":    { bg: "bg-red-500/[0.04]",     border: "border-red-500/12",     text: "text-red-400/65",    sub: "text-red-300/55"    },
+  "Synths":  { bg: "bg-violet-500/[0.04]",  border: "border-violet-500/12",  text: "text-violet-400/65", sub: "text-violet-300/55" },
+  "Vocals":  { bg: "bg-pink-500/[0.04]",    border: "border-pink-500/12",    text: "text-pink-400/65",   sub: "text-pink-300/55"   },
+  "Effects": { bg: "bg-sky-500/[0.04]",     border: "border-sky-500/12",     text: "text-sky-400/65",    sub: "text-sky-300/55"    },
+};
+
 const MIX_FEEL_OPTIONS = [
   "Balanced",
   "Dry & Punchy",
@@ -849,6 +874,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [mixVocalUrl,        setMixVocalUrl]        = useState("");
   const [mixMasterFeel,      setMixMasterFeel]      = useState("Balanced");
   const [mixIncludeStems,    setMixIncludeStems]    = useState(false);
+  const [stemStatus,         setStemStatus]         = useState<CardStatus>("idle");
+  const [stemData,           setStemData]           = useState<StemExtractionSessionData | null>(null);
+  const [stemMasteredUrl,    setStemMasteredUrl]    = useState("");
+  const [selectedStems,      setSelectedStems]      = useState<string[]>([...ALL_STEMS]);
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
   const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
 
@@ -1112,6 +1141,70 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     }
   };
 
+  const handleExtractStems = async () => {
+    if (!stemMasteredUrl) {
+      toast({ title: "Track URL required", description: "Add the mastered track URL before extracting stems.", variant: "destructive" });
+      return;
+    }
+    if (selectedStems.length === 0) {
+      toast({ title: "Select stems", description: "Choose at least one stem to extract.", variant: "destructive" });
+      return;
+    }
+    setStemStatus("loading");
+    setStemData(null);
+    try {
+      const defaults    = getGenreDefaults(audioGenre);
+      const resolvedBpm = bpm ? Number(bpm) : undefined;
+      const resolvedKey = musicalKey || defaults.key;
+      const res = await fetch("/api/extract-stems", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          masteredUrl: stemMasteredUrl,
+          stems:       selectedStems,
+          genre:       audioGenre,
+          bpm:         resolvedBpm,
+          key:         resolvedKey,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to start stem extraction");
+      const { jobId } = await res.json() as { jobId: string };
+      const MAX_POLLS = 20;
+      let polls = 0;
+      while (polls < MAX_POLLS) {
+        await new Promise((r) => setTimeout(r, 2500));
+        polls++;
+        try {
+          const poll = await fetch(`/api/audio-job/${jobId}`);
+          if (!poll.ok) throw new Error("Poll failed");
+          const data = await poll.json() as {
+            status: string;
+            stemExtractionSessionData?: StemExtractionSessionData;
+            error?: string;
+          };
+          if (data.status === "completed") {
+            setStemData(data.stemExtractionSessionData ?? null);
+            setStemStatus("success");
+            return;
+          }
+          if (data.status === "failed") {
+            setStemStatus("error");
+            toast({ title: "Stem extraction failed", description: data.error ?? "Please try again.", variant: "destructive" });
+            return;
+          }
+        } catch {
+          setStemStatus("error");
+          return;
+        }
+      }
+      setStemStatus("error");
+      toast({ title: "Request timed out", description: "The server took too long. Please try again.", variant: "destructive" });
+    } catch {
+      setStemStatus("error");
+      toast({ title: "Generation failed", description: "Could not start stem extraction.", variant: "destructive" });
+    }
+  };
+
   const handleGenerateFull = () => {
     if (!isInstrumentalMode && !validateForVocal()) return;
     setInstrumentalStatus("idle");
@@ -1147,8 +1240,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     });
   };
 
-  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success";
-  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading" || mixMasterStatus === "loading";
+  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success" || stemStatus === "success";
+  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading" || mixMasterStatus === "loading" || stemStatus === "loading";
   const genreDefaults = getGenreDefaults(audioGenre);
 
   const BUILD_MODES = [
@@ -1835,6 +1928,104 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               {mixMasterStatus === "success" && (
                 <p className="text-[10px] text-green-400/60 text-center mt-2 flex items-center justify-center gap-1">
                   <Check className="w-3 h-3" /> Mix brief ready — scroll down to view
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════
+            SECTION 3c — STEM EXTRACTION
+        ══════════════════════════════════════════ */}
+        <div>
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-5 h-5 rounded-md bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
+              <Layers className="w-3 h-3 text-orange-400" />
+            </div>
+            <div>
+              <h3 className="text-[11px] font-bold tracking-widest uppercase text-white/55">Stem Extraction</h3>
+              <p className="text-[10px] text-white/25 mt-0.5">Generate phase-aligned stem guidance for DAW-ready import.</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-orange-500/12 bg-orange-500/[0.018] p-5 space-y-5">
+            {/* Mastered Track URL */}
+            <div>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                Final Mix Track URL
+                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">required</span>
+              </label>
+              <div className="relative">
+                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-orange-400/40 pointer-events-none" />
+                <input
+                  type="url"
+                  value={stemMasteredUrl}
+                  onChange={(e) => setStemMasteredUrl(e.target.value)}
+                  placeholder="https://yourdrive.com/mastered-track.wav  or  SoundCloud / Drive link..."
+                  className="w-full h-10 rounded-xl bg-white/4 border border-white/8 pl-9 pr-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-orange-500/35 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Stem selector */}
+            <div>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                Stems to Extract
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {ALL_STEMS.map((stem) => {
+                  const active = selectedStems.includes(stem);
+                  const c = STEM_COLORS[stem];
+                  return (
+                    <button
+                      key={stem}
+                      type="button"
+                      onClick={() => setSelectedStems(prev =>
+                        prev.includes(stem) ? prev.filter(s => s !== stem) : [...prev, stem]
+                      )}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-semibold border transition-all ${
+                        active
+                          ? `${c.bg} ${c.border} ${c.text}`
+                          : "bg-white/3 border-white/6 text-white/30 hover:border-white/15 hover:text-white/50"
+                      }`}
+                    >
+                      {active && <Check className="w-2.5 h-2.5" />}
+                      {stem}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-white/15 mt-2 italic">All five stems selected by default — deselect any you don&apos;t need.</p>
+            </div>
+
+            {/* Generate CTA */}
+            <div className="pt-1 border-t border-orange-500/10">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.98 }}
+                disabled={stemStatus === "loading"}
+                onClick={() => void handleExtractStems()}
+                className={`w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-2.5 transition-all ${
+                  stemStatus === "loading"
+                    ? "bg-orange-500/8 border border-orange-500/15 text-orange-400/40 cursor-not-allowed"
+                    : "bg-gradient-to-r from-orange-600/22 to-orange-500/12 border border-orange-500/32 text-orange-300 hover:from-orange-600/32 hover:to-orange-500/20 hover:border-orange-500/48 shadow-[0_0_20px_rgba(249,115,22,0.08)]"
+                }`}
+              >
+                {stemStatus === "loading" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-orange-400/60" />
+                    <span>Generating Stem Brief…</span>
+                  </>
+                ) : (
+                  <>
+                    <Layers className="w-4 h-4" />
+                    <span>Extract Stems</span>
+                  </>
+                )}
+              </motion.button>
+              {stemStatus === "success" && (
+                <p className="text-[10px] text-green-400/60 text-center mt-2 flex items-center justify-center gap-1">
+                  <Check className="w-3 h-3" /> Stem guide ready — scroll down to view
                 </p>
               )}
             </div>
@@ -2677,6 +2868,154 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         );
                       }}
                       className="h-8 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/22 text-[10px] font-semibold text-emerald-400/80 hover:bg-emerald-500/16 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                    >
+                      <Copy className="w-3 h-3" /> Copy Full Brief
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Stem Extraction Result Panel ── */}
+        <AnimatePresence>
+          {(stemStatus === "loading" || stemStatus === "success" || stemStatus === "error") && (
+            <motion.div
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+              className="rounded-2xl border overflow-hidden"
+              style={{ borderColor: stemStatus === "success" ? "rgba(249,115,22,0.22)" : stemStatus === "loading" ? "rgba(249,115,22,0.15)" : "rgba(239,68,68,0.15)" }}
+            >
+              {/* header */}
+              <div className={`px-5 py-3.5 flex items-center justify-between border-b ${
+                stemStatus === "success" ? "bg-orange-500/[0.07] border-orange-500/18"
+                : stemStatus === "loading" ? "bg-orange-500/[0.04] border-orange-500/10"
+                : "bg-red-500/[0.04] border-red-500/10"
+              }`}>
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                    stemStatus === "success" ? "bg-orange-500/18 border border-orange-500/30 text-orange-400"
+                    : stemStatus === "loading" ? "bg-orange-500/10 border border-orange-500/18 text-orange-400/50"
+                    : "bg-red-500/10 border border-red-500/20 text-red-400"
+                  }`}>
+                    <Layers className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white/75">Stem Extraction Brief</div>
+                    <div className="text-[9px] text-white/30 mt-0.5">
+                      {stemStatus === "loading" ? "AfroMuse Stem Intelligence is preparing your extraction guide…"
+                      : stemStatus === "success" ? "Phase-aligned, DAW-ready stem guidance"
+                      : "Stem extraction brief encountered an error"}
+                    </div>
+                  </div>
+                </div>
+                {stemStatus === "success" && <span className="text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full bg-orange-500/12 border border-orange-500/25 text-orange-400/80">Ready</span>}
+                {stemStatus === "loading" && <Loader2 className="w-4 h-4 animate-spin text-orange-400/50" />}
+              </div>
+
+              {/* loading shimmer */}
+              {stemStatus === "loading" && (
+                <div className="px-5 py-6 space-y-3 bg-orange-500/[0.01]">
+                  {["w-4/5", "w-3/4", "w-5/6", "w-2/3"].map((w, i) => (
+                    <div key={i} className={`h-2.5 ${w} rounded-full bg-orange-500/10 animate-pulse`} style={{ animationDelay: `${i * 0.12}s` }} />
+                  ))}
+                </div>
+              )}
+
+              {/* error */}
+              {stemStatus === "error" && (
+                <div className="px-5 py-5 flex items-start gap-3 bg-red-500/[0.03]">
+                  <AlertCircle className="w-4 h-4 text-red-400/70 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-red-300/60 leading-relaxed">Stem extraction brief failed. Check your track URL and try again.</p>
+                </div>
+              )}
+
+              {/* result body */}
+              {stemStatus === "success" && stemData && (
+                <div className="px-5 py-5 space-y-4 bg-orange-500/[0.012]">
+                  {/* Brief headline */}
+                  <div className="rounded-xl bg-orange-500/[0.06] border border-orange-500/15 px-4 py-3.5">
+                    <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-orange-400/55 mb-2">Extraction Vision</div>
+                    <p className="text-sm font-semibold text-white/75 leading-relaxed">{stemData.extractionBrief}</p>
+                  </div>
+
+                  {/* Tool recommendation */}
+                  <div className="rounded-xl bg-white/[0.02] border border-white/6 px-4 py-3 flex items-start gap-2.5">
+                    <Radio className="w-3.5 h-3.5 text-white/30 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-[9px] font-bold tracking-widest uppercase text-white/28 mb-1">Recommended Tool</div>
+                      <p className="text-[10.5px] text-white/50 leading-relaxed">{stemData.recommendedTool}</p>
+                    </div>
+                  </div>
+
+                  {/* Individual stems */}
+                  <div className="space-y-3">
+                    {stemData.stems.map((stem) => {
+                      const c = STEM_COLORS[stem.name] ?? STEM_COLORS["Effects"];
+                      return (
+                        <div key={stem.name} className={`rounded-xl border px-4 py-3.5 ${c.bg} ${c.border}`}>
+                          <div className="flex items-center justify-between mb-2.5">
+                            <div className={`text-[10px] font-bold tracking-[0.12em] uppercase ${c.text}`}>{stem.name}</div>
+                            <button
+                              type="button"
+                              onClick={() => toast({ title: "Coming soon", description: `${stem.name} WAV download will be available in a future update.` })}
+                              className={`h-6 px-2.5 rounded-lg text-[9px] font-semibold flex items-center gap-1 border transition-all ${c.bg} ${c.border} ${c.text} hover:opacity-80`}
+                            >
+                              <Download className="w-2.5 h-2.5" /> Download WAV
+                            </button>
+                          </div>
+                          <p className={`text-[10px] leading-relaxed mb-1.5 ${c.sub}`}>{stem.extractionNotes}</p>
+                          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                            <span className="text-[9px] text-white/25"><span className="text-white/40 font-semibold">Gain:</span> {stem.gainLevel}</span>
+                            <span className="text-[9px] text-white/25"><span className="text-white/40 font-semibold">File:</span> {stem.fileSpec}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Phase alignment + DAW import */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="rounded-xl bg-white/[0.02] border border-white/6 px-4 py-3.5">
+                      <div className="text-[9px] font-bold tracking-widest uppercase text-white/28 mb-1.5">Phase Alignment</div>
+                      <p className="text-[10px] text-white/45 leading-relaxed">{stemData.phaseAlignmentNotes}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/[0.02] border border-white/6 px-4 py-3.5">
+                      <div className="text-[9px] font-bold tracking-widest uppercase text-white/28 mb-1.5">DAW Import Guide</div>
+                      <p className="text-[10px] text-white/45 leading-relaxed">{stemData.dawImportGuide}</p>
+                    </div>
+                  </div>
+
+                  {/* Copy full brief */}
+                  <div className="pt-2 border-t border-orange-500/10 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!stemData) return;
+                        const lines = [
+                          "STEM EXTRACTION BRIEF",
+                          "",
+                          `Extraction Vision: ${stemData.extractionBrief}`,
+                          "",
+                          `Recommended Tool: ${stemData.recommendedTool}`,
+                          "",
+                          ...stemData.stems.flatMap((s) => [
+                            `── ${s.name} ──`,
+                            `Extraction Notes: ${s.extractionNotes}`,
+                            `Gain Level: ${s.gainLevel}`,
+                            `File Spec: ${s.fileSpec}`,
+                            "",
+                          ]),
+                          `Phase Alignment:\n${stemData.phaseAlignmentNotes}`,
+                          "",
+                          `DAW Import Guide:\n${stemData.dawImportGuide}`,
+                        ].join("\n");
+                        navigator.clipboard.writeText(lines).then(
+                          () => toast({ title: "Stem brief copied", description: "Ready to paste into your engineer notes or DAW session." }),
+                          () => toast({ title: "Copy failed", variant: "destructive" }),
+                        );
+                      }}
+                      className="h-8 px-4 rounded-xl bg-orange-500/10 border border-orange-500/22 text-[10px] font-semibold text-orange-400/80 hover:bg-orange-500/16 hover:text-orange-300 transition-all flex items-center gap-1.5"
                     >
                       <Copy className="w-3 h-3" /> Copy Full Brief
                     </button>

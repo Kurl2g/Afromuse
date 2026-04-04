@@ -50438,6 +50438,7 @@ function createJob(type) {
     sessionData: null,
     leadVocalSessionData: null,
     mixMasterSessionData: null,
+    stemExtractionSessionData: null,
     error: null,
     createdAt: Date.now()
   };
@@ -50764,7 +50765,8 @@ router3.get("/audio-job/:jobId", (req, res) => {
       metadata: job.metadata,
       sessionData: job.sessionData,
       leadVocalSessionData: job.leadVocalSessionData,
-      mixMasterSessionData: job.mixMasterSessionData
+      mixMasterSessionData: job.mixMasterSessionData,
+      stemExtractionSessionData: job.stemExtractionSessionData
     });
     return;
   }
@@ -50851,6 +50853,87 @@ router3.post("/mix-master", async (req, res) => {
     job.error = "Mix master generation failed";
   });
   logger.info({ jobId: job.id, feel: payload.mixFeel, genre: payload.genre }, "Mix master job created");
+  res.json({ success: true, jobId: job.id, status: "processing" });
+});
+var STEM_EXTRACTION_SYSTEM_PROMPT = `You are AfroMuse Stem Intelligence \u2014 an elite AI stem engineer specialising in Afro-inspired music production (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+You receive a session configuration and return a detailed stem extraction brief as structured JSON.
+Your output gives precise, phase-aware extraction guidance for each requested stem so the result is clean, phase-aligned, and ready for DAW import.
+
+Return ONLY a raw JSON object \u2014 no markdown fences, no commentary \u2014 with these exact keys:
+{
+  "extractionBrief": "Concise one-sentence overview of the extraction approach and session character",
+  "stems": [
+    {
+      "name": "Drums",
+      "extractionNotes": "Specific guidance for isolating this stem: source grouping, frequency emphasis, bleed reduction, and separation quality expectations",
+      "gainLevel": "Target output gain in dBFS and any trimming notes for DAW headroom",
+      "fileSpec": "Exact file spec: bit depth, sample rate, format, naming convention"
+    }
+  ],
+  "phaseAlignmentNotes": "How to verify and ensure all stems are phase-aligned after export: null-test technique, time alignment check, mono-compatibility validation",
+  "dawImportGuide": "Step-by-step guide to importing all stems into a DAW session: track naming, routing, tempo/grid alignment, and colour-coding recommendation",
+  "recommendedTool": "Best-in-class tool(s) for this extraction (e.g., iZotope RX, Demucs, Spleeter, stems from your original session, UAD stem splitter) with brief rationale"
+}
+
+The "stems" array must contain one entry per requested stem (Drums, Bass, Synths, Vocals, Effects \u2014 only those requested).`;
+function buildStemExtractionPrompt(p) {
+  const parts = [];
+  if (p.masteredUrl) parts.push(`Mastered Track URL: ${p.masteredUrl}`);
+  if (p.genre) parts.push(`Genre: ${p.genre}`);
+  if (p.bpm) parts.push(`BPM: ${p.bpm}`);
+  if (p.key) parts.push(`Key: ${p.key}`);
+  const stemList = p.stems && p.stems.length > 0 ? p.stems : ["Drums", "Bass", "Synths", "Vocals", "Effects"];
+  parts.push(`Stems requested: ${stemList.join(", ")}`);
+  return `Stem extraction session configuration:
+${parts.join("\n")}
+
+Generate a complete, technically precise stem extraction brief. Each stem entry must be specific to the genre and session characteristics described. The guidance should be actionable for both AI-assisted stem splitters and traditional multi-track extraction from a DAW session.`;
+}
+async function callNvidiaForStemExtractionBrief(payload) {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) return null;
+  const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "qwen/qwen3.5-122b-a10b",
+      messages: [
+        { role: "system", content: STEM_EXTRACTION_SYSTEM_PROMPT },
+        { role: "user", content: buildStemExtractionPrompt(payload) }
+      ],
+      temperature: 0.5,
+      max_tokens: 1600
+    })
+  });
+  if (!response.ok) {
+    logger.warn({ status: response.status }, "NVIDIA stem extraction brief call failed");
+    return null;
+  }
+  const json3 = await response.json();
+  const raw = json3?.choices?.[0]?.message?.content ?? "";
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) return null;
+  return JSON.parse(match[0]);
+}
+async function runStemExtractionProvider(job, payload) {
+  try {
+    const stemExtractionSessionData = await callNvidiaForStemExtractionBrief(payload);
+    job.stemExtractionSessionData = stemExtractionSessionData;
+  } catch (err) {
+    logger.warn({ err, jobId: job.id }, "Stem extraction AI brief failed \u2014 continuing with metadata only");
+  }
+  job.status = "completed";
+}
+router3.post("/extract-stems", async (req, res) => {
+  const payload = req.body;
+  const job = createJob("stem-extraction");
+  runStemExtractionProvider(job, payload).catch((err) => {
+    logger.error({ err, jobId: job.id }, "Stem extraction provider error");
+    job.status = "failed";
+    job.error = "Stem extraction failed";
+  });
+  logger.info({ jobId: job.id, stems: payload.stems, genre: payload.genre }, "Stem extraction job created");
   res.json({ success: true, jobId: job.id, status: "processing" });
 });
 var generate_audio_default = router3;
