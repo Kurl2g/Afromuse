@@ -235,8 +235,8 @@ function ResultCard({
             <div className="w-9 h-9 rounded-xl bg-white/3 border border-white/5 flex items-center justify-center mx-auto mb-3">
               <VolumeX className="w-4 h-4 text-white/15" />
             </div>
-            <p className="text-xs text-white/20 font-medium">{mutedLabel ?? "Not available in this mode"}</p>
-            <p className="text-[10px] text-white/10 mt-1">Turn off Beat-only in Session Options to enable</p>
+            <p className="text-xs text-white/22 font-medium">{mutedLabel ?? "Not available in this mode"}</p>
+            <p className="text-[10px] text-white/12 mt-1.5 leading-relaxed">Turn off Instrumental Only to enable guide vocals.</p>
           </div>
         )}
         {!muted && status === "idle" && (
@@ -1602,34 +1602,57 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             SESSION OUTPUT
         ══════════════════════════════════════════ */}
         <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex-1 h-px bg-white/5" />
-            <span className="text-[9px] font-bold tracking-[0.15em] uppercase text-white/20">Session Output</span>
-            <div className="flex-1 h-px bg-white/5" />
+          <div className="mb-5">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex-1 h-px bg-white/5" />
+              <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-white/22">Your Session Build</span>
+              <div className="flex-1 h-px bg-white/5" />
+            </div>
+            <p className="text-center text-[10px] text-white/18 tracking-wide">Everything generated for this idea lives here.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-            {/* Beat Preview */}
+            {/* Instrumental Preview */}
             <ResultCard
-              title={isProducer ? "Beat Structure" : "Beat Preview"}
-              subtitle="Your first-pass sonic direction for the record."
+              title={isProducer ? "Beat Structure" : "Instrumental Preview"}
+              subtitle="Your current beat direction and playback preview."
               icon={<Music2 className="w-3.5 h-3.5" />}
               status={instrumentalStatus}
               accent="sky"
               statusLabel="Groove Ready"
-              emptyLabel="No beat preview yet."
-              emptySubLabel="Build your first pass to hear the direction."
-              loadingLabel="Building your pocket..."
+              emptyLabel="Generate a beat preview to define the sonic lane."
+              emptySubLabel="Configure your genre, BPM, and energy above, then hit Build."
+              loadingLabel="Shaping instrumental direction..."
             >
               <div className="space-y-4">
                 {intelligence && (
                   <>
+                    {/* Info chips row */}
                     <div className="flex flex-wrap gap-1.5">
                       <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-sky-500/10 border border-sky-500/18 text-sky-400/80">{audioGenre}</span>
-                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/40">{intelligence.stems[0]?.pct ?? 0}% Kick</span>
-                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/40">{energyLevel} Energy</span>
+                      {bpm && <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-sky-500/8 border border-sky-500/14 text-sky-300/65">{bpm} BPM</span>}
+                      {musicalKey && <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/38">{musicalKey}</span>}
+                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/38">{energyLevel} Energy</span>
                     </div>
+
+                    {/* Sonic Identity mini block */}
+                    <div className="rounded-xl bg-sky-500/[0.035] border border-sky-500/10 px-3.5 py-3 space-y-2">
+                      <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-sky-400/55">Sonic Identity</div>
+                      {[
+                        { label: "Core Bounce", value: intelligence.beatSummary.split(".")[0] },
+                        { label: "Atmosphere",  value: intelligence.lyricsTone !== "neutral"
+                            ? `${intelligence.lyricsTone.charAt(0).toUpperCase() + intelligence.lyricsTone.slice(1)} / ${energyLevel}`
+                            : `${energyLevel} / ${audioGenre}` },
+                        { label: "Main Texture", value: intelligence.stems.slice(0, 2).map(s => s.label).join(" + ") },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="flex items-baseline gap-2">
+                          <span className="text-[8.5px] font-bold tracking-wide uppercase text-sky-400/38 shrink-0 w-24">{label}</span>
+                          <span className="text-[9.5px] text-sky-300/60 leading-snug">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+
                     {isProducer ? (
                       <div className="rounded-xl bg-sky-500/[0.04] border border-sky-500/10 px-3.5 py-3">
                         <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-sky-400/50 mb-1.5">Arrangement Map</div>
@@ -1655,44 +1678,93 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         <p className="text-[10px] text-sky-400/55 leading-relaxed">{intelligence.styleDesc}</p>
                       </div>
                     )}
-                    {!isProducer && includeArrangementNotes && (
-                      <p className="text-[10px] text-white/20 pt-1.5 border-t border-white/4 leading-relaxed">
-                        Full arrangement guide in Session Blueprint →
-                      </p>
-                    )}
+
+                    {/* Footer action row */}
+                    <div className="pt-2 border-t border-sky-500/8 space-y-2">
+                      <p className="text-[9px] text-white/18 italic">Preview playback for session direction only.</p>
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={() => toast({ title: "Session Notes", description: "Full notes available in the Studio Export Notes below." })}
+                          className="flex-1 h-7 rounded-lg bg-sky-500/8 border border-sky-500/14 text-[9px] font-semibold text-sky-400/60 hover:text-sky-400/90 hover:border-sky-500/28 transition-all flex items-center justify-center gap-1"
+                        >
+                          <FileText className="w-2.5 h-2.5" /> Session Notes
+                        </button>
+                        <button
+                          onClick={() => toast({ title: "MP3 Export", description: "MP3 export is part of the AfroMuse Pro sharing layer — coming soon." })}
+                          className="flex-1 h-7 rounded-lg bg-white/4 border border-white/8 text-[9px] font-semibold text-white/28 hover:text-white/50 hover:border-white/14 transition-all flex items-center justify-center gap-1"
+                        >
+                          <Download className="w-2.5 h-2.5" /> MP3 Soon
+                        </button>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
             </ResultCard>
 
-            {/* Vocal Demo */}
+            {/* Vocal Direction Preview */}
             <ResultCard
-              title={isProducer ? "Vocal Blueprint" : "Vocal Demo"}
-              subtitle="A guide performance direction for topline and melody feel."
+              title={isProducer ? "Vocal Blueprint" : "Vocal Direction Preview"}
+              subtitle="A guide render for vocal feel, tone, and delivery."
               icon={<Mic2 className="w-3.5 h-3.5" />}
               status={vocalStatus}
               accent="violet"
               statusLabel="Vocal Direction"
-              emptyLabel="No vocal demo yet."
-              emptySubLabel="Set your lead vocal identity, then click Generate."
-              loadingLabel="Shaping vocal phrasing..."
+              emptyLabel="Build vocal direction once your session setup is ready."
+              emptySubLabel="Set your lead vocal identity, then hit Generate."
+              loadingLabel="Rendering vocal feel..."
               muted={isInstrumentalMode}
-              mutedLabel="Beat-only mode is active"
+              mutedLabel="Vocal direction is currently off for this session."
             >
               <div className="space-y-4">
                 {intelligence && (
                   <>
+                    {/* Header chips */}
                     <div className="flex flex-wrap gap-1.5">
                       <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-violet-500/10 border border-violet-500/18 text-violet-400/80">
                         {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label}
                       </span>
-                      {intelligence.lyricsTone !== "neutral" && (
-                        <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-violet-500/8 border border-violet-500/14 text-violet-300/60">
-                          {intelligence.lyricsTone} tone
-                        </span>
-                      )}
-                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/35">{audioGenre}</span>
+                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-violet-500/8 border border-violet-500/14 text-violet-300/60">
+                        {vocalStyle}
+                      </span>
+                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/35">
+                        {GENERATION_MODES.find(m => m.value === generationMode)?.label ?? "Full Session"}
+                      </span>
                     </div>
+
+                    {/* Vocal Identity mini block */}
+                    <div className="rounded-xl bg-violet-500/[0.035] border border-violet-500/10 px-3.5 py-3 space-y-2">
+                      <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-violet-400/55">Vocal Identity</div>
+                      {[
+                        {
+                          label: "Lead Type",
+                          value: `${VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label ?? "Lead"} Lead`,
+                        },
+                        {
+                          label: "Delivery Style",
+                          value: `${vocalStyle}${intelligence.lyricsTone !== "neutral" ? " + " + intelligence.lyricsTone.charAt(0).toUpperCase() + intelligence.lyricsTone.slice(1) : ""}`,
+                        },
+                        {
+                          label: "Emotional Tone",
+                          value: intelligence.lyricsTone !== "neutral"
+                            ? ({
+                                romantic:    "Late-night / Romantic / Tender",
+                                spiritual:   "Uplifting / Soulful / Spiritual",
+                                reflective:  "Introspective / Tender / Quiet ache",
+                                energetic:   "High energy / Bold / Peak moment",
+                                melancholic: "Sorrowful / Deep / Aching",
+                                celebratory: "Joy / Rise / Anthemic warmth",
+                              } as Record<string, string>)[intelligence.lyricsTone] ?? `${intelligence.lyricsTone} feel`
+                            : `${audioGenre} feel / Session tone`,
+                        },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="flex items-baseline gap-2">
+                          <span className="text-[8.5px] font-bold tracking-wide uppercase text-violet-400/38 shrink-0 w-24">{label}</span>
+                          <span className="text-[9.5px] text-violet-300/58 leading-snug">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="rounded-xl bg-violet-500/[0.04] border border-violet-500/10 px-3.5 py-3">
                       <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/50 mb-1">
                         {isProducer ? "Vocal Architecture" : "Vocal Setup"}
@@ -1716,25 +1788,31 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         ))}
                       </div>
                     </div>
+
+                    {/* Footer helper */}
+                    <p className="text-[9px] text-white/16 italic pt-1.5 border-t border-violet-500/8">
+                      Guide playback to shape vocal direction.
+                    </p>
                   </>
                 )}
               </div>
             </ResultCard>
 
-            {/* Session Blueprint */}
+            {/* Arrangement Blueprint */}
             <ResultCard
-              title="Session Blueprint"
-              subtitle="Arrangement, structure, and production guidance built from this session."
+              title="Arrangement Blueprint"
+              subtitle="A structure-first map for building or recording the session."
               icon={<Wand2 className="w-3.5 h-3.5" />}
               status={blueprintStatus}
               accent="amber"
               statusLabel="Blueprint Locked"
-              emptyLabel="No blueprint yet."
-              emptySubLabel="Generate a beat preview first to unlock the session plan."
-              loadingLabel="Mapping your sonic identity..."
+              emptyLabel="Create an arrangement map for recording and production."
+              emptySubLabel="Generate a beat preview first to unlock the full session plan."
+              loadingLabel="Mapping session structure..."
             >
               {blueprint && (
                 <div className="space-y-3.5">
+                  {/* Session specs grid */}
                   <div>
                     <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/20 mb-2">Session Specs</div>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -1761,6 +1839,36 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                       </div>
                     </div>
                   </div>
+
+                  {/* Build Notes mini panel */}
+                  <div className="rounded-xl bg-amber-500/[0.035] border border-amber-500/10 px-3.5 py-3 space-y-2">
+                    <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-amber-400/55">Build Notes</div>
+                    {[
+                      {
+                        label: "Suggested Lift",
+                        value: blueprint.introBehavior ?? blueprint.chorusLift ?? "First Chorus Entry",
+                      },
+                      {
+                        label: "Best Chorus",
+                        value: blueprint.hookFocus.split(".")[0] ?? "Hook Repeat 2",
+                      },
+                      {
+                        label: "Recording Focus",
+                        value: intelligence?.producerNotes?.split(".")[0] ?? "Tight emotional lead with open ad-libs",
+                      },
+                    ].map(({ label, value }) => (
+                      <div key={label} className="flex items-baseline gap-2">
+                        <span className="text-[8.5px] font-bold tracking-wide uppercase text-amber-400/38 shrink-0 w-24">{label}</span>
+                        <span className="text-[9.5px] text-amber-300/58 leading-snug">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="rounded-xl bg-white/[0.02] border border-white/[0.045] px-3.5 py-3">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/22 mb-1.5">Arrangement Style</div>
+                    <p className="text-[11px] text-white/45 leading-relaxed">{blueprint.arrangementStyle}</p>
+                  </div>
+
                   {isProducer && blueprint.drumDensity && (
                     <div>
                       <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/30 mb-2">Engineering Specs</div>
@@ -1779,10 +1887,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                       </div>
                     </div>
                   )}
-                  <div className="rounded-xl bg-white/[0.02] border border-white/[0.045] px-3.5 py-3">
-                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/22 mb-1.5">Arrangement Style</div>
-                    <p className="text-[11px] text-white/45 leading-relaxed">{blueprint.arrangementStyle}</p>
-                  </div>
+
                   {intelligence && (intelligence.lyricsTone !== "neutral" || intelligence.styleInfluence !== "neutral") && (
                     <div className="flex flex-wrap gap-1.5">
                       {intelligence.lyricsTone !== "neutral" && (
@@ -1797,11 +1902,22 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                       )}
                     </div>
                   )}
+
                   <button onClick={copyBlueprint}
                     className="w-full h-8 rounded-lg bg-white/3 border border-white/6 text-[10px] font-semibold text-white/35 hover:text-white/65 hover:border-white/12 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5"
                   >
                     <Copy className="w-3 h-3" /> Copy Blueprint
                   </button>
+
+                  {/* Session use footer */}
+                  <div className="pt-1 border-t border-amber-500/8">
+                    <div className="text-[8.5px] font-bold tracking-[0.12em] uppercase text-white/18 mb-1.5">Useful for</div>
+                    <div className="flex flex-wrap gap-1">
+                      {["Beat planning", "Vocal recording prep", "Arrangement reference"].map((use) => (
+                        <span key={use} className="text-[8px] px-2 py-0.5 rounded-full bg-amber-500/6 border border-amber-500/10 text-amber-400/40">{use}</span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </ResultCard>
