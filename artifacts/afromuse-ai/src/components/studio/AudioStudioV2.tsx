@@ -196,25 +196,28 @@ function ResultCard({
       <div className="p-5">
         {muted && (
           <div className="text-center py-8">
-            <VolumeX className="w-8 h-8 text-white/10 mx-auto mb-2" />
-            <p className="text-xs text-white/20">{mutedLabel ?? "Not applicable in this mode"}</p>
+            <VolumeX className="w-7 h-7 text-white/10 mx-auto mb-2.5" />
+            <p className="text-xs text-white/22 font-medium">{mutedLabel ?? "Not applicable in this mode"}</p>
+            <p className="text-[10px] text-white/12 mt-1">Switch off instrumental mode to enable</p>
           </div>
         )}
         {!muted && status === "idle" && (
           <div className="text-center py-8">
             <div className="w-10 h-10 rounded-2xl bg-white/3 border border-white/6 flex items-center justify-center mx-auto mb-3">
-              <span className="opacity-20">{icon}</span>
+              <span className="opacity-25">{icon}</span>
             </div>
-            <p className="text-xs text-white/20">Ready to generate</p>
+            <p className="text-xs text-white/25 font-medium">Hit generate when ready</p>
+            <p className="text-[10px] text-white/15 mt-1">Set your controls above and launch</p>
           </div>
         )}
         {!muted && status === "loading" && (
           <div className="text-center py-8">
-            <div className="relative w-12 h-12 mx-auto mb-4">
-              <div className="absolute inset-0 rounded-full border-2 border-white/5 border-t-amber-400/60 animate-spin" />
-              <div className="absolute inset-2 rounded-full border-2 border-white/5 border-b-sky-400/40 animate-[spin_1.8s_linear_infinite_reverse]" />
+            <div className="relative w-14 h-14 mx-auto mb-4">
+              <div className="absolute inset-0 rounded-full border-[2px] border-white/4 border-t-amber-400/70 animate-spin" />
+              <div className="absolute inset-[3px] rounded-full border-[2px] border-white/4 border-b-sky-400/50 animate-[spin_1.8s_linear_infinite_reverse]" />
+              <div className="absolute inset-[7px] rounded-full border-[2px] border-white/3 border-t-violet-400/40 animate-[spin_3s_linear_infinite]" />
             </div>
-            <p className="text-xs text-amber-400/60 animate-pulse">{loadingLabel}</p>
+            <p className="text-xs text-amber-400/70 animate-pulse font-medium">{loadingLabel}</p>
           </div>
         )}
         {!muted && status === "error" && (
@@ -482,7 +485,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
       {/* ── Header ── */}
       <div className="relative px-6 md:px-8 py-6 border-b border-white/5 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-500/5 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-sky-500/6 via-transparent to-violet-500/3 pointer-events-none" />
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-sky-500/12 border border-sky-500/25 flex items-center justify-center shrink-0">
@@ -493,7 +496,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 <h2 className="text-base font-bold text-white tracking-tight">AfroMuse Audio Studio</h2>
                 <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-400">V2</span>
               </div>
-              <p className="text-xs text-white/35">Turn your lyrics into a production-ready audio concept — beats, vocal demo, and full blueprint</p>
+              <p className="text-xs text-white/40">Write. Shape. Hear. — craft a beat, vocal guide, and full session blueprint from your lyrics.</p>
             </div>
           </div>
           <motion.button
@@ -503,7 +506,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             className="shrink-0 h-9 px-4 rounded-xl bg-sky-500/10 border border-sky-500/25 text-sky-400 text-xs font-semibold hover:bg-sky-500/18 hover:border-sky-500/40 transition-all flex items-center gap-2"
           >
             <FileText className="w-3.5 h-3.5" />
-            Use Generated Lyrics
+            Load Lyrics
           </motion.button>
         </div>
       </div>
@@ -513,12 +516,17 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         {/* ── Lyrics Input ── */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-xs font-bold tracking-widest uppercase text-white/40">
-              Lyrics for Audio Generation
-            </label>
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-bold tracking-widest uppercase text-white/40">
+                Your Lyrics
+              </label>
+              {useGeneratedLyrics && audioLyrics && (
+                <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-sky-500/12 border border-sky-500/25 text-sky-400/70">Synced</span>
+              )}
+            </div>
             <div className="flex items-center gap-3">
               {isInstrumentalMode && (
-                <span className="text-[10px] text-sky-400/60 font-medium">Optional in instrumental mode</span>
+                <span className="text-[10px] text-sky-400/55 font-medium">Optional in beat-only mode</span>
               )}
               {audioLyrics && (
                 <span className="text-[10px] text-white/20">
@@ -532,33 +540,35 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             value={audioLyrics}
             onChange={(e) => {
               setAudioLyrics(e.target.value);
-              // If user types manually, turn off auto-sync so we don't overwrite their edits
               if (useGeneratedLyrics) setUseGeneratedLyrics(false);
             }}
-            rows={12}
-            placeholder={"Paste your full lyrics here or use your generated AfroMuse lyrics...\n\n[Intro]\n[Verse 1]\n[Chorus]\n[Verse 2]\n[Bridge]\n[Outro]"}
-            className="w-full rounded-2xl bg-white/[0.03] border border-white/8 px-5 py-4 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-sky-500/40 focus:ring-1 focus:ring-sky-500/12 transition-all resize-none leading-relaxed font-mono"
+            rows={11}
+            placeholder={"Drop your full lyrics here, or write from scratch...\n\n[Intro]\n...\n\n[Verse 1]\n...\n\n[Chorus / Hook]\n...\n\n[Bridge]\n..."}
+            className="w-full rounded-2xl bg-white/[0.03] border border-white/8 px-5 py-4 text-sm text-white placeholder:text-white/15 focus:outline-none focus:border-sky-500/40 focus:ring-1 focus:ring-sky-500/10 transition-all resize-none leading-relaxed font-mono"
           />
           {!draft && !audioLyrics && (
             <p className="text-[11px] text-white/22 mt-2 leading-relaxed">
-              Generate lyrics with the V1 Lyrics Studio above, then click "Use Generated Lyrics" — or paste your own.
-              {isInstrumentalMode && " Instrumental preview can run without lyrics."}
+              Write your song above in the Lyrics Studio, then click <span className="text-white/35">"Load Lyrics"</span> to bring it here — or paste your own below.
+              {isInstrumentalMode && " In beat-only mode, lyrics are optional."}
             </p>
           )}
         </div>
 
-        {/* ── Audio Generation Controls ── */}
+        {/* ── Session Setup Controls ── */}
         <div className="rounded-2xl border border-white/6 bg-white/[0.018] overflow-hidden">
-          <div className="px-5 py-4 border-b border-white/4 flex items-center gap-2">
-            <Sliders className="w-3.5 h-3.5 text-white/30" />
-            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Audio Generation Controls</span>
+          <div className="px-5 py-4 border-b border-white/4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sliders className="w-3.5 h-3.5 text-white/30" />
+              <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Session Setup</span>
+            </div>
+            <span className="text-[10px] text-white/18">Dial in your sound</span>
           </div>
 
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-            {/* Genre / Style */}
+            {/* Genre */}
             <div>
-              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">Genre / Style</label>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">Genre</label>
               <div className="relative">
                 <select
                   value={audioGenre}
@@ -573,14 +583,14 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               </div>
             </div>
 
-            {/* Song Style / Vibe */}
+            {/* Sound Reference */}
             <div className="sm:col-span-2">
-              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">Song Style / Vibe</label>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">Sound Reference</label>
               <input
                 type="text"
                 value={audioStyleReference}
                 onChange={(e) => setAudioStyleReference(e.target.value)}
-                placeholder="e.g. Burna Boy x Asake, Omah Lay type vibe, soulful church atmosphere"
+                placeholder="e.g. Burna Boy x Asake, Omah Lay type vibe, soulful church atmosphere..."
                 className="w-full h-10 rounded-xl bg-white/4 border border-white/8 px-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-sky-500/40 transition-all"
               />
             </div>
@@ -589,7 +599,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             <div className={isInstrumentalMode ? "opacity-40 pointer-events-none" : ""}>
               <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">
                 Vocal Gender
-                {isInstrumentalMode && <span className="ml-2 text-white/20 font-normal normal-case">— instrumental mode</span>}
+                {isInstrumentalMode && <span className="ml-2 text-white/18 font-normal normal-case tracking-normal">(off)</span>}
               </label>
               <div className="grid grid-cols-2 gap-1.5">
                 {VOCAL_GENDERS.map((v) => (
@@ -702,26 +712,26 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
           </div>
 
-          {/* Quick Action Checkboxes */}
+          {/* Session Options */}
           <div className="px-5 py-4 border-t border-white/4">
-            <div className="text-[10px] font-bold tracking-widest uppercase text-white/25 mb-3">Quick Options</div>
+            <div className="text-[10px] font-bold tracking-widest uppercase text-white/25 mb-3">Session Options</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
               {([
                 {
                   id: "useLyrics",
-                  label: "Use generated lyrics automatically",
+                  label: "Auto-sync lyrics from Lyrics Studio",
                   checked: useGeneratedLyrics,
                   onToggle: handleToggleAutoLyrics,
                 },
                 {
                   id: "instOnly",
-                  label: "Generate only instrumental",
+                  label: "Beat-only — skip vocals",
                   checked: generateOnlyInstrumental,
                   onToggle: (v: boolean) => setGenerateOnlyInstrumental(v),
                 },
                 {
                   id: "arrangement",
-                  label: "Include arrangement notes",
+                  label: "Include arrangement guide",
                   checked: includeArrangementNotes,
                   onToggle: (v: boolean) => setIncludeArrangementNotes(v),
                 },
@@ -733,7 +743,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 },
                 {
                   id: "hitmaker",
-                  label: "Use hitmaker hook priority",
+                  label: "Hitmaker hook priority",
                   checked: useHitmakerHookPriority,
                   onToggle: (v: boolean) => setUseHitmakerHookPriority(v),
                 },
@@ -757,7 +767,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
           </div>
         </div>
 
-        {/* ── Instrumental-mode notice ── */}
+        {/* ── Beat-only mode notice ── */}
         <AnimatePresence>
           {isInstrumentalMode && (
             <motion.div
@@ -768,8 +778,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             >
               <Music2 className="w-4 h-4 text-sky-400 shrink-0" />
               <p className="text-xs text-sky-300/70 leading-relaxed">
-                <span className="font-semibold text-sky-400">Instrumental mode active.</span>{" "}
-                Lyrics are optional — vocal demo is disabled. Only the instrumental preview and audio blueprint will be generated.
+                <span className="font-semibold text-sky-400">Beat-only mode is on.</span>{" "}
+                Lyrics are optional and vocals are skipped — only the beat preview and session blueprint will run.
               </p>
             </motion.div>
           )}
@@ -778,50 +788,50 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         {/* ── Action Buttons ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 
-          {/* Generate Instrumental — always available */}
+          {/* Beat Preview */}
           <motion.button
             type="button"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleGenerateInstrumental}
             disabled={isGenerating}
-            className="h-12 rounded-xl bg-white/4 border border-white/8 text-sm font-semibold text-white/65 hover:bg-white/7 hover:text-white hover:border-sky-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-12 rounded-xl bg-sky-500/7 border border-sky-500/18 text-sm font-semibold text-sky-300/70 hover:bg-sky-500/12 hover:text-sky-200 hover:border-sky-500/30 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Music2 className="w-4 h-4 text-sky-400" />
-            Generate Instrumental
+            Beat Preview
           </motion.button>
 
-          {/* Generate Vocal Demo — disabled in instrumental mode */}
+          {/* Vocal Guide — disabled in beat-only mode */}
           <motion.button
             type="button"
             whileHover={!isInstrumentalMode ? { scale: 1.01 } : {}}
             whileTap={!isInstrumentalMode ? { scale: 0.98 } : {}}
             onClick={handleGenerateVocal}
             disabled={isGenerating || isInstrumentalMode}
-            title={isInstrumentalMode ? "Switch off instrumental mode to generate a vocal demo" : undefined}
+            title={isInstrumentalMode ? "Turn off beat-only mode to generate a vocal guide" : undefined}
             className={`h-12 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
               isInstrumentalMode
-                ? "bg-white/2 border border-white/5 text-white/20 cursor-not-allowed"
+                ? "bg-white/2 border border-white/5 text-white/18 cursor-not-allowed"
                 : "bg-violet-500/8 border border-violet-500/18 text-violet-300/70 hover:bg-violet-500/14 hover:text-violet-200 hover:border-violet-500/30 disabled:opacity-40"
             }`}
           >
             <Mic2 className="w-4 h-4" />
-            {isInstrumentalMode ? "Vocal Demo (off)" : "Generate Vocal Demo"}
+            {isInstrumentalMode ? "Vocals Off" : "Vocal Guide"}
           </motion.button>
 
-          {/* Generate Full Audio Concept */}
+          {/* Build Full Session */}
           <motion.button
             type="button"
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleGenerateFull}
             disabled={isGenerating}
-            className="h-12 rounded-xl bg-gradient-to-r from-amber-500/80 to-primary/80 text-sm font-bold text-black hover:from-amber-400 hover:to-primary shadow-[0_0_28px_rgba(245,158,11,0.18)] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-12 rounded-xl bg-gradient-to-r from-amber-500/85 to-primary/85 text-sm font-bold text-black hover:from-amber-400 hover:to-primary shadow-[0_0_32px_rgba(245,158,11,0.20)] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isGenerating ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> Building...</>
             ) : (
-              <><Zap className="w-4 h-4" /> Generate Full Audio Concept</>
+              <><Zap className="w-4 h-4" /> Build Full Session</>
             )}
           </motion.button>
 
@@ -830,18 +840,18 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         {/* ── Result Cards ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-          {/* Instrumental Preview */}
+          {/* Beat Preview */}
           <ResultCard
-            title="Instrumental Preview"
+            title="Beat Preview"
             icon={<Music2 className="w-3.5 h-3.5" />}
             status={instrumentalStatus}
             accent="sky"
-            loadingLabel="Building your instrumental arrangement..."
+            loadingLabel="Building your groove..."
           >
             <div className="space-y-4">
               <p className="text-xs text-white/50 leading-relaxed">
-                Instrumental concept for <span className="text-sky-400 font-medium">{audioGenre}</span>
-                {" — "}{bpm || genreDefaults.bpm} BPM, {musicalKey || genreDefaults.key}.
+                Beat concept set for <span className="text-sky-400 font-medium">{audioGenre}</span>
+                {" — "}{bpm || genreDefaults.bpm} BPM in {musicalKey || genreDefaults.key}.
               </p>
               <div className="space-y-2.5 pt-1">
                 {[
@@ -855,22 +865,22 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 ))}
               </div>
               {includeArrangementNotes && (
-                <p className="text-[10px] text-white/22 pt-1 border-t border-white/4">
-                  Arrangement notes included in the Audio Blueprint →
+                <p className="text-[10px] text-white/22 pt-1 border-t border-white/4 leading-relaxed">
+                  Arrangement guide included in the Session Blueprint →
                 </p>
               )}
             </div>
           </ResultCard>
 
-          {/* Vocal Demo — muted when instrumental mode */}
+          {/* Vocal Guide — muted when beat-only mode */}
           <ResultCard
-            title="Vocal Demo"
+            title="Vocal Guide"
             icon={<Mic2 className="w-3.5 h-3.5" />}
             status={vocalStatus}
             accent="violet"
-            loadingLabel="Shaping vocal phrasing and demo guide..."
+            loadingLabel="Finding your vocal pocket..."
             muted={isInstrumentalMode}
-            mutedLabel="Vocal demo disabled in instrumental mode"
+            mutedLabel="Vocals are off in beat-only mode"
           >
             <div className="space-y-3">
               <p className="text-xs text-white/50 leading-relaxed">
@@ -881,9 +891,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               <div className="space-y-2.5">
                 {[
                   { label: "Verse Delivery", note: "Low, conversational, storytelling energy" },
-                  { label: "Chorus Lift",    note: "Open throat, full projection, crowd-ready" },
-                  { label: "Bridge Turn",    note: "Raw, stripped-back emotional peak" },
-                  { label: "Ad-lib Energy",  note: "Chant and crowd response layer ready" },
+                  { label: "Hook Lift",       note: "Open throat, full projection, crowd-ready" },
+                  { label: "Bridge Turn",     note: "Raw, stripped-back emotional peak" },
+                  { label: "Ad-lib Layer",    note: "Chant and crowd response layer ready" },
                 ].map(({ label, note }) => (
                   <div key={label} className="flex items-start gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-violet-400/50 mt-1.5 shrink-0" />
@@ -897,13 +907,13 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </div>
           </ResultCard>
 
-          {/* Audio Blueprint */}
+          {/* Session Blueprint */}
           <ResultCard
-            title="Audio Blueprint"
+            title="Session Blueprint"
             icon={<Wand2 className="w-3.5 h-3.5" />}
             status={blueprintStatus}
             accent="amber"
-            loadingLabel="Compiling your audio blueprint..."
+            loadingLabel="Designing your session blueprint..."
           >
             {blueprint && (
               <div className="space-y-3">
@@ -956,7 +966,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-xs text-white/40">Audio concept ready — share with your producer or vocalist</span>
+                <span className="text-xs text-white/40">Session ready — drop this blueprint in your producer's inbox.</span>
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 <button
