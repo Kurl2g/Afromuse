@@ -8,7 +8,7 @@ const router = Router();
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type JobStatus = "processing" | "completed" | "failed";
-type AudioJobType = "instrumental" | "vocal" | "lead-vocal";
+type AudioJobType = "instrumental" | "vocal" | "lead-vocal" | "mix-master";
 
 export interface InstrumentalMetadata {
   genre: string;
@@ -57,6 +57,17 @@ export interface LeadVocalSessionData {
   vocalProcessingNotes: string;
 }
 
+export interface MixMasterSessionData {
+  mixBrief: string;
+  levelBalancing: string;
+  eqNotes: string;
+  compressionNotes: string;
+  spatialEffects: string;
+  masteringChain: string;
+  outputNotes: string;
+  stemsNotes: string | null;
+}
+
 interface AudioJob {
   id: string;
   type: AudioJobType;
@@ -66,6 +77,7 @@ interface AudioJob {
   metadata: InstrumentalMetadata | VocalMetadata | null;
   sessionData: AiSessionData | null;
   leadVocalSessionData: LeadVocalSessionData | null;
+  mixMasterSessionData: MixMasterSessionData | null;
   error: string | null;
   createdAt: number;
 }
@@ -139,6 +151,7 @@ function createJob(type: AudioJobType): AudioJob {
     metadata: null,
     sessionData: null,
     leadVocalSessionData: null,
+    mixMasterSessionData: null,
     error: null,
     createdAt: Date.now(),
   };
@@ -523,13 +536,14 @@ router.get("/audio-job/:jobId", (req, res) => {
 
   if (job.status === "completed") {
     res.json({
-      jobId:                 job.id,
-      status:                "completed",
-      audioUrl:              job.audioUrl,
-      duration:              job.duration,
-      metadata:              job.metadata,
-      sessionData:           job.sessionData,
-      leadVocalSessionData:  job.leadVocalSessionData,
+      jobId:                  job.id,
+      status:                 "completed",
+      audioUrl:               job.audioUrl,
+      duration:               job.duration,
+      metadata:               job.metadata,
+      sessionData:            job.sessionData,
+      leadVocalSessionData:   job.leadVocalSessionData,
+      mixMasterSessionData:   job.mixMasterSessionData,
     });
     return;
   }
@@ -540,6 +554,107 @@ router.get("/audio-job/:jobId", (req, res) => {
   }
 
   res.json({ jobId: job.id, status: "processing" });
+});
+
+// ─── Mix & Master ─────────────────────────────────────────────────────────────
+
+interface MixMasterPayload {
+  instrumentalUrl?: string;
+  vocalUrl?: string;
+  mixFeel?: string;
+  genre?: string;
+  bpm?: number;
+  key?: string;
+  includeStems?: boolean;
+}
+
+const MIX_MASTER_SYSTEM_PROMPT = `You are AfroMuse Mix Intelligence — an elite AI mix engineer and mastering specialist with deep expertise in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+You receive a session configuration and return a detailed mix and master brief as structured JSON.
+Your output provides studio-grade guidance for mixing levels, EQ, compression, spatial effects, and mastering chain decisions that translate directly to a professional, commercially-ready stereo master.
+
+Return ONLY a raw JSON object — no markdown fences, no commentary — with these exact keys:
+{
+  "mixBrief": "Concise single-sentence headline summary of the mix vision and final sound character",
+  "levelBalancing": "Detailed level and gain-staging instructions: kick/bass relationship, vocal vs instrumental balance, bus gain structure, headroom targets",
+  "eqNotes": "Frequency-specific EQ guidance: low-end cleanup (sub/bass), low-mid mud reduction, midrange presence, high-end air and clarity, genre-specific considerations",
+  "compressionNotes": "Compression settings per element: attack/release characteristics, ratio recommendations, parallel compression use, bus compression approach, dynamic feel target",
+  "spatialEffects": "Reverb, delay, and stereo width guidance: room sizes, pre-delay, stereo spread per element, centre-vs-sides balance, mono-compatibility check",
+  "masteringChain": "Mastering chain walkthrough: limiting ceiling, LUFS target for genre and platform, multiband approach, final EQ shaping, stereo enhancement, brick-wall limiter settings",
+  "outputNotes": "Final output specs: recommended MP3 (320kbps) and WAV (24-bit/48kHz) export settings, metadata tagging notes, platform-specific loudness considerations",
+  "stemsNotes": "Stems export guidance (only if requested): recommended stem groupings, format, naming convention, and levels for DAW re-import"
+}`;
+
+function buildMixMasterPrompt(p: MixMasterPayload): string {
+  const parts: string[] = [];
+  if (p.genre)           parts.push(`Genre: ${p.genre}`);
+  if (p.bpm)             parts.push(`BPM: ${p.bpm}`);
+  if (p.key)             parts.push(`Key: ${p.key}`);
+  if (p.mixFeel)         parts.push(`Mix Feel / Vibe: ${p.mixFeel}`);
+  if (p.instrumentalUrl) parts.push(`Instrumental Track URL: ${p.instrumentalUrl}`);
+  if (p.vocalUrl)        parts.push(`Vocal Track URL: ${p.vocalUrl}`);
+  else                   parts.push("Session Type: Instrumental-only mix (no separate vocal track)");
+  parts.push(`Include Stems Export Guidance: ${p.includeStems ? "Yes" : "No"}`);
+
+  return `Mix & Master session configuration:\n${parts.join("\n")}\n\nGenerate a complete, professional mix and master brief for this session. Be specific, technical, and actionable — this brief will be handed directly to a mix engineer.`;
+}
+
+async function callNvidiaForMixMasterBrief(payload: MixMasterPayload): Promise<MixMasterSessionData | null> {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) return null;
+
+  const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "qwen/qwen3.5-122b-a10b",
+      messages: [
+        { role: "system", content: MIX_MASTER_SYSTEM_PROMPT },
+        { role: "user",   content: buildMixMasterPrompt(payload) },
+      ],
+      temperature: 0.55,
+      max_tokens: 1400,
+    }),
+  });
+
+  if (!response.ok) {
+    logger.warn({ status: response.status }, "NVIDIA mix master brief call failed");
+    return null;
+  }
+
+  const json = await response.json() as { choices?: { message?: { content?: string } }[] };
+  const raw = json?.choices?.[0]?.message?.content ?? "";
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) return null;
+
+  const data = JSON.parse(match[0]) as MixMasterSessionData;
+  if (!payload.includeStems) data.stemsNotes = null;
+  return data;
+}
+
+async function runMixMasterProvider(job: AudioJob, payload: MixMasterPayload): Promise<void> {
+  try {
+    const mixMasterSessionData = await callNvidiaForMixMasterBrief(payload);
+    job.mixMasterSessionData = mixMasterSessionData;
+  } catch (err) {
+    logger.warn({ err, jobId: job.id }, "Mix master AI brief failed — continuing with metadata only");
+  }
+
+  job.status = "completed";
+}
+
+router.post("/mix-master", async (req, res) => {
+  const payload = req.body as MixMasterPayload;
+  const job = createJob("mix-master");
+
+  runMixMasterProvider(job, payload).catch((err) => {
+    logger.error({ err, jobId: job.id }, "Mix master provider error");
+    job.status = "failed";
+    job.error = "Mix master generation failed";
+  });
+
+  logger.info({ jobId: job.id, feel: payload.mixFeel, genre: payload.genre }, "Mix master job created");
+  res.json({ success: true, jobId: job.id, status: "processing" });
 });
 
 export default router;

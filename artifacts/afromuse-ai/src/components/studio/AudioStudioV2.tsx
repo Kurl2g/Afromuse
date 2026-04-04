@@ -98,6 +98,27 @@ interface LeadVocalSessionData {
   vocalProcessingNotes: string;
 }
 
+interface MixMasterSessionData {
+  mixBrief: string;
+  levelBalancing: string;
+  eqNotes: string;
+  compressionNotes: string;
+  spatialEffects: string;
+  masteringChain: string;
+  outputNotes: string;
+  stemsNotes: string | null;
+}
+
+const MIX_FEEL_OPTIONS = [
+  "Balanced",
+  "Dry & Punchy",
+  "Lush & Reverb-Heavy",
+  "Lo-Fi Warmth",
+  "Bright & Crisp",
+  "Dark & Gritty",
+  "Club-Ready",
+];
+
 const INTRO_BEHAVIORS   = ["Cold open", "Build up", "Atmospheric fade-in", "Drum roll in", "Acapella intro"];
 const CHORUS_LIFTS      = ["Sudden drop", "Gradual swell", "Strip-back & explode", "Key change lift", "Layer stack"];
 const DRUM_DENSITIES    = ["Sparse", "Mid", "Heavy", "Trap-lite", "Afro-percussive"];
@@ -822,6 +843,12 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [blueprintStatus,    setBlueprintStatus]    = useState<CardStatus>("idle");
   const [leadVocalStatus,    setLeadVocalStatus]    = useState<CardStatus>("idle");
   const [leadVocalData,      setLeadVocalData]      = useState<LeadVocalSessionData | null>(null);
+  const [mixMasterStatus,    setMixMasterStatus]    = useState<CardStatus>("idle");
+  const [mixMasterData,      setMixMasterData]      = useState<MixMasterSessionData | null>(null);
+  const [mixInstrumentalUrl, setMixInstrumentalUrl] = useState("");
+  const [mixVocalUrl,        setMixVocalUrl]        = useState("");
+  const [mixMasterFeel,      setMixMasterFeel]      = useState("Balanced");
+  const [mixIncludeStems,    setMixIncludeStems]    = useState(false);
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
   const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
 
@@ -1023,6 +1050,68 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     }
   };
 
+  const handleMixMaster = async () => {
+    if (!mixInstrumentalUrl) {
+      toast({ title: "Instrumental required", description: "Add an instrumental track URL to generate a mix & master brief.", variant: "destructive" });
+      return;
+    }
+    setMixMasterStatus("loading");
+    setMixMasterData(null);
+    try {
+      const defaults    = getGenreDefaults(audioGenre);
+      const resolvedBpm = bpm ? Number(bpm) : undefined;
+      const resolvedKey = musicalKey || defaults.key;
+      const res = await fetch("/api/mix-master", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instrumentalUrl: mixInstrumentalUrl || undefined,
+          vocalUrl:        mixVocalUrl || undefined,
+          mixFeel:         mixMasterFeel,
+          genre:           audioGenre,
+          bpm:             resolvedBpm,
+          key:             resolvedKey,
+          includeStems:    mixIncludeStems,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to start mix & master generation");
+      const { jobId } = await res.json() as { jobId: string };
+      const MAX_POLLS = 20;
+      let polls = 0;
+      while (polls < MAX_POLLS) {
+        await new Promise((r) => setTimeout(r, 2500));
+        polls++;
+        try {
+          const poll = await fetch(`/api/audio-job/${jobId}`);
+          if (!poll.ok) throw new Error("Poll failed");
+          const data = await poll.json() as {
+            status: string;
+            mixMasterSessionData?: MixMasterSessionData;
+            error?: string;
+          };
+          if (data.status === "completed") {
+            setMixMasterData(data.mixMasterSessionData ?? null);
+            setMixMasterStatus("success");
+            return;
+          }
+          if (data.status === "failed") {
+            setMixMasterStatus("error");
+            toast({ title: "Mix & master failed", description: data.error ?? "Please try again.", variant: "destructive" });
+            return;
+          }
+        } catch {
+          setMixMasterStatus("error");
+          return;
+        }
+      }
+      setMixMasterStatus("error");
+      toast({ title: "Request timed out", description: "The server took too long. Please try again.", variant: "destructive" });
+    } catch {
+      setMixMasterStatus("error");
+      toast({ title: "Generation failed", description: "Could not start mix & master generation.", variant: "destructive" });
+    }
+  };
+
   const handleGenerateFull = () => {
     if (!isInstrumentalMode && !validateForVocal()) return;
     setInstrumentalStatus("idle");
@@ -1058,8 +1147,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     });
   };
 
-  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success";
-  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading";
+  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success";
+  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading" || mixMasterStatus === "loading";
   const genreDefaults = getGenreDefaults(audioGenre);
 
   const BUILD_MODES = [
@@ -1631,6 +1720,126 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ══════════════════════════════════════════
+            SECTION 3b — MIX & MASTER
+        ══════════════════════════════════════════ */}
+        <div>
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-5 h-5 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <Headphones className="w-3 h-3 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-[11px] font-bold tracking-widest uppercase text-white/55">Mix &amp; Master</h3>
+              <p className="text-[10px] text-white/25 mt-0.5">Generate a studio-grade mix and mastering brief for your track.</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-emerald-500/12 bg-emerald-500/[0.022] p-5 space-y-5">
+            {/* Instrumental URL */}
+            <div>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                Instrumental Track URL
+                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">required</span>
+              </label>
+              <div className="relative">
+                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400/40 pointer-events-none" />
+                <input
+                  type="url"
+                  value={mixInstrumentalUrl}
+                  onChange={(e) => setMixInstrumentalUrl(e.target.value)}
+                  placeholder="https://yourdrive.com/beat.mp3  or  SoundCloud / Drive link..."
+                  className="w-full h-10 rounded-xl bg-white/4 border border-white/8 pl-9 pr-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-emerald-500/40 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Vocal URL (optional) */}
+            <div>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                Vocal Track URL
+                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">optional</span>
+              </label>
+              <div className="relative">
+                <Mic2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400/30 pointer-events-none" />
+                <input
+                  type="url"
+                  value={mixVocalUrl}
+                  onChange={(e) => setMixVocalUrl(e.target.value)}
+                  placeholder="https://yourdrive.com/vocals.wav  — leave blank for instrumental-only mix"
+                  className="w-full h-10 rounded-xl bg-white/4 border border-white/8 pl-9 pr-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-emerald-500/35 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Mix Feel */}
+            <div>
+              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">Mix Feel</label>
+              <div className="flex flex-wrap gap-1.5">
+                {MIX_FEEL_OPTIONS.map((feel) => (
+                  <button key={feel} type="button" onClick={() => setMixMasterFeel(feel)}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all ${
+                      mixMasterFeel === feel
+                        ? "bg-emerald-500/18 border border-emerald-500/40 text-emerald-300"
+                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                    }`}
+                  >{feel}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Include Stems toggle */}
+            <label className="flex items-center gap-3 cursor-pointer group select-none">
+              <button
+                type="button"
+                onClick={() => setMixIncludeStems(!mixIncludeStems)}
+                className={`w-4 h-4 rounded flex items-center justify-center shrink-0 border transition-all ${
+                  mixIncludeStems
+                    ? "bg-emerald-500/20 border-emerald-500/50"
+                    : "bg-white/4 border-white/12 hover:border-white/25"
+                }`}
+              >
+                {mixIncludeStems && <Check className="w-2.5 h-2.5 text-emerald-400" />}
+              </button>
+              <div>
+                <span className="text-xs text-white/45 group-hover:text-white/70 transition-colors font-medium block">Include Stems Export Guidance</span>
+                <span className="text-[10px] text-white/20 leading-tight block mt-0.5">Adds DAW-ready stem groupings, naming, and export specs to the brief</span>
+              </div>
+            </label>
+
+            {/* Generate CTA */}
+            <div className="pt-1 border-t border-emerald-500/10">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.98 }}
+                disabled={mixMasterStatus === "loading"}
+                onClick={() => void handleMixMaster()}
+                className={`w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-2.5 transition-all ${
+                  mixMasterStatus === "loading"
+                    ? "bg-emerald-500/8 border border-emerald-500/15 text-emerald-400/40 cursor-not-allowed"
+                    : "bg-gradient-to-r from-emerald-600/25 to-emerald-500/15 border border-emerald-500/35 text-emerald-300 hover:from-emerald-600/35 hover:to-emerald-500/22 hover:border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.10)]"
+                }`}
+              >
+                {mixMasterStatus === "loading" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-400/60" />
+                    <span>Generating Mix Brief…</span>
+                  </>
+                ) : (
+                  <>
+                    <Headphones className="w-4 h-4" />
+                    <span>Generate Mix &amp; Master Brief</span>
+                  </>
+                )}
+              </motion.button>
+              {mixMasterStatus === "success" && (
+                <p className="text-[10px] text-green-400/60 text-center mt-2 flex items-center justify-center gap-1">
+                  <Check className="w-3 h-3" /> Mix brief ready — scroll down to view
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* ══════════════════════════════════════════
             SECTION 4 — BUILD MODE
@@ -2326,6 +2535,148 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         );
                       }}
                       className="h-8 px-4 rounded-xl bg-pink-500/10 border border-pink-500/22 text-[10px] font-semibold text-pink-400/80 hover:bg-pink-500/16 hover:text-pink-300 transition-all flex items-center gap-1.5"
+                    >
+                      <Copy className="w-3 h-3" /> Copy Full Brief
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Mix & Master Result Panel ── */}
+        <AnimatePresence>
+          {(mixMasterStatus === "loading" || mixMasterStatus === "success" || mixMasterStatus === "error") && (
+            <motion.div
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+              className="rounded-2xl border overflow-hidden"
+              style={{ borderColor: mixMasterStatus === "success" ? "rgba(16,185,129,0.22)" : mixMasterStatus === "loading" ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)" }}
+            >
+              {/* header bar */}
+              <div className={`px-5 py-3.5 flex items-center justify-between border-b ${
+                mixMasterStatus === "success" ? "bg-emerald-500/[0.07] border-emerald-500/18"
+                : mixMasterStatus === "loading" ? "bg-emerald-500/[0.04] border-emerald-500/10"
+                : "bg-red-500/[0.04] border-red-500/10"
+              }`}>
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                    mixMasterStatus === "success" ? "bg-emerald-500/18 border border-emerald-500/30 text-emerald-400"
+                    : mixMasterStatus === "loading" ? "bg-emerald-500/10 border border-emerald-500/18 text-emerald-400/50"
+                    : "bg-red-500/10 border border-red-500/20 text-red-400"
+                  }`}>
+                    <Headphones className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white/75">Mix &amp; Master Brief</div>
+                    <div className="text-[9px] text-white/30 mt-0.5">
+                      {mixMasterStatus === "loading" ? "AfroMuse Mix Intelligence is analysing your session…"
+                      : mixMasterStatus === "success" ? "Commercial-ready mix and mastering guide"
+                      : "Mix brief generation encountered an error"}
+                    </div>
+                  </div>
+                </div>
+                {mixMasterStatus === "success" && <span className="text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-400/80">Ready</span>}
+                {mixMasterStatus === "loading" && <Loader2 className="w-4 h-4 animate-spin text-emerald-400/50" />}
+              </div>
+
+              {/* loading shimmer */}
+              {mixMasterStatus === "loading" && (
+                <div className="px-5 py-6 space-y-3 bg-emerald-500/[0.015]">
+                  {["w-4/5", "w-3/4", "w-5/6", "w-2/3"].map((w, i) => (
+                    <div key={i} className={`h-2.5 ${w} rounded-full bg-emerald-500/10 animate-pulse`} style={{ animationDelay: `${i * 0.12}s` }} />
+                  ))}
+                </div>
+              )}
+
+              {/* error */}
+              {mixMasterStatus === "error" && (
+                <div className="px-5 py-5 flex items-start gap-3 bg-red-500/[0.03]">
+                  <AlertCircle className="w-4 h-4 text-red-400/70 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-red-300/60 leading-relaxed">Mix brief generation failed. Check your track URL and try again.</p>
+                </div>
+              )}
+
+              {/* result body */}
+              {mixMasterStatus === "success" && mixMasterData && (
+                <div className="px-5 py-5 space-y-4 bg-emerald-500/[0.018]">
+                  {/* Mix Brief headline */}
+                  <div className="rounded-xl bg-emerald-500/[0.06] border border-emerald-500/15 px-4 py-3.5">
+                    <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-emerald-400/55 mb-2">Mix Vision</div>
+                    <p className="text-sm font-semibold text-white/75 leading-relaxed">{mixMasterData.mixBrief}</p>
+                  </div>
+
+                  {/* Detail rows */}
+                  {([
+                    { label: "Level Balancing", value: mixMasterData.levelBalancing,   bg: "bg-emerald-500/[0.03] border-emerald-500/10", hd: "text-emerald-400/55", tx: "text-emerald-300/60" },
+                    { label: "EQ Notes",         value: mixMasterData.eqNotes,          bg: "bg-teal-500/[0.03] border-teal-500/10",     hd: "text-teal-400/55",    tx: "text-teal-300/60"    },
+                    { label: "Compression",      value: mixMasterData.compressionNotes, bg: "bg-cyan-500/[0.03] border-cyan-500/10",     hd: "text-cyan-400/55",    tx: "text-cyan-300/60"    },
+                    { label: "Spatial & FX",     value: mixMasterData.spatialEffects,   bg: "bg-sky-500/[0.03] border-sky-500/10",       hd: "text-sky-400/55",     tx: "text-sky-300/60"     },
+                    { label: "Mastering Chain",  value: mixMasterData.masteringChain,   bg: "bg-violet-500/[0.03] border-violet-500/10", hd: "text-violet-400/55",  tx: "text-violet-300/60"  },
+                    { label: "Output Specs",     value: mixMasterData.outputNotes,      bg: "bg-amber-500/[0.03] border-amber-500/10",   hd: "text-amber-400/55",   tx: "text-amber-300/60"   },
+                    ...(mixMasterData.stemsNotes ? [{ label: "Stems Export", value: mixMasterData.stemsNotes, bg: "bg-pink-500/[0.03] border-pink-500/10", hd: "text-pink-400/55", tx: "text-pink-300/60" }] : []),
+                  ] as { label: string; value: string; bg: string; hd: string; tx: string }[]).map(({ label, value, bg, hd, tx }) => (
+                    <div key={label} className={`rounded-xl border px-4 py-3.5 ${bg}`}>
+                      <div className={`text-[9px] font-bold tracking-[0.14em] uppercase mb-1.5 ${hd}`}>{label}</div>
+                      <p className={`text-[10.5px] leading-relaxed ${tx}`}>{value}</p>
+                    </div>
+                  ))}
+
+                  {/* Download buttons + Copy */}
+                  <div className="pt-2 border-t border-emerald-500/10 flex flex-wrap items-center gap-2 justify-between">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toast({ title: "Coming soon", description: "Mastered MP3 export will be available in a future update." })}
+                        className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                      >
+                        <Download className="w-3 h-3" /> MP3
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toast({ title: "Coming soon", description: "Mastered WAV export will be available in a future update." })}
+                        className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                      >
+                        <FileAudio className="w-3 h-3" /> WAV
+                      </button>
+                      {mixMasterData.stemsNotes && (
+                        <button
+                          type="button"
+                          onClick={() => toast({ title: "Coming soon", description: "Stems export will be available in a future update." })}
+                          className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                        >
+                          <Layers className="w-3 h-3" /> Stems
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!mixMasterData) return;
+                        const text = [
+                          `MIX & MASTER BRIEF`,
+                          ``,
+                          `Mix Vision: ${mixMasterData.mixBrief}`,
+                          ``,
+                          `Level Balancing:\n${mixMasterData.levelBalancing}`,
+                          ``,
+                          `EQ Notes:\n${mixMasterData.eqNotes}`,
+                          ``,
+                          `Compression:\n${mixMasterData.compressionNotes}`,
+                          ``,
+                          `Spatial & FX:\n${mixMasterData.spatialEffects}`,
+                          ``,
+                          `Mastering Chain:\n${mixMasterData.masteringChain}`,
+                          ``,
+                          `Output Specs:\n${mixMasterData.outputNotes}`,
+                          ...(mixMasterData.stemsNotes ? [``, `Stems Export:\n${mixMasterData.stemsNotes}`] : []),
+                        ].join("\n");
+                        navigator.clipboard.writeText(text).then(
+                          () => toast({ title: "Mix brief copied", description: "Ready to paste into your session notes or engineer's inbox." }),
+                          () => toast({ title: "Copy failed", variant: "destructive" }),
+                        );
+                      }}
+                      className="h-8 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/22 text-[10px] font-semibold text-emerald-400/80 hover:bg-emerald-500/16 hover:text-emerald-300 transition-all flex items-center gap-1.5"
                     >
                       <Copy className="w-3 h-3" /> Copy Full Brief
                     </button>
