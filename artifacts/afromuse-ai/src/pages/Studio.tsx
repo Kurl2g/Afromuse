@@ -793,7 +793,7 @@ export default function Studio() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="space-y-5"
+                  className="space-y-6"
                 >
                   {/* Song title + action bar */}
                   <div className="rounded-2xl border border-white/8 bg-gradient-to-r from-[#0d0d1a] to-[#0a0a14] px-5 py-5">

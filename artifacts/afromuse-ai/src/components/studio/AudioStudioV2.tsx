@@ -209,8 +209,8 @@ function ResultCard({
              <span className="text-white/25">{icon}</span>}
           </div>
           <div>
-            <div className="text-[10px] font-bold tracking-[0.12em] uppercase text-white/45">{title}</div>
-            {subtitle && <div className="text-[9px] text-white/22 mt-0.5 tracking-wide leading-snug">{subtitle}</div>}
+            <div className="text-[10px] font-bold tracking-[0.12em] uppercase text-white/58">{title}</div>
+            {subtitle && <div className="text-[9px] text-white/20 mt-0.5 tracking-wide leading-snug">{subtitle}</div>}
           </div>
         </div>
         {!muted && status === "success" && statusLabel && (
@@ -610,9 +610,8 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
       </div>
 
       {/* ── Section Header ── */}
-      <div className="text-center space-y-1.5">
-        <h3 className="text-sm font-bold tracking-[0.08em] uppercase text-white/70">Pro Tools</h3>
-        <p className="text-[11px] text-white/32 tracking-wide">Premium session tools for artists, writers, and producers.</p>
+      <div className="text-center">
+        <p className="text-[11px] text-white/28 tracking-wide">Premium session tools for artists, writers, and producers.</p>
       </div>
 
       {/* ══ PART 1 — Feature Grid ══ */}
@@ -689,11 +688,11 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
       </div>
 
       {/* ══ PART 3 — Positioning Strip ══ */}
-      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-r from-white/[0.015] to-white/[0.008] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-2xl border border-white/[0.05] bg-gradient-to-r from-white/[0.012] to-white/[0.006] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <div className="text-xs font-semibold text-white/60">Built for both artists and producers.</div>
-          <p className="text-[10px] text-white/28 leading-relaxed max-w-md">
-            Start with lyrics, shape the session, test the vocal identity, and prepare the structure before final audio rendering.
+          <div className="text-xs font-medium text-white/45">Built for artists and producers.</div>
+          <p className="text-[10px] text-white/24 leading-relaxed max-w-md">
+            Start with lyrics, shape the session, test the vocal identity, and prepare a structure before final audio rendering.
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5 shrink-0">
@@ -715,11 +714,11 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
           {/* Header */}
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400/70" />
-              <h4 className="text-sm font-bold tracking-wide text-white/80">AfroMuse Pro Engine</h4>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400/60" />
+              <h4 className="text-sm font-semibold tracking-wide text-white/65">AfroMuse Pro Engine</h4>
             </div>
-            <p className="text-[11px] text-white/35 leading-relaxed">
-              The next layer of AfroMuse will expand from writing into real session generation, export, and artist-ready delivery.
+            <p className="text-[11px] text-white/30 leading-relaxed">
+              The next layer of AfroMuse expands from writing into real session generation, export, and artist-ready delivery.
             </p>
           </div>
 
@@ -731,26 +730,26 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
               "Stronger artist / producer workflow",
             ].map((bullet) => (
               <div key={bullet} className="flex items-center gap-2.5">
-                <ArrowRight className="w-3 h-3 text-amber-400/50 shrink-0" />
-                <span className="text-[10px] text-white/45">{bullet}</span>
+                <ArrowRight className="w-2.5 h-2.5 text-amber-400/40 shrink-0" />
+                <span className="text-[10px] text-white/38">{bullet}</span>
               </div>
             ))}
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-3 pt-1">
+          <div className="flex flex-wrap gap-2.5 pt-0.5">
             <button
               onClick={() => onToast("AfroMuse Pro", "The full Pro engine is on the roadmap. Your session data is already shaping the upcoming features.")}
-              className="h-9 px-5 rounded-xl bg-amber-500/14 border border-amber-500/28 text-xs font-semibold text-amber-300 hover:bg-amber-500/22 hover:border-amber-500/40 transition-all flex items-center gap-2"
+              className="h-8 px-4 rounded-xl bg-amber-500/10 border border-amber-500/22 text-xs font-semibold text-amber-300/85 hover:bg-amber-500/16 hover:border-amber-500/32 transition-all flex items-center gap-1.5"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3 h-3" />
               See What's Coming
             </button>
             <button
               onClick={() => onToast("Session Prepared", "Your current session structure, vocal identity, and sonic direction are locked in and ready for the Pro layer.")}
-              className="h-9 px-5 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-semibold text-white/50 hover:bg-white/[0.07] hover:text-white/70 hover:border-white/18 transition-all flex items-center gap-2"
+              className="h-8 px-4 rounded-xl bg-white/[0.03] border border-white/8 text-xs font-semibold text-white/38 hover:bg-white/[0.06] hover:text-white/55 hover:border-white/14 transition-all flex items-center gap-1.5"
             >
-              <FileText className="w-3.5 h-3.5" />
+              <FileText className="w-3 h-3" />
               Prepare My Session
             </button>
           </div>
@@ -1027,14 +1026,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </div>
             <div>
               <div className="flex items-center gap-2.5 mb-1.5">
-                <h2 className="text-xl font-bold text-white tracking-tight">Audio Studio</h2>
-                <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-400">V2</span>
+                <h2 className="text-2xl font-bold text-white tracking-tight">Audio Studio</h2>
+                <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-sky-500/12 border border-sky-500/25 text-sky-400/80">V2</span>
               </div>
-              <p className="text-sm text-white/45 leading-relaxed max-w-lg">
-                Shape your lyrics into a playable session. Build beat direction, vocal identity, and arrangement-ready output.
-              </p>
-              <p className="text-[11px] text-white/22 mt-1.5">
-                This is where artists and producers turn ideas into a record blueprint.
+              <p className="text-sm text-white/40 leading-relaxed max-w-lg">
+                Shape your lyrics into a playable session — beat direction, vocal identity, and arrangement-ready output.
               </p>
             </div>
           </div>
@@ -1082,10 +1078,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         {/* Premium feature chip row */}
         <div className="relative flex flex-wrap gap-2">
           {[
-            { label: "Session Builder",            color: "bg-sky-500/8 border-sky-500/20 text-sky-400/65" },
-            { label: "Artist + Producer Workflow", color: "bg-violet-500/8 border-violet-500/18 text-violet-400/65" },
-            { label: "Custom Lyrics Ready",        color: "bg-amber-500/8 border-amber-500/18 text-amber-400/65" },
-            { label: "Instrumental / Vocal Split", color: "bg-white/4 border-white/10 text-white/30" },
+            { label: "Session Builder",            color: "bg-sky-500/6 border-sky-500/14 text-sky-400/50" },
+            { label: "Artist + Producer Workflow", color: "bg-violet-500/6 border-violet-500/12 text-violet-400/50" },
+            { label: "Instrumental / Vocal Split", color: "bg-white/3 border-white/8 text-white/25" },
           ].map(({ label, color }) => (
             <span key={label} className={`text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full border ${color}`}>{label}</span>
           ))}
@@ -1608,7 +1603,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-white/22">Your Session Build</span>
               <div className="flex-1 h-px bg-white/5" />
             </div>
-            <p className="text-center text-[10px] text-white/18 tracking-wide">Everything generated for this idea lives here.</p>
+            <p className="text-center text-[10px] text-white/20 tracking-wide">Everything generated for this idea lives here.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
