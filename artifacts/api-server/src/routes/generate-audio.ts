@@ -8,7 +8,7 @@ const router = Router();
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type JobStatus = "processing" | "completed" | "failed";
-type AudioJobType = "instrumental" | "vocal";
+type AudioJobType = "instrumental" | "vocal" | "lead-vocal";
 
 export interface InstrumentalMetadata {
   genre: string;
@@ -47,6 +47,16 @@ export interface AiSessionData {
   sessionBrief: string;
 }
 
+export interface LeadVocalSessionData {
+  vocalBrief: string;
+  phrasingGuide: string;
+  emotionalArc: string;
+  syncNotes: string;
+  performanceDirection: string;
+  deliveryStyle: string;
+  vocalProcessingNotes: string;
+}
+
 interface AudioJob {
   id: string;
   type: AudioJobType;
@@ -55,6 +65,7 @@ interface AudioJob {
   duration: string | null;
   metadata: InstrumentalMetadata | VocalMetadata | null;
   sessionData: AiSessionData | null;
+  leadVocalSessionData: LeadVocalSessionData | null;
   error: string | null;
   createdAt: number;
 }
@@ -127,6 +138,7 @@ function createJob(type: AudioJobType): AudioJob {
     duration: null,
     metadata: null,
     sessionData: null,
+    leadVocalSessionData: null,
     error: null,
     createdAt: Date.now(),
   };
@@ -325,6 +337,138 @@ async function runVocalProvider(job: AudioJob, payload: VocalPayload): Promise<v
   } satisfies VocalMetadata;
 }
 
+// ─── Lead Vocal Generator ────────────────────────────────────────────────────
+
+interface LeadVocalPayload {
+  lyrics?: string;
+  instrumentalUrl?: string;
+  gender?: string;
+  performanceFeel?: string;
+  vocalStyle?: string;
+  emotionalTone?: string;
+  buildMode?: string;
+  genre?: string;
+  bpm?: number;
+  key?: string;
+}
+
+const LEAD_VOCAL_SYSTEM_PROMPT = `You are AfroMuse Vocal Intelligence — an elite AI vocal director and session engineer specialising in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+You receive a vocal session configuration and return a detailed lead vocal session brief as structured JSON.
+Your output shapes the performance, recording, and processing direction for a real studio session.
+
+Rules:
+- Write like a top-tier vocal producer handing notes to a session vocalist and recording engineer
+- Be specific to genre, energy, and emotional context — never generic
+- Every note must be actionable in a real recording session
+- Phrasing, breathing, and sync notes must reference the actual lyric structure if provided
+- ALWAYS return valid JSON only — no markdown, no explanation, no code fences`;
+
+function buildLeadVocalPrompt(payload: LeadVocalPayload): string {
+  const gender       = payload.gender       ?? "male";
+  const feel         = payload.performanceFeel ?? "Smooth";
+  const style        = payload.vocalStyle   ?? "Melodic";
+  const tone         = payload.emotionalTone ?? "Uplifting";
+  const buildMode    = payload.buildMode    ?? "full";
+  const genre        = payload.genre        ?? "Afrobeats";
+  const bpm          = payload.bpm          ?? 98;
+  const key          = payload.key          ?? "F# minor";
+  const hasUrl       = payload.instrumentalUrl ? `Instrumental track provided at: ${payload.instrumentalUrl}` : "No instrumental URL provided — use genre/BPM/key context";
+  const lyricsBlock  = payload.lyrics
+    ? `LYRICS PROVIDED:\n${payload.lyrics.slice(0, 2000)}`
+    : "No lyrics provided — give general vocal direction for this configuration.";
+
+  return `Generate a lead vocal session brief for this configuration:
+
+VOCAL IDENTITY:
+  Gender: ${gender}
+  Performance Feel: ${feel}
+  Vocal Style: ${style}
+  Emotional Tone: ${tone}
+
+TRACK CONTEXT:
+  Genre: ${genre}
+  BPM: ${bpm}
+  Key: ${key}
+  ${hasUrl}
+  Build Mode: ${buildMode === "full" ? "Full Session (all sections)" : "Vocal Demo (hook + one verse)"}
+
+${lyricsBlock}
+
+Return ONLY this JSON object with no markdown, no code fences, no extra text:
+{
+  "vocalBrief": "One compelling headline brief (max 25 words) describing this vocal session's identity and direction — be specific to genre, feel, and tone",
+  "phrasingGuide": "Detailed phrasing, breathing and flow notes mapped to song sections (Intro → Verse → Hook → Bridge → Outro). Mention specific breath placement, held notes, and rhythmic emphasis. 4-6 sentences.",
+  "emotionalArc": "How the emotional delivery should evolve from the opening line to the final bar. Where to hold back and where to open up. 3-4 sentences.",
+  "syncNotes": "Specific guidance on how vocals sit in time with the instrumental — pocket feel, anticipation vs on-beat landing, ad-lib placement relative to gaps in the groove. 3 sentences.",
+  "performanceDirection": "Studio performance coaching — posture, mic distance, where to lean in, where to pull back, ad-lib timing, and energy control for this specific genre and feel. 4 sentences.",
+  "deliveryStyle": "Precise description of the vocal colour, texture, and delivery approach for this session — tone of voice, vibrato use, consonant sharpness, vocal warmth. 2-3 sentences.",
+  "vocalProcessingNotes": "Recommended processing chain — auto-tune level (natural/moderate/heavy), pitch correction style, compression attack/release direction, reverb depth, delay use, harmonic doubling notes. 3-4 sentences."
+}`;
+}
+
+async function callNvidiaForLeadVocalBrief(payload: LeadVocalPayload): Promise<LeadVocalSessionData | null> {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.warn("NVIDIA_API_KEY not set — skipping lead vocal AI brief generation");
+    return null;
+  }
+
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1",
+  });
+
+  const response = await ai.chat.completions.create({
+    model: "qwen/qwen3.5-122b-a10b",
+    messages: [
+      { role: "system", content: LEAD_VOCAL_SYSTEM_PROMPT },
+      { role: "user",   content: buildLeadVocalPrompt(payload) },
+    ],
+    temperature: 0.72,
+    max_tokens: 1400,
+  });
+
+  const raw = response.choices[0]?.message?.content ?? "";
+  const cleaned = raw
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/```json\s*/gi, "")
+    .replace(/```\s*/gi, "")
+    .trim();
+
+  const jsonStart = cleaned.indexOf("{");
+  const jsonEnd   = cleaned.lastIndexOf("}");
+  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in lead vocal model response");
+
+  return JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1)) as LeadVocalSessionData;
+}
+
+async function runLeadVocalProvider(job: AudioJob, payload: LeadVocalPayload): Promise<void> {
+  const genre = payload.genre ?? "Afrobeats";
+  const chordVibe = "";
+
+  try {
+    const leadVocalSessionData = await callNvidiaForLeadVocalBrief(payload);
+    job.leadVocalSessionData = leadVocalSessionData;
+  } catch (err) {
+    logger.warn({ err, jobId: job.id }, "Lead vocal AI brief failed — continuing with metadata only");
+  }
+
+  job.status   = "completed";
+  job.audioUrl = null;
+  job.duration = getDuration(undefined);
+  job.metadata = {
+    vocalStyle:   `${payload.performanceFeel ?? "Smooth"} / ${payload.vocalStyle ?? "Melodic"}`,
+    bpm:          payload.bpm ?? parseBpm(chordVibe, genre),
+    key:          payload.key ?? parseKey(chordVibe, payload.emotionalTone ?? "Uplifting"),
+    duration:     job.duration,
+    genre,
+    mood:         payload.emotionalTone ?? "Uplifting",
+    hitmakerMode: false,
+    audioType:    "Vocal Demo",
+  } satisfies VocalMetadata;
+}
+
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 router.post("/generate-instrumental-preview", (req, res) => {
@@ -338,6 +482,20 @@ router.post("/generate-instrumental-preview", (req, res) => {
   });
 
   logger.info({ jobId: job.id, genre: payload.genre, mood: payload.mood }, "Instrumental job created");
+  res.json({ success: true, jobId: job.id, status: "processing" });
+});
+
+router.post("/generate-lead-vocals", (req, res) => {
+  const payload = req.body as LeadVocalPayload;
+  const job = createJob("lead-vocal");
+
+  runLeadVocalProvider(job, payload).catch((err) => {
+    job.status = "failed";
+    job.error  = "Lead vocal generation failed";
+    logger.error({ err, jobId: job.id }, "Lead vocal provider error");
+  });
+
+  logger.info({ jobId: job.id, gender: payload.gender, feel: payload.performanceFeel }, "Lead vocal job created");
   res.json({ success: true, jobId: job.id, status: "processing" });
 });
 
@@ -365,12 +523,13 @@ router.get("/audio-job/:jobId", (req, res) => {
 
   if (job.status === "completed") {
     res.json({
-      jobId:       job.id,
-      status:      "completed",
-      audioUrl:    job.audioUrl,
-      duration:    job.duration,
-      metadata:    job.metadata,
-      sessionData: job.sessionData,
+      jobId:                 job.id,
+      status:                "completed",
+      audioUrl:              job.audioUrl,
+      duration:              job.duration,
+      metadata:              job.metadata,
+      sessionData:           job.sessionData,
+      leadVocalSessionData:  job.leadVocalSessionData,
     });
     return;
   }

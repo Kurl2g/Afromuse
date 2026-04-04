@@ -97,6 +97,27 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 - `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
 
+## Lead Vocal Generation Feature
+
+Added `POST /api/generate-lead-vocals` endpoint in `artifacts/api-server/src/routes/generate-audio.ts`.
+
+**Inputs**: `lyrics`, `instrumentalUrl`, `gender`, `performanceFeel`, `vocalStyle`, `emotionalTone`, `buildMode`, `genre`, `bpm`, `key`
+
+**Backend flow**:
+- Creates an in-memory job (type `"lead-vocal"`) and returns a `jobId` immediately
+- Calls NVIDIA AI (`qwen/qwen3.5-122b-a10b`) to generate a detailed `LeadVocalSessionData` brief
+- Poll progress via `GET /api/audio-job/:jobId` — returns `leadVocalSessionData` when complete
+- Gracefully skips AI brief if `NVIDIA_API_KEY` is not set
+
+**LeadVocalSessionData fields**: `vocalBrief`, `phrasingGuide`, `emotionalArc`, `syncNotes`, `performanceDirection`, `deliveryStyle`, `vocalProcessingNotes`
+
+**Frontend** (`artifacts/afromuse-ai/src/components/studio/AudioStudioV2.tsx`):
+- Lead Vocal Identity section (Section 3) now includes: Emotional Tone picker, Instrumental Track URL input, Session Build Mode toggle (Full / Vocal Demo), and "Generate Lead Vocals" button
+- Result renders as a full-width panel below the main 3-card grid with colour-coded sub-sections for each brief field
+- "Copy Full Brief" button copies all 7 fields to clipboard
+
+**Requires**: `NVIDIA_API_KEY` environment secret for AI brief generation.
+
 ## Authentication System
 
 Real server-side authentication using JWT cookies.

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mic2, Music2, Wand2, Loader2, Check, AlertCircle,
@@ -6,6 +6,7 @@ import {
   Headphones, Radio,
   Lock, Sparkles, CheckCircle2, ArrowRight, Package,
   FileAudio, Layers, Guitar, LayoutList, Tag, Star,
+  Link2, Heart, Cpu,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
@@ -75,6 +76,27 @@ const VOCAL_STYLES = [
   "Soulful", "Intimate", "Confident", "Airy",
   "Prayerful", "Street",
 ];
+
+const EMOTIONAL_TONES = [
+  "Romantic", "Anthemic", "Devotional", "Melancholic",
+  "Uplifting", "Raw", "Hopeful", "Celebratory",
+  "Longing", "Confident",
+];
+
+const LEAD_VOCAL_BUILD_MODES = [
+  { value: "full",       label: "Full Session",  description: "All sections — intro, verse, hook, bridge, outro" },
+  { value: "vocal-demo", label: "Vocal Demo",    description: "Hook + verse only — faster turnaround" },
+];
+
+interface LeadVocalSessionData {
+  vocalBrief: string;
+  phrasingGuide: string;
+  emotionalArc: string;
+  syncNotes: string;
+  performanceDirection: string;
+  deliveryStyle: string;
+  vocalProcessingNotes: string;
+}
 
 const INTRO_BEHAVIORS   = ["Cold open", "Build up", "Atmospheric fade-in", "Drum roll in", "Acapella intro"];
 const CHORUS_LIFTS      = ["Sudden drop", "Gradual swell", "Strip-back & explode", "Key change lift", "Layer stack"];
@@ -791,9 +813,15 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [transitionStyle, setTransitionStyle] = useState(TRANSITION_STYLES[3]);
   const [outroStyle,      setOutroStyle]      = useState(OUTRO_STYLES[0]);
 
+  const [instrumentalUrl,       setInstrumentalUrl]       = useState("");
+  const [emotionalTone,         setEmotionalTone]         = useState("Uplifting");
+  const [leadVocalBuildMode,    setLeadVocalBuildMode]    = useState("full");
+
   const [instrumentalStatus, setInstrumentalStatus] = useState<CardStatus>("idle");
   const [vocalStatus,        setVocalStatus]        = useState<CardStatus>("idle");
   const [blueprintStatus,    setBlueprintStatus]    = useState<CardStatus>("idle");
+  const [leadVocalStatus,    setLeadVocalStatus]    = useState<CardStatus>("idle");
+  const [leadVocalData,      setLeadVocalData]      = useState<LeadVocalSessionData | null>(null);
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
   const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
 
@@ -926,6 +954,75 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     void runVocal();
   };
 
+  const pollLeadVocalJob = useCallback(async (jobId: string) => {
+    const MAX_POLLS = 30;
+    let polls = 0;
+    while (polls < MAX_POLLS) {
+      await new Promise((r) => setTimeout(r, 2000));
+      polls++;
+      try {
+        const res = await fetch(`/api/audio-job/${jobId}`);
+        if (!res.ok) throw new Error("Poll failed");
+        const data = await res.json() as {
+          status: string;
+          leadVocalSessionData?: LeadVocalSessionData;
+          error?: string;
+        };
+        if (data.status === "completed") {
+          setLeadVocalData(data.leadVocalSessionData ?? null);
+          setLeadVocalStatus("success");
+          return;
+        }
+        if (data.status === "failed") {
+          setLeadVocalStatus("error");
+          toast({ title: "Vocal generation failed", description: data.error ?? "Please try again.", variant: "destructive" });
+          return;
+        }
+      } catch {
+        setLeadVocalStatus("error");
+        return;
+      }
+    }
+    setLeadVocalStatus("error");
+    toast({ title: "Request timed out", description: "The server took too long. Please try again.", variant: "destructive" });
+  }, [toast]);
+
+  const handleGenerateLeadVocals = async () => {
+    if (!hasLyrics && !instrumentalUrl) {
+      toast({ title: "Input required", description: "Add lyrics or an instrumental URL before generating vocals.", variant: "destructive" });
+      return;
+    }
+    setLeadVocalStatus("loading");
+    setLeadVocalData(null);
+    try {
+      const defaults    = getGenreDefaults(audioGenre);
+      const resolvedBpm = bpm ? Number(bpm) : undefined;
+      const resolvedKey = musicalKey || defaults.key;
+      const res = await fetch("/api/generate-lead-vocals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lyrics:          audioLyrics || undefined,
+          instrumentalUrl: instrumentalUrl || undefined,
+          gender:          vocalGender,
+          performanceFeel: vocalStyle,
+          vocalStyle,
+          emotionalTone,
+          buildMode:       leadVocalBuildMode,
+          genre:           audioGenre,
+          bpm:             resolvedBpm,
+          key:             resolvedKey,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to start lead vocal generation");
+      const { jobId } = await res.json() as { jobId: string };
+      await pollLeadVocalJob(jobId);
+    } catch (err) {
+      setLeadVocalStatus("error");
+      toast({ title: "Generation failed", description: "Could not start lead vocal generation.", variant: "destructive" });
+    }
+  };
+
   const handleGenerateFull = () => {
     if (!isInstrumentalMode && !validateForVocal()) return;
     setInstrumentalStatus("idle");
@@ -961,8 +1058,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     });
   };
 
-  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success";
-  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading";
+  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success";
+  const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading";
   const genreDefaults = getGenreDefaults(audioGenre);
 
   const BUILD_MODES = [
@@ -1433,6 +1530,101 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         >{style}</button>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Emotional Tone */}
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                      Emotional Tone
+                      <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">vocal colour</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {EMOTIONAL_TONES.map((tone) => (
+                        <button key={tone} type="button" onClick={() => setEmotionalTone(tone)}
+                          className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                            emotionalTone === tone
+                              ? "bg-pink-500/15 border border-pink-500/35 text-pink-300"
+                              : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                          }`}
+                        >{tone}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Instrumental Track URL */}
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                      Instrumental Track URL
+                      <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">optional — for sync reference</span>
+                    </label>
+                    <div className="relative">
+                      <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-violet-400/40 pointer-events-none" />
+                      <input
+                        type="url"
+                        value={instrumentalUrl}
+                        onChange={(e) => setInstrumentalUrl(e.target.value)}
+                        placeholder="https://yourdrive.com/beat.mp3  or  SoundCloud / Drive link..."
+                        className="w-full h-10 rounded-xl bg-white/4 border border-white/8 pl-9 pr-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-violet-500/40 transition-all"
+                      />
+                    </div>
+                    <p className="text-[10px] text-white/15 mt-1.5 italic">Providing the track URL helps shape timing and sync notes in the vocal brief.</p>
+                  </div>
+
+                  {/* Build Mode for Lead Vocals */}
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                      Session Build Mode
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {LEAD_VOCAL_BUILD_MODES.map((mode) => (
+                        <button key={mode.value} type="button" onClick={() => setLeadVocalBuildMode(mode.value)}
+                          className={`flex flex-col gap-1 p-3 rounded-xl border text-left transition-all ${
+                            leadVocalBuildMode === mode.value
+                              ? "bg-violet-500/12 border-violet-500/30 shadow-[0_0_12px_rgba(139,92,246,0.08)]"
+                              : "bg-white/3 border-white/6 hover:border-white/15"
+                          }`}
+                        >
+                          <span className={`text-xs font-bold ${leadVocalBuildMode === mode.value ? "text-violet-300" : "text-white/40"}`}>
+                            {mode.label}
+                          </span>
+                          <span className={`text-[9px] leading-snug ${leadVocalBuildMode === mode.value ? "text-violet-400/50" : "text-white/18"}`}>
+                            {mode.description}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Generate Lead Vocals CTA */}
+                  <div className="pt-1 border-t border-violet-500/10">
+                    <motion.button
+                      type="button"
+                      whileTap={{ scale: 0.98 }}
+                      disabled={leadVocalStatus === "loading"}
+                      onClick={() => void handleGenerateLeadVocals()}
+                      className={`w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-2.5 transition-all ${
+                        leadVocalStatus === "loading"
+                          ? "bg-violet-500/8 border border-violet-500/15 text-violet-400/40 cursor-not-allowed"
+                          : "bg-gradient-to-r from-violet-600/25 to-violet-500/15 border border-violet-500/35 text-violet-300 hover:from-violet-600/35 hover:to-violet-500/22 hover:border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.12)]"
+                      }`}
+                    >
+                      {leadVocalStatus === "loading" ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-violet-400/60" />
+                          <span>Generating Vocal Brief…</span>
+                        </>
+                      ) : (
+                        <>
+                          <Mic2 className="w-4 h-4" />
+                          <span>Generate Lead Vocals</span>
+                        </>
+                      )}
+                    </motion.button>
+                    {leadVocalStatus === "success" && (
+                      <p className="text-[10px] text-green-400/60 text-center mt-2 flex items-center justify-center gap-1">
+                        <Check className="w-3 h-3" /> Vocal brief ready — scroll down to view
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1948,6 +2140,201 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
           </div>
         </div>
+
+        {/* ══════════════════════════════════════════
+            LEAD VOCAL RESULT PANEL
+        ══════════════════════════════════════════ */}
+        <AnimatePresence>
+          {(leadVocalStatus === "loading" || leadVocalStatus === "success" || leadVocalStatus === "error") && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.4 }}
+              className={`rounded-3xl border overflow-hidden ${
+                leadVocalStatus === "success"
+                  ? "border-pink-500/20 bg-gradient-to-b from-pink-500/[0.04] via-violet-500/[0.02] to-transparent"
+                  : leadVocalStatus === "loading"
+                  ? "border-violet-500/15 bg-violet-500/[0.02]"
+                  : "border-red-500/15 bg-red-500/[0.02]"
+              }`}
+            >
+              {/* Top accent bar */}
+              {leadVocalStatus === "success" && (
+                <div className="h-[2px] w-full bg-gradient-to-r from-pink-500/40 via-violet-500/40 to-pink-500/10" />
+              )}
+
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${
+                    leadVocalStatus === "success" ? "bg-pink-500/14 border-pink-500/25"
+                    : leadVocalStatus === "loading" ? "bg-violet-500/10 border-violet-500/20"
+                    : "bg-red-500/10 border-red-500/20"
+                  }`}>
+                    {leadVocalStatus === "loading" ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-400/70" />
+                    ) : leadVocalStatus === "success" ? (
+                      <Mic2 className="w-4 h-4 text-pink-400" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-red-400" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-bold tracking-[0.12em] uppercase text-white/60">Lead Vocal Brief</div>
+                    <div className="text-[9px] text-white/25 mt-0.5">
+                      {leadVocalStatus === "loading"
+                        ? "AI vocal director is writing your session brief…"
+                        : leadVocalStatus === "success"
+                        ? `${vocalGender.charAt(0).toUpperCase() + vocalGender.slice(1)} lead · ${vocalStyle} · ${emotionalTone}`
+                        : "Generation failed — please try again"}
+                    </div>
+                  </div>
+                </div>
+                {leadVocalStatus === "success" && (
+                  <span className="text-[8px] font-bold tracking-[0.1em] uppercase px-2.5 py-1 rounded-full bg-pink-500/10 border border-pink-500/22 text-pink-400/80">
+                    Vocal Ready
+                  </span>
+                )}
+                {leadVocalStatus === "loading" && (
+                  <div className="flex items-center gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div key={i} className="w-1 h-1 rounded-full bg-violet-400/50"
+                        animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.1, 0.8] }}
+                        transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.22 }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Loading state */}
+              {leadVocalStatus === "loading" && (
+                <div className="px-6 py-10 text-center">
+                  <div className="relative w-12 h-12 mx-auto mb-4">
+                    <div className="absolute inset-0 rounded-full border-[2px] border-white/4 border-t-violet-400/80 animate-[spin_1.2s_linear_infinite]" />
+                    <div className="absolute inset-[3px] rounded-full border-[2px] border-white/3 border-b-violet-300/40 animate-[spin_2s_linear_infinite_reverse]" />
+                    <div className="absolute inset-[7px] rounded-full border-[2px] border-white/[0.06] border-t-violet-500/30 animate-[spin_3.5s_linear_infinite]" />
+                  </div>
+                  <p className="text-xs font-semibold text-violet-400/70 animate-pulse">Building your vocal session brief…</p>
+                  <p className="text-[10px] text-white/20 mt-1.5">Phrasing · Sync · Emotional arc · Studio direction</p>
+                </div>
+              )}
+
+              {/* Error state */}
+              {leadVocalStatus === "error" && (
+                <div className="px-6 py-10 text-center">
+                  <AlertCircle className="w-8 h-8 text-red-400/50 mx-auto mb-3" />
+                  <p className="text-xs text-red-400/60 font-medium">Vocal brief generation failed</p>
+                  <p className="text-[10px] text-white/20 mt-1">Check your connection and try again.</p>
+                  <button
+                    onClick={() => void handleGenerateLeadVocals()}
+                    className="mt-4 h-8 px-4 rounded-xl bg-white/4 border border-white/8 text-[10px] font-semibold text-white/40 hover:text-white/70 hover:border-white/14 transition-all"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {/* Success state */}
+              {leadVocalStatus === "success" && leadVocalData && (
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  {/* Vocal Brief headline */}
+                  <div className="md:col-span-2 rounded-2xl bg-gradient-to-r from-pink-500/[0.06] to-violet-500/[0.04] border border-pink-500/14 px-5 py-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Heart className="w-3.5 h-3.5 text-pink-400/70" />
+                      <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-pink-400/60">Vocal Brief</div>
+                    </div>
+                    <p className="text-sm font-semibold text-white/75 leading-relaxed">{leadVocalData.vocalBrief}</p>
+                  </div>
+
+                  {/* Phrasing Guide */}
+                  <div className="rounded-xl border border-violet-500/12 bg-violet-500/[0.03] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/55 flex items-center gap-1.5">
+                      <Mic2 className="w-3 h-3" /> Phrasing Guide
+                    </div>
+                    <p className="text-[10.5px] text-violet-300/65 leading-relaxed">{leadVocalData.phrasingGuide}</p>
+                  </div>
+
+                  {/* Emotional Arc */}
+                  <div className="rounded-xl border border-pink-500/12 bg-pink-500/[0.03] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-pink-400/55 flex items-center gap-1.5">
+                      <Heart className="w-3 h-3" /> Emotional Arc
+                    </div>
+                    <p className="text-[10.5px] text-pink-300/60 leading-relaxed">{leadVocalData.emotionalArc}</p>
+                  </div>
+
+                  {/* Sync Notes */}
+                  <div className="rounded-xl border border-sky-500/12 bg-sky-500/[0.025] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-sky-400/55 flex items-center gap-1.5">
+                      <Music2 className="w-3 h-3" /> Sync Notes
+                    </div>
+                    <p className="text-[10.5px] text-sky-300/60 leading-relaxed">{leadVocalData.syncNotes}</p>
+                  </div>
+
+                  {/* Performance Direction */}
+                  <div className="rounded-xl border border-amber-500/12 bg-amber-500/[0.025] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-amber-400/55 flex items-center gap-1.5">
+                      <Headphones className="w-3 h-3" /> Performance Direction
+                    </div>
+                    <p className="text-[10.5px] text-amber-300/60 leading-relaxed">{leadVocalData.performanceDirection}</p>
+                  </div>
+
+                  {/* Delivery Style */}
+                  <div className="rounded-xl border border-green-500/12 bg-green-500/[0.025] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-green-400/55 flex items-center gap-1.5">
+                      <Mic2 className="w-3 h-3" /> Delivery Style
+                    </div>
+                    <p className="text-[10.5px] text-green-300/60 leading-relaxed">{leadVocalData.deliveryStyle}</p>
+                  </div>
+
+                  {/* Vocal Processing Notes */}
+                  <div className="rounded-xl border border-white/8 bg-white/[0.02] px-4 py-3.5 space-y-1.5">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/35 flex items-center gap-1.5">
+                      <Cpu className="w-3 h-3" /> Vocal Processing
+                    </div>
+                    <p className="text-[10.5px] text-white/45 leading-relaxed">{leadVocalData.vocalProcessingNotes}</p>
+                  </div>
+
+                  {/* Copy all button */}
+                  <div className="md:col-span-2 flex justify-end">
+                    <button
+                      onClick={() => {
+                        if (!leadVocalData) return;
+                        const text = [
+                          `LEAD VOCAL BRIEF`,
+                          `================`,
+                          ``,
+                          `Vocal Brief: ${leadVocalData.vocalBrief}`,
+                          ``,
+                          `Phrasing Guide:\n${leadVocalData.phrasingGuide}`,
+                          ``,
+                          `Emotional Arc:\n${leadVocalData.emotionalArc}`,
+                          ``,
+                          `Sync Notes:\n${leadVocalData.syncNotes}`,
+                          ``,
+                          `Performance Direction:\n${leadVocalData.performanceDirection}`,
+                          ``,
+                          `Delivery Style:\n${leadVocalData.deliveryStyle}`,
+                          ``,
+                          `Vocal Processing Notes:\n${leadVocalData.vocalProcessingNotes}`,
+                        ].join("\n");
+                        navigator.clipboard.writeText(text).then(
+                          () => toast({ title: "Vocal brief copied", description: "Ready to paste into your session notes." }),
+                          () => toast({ title: "Copy failed", variant: "destructive" }),
+                        );
+                      }}
+                      className="h-8 px-4 rounded-xl bg-pink-500/10 border border-pink-500/22 text-[10px] font-semibold text-pink-400/80 hover:bg-pink-500/16 hover:text-pink-300 transition-all flex items-center gap-1.5"
+                    >
+                      <Copy className="w-3 h-3" /> Copy Full Brief
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ── Studio Export Notes ── */}
         <AnimatePresence>
