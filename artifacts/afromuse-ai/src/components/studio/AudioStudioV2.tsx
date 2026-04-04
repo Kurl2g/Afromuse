@@ -8,6 +8,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
 import { formatDraftForClipboard } from "@/lib/songGenerator";
+import { buildFullIntelligence, type FullIntelligence } from "@/lib/audioIntelligence";
 
 interface Props {
   draft: SongDraft | null;
@@ -91,8 +92,8 @@ function extractLyricsText(draft: SongDraft | null, genre: string, mood: string)
   return formatDraftForClipboard(draft, genre, mood);
 }
 
-function StemBar({ label, color }: { label: string; color: string }) {
-  const pct   = Math.round(55 + hashString(label) * 35);
+function StemBar({ label, color, pct }: { label: string; color: string; pct?: number }) {
+  const resolvedPct = pct ?? Math.round(55 + hashString(label) * 35);
   const delay = hashString(label + "_d") * 0.4;
   return (
     <div className="flex items-center gap-3">
@@ -102,7 +103,7 @@ function StemBar({ label, color }: { label: string; color: string }) {
         <motion.div
           className={`h-full rounded-full ${color}`}
           initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
+          animate={{ width: `${resolvedPct}%` }}
           transition={{ duration: 1.4, ease: "easeOut", delay }}
         />
       </div>
@@ -290,6 +291,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [vocalStatus,        setVocalStatus]        = useState<CardStatus>("idle");
   const [blueprintStatus,    setBlueprintStatus]    = useState<CardStatus>("idle");
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
+  const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
 
   const isInstrumentalMode = generateOnlyInstrumental || generationMode === "instrumental";
   const hasLyrics          = audioLyrics.trim().length > 0 || draft !== null;
@@ -347,56 +349,43 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     }
   };
 
-  const buildBlueprint = (): Blueprint => {
-    const defaults     = getGenreDefaults(audioGenre);
-    const resolvedBpm  = bpm || defaults.bpm;
-    const resolvedKey  = musicalKey || defaults.key;
-    const vocalLabel   = vocalGender === "random" ? "Randomised" : vocalGender.charAt(0).toUpperCase() + vocalGender.slice(1);
+  const buildBlueprintAndIntelligence = (): { bp: Blueprint; intel: FullIntelligence } => {
+    const defaults    = getGenreDefaults(audioGenre);
+    const resolvedBpm = bpm || defaults.bpm;
+    const resolvedKey = musicalKey || defaults.key;
+    const vocalLabel  = vocalGender === "random" ? "Randomised" : vocalGender.charAt(0).toUpperCase() + vocalGender.slice(1);
 
-    const arrangementStyle = isInstrumentalMode
-      ? "Pure instrumental — no vocal layer"
-      : sectionMode === "chorus" ? "Chorus-led hook focus with instrumental bed"
-      : sectionMode === "verse"  ? "Verse-focused narrative flow"
-      : sectionMode === "hook"   ? "Hook-only — maximum chant and repeat energy"
-      : isProducer
-        ? "Full arrangement — Intro / Verse / Chorus / Bridge / Outro with transition scripting"
-        : "Full song arrangement — Intro / Verse / Chorus / Bridge / Outro";
+    const intel = buildFullIntelligence({
+      genre: audioGenre,
+      bpm: resolvedBpm,
+      key: resolvedKey,
+      energy: energyLevel,
+      section: sectionMode,
+      vocalGender,
+      vocalLabel,
+      isInstrumentalMode,
+      isProducer,
+      useHitmakerHookPriority,
+      includeArrangementNotes,
+      includeStemsBreakdown,
+      lyrics: audioLyrics,
+      styleReference: audioStyleReference,
+      ...(isProducer ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle } : {}),
+    });
 
-    const hookFocus = isProducer
-      ? useHitmakerHookPriority
-        ? "Hitmaker hook — layer-stack chorus, hard-contrast verse energy, replay-coded line"
-        : "Arrangement-first hook — timed lift at bar 8, verse to chorus transition engineered"
-      : useHitmakerHookPriority
-        ? "Hitmaker — first-listen memorability, maximum chant energy"
-        : "Balanced — replay value with emotional resonance";
-
-    const notesParts = isProducer
-      ? [
-          `Session: ${resolvedBpm} BPM | Key of ${resolvedKey} | ${audioGenre}.`,
-          `Drums: ${drumDensity} density. Bass: ${bassWeight}.`,
-          `Intro: ${introBehavior}. Chorus lift: ${chorusLift}.`,
-          `Transitions: ${transitionStyle}. Outro: ${outroStyle}.`,
-          includeArrangementNotes ? "Full section-by-section arrangement scripted." : "",
-          includeStemsBreakdown   ? "Stems export: kick, snare, bass, melody, perc, vocals." : "",
-          isInstrumentalMode ? "No vocal tracking." : `Vocal: ${vocalLabel} — booth setup ready.`,
-          `Energy arc: ${energyLevel.toLowerCase()} base with ${audioGenre} texture and cultural feel.`,
-        ].filter(Boolean)
-      : [
-          `Session set in ${resolvedBpm} BPM, key of ${resolvedKey}.`,
-          includeArrangementNotes ? "Full section-by-section arrangement notes included." : "",
-          includeStemsBreakdown   ? "Stems breakdown provided for individual track mixing." : "",
-          isInstrumentalMode
-            ? "Instrumental-only session — no vocal tracking required."
-            : "Vocal booth setup: close-mic dynamic mic, minimal reverb on tracking, leave headroom for post-processing.",
-          `Reference energy: ${energyLevel.toLowerCase()} intensity throughout with ${audioGenre} cultural texture.`,
-        ].filter(Boolean);
-
-    return {
-      bpm: resolvedBpm, key: resolvedKey, genre: audioGenre,
-      energy: energyLevel, vocalType: isInstrumentalMode ? "Instrumental" : vocalLabel,
-      arrangementStyle, hookFocus, producerNotes: notesParts.join(" "),
+    const bp: Blueprint = {
+      bpm: resolvedBpm,
+      key: resolvedKey,
+      genre: audioGenre,
+      energy: energyLevel,
+      vocalType: isInstrumentalMode ? "Instrumental" : vocalLabel,
+      arrangementStyle: intel.arrangementStyle,
+      hookFocus:        intel.hookFocus,
+      producerNotes:    intel.producerNotes,
       ...(isProducer ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle } : {}),
     };
+
+    return { bp, intel };
   };
 
   const validateForVocal = (): boolean => {
@@ -410,9 +399,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const runInstrumental = async () => {
     setInstrumentalStatus("loading");
     await new Promise((r) => setTimeout(r, 2800));
+    const { bp, intel } = buildBlueprintAndIntelligence();
     setInstrumentalStatus("success");
     setBlueprintStatus("success");
-    setBlueprint(buildBlueprint());
+    setBlueprint(bp);
+    setIntelligence(intel);
   };
 
   const runVocal = async () => {
@@ -425,6 +416,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     setInstrumentalStatus("idle");
     setBlueprintStatus("idle");
     setBlueprint(null);
+    setIntelligence(null);
     void runInstrumental();
   };
 
@@ -440,6 +432,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     setVocalStatus("idle");
     setBlueprintStatus("idle");
     setBlueprint(null);
+    setIntelligence(null);
     void (async () => {
       const tasks: Promise<void>[] = [runInstrumental()];
       if (!isInstrumentalMode) {
@@ -899,58 +892,39 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             loadingLabel={isProducer ? "Scripting your arrangement..." : "Building your groove..."}
           >
             <div className="space-y-4">
-              {isProducer ? (
+              {intelligence && (
                 <>
-                  <div className="rounded-lg bg-white/[0.03] border border-violet-500/10 px-3 py-2">
-                    <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/50 mb-1">Arrangement Map</div>
-                    <p className="text-[10px] text-white/45 leading-relaxed">
-                      {audioGenre} | {bpm || genreDefaults.bpm} BPM | {musicalKey || genreDefaults.key}
-                    </p>
-                    <p className="text-[10px] text-violet-300/50 mt-1 leading-relaxed">
-                      Intro: {introBehavior} → Verse → Chorus ({chorusLift}) → Bridge → Outro ({outroStyle})
-                    </p>
-                  </div>
-                  <div className="space-y-2.5 pt-1">
-                    {[
-                      { label: "Kick & Percussion", note: `${drumDensity} density`, color: "bg-amber-400" },
-                      { label: "Bass & Sub",         note: bassWeight,              color: "bg-violet-500" },
-                      { label: "Pads & Chords",      note: "Chord movement layer",  color: "bg-sky-500" },
-                      { label: "Lead Melody",         note: "Hook carrier",          color: "bg-green-400" },
-                      { label: "Guitar / Plucks",     note: "Texture fill",          color: "bg-orange-400" },
-                    ].map((stem) => (
-                      <div key={stem.label} className="flex items-center gap-3">
-                        <div className={`w-1.5 h-4 rounded-full opacity-60 ${stem.color}`} />
-                        <div className="flex-1">
-                          <StemBar label={stem.label} color={stem.color} />
-                          <p className="text-[9px] text-white/25 mt-0.5 pl-[calc(0.375rem+0.75rem+7rem)]">{stem.note}</p>
-                        </div>
+                  {/* Beat summary / arrangement map */}
+                  {isProducer ? (
+                    <div className="rounded-lg bg-white/[0.03] border border-violet-500/10 px-3 py-2">
+                      <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/50 mb-1">Arrangement Map</div>
+                      <p className="text-[10px] text-violet-300/55 leading-relaxed">{intelligence.arrangementMap}</p>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-white/50 leading-relaxed">{intelligence.beatSummary}</p>
+                  )}
+
+                  {/* Intelligent stem bars */}
+                  <div className="space-y-3 pt-1">
+                    {intelligence.stems.map((stem) => (
+                      <div key={stem.label}>
+                        <StemBar label={stem.label} color={stem.color} pct={stem.pct} />
+                        <p className="text-[9px] text-white/28 mt-1 leading-relaxed pl-[calc(0.375rem+0.75rem+7rem)]">{stem.note}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="text-[10px] text-violet-400/40 pt-1 border-t border-white/4 leading-relaxed">
-                    Transition: <span className="text-violet-300/55">{transitionStyle}</span> between all sections.
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="text-xs text-white/50 leading-relaxed">
-                    Beat concept set for <span className="text-sky-400 font-medium">{audioGenre}</span>
-                    {" — "}{bpm || genreDefaults.bpm} BPM in {musicalKey || genreDefaults.key}.
-                  </p>
-                  <div className="space-y-2.5 pt-1">
-                    {[
-                      { label: "Kick & Percussion", color: "bg-amber-400" },
-                      { label: "Bass & Sub",         color: "bg-violet-500" },
-                      { label: "Pads & Chords",      color: "bg-sky-500" },
-                      { label: "Lead Melody",         color: "bg-green-400" },
-                      { label: "Guitar / Plucks",     color: "bg-orange-400" },
-                    ].map((stem) => (
-                      <StemBar key={stem.label} label={stem.label} color={stem.color} />
-                    ))}
-                  </div>
-                  {includeArrangementNotes && (
+
+                  {/* Style influence tag */}
+                  {intelligence.styleInfluence !== "neutral" && intelligence.styleDesc && (
+                    <div className="pt-1 border-t border-white/4">
+                      <p className="text-[10px] text-sky-400/50 leading-relaxed">{intelligence.styleDesc}</p>
+                    </div>
+                  )}
+
+                  {/* Arrangement guide note (Artist mode) */}
+                  {!isProducer && includeArrangementNotes && (
                     <p className="text-[10px] text-white/22 pt-1 border-t border-white/4 leading-relaxed">
-                      Arrangement guide included in the Session Blueprint →
+                      Full arrangement guide included in the Session Blueprint →
                     </p>
                   )}
                 </>
@@ -969,50 +943,23 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             mutedLabel="Vocals are off in beat-only mode"
           >
             <div className="space-y-3">
-              {isProducer ? (
+              {intelligence && (
                 <>
-                  <div className="rounded-lg bg-violet-500/[0.06] border border-violet-500/15 px-3 py-2">
-                    <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/55 mb-0.5">Vocal Architecture</div>
+                  <div className="rounded-lg bg-violet-500/[0.05] border border-violet-500/12 px-3 py-2">
+                    <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/50 mb-0.5">
+                      {isProducer ? "Vocal Architecture" : "Vocal Setup"}
+                    </div>
                     <p className="text-[10px] text-violet-300/60 leading-snug">
-                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label} delivery — {audioGenre} delivery model, structured for mix separation.
+                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label} delivery — {audioGenre}
+                      {intelligence.lyricsTone !== "neutral" ? ` · Tone: ${intelligence.lyricsTone}` : ""}
                     </p>
                   </div>
                   <div className="space-y-2.5">
-                    {[
-                      { label: "Verse Pocket",   note: "Tight dry delivery — mono-compatible, low-shelf cut at 200Hz",     color: "text-violet-400/60" },
-                      { label: "Hook Lift",       note: `${chorusLift} — double-tracked, stereo spread, light saturation`, color: "text-violet-300/70" },
-                      { label: "Bridge Moment",   note: "Strip back all layers — raw, emotionally forward",                 color: "text-violet-400/60" },
-                      { label: "Ad-lib & Call",   note: "Wide pan — 30% wet reverb, distinct from lead",                   color: "text-violet-400/50" },
-                      { label: "Outro Chant",     note: `${outroStyle} with crowd-call layer`,                             color: "text-violet-300/55" },
-                    ].map(({ label, note, color }) => (
+                    {intelligence.vocalSections.map(({ label, note, color }) => (
                       <div key={label} className="flex items-start gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-violet-400/50 mt-1.5 shrink-0" />
                         <div>
                           <span className={`text-[10px] font-semibold block ${color}`}>{label}</span>
-                          <p className="text-[10px] text-white/28 leading-relaxed">{note}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="text-xs text-white/50 leading-relaxed">
-                    Vocal concept ready — <span className="text-violet-400 font-medium">
-                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label}
-                    </span> delivery in {audioGenre} style.
-                  </p>
-                  <div className="space-y-2.5">
-                    {[
-                      { label: "Verse Delivery", note: "Low, conversational, storytelling energy" },
-                      { label: "Hook Lift",       note: "Open throat, full projection, crowd-ready" },
-                      { label: "Bridge Turn",     note: "Raw, stripped-back emotional peak" },
-                      { label: "Ad-lib Layer",    note: "Chant and crowd response layer ready" },
-                    ].map(({ label, note }) => (
-                      <div key={label} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-violet-400/50 mt-1.5 shrink-0" />
-                        <div>
-                          <span className="text-[10px] font-semibold text-violet-300/70 block">{label}</span>
                           <p className="text-[10px] text-white/30 leading-relaxed">{note}</p>
                         </div>
                       </div>
@@ -1079,6 +1026,23 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   </div>
                   <p className="text-[10px] text-white/40 leading-relaxed">{blueprint.producerNotes}</p>
                 </div>
+
+                {/* Intelligence context tags */}
+                {intelligence && (intelligence.lyricsTone !== "neutral" || intelligence.styleInfluence !== "neutral") && (
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {intelligence.lyricsTone !== "neutral" && (
+                      <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/35">
+                        Tone · {intelligence.lyricsTone}
+                      </span>
+                    )}
+                    {intelligence.styleInfluence !== "neutral" && (
+                      <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full bg-sky-500/8 border border-sky-500/15 text-sky-400/50">
+                        Style · {intelligence.styleInfluence.replace("-", " ")}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <button onClick={copyBlueprint}
                   className="w-full h-8 rounded-lg bg-white/4 border border-white/8 text-[10px] font-semibold text-white/40 hover:text-white/70 hover:border-white/15 transition-all flex items-center justify-center gap-1.5"
                 >
