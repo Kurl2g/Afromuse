@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Music2, Mic2, Zap, Sparkles, Download, FileText, RefreshCw,
-  ChevronRight, AlertCircle,
+  ChevronRight, AlertCircle, Lock,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AudioPlayer from "./AudioPlayer";
@@ -101,36 +101,131 @@ function AudioMetadataPanel({ metadata }: { metadata: InstrumentalMetadata | Voc
   );
 }
 
-function LoadingSteps({ steps, activeStep }: { steps: string[]; activeStep: number }) {
+function LoadingCard({
+  steps,
+  activeStep,
+  label,
+  accent,
+}: {
+  steps: string[];
+  activeStep: number;
+  label: string;
+  accent: "amber" | "violet";
+}) {
+  const dotColor = accent === "violet" ? "bg-violet-400" : "bg-primary";
+  const labelColor = accent === "violet" ? "text-violet-400/80" : "text-primary/80";
+  const borderColor = accent === "violet" ? "border-violet-500/12 bg-violet-500/4" : "border-primary/12 bg-primary/4";
+  const progressGradient =
+    accent === "violet"
+      ? "bg-gradient-to-r from-violet-500 to-violet-300"
+      : "bg-gradient-to-r from-primary to-amber-400";
+
   return (
-    <div className="flex flex-col items-center py-10 gap-6">
-      <div className="relative w-16 h-16">
-        <div className="absolute inset-0 rounded-full border-[2px] border-white/5 border-t-primary/70 animate-spin" />
-        <div className="absolute inset-2 rounded-full border-[2px] border-white/5 border-b-amber-400/50 animate-[spin_2s_linear_infinite_reverse]" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Music2 className="w-5 h-5 text-primary/70 animate-pulse" />
+    <div className={`rounded-2xl border ${borderColor}`}>
+      <div className="px-5 pt-4 pb-2 flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full animate-pulse ${dotColor}`} />
+        <span className={`text-xs font-semibold ${labelColor}`}>{label}</span>
+      </div>
+      <div className="flex flex-col items-center py-10 gap-6">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full border-[2px] border-white/5 border-t-primary/70 animate-spin" />
+          <div className="absolute inset-2 rounded-full border-[2px] border-white/5 border-b-amber-400/50 animate-[spin_2s_linear_infinite_reverse]" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Music2 className="w-5 h-5 text-primary/70 animate-pulse" />
+          </div>
+        </div>
+        <div className="h-6 flex items-center">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={activeStep}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm text-white/50 font-medium"
+            >
+              {steps[activeStep]}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+        <div className="w-40 h-1 bg-white/5 rounded-full overflow-hidden">
+          <motion.div
+            className={`h-full rounded-full ${progressGradient}`}
+            animate={{ width: ["0%", "100%"] }}
+            transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
+          />
         </div>
       </div>
-      <div className="h-6 flex items-center">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={activeStep}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.2 }}
-            className="text-sm text-white/50 font-medium"
-          >
-            {steps[activeStep]}
-          </motion.p>
-        </AnimatePresence>
+    </div>
+  );
+}
+
+function ErrorCard({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="rounded-2xl border border-red-500/15 bg-red-500/5 px-5 py-4 flex items-center gap-3">
+      <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+      <div className="flex-1">
+        <p className="text-sm text-white/60">{message}</p>
+        <p className="text-[11px] text-white/30 mt-0.5">Check your connection and try again.</p>
       </div>
-      <div className="w-40 h-1 bg-white/5 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-primary to-amber-400 rounded-full"
-          animate={{ width: ["0%", "100%"] }}
-          transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
+      <button
+        onClick={onRetry}
+        className="text-xs font-medium text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 px-3 py-1.5 rounded-lg transition-all"
+      >
+        Retry
+      </button>
+    </div>
+  );
+}
+
+function AudioResultCard({
+  label,
+  dotColor,
+  borderColor,
+  gradientFrom,
+  headerBorder,
+  metadata,
+  draft,
+  onRegenerate,
+  onDownload,
+}: {
+  label: string;
+  dotColor: string;
+  borderColor: string;
+  gradientFrom: string;
+  headerBorder: string;
+  metadata: InstrumentalMetadata | VocalMetadata;
+  draft: SongDraft;
+  onRegenerate: () => void;
+  onDownload: () => void;
+}) {
+  const audioType = metadata.audioType;
+
+  return (
+    <div className={`rounded-2xl border overflow-hidden ${borderColor} bg-gradient-to-b ${gradientFrom} to-transparent`}>
+      <div className={`px-5 pt-4 pb-3 flex items-center justify-between border-b ${headerBorder}`}>
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${dotColor}`} />
+          <span className="text-xs font-bold text-white/70">{label}</span>
+        </div>
+        <button
+          onClick={onRegenerate}
+          className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
+        >
+          <RefreshCw className="w-3 h-3" />
+          Regenerate
+        </button>
+      </div>
+      <div className="p-4">
+        <AudioPlayer
+          audioUrl={null}
+          duration={metadata.duration}
+          title={draft.title}
+          audioType={audioType}
+          onRegenerate={onRegenerate}
+          onDownload={onDownload}
         />
+        <AudioMetadataPanel metadata={metadata} />
       </div>
     </div>
   );
@@ -189,10 +284,10 @@ function ExportSection({
     toast({ title: "Production notes downloaded" });
   };
 
-  const downloadMp3 = (type: "instrumental" | "vocal") => {
+  const notifyMp3Coming = (type: "instrumental" | "vocal") => {
     toast({
-      title: "MP3 download queued",
-      description: "Your audio file will be ready once the full render engine is connected.",
+      title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} MP3`,
+      description: "Full audio export unlocks when the render engine is connected.",
     });
   };
 
@@ -219,24 +314,85 @@ function ExportSection({
         </button>
         {instrumentalMeta && (
           <button
-            onClick={() => downloadMp3("instrumental")}
+            onClick={() => notifyMp3Coming("instrumental")}
             className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-primary/20 text-xs text-primary/60 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
           >
-            <Download className="w-3 h-3" />
-            Download Instrumental MP3
+            <Lock className="w-3 h-3" />
+            Instrumental MP3
+            <span className="ml-1 text-[9px] text-primary/40 font-bold tracking-wider uppercase">Soon</span>
           </button>
         )}
         {vocalMeta && (
           <button
-            onClick={() => downloadMp3("vocal")}
+            onClick={() => notifyMp3Coming("vocal")}
             className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-violet-500/20 text-xs text-violet-400/60 hover:text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/5 transition-all"
           >
-            <Download className="w-3 h-3" />
-            Download Vocal Demo MP3
+            <Lock className="w-3 h-3" />
+            Vocal Demo MP3
+            <span className="ml-1 text-[9px] text-violet-400/40 font-bold tracking-wider uppercase">Soon</span>
           </button>
         )}
       </div>
     </div>
+  );
+}
+
+function TriggerButton({
+  onClick,
+  disabled,
+  status,
+  icon,
+  label,
+  sublabel,
+  accent,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+  status: AudioStatus;
+  icon: React.ReactNode;
+  label: string;
+  sublabel: string;
+  accent: "amber" | "violet";
+}) {
+  const isLoading = status === "loading";
+  const isReady = status === "ready";
+
+  const borderReady = accent === "violet" ? "border-violet-500/25 bg-violet-500/8 text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/12" : "border-primary/25 bg-primary/8 text-primary hover:border-primary/40 hover:bg-primary/12";
+  const borderLoading = accent === "violet" ? "border-violet-500/30 bg-violet-500/8 text-violet-400/60 cursor-wait" : "border-primary/30 bg-primary/8 text-primary/60 cursor-wait";
+  const iconReady = accent === "violet" ? "bg-violet-500/15 border-violet-500/25" : "bg-primary/15 border-primary/25";
+  const iconReadyText = accent === "violet" ? "text-violet-400" : "text-primary";
+  const spinnerColor = accent === "violet" ? "border-violet-500/30 border-t-violet-400" : "border-primary/30 border-t-primary";
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`relative overflow-hidden group flex items-center justify-between gap-3 h-16 rounded-2xl border px-5 text-sm font-semibold transition-all ${
+        isLoading
+          ? borderLoading
+          : isReady
+          ? borderReady
+          : "border-white/10 bg-white/[0.03] text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.06]"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${isReady ? iconReady : "bg-white/5 border-white/10"}`}>
+          <span className={isReady ? iconReadyText : "text-white/40"}>{icon}</span>
+        </div>
+        <div className="text-left">
+          <div className="text-sm font-semibold text-white/80">
+            {isReady ? `Regenerate ${label}` : `Generate ${label}`}
+          </div>
+          <div className="text-[10px] text-white/30 mt-0.5">{sublabel}</div>
+        </div>
+      </div>
+      {!isLoading && (
+        <ChevronRight className="w-4 h-4 text-white/20 shrink-0 group-hover:text-white/50 transition-colors" />
+      )}
+      {isLoading && (
+        <div className={`shrink-0 w-4 h-4 rounded-full border-2 animate-spin ${spinnerColor}`} />
+      )}
+    </button>
   );
 }
 
@@ -265,6 +421,8 @@ export default function BringToLifeCard({
 
   const instrTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const vocalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const instrAbortRef = useRef<AbortController | null>(null);
+  const vocalAbortRef = useRef<AbortController | null>(null);
 
   const clearInstrTimer = useCallback(() => {
     if (instrTimerRef.current) { clearInterval(instrTimerRef.current); instrTimerRef.current = null; }
@@ -295,7 +453,14 @@ export default function BringToLifeCard({
     return clearVocalTimer;
   }, [vocalStatus, clearVocalTimer]);
 
-  const buildPayload = () => ({
+  useEffect(() => {
+    return () => {
+      instrAbortRef.current?.abort();
+      vocalAbortRef.current?.abort();
+    };
+  }, []);
+
+  const buildPayload = useCallback(() => ({
     genre,
     mood,
     theme: topic,
@@ -319,10 +484,13 @@ export default function BringToLifeCard({
       melodyDirection: draft.melodyDirection,
       arrangement: draft.arrangement,
     },
-  });
+  }), [genre, mood, topic, style, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, draft]);
 
-  const generateInstrumental = async () => {
+  const generateInstrumental = useCallback(async () => {
     if (instrumentalStatus === "loading") return;
+    instrAbortRef.current?.abort();
+    const controller = new AbortController();
+    instrAbortRef.current = controller;
     setInstrumentalStatus("loading");
     setInstrumentalStep(0);
     setInstrumentalMeta(null);
@@ -331,20 +499,25 @@ export default function BringToLifeCard({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPayload()),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error("Generation failed");
       const data = await res.json() as { metadata: InstrumentalMetadata };
       setInstrumentalMeta(data.metadata);
       setInstrumentalStatus("ready");
       toast({ title: "Instrumental Preview Ready", description: `${data.metadata.bpm} BPM · ${data.metadata.key}` });
-    } catch {
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
       setInstrumentalStatus("error");
       toast({ title: "Generation failed", description: "Please try again.", variant: "destructive" });
     }
-  };
+  }, [instrumentalStatus, buildPayload, toast]);
 
-  const generateVocal = async () => {
+  const generateVocal = useCallback(async () => {
     if (vocalStatus === "loading") return;
+    vocalAbortRef.current?.abort();
+    const controller = new AbortController();
+    vocalAbortRef.current = controller;
     setVocalStatus("loading");
     setVocalStep(0);
     setVocalMeta(null);
@@ -353,17 +526,19 @@ export default function BringToLifeCard({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPayload()),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error("Generation failed");
       const data = await res.json() as { metadata: VocalMetadata };
       setVocalMeta(data.metadata);
       setVocalStatus("ready");
       toast({ title: "Vocal Demo Ready", description: `${data.metadata.vocalStyle} · ${data.metadata.key}` });
-    } catch {
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
       setVocalStatus("error");
       toast({ title: "Generation failed", description: "Please try again.", variant: "destructive" });
     }
-  };
+  }, [vocalStatus, buildPayload, toast]);
 
   const anyReady = instrumentalStatus === "ready" || vocalStatus === "ready";
 
@@ -374,7 +549,6 @@ export default function BringToLifeCard({
       transition={{ duration: 0.5, delay: 0.1 }}
       className="rounded-3xl border border-white/8 bg-gradient-to-b from-[#0b0b18] to-[#07070f] overflow-hidden shadow-2xl"
     >
-      {/* Card Header */}
       <div className="px-6 pt-6 pb-5 border-b border-white/6">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -402,72 +576,27 @@ export default function BringToLifeCard({
 
       <div className="p-6 space-y-6">
 
-        {/* Action Buttons — always visible */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Instrumental Button */}
-          <button
+          <TriggerButton
             onClick={generateInstrumental}
             disabled={instrumentalStatus === "loading"}
-            className={`relative overflow-hidden group flex items-center justify-between gap-3 h-16 rounded-2xl border px-5 text-sm font-semibold transition-all ${
-              instrumentalStatus === "loading"
-                ? "border-primary/30 bg-primary/8 text-primary/60 cursor-wait"
-                : instrumentalStatus === "ready"
-                ? "border-primary/25 bg-primary/8 text-primary hover:border-primary/40 hover:bg-primary/12"
-                : "border-white/10 bg-white/[0.03] text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.06]"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${instrumentalStatus === "ready" ? "bg-primary/15 border border-primary/25" : "bg-white/5 border border-white/10"}`}>
-                <Music2 className={`w-4 h-4 ${instrumentalStatus === "ready" ? "text-primary" : "text-white/40"}`} />
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-semibold text-white/80">
-                  {instrumentalStatus === "ready" ? "Regenerate Instrumental" : "Generate Instrumental Preview"}
-                </div>
-                <div className="text-[10px] text-white/30 mt-0.5">Beat · Rhythm · Arrangement</div>
-              </div>
-            </div>
-            {instrumentalStatus !== "loading" && (
-              <ChevronRight className="w-4 h-4 text-white/20 shrink-0 group-hover:text-white/50 transition-colors" />
-            )}
-            {instrumentalStatus === "loading" && (
-              <div className="shrink-0 w-4 h-4 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-            )}
-          </button>
-
-          {/* Vocal Button */}
-          <button
+            status={instrumentalStatus}
+            icon={<Music2 className="w-4 h-4" />}
+            label="Instrumental Preview"
+            sublabel="Beat · Rhythm · Arrangement"
+            accent="amber"
+          />
+          <TriggerButton
             onClick={generateVocal}
             disabled={vocalStatus === "loading"}
-            className={`relative overflow-hidden group flex items-center justify-between gap-3 h-16 rounded-2xl border px-5 text-sm font-semibold transition-all ${
-              vocalStatus === "loading"
-                ? "border-violet-500/30 bg-violet-500/8 text-violet-400/60 cursor-wait"
-                : vocalStatus === "ready"
-                ? "border-violet-500/25 bg-violet-500/8 text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/12"
-                : "border-white/10 bg-white/[0.03] text-white/60 hover:text-white hover:border-white/20 hover:bg-white/[0.06]"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${vocalStatus === "ready" ? "bg-violet-500/15 border border-violet-500/25" : "bg-white/5 border border-white/10"}`}>
-                <Mic2 className={`w-4 h-4 ${vocalStatus === "ready" ? "text-violet-400" : "text-white/40"}`} />
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-semibold text-white/80">
-                  {vocalStatus === "ready" ? "Regenerate Vocal Demo" : "Generate Vocal Demo"}
-                </div>
-                <div className="text-[10px] text-white/30 mt-0.5">Melody · Guide Vocal · Style</div>
-              </div>
-            </div>
-            {vocalStatus !== "loading" && (
-              <ChevronRight className="w-4 h-4 text-white/20 shrink-0 group-hover:text-white/50 transition-colors" />
-            )}
-            {vocalStatus === "loading" && (
-              <div className="shrink-0 w-4 h-4 rounded-full border-2 border-violet-500/30 border-t-violet-400 animate-spin" />
-            )}
-          </button>
+            status={vocalStatus}
+            icon={<Mic2 className="w-4 h-4" />}
+            label="Vocal Demo"
+            sublabel="Melody · Guide Vocal · Style"
+            accent="violet"
+          />
         </div>
 
-        {/* Instrumental Preview Result */}
         <AnimatePresence>
           {instrumentalStatus === "loading" && (
             <motion.div
@@ -477,13 +606,7 @@ export default function BringToLifeCard({
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-2xl border border-primary/12 bg-primary/4">
-                <div className="px-5 pt-4 pb-2 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-xs font-semibold text-primary/80">Building Instrumental Preview</span>
-                </div>
-                <LoadingSteps steps={INSTRUMENTAL_STEPS} activeStep={instrumentalStep} />
-              </div>
+              <LoadingCard steps={INSTRUMENTAL_STEPS} activeStep={instrumentalStep} label="Building Instrumental Preview" accent="amber" />
             </motion.div>
           )}
 
@@ -494,55 +617,27 @@ export default function BringToLifeCard({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/5 to-transparent overflow-hidden">
-                <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-primary/8">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                    <span className="text-xs font-bold text-white/70">Instrumental Preview Ready</span>
-                  </div>
-                  <button
-                    onClick={generateInstrumental}
-                    className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    Regenerate
-                  </button>
-                </div>
-                <div className="p-4">
-                  <AudioPlayer
-                    audioUrl={null}
-                    duration={instrumentalMeta.duration}
-                    title={draft.title}
-                    audioType="Instrumental Preview"
-                    onRegenerate={generateInstrumental}
-                    onDownload={() => toast({ title: "MP3 download queued", description: "Ready when audio engine is connected." })}
-                  />
-                  <AudioMetadataPanel metadata={instrumentalMeta} />
-                </div>
-              </div>
+              <AudioResultCard
+                label="Instrumental Preview Ready"
+                dotColor="bg-primary"
+                borderColor="border-primary/15"
+                gradientFrom="from-primary/5"
+                headerBorder="border-primary/8"
+                metadata={instrumentalMeta}
+                draft={draft}
+                onRegenerate={generateInstrumental}
+                onDownload={() => toast({ title: "Instrumental MP3", description: "Full audio export unlocks when the render engine is connected." })}
+              />
             </motion.div>
           )}
 
           {instrumentalStatus === "error" && (
-            <motion.div
-              key="instr-error"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="rounded-2xl border border-red-500/15 bg-red-500/5 px-5 py-4 flex items-center gap-3"
-            >
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-              <div className="flex-1">
-                <p className="text-sm text-white/60">Instrumental generation failed.</p>
-              </div>
-              <button onClick={generateInstrumental} className="text-xs text-red-400 hover:text-red-300 transition-colors">
-                Retry
-              </button>
+            <motion.div key="instr-error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ErrorCard message="Instrumental generation failed." onRetry={generateInstrumental} />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Vocal Demo Result */}
         <AnimatePresence>
           {vocalStatus === "loading" && (
             <motion.div
@@ -552,13 +647,7 @@ export default function BringToLifeCard({
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-2xl border border-violet-500/12 bg-violet-500/4">
-                <div className="px-5 pt-4 pb-2 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-                  <span className="text-xs font-semibold text-violet-400/80">Building Vocal Demo</span>
-                </div>
-                <LoadingSteps steps={VOCAL_STEPS} activeStep={vocalStep} />
-              </div>
+              <LoadingCard steps={VOCAL_STEPS} activeStep={vocalStep} label="Building Vocal Demo" accent="violet" />
             </motion.div>
           )}
 
@@ -569,55 +658,27 @@ export default function BringToLifeCard({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <div className="rounded-2xl border border-violet-500/15 bg-gradient-to-b from-violet-500/5 to-transparent overflow-hidden">
-                <div className="px-5 pt-4 pb-3 flex items-center justify-between border-b border-violet-500/8">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-violet-400" />
-                    <span className="text-xs font-bold text-white/70">Vocal Demo Ready</span>
-                  </div>
-                  <button
-                    onClick={generateVocal}
-                    className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    Regenerate
-                  </button>
-                </div>
-                <div className="p-4">
-                  <AudioPlayer
-                    audioUrl={null}
-                    duration={vocalMeta.duration}
-                    title={draft.title}
-                    audioType="Vocal Demo"
-                    onRegenerate={generateVocal}
-                    onDownload={() => toast({ title: "MP3 download queued", description: "Ready when audio engine is connected." })}
-                  />
-                  <AudioMetadataPanel metadata={vocalMeta} />
-                </div>
-              </div>
+              <AudioResultCard
+                label="Vocal Demo Ready"
+                dotColor="bg-violet-400"
+                borderColor="border-violet-500/15"
+                gradientFrom="from-violet-500/5"
+                headerBorder="border-violet-500/8"
+                metadata={vocalMeta}
+                draft={draft}
+                onRegenerate={generateVocal}
+                onDownload={() => toast({ title: "Vocal Demo MP3", description: "Full audio export unlocks when the render engine is connected." })}
+              />
             </motion.div>
           )}
 
           {vocalStatus === "error" && (
-            <motion.div
-              key="vocal-error"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="rounded-2xl border border-red-500/15 bg-red-500/5 px-5 py-4 flex items-center gap-3"
-            >
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-              <div className="flex-1">
-                <p className="text-sm text-white/60">Vocal demo generation failed.</p>
-              </div>
-              <button onClick={generateVocal} className="text-xs text-red-400 hover:text-red-300 transition-colors">
-                Retry
-              </button>
+            <motion.div key="vocal-error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ErrorCard message="Vocal demo generation failed." onRetry={generateVocal} />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Export Section */}
         <AnimatePresence>
           {anyReady && (
             <motion.div
