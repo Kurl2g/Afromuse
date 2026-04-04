@@ -401,7 +401,7 @@ export default function AudioStudioV2({ draft, genre, mood }: Props) {
                   onChange={(e) => setAudioGenre(e.target.value)}
                   className="w-full h-10 rounded-xl bg-white/4 border border-white/8 px-3 pr-8 text-sm text-white appearance-none focus:outline-none focus:border-sky-500/40 transition-all cursor-pointer"
                 >
-                  {AUDIO_GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
+                  {AUDIO_GENRES.map((g) => <option key={g} value={g} className="bg-[#0e0e1c] text-white">{g}</option>)}
                 </select>
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
               </div>
