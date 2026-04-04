@@ -8,9 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 import AudioPlayer from "./AudioPlayer";
 import { formatDraftForClipboard, type SongDraft } from "@/lib/songGenerator";
 
+// ─── Types ─────────────────────────────────────────────────────────────────────
+
 type AudioStatus = "idle" | "loading" | "ready" | "error";
 
-interface InstrumentalMetadata {
+export interface InstrumentalMetadata {
   genre: string;
   mood: string;
   bpm: number;
@@ -22,7 +24,7 @@ interface InstrumentalMetadata {
   audioType: "Instrumental Preview";
 }
 
-interface VocalMetadata {
+export interface VocalMetadata {
   vocalStyle: string;
   bpm: number;
   key: string;
@@ -32,6 +34,11 @@ interface VocalMetadata {
   hitmakerMode: boolean;
   audioType: "Vocal Demo";
 }
+
+type JobPollResponse =
+  | { jobId: string; status: "processing" }
+  | { jobId: string; status: "completed"; audioUrl: string | null; duration: string; metadata: InstrumentalMetadata | VocalMetadata }
+  | { jobId: string; status: "failed"; error: string };
 
 interface BringToLifeCardProps {
   draft: SongDraft;
@@ -46,6 +53,8 @@ interface BringToLifeCardProps {
   hookRepeat: string;
   customFlavor: string;
 }
+
+// ─── Loading step labels ────────────────────────────────────────────────────────
 
 const INSTRUMENTAL_STEPS = [
   "Building your groove...",
@@ -62,6 +71,62 @@ const VOCAL_STEPS = [
   "Blending the harmonies...",
   "Rendering vocal preview...",
 ];
+
+// ─── Job polling hook ──────────────────────────────────────────────────────────
+// Polls GET /api/audio-job/:jobId every 3 seconds until completed or failed.
+// Swapping the audio provider only requires changes on the server — this hook
+// remains identical regardless of which engine produces the audio.
+
+const POLL_INTERVAL_MS = 3000;
+
+function useAudioJobPoller() {
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  }, []);
+
+  const startPolling = useCallback(
+    (
+      jobId: string,
+      onCompleted: (data: Extract<JobPollResponse, { status: "completed" }>) => void,
+      onFailed: (error: string) => void,
+    ) => {
+      stopPolling();
+      pollRef.current = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/audio-job/${jobId}`);
+          if (!res.ok) {
+            stopPolling();
+            onFailed("Status check failed");
+            return;
+          }
+          const data = (await res.json()) as JobPollResponse;
+          if (data.status === "completed") {
+            stopPolling();
+            onCompleted(data);
+          } else if (data.status === "failed") {
+            stopPolling();
+            onFailed(data.error ?? "Generation failed");
+          }
+        } catch {
+          stopPolling();
+          onFailed("Network error during generation");
+        }
+      }, POLL_INTERVAL_MS);
+    },
+    [stopPolling],
+  );
+
+  useEffect(() => stopPolling, [stopPolling]);
+
+  return { startPolling, stopPolling };
+}
+
+// ─── Sub-components ─────────────────────────────────────────────────────────────
 
 function MetaChip({ label, value }: { label: string; value: string | number | boolean }) {
   const display = typeof value === "boolean" ? (value ? "On" : "Off") : String(value);
@@ -185,6 +250,7 @@ function AudioResultCard({
   gradientFrom,
   headerBorder,
   metadata,
+  audioUrl,
   draft,
   onRegenerate,
   onDownload,
@@ -195,12 +261,11 @@ function AudioResultCard({
   gradientFrom: string;
   headerBorder: string;
   metadata: InstrumentalMetadata | VocalMetadata;
+  audioUrl: string | null;
   draft: SongDraft;
   onRegenerate: () => void;
   onDownload: () => void;
 }) {
-  const audioType = metadata.audioType;
-
   return (
     <div className={`rounded-2xl border overflow-hidden ${borderColor} bg-gradient-to-b ${gradientFrom} to-transparent`}>
       <div className={`px-5 pt-4 pb-3 flex items-center justify-between border-b ${headerBorder}`}>
@@ -218,10 +283,10 @@ function AudioResultCard({
       </div>
       <div className="p-4">
         <AudioPlayer
-          audioUrl={null}
+          audioUrl={audioUrl}
           duration={metadata.duration}
           title={draft.title}
-          audioType={audioType}
+          audioType={metadata.audioType}
           onRegenerate={onRegenerate}
           onDownload={onDownload}
         />
@@ -357,8 +422,12 @@ function TriggerButton({
   const isLoading = status === "loading";
   const isReady = status === "ready";
 
-  const borderReady = accent === "violet" ? "border-violet-500/25 bg-violet-500/8 text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/12" : "border-primary/25 bg-primary/8 text-primary hover:border-primary/40 hover:bg-primary/12";
-  const borderLoading = accent === "violet" ? "border-violet-500/30 bg-violet-500/8 text-violet-400/60 cursor-wait" : "border-primary/30 bg-primary/8 text-primary/60 cursor-wait";
+  const borderReady = accent === "violet"
+    ? "border-violet-500/25 bg-violet-500/8 text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/12"
+    : "border-primary/25 bg-primary/8 text-primary hover:border-primary/40 hover:bg-primary/12";
+  const borderLoading = accent === "violet"
+    ? "border-violet-500/30 bg-violet-500/8 text-violet-400/60 cursor-wait"
+    : "border-primary/30 bg-primary/8 text-primary/60 cursor-wait";
   const iconReady = accent === "violet" ? "bg-violet-500/15 border-violet-500/25" : "bg-primary/15 border-primary/25";
   const iconReadyText = accent === "violet" ? "text-violet-400" : "text-primary";
   const spinnerColor = accent === "violet" ? "border-violet-500/30 border-t-violet-400" : "border-primary/30 border-t-primary";
@@ -396,6 +465,8 @@ function TriggerButton({
   );
 }
 
+// ─── Main component ────────────────────────────────────────────────────────────
+
 export default function BringToLifeCard({
   draft,
   genre,
@@ -414,44 +485,53 @@ export default function BringToLifeCard({
   const [instrumentalStatus, setInstrumentalStatus] = useState<AudioStatus>("idle");
   const [instrumentalStep, setInstrumentalStep] = useState(0);
   const [instrumentalMeta, setInstrumentalMeta] = useState<InstrumentalMetadata | null>(null);
+  const [instrumentalAudioUrl, setInstrumentalAudioUrl] = useState<string | null>(null);
 
   const [vocalStatus, setVocalStatus] = useState<AudioStatus>("idle");
   const [vocalStep, setVocalStep] = useState(0);
   const [vocalMeta, setVocalMeta] = useState<VocalMetadata | null>(null);
+  const [vocalAudioUrl, setVocalAudioUrl] = useState<string | null>(null);
 
-  const instrTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const vocalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Step label cycling timers for loading UI
+  const instrStepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const vocalStepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Abort controllers for the initial POST requests
   const instrAbortRef = useRef<AbortController | null>(null);
   const vocalAbortRef = useRef<AbortController | null>(null);
 
-  const clearInstrTimer = useCallback(() => {
-    if (instrTimerRef.current) { clearInterval(instrTimerRef.current); instrTimerRef.current = null; }
+  // Independent poller instances for each track type
+  const instrPoller = useAudioJobPoller();
+  const vocalPoller = useAudioJobPoller();
+
+  const clearInstrStepTimer = useCallback(() => {
+    if (instrStepTimerRef.current) { clearInterval(instrStepTimerRef.current); instrStepTimerRef.current = null; }
   }, []);
-  const clearVocalTimer = useCallback(() => {
-    if (vocalTimerRef.current) { clearInterval(vocalTimerRef.current); vocalTimerRef.current = null; }
+  const clearVocalStepTimer = useCallback(() => {
+    if (vocalStepTimerRef.current) { clearInterval(vocalStepTimerRef.current); vocalStepTimerRef.current = null; }
   }, []);
 
   useEffect(() => {
     if (instrumentalStatus === "loading") {
-      instrTimerRef.current = setInterval(() => {
+      instrStepTimerRef.current = setInterval(() => {
         setInstrumentalStep((s) => (s + 1) % INSTRUMENTAL_STEPS.length);
       }, 900);
     } else {
-      clearInstrTimer();
+      clearInstrStepTimer();
     }
-    return clearInstrTimer;
-  }, [instrumentalStatus, clearInstrTimer]);
+    return clearInstrStepTimer;
+  }, [instrumentalStatus, clearInstrStepTimer]);
 
   useEffect(() => {
     if (vocalStatus === "loading") {
-      vocalTimerRef.current = setInterval(() => {
+      vocalStepTimerRef.current = setInterval(() => {
         setVocalStep((s) => (s + 1) % VOCAL_STEPS.length);
       }, 900);
     } else {
-      clearVocalTimer();
+      clearVocalStepTimer();
     }
-    return clearVocalTimer;
-  }, [vocalStatus, clearVocalTimer]);
+    return clearVocalStepTimer;
+  }, [vocalStatus, clearVocalStepTimer]);
 
   useEffect(() => {
     return () => {
@@ -460,40 +540,51 @@ export default function BringToLifeCard({
     };
   }, []);
 
-  const buildPayload = useCallback(() => ({
-    genre,
-    mood,
-    theme: topic,
-    soundReference: style,
-    songLength,
-    languageFlavor: languageFlavor === "Custom" ? customFlavor || languageFlavor : languageFlavor,
-    hitmakerMode: commercialMode,
-    lyricalDepth,
-    hookRepeatLevel: hookRepeat,
-    title: draft.title,
-    lyrics: {
-      intro: draft.intro,
-      hook: draft.hook,
-      verse1: draft.verse1,
-      verse2: draft.verse2,
-      bridge: draft.bridge,
-      outro: draft.outro,
-    },
-    productionNotes: {
-      chordVibe: draft.chordVibe,
-      melodyDirection: draft.melodyDirection,
-      arrangement: draft.arrangement,
-    },
-  }), [genre, mood, topic, style, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, draft]);
+  const buildPayload = useCallback(
+    () => ({
+      genre,
+      mood,
+      theme: topic,
+      soundReference: style,
+      songLength,
+      languageFlavor: languageFlavor === "Custom" ? customFlavor || languageFlavor : languageFlavor,
+      hitmakerMode: commercialMode,
+      lyricalDepth,
+      hookRepeatLevel: hookRepeat,
+      title: draft.title,
+      lyrics: {
+        intro: draft.intro,
+        hook: draft.hook,
+        verse1: draft.verse1,
+        verse2: draft.verse2,
+        bridge: draft.bridge,
+        outro: draft.outro,
+      },
+      productionNotes: {
+        chordVibe: draft.chordVibe,
+        melodyDirection: draft.melodyDirection,
+        arrangement: draft.arrangement,
+      },
+    }),
+    [genre, mood, topic, style, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, draft],
+  );
+
+  // ── Instrumental generation ────────────────────────────────────────────────
 
   const generateInstrumental = useCallback(async () => {
     if (instrumentalStatus === "loading") return;
+
     instrAbortRef.current?.abort();
+    instrPoller.stopPolling();
+
     const controller = new AbortController();
     instrAbortRef.current = controller;
+
     setInstrumentalStatus("loading");
     setInstrumentalStep(0);
     setInstrumentalMeta(null);
+    setInstrumentalAudioUrl(null);
+
     try {
       const res = await fetch("/api/generate-instrumental-preview", {
         method: "POST",
@@ -501,26 +592,47 @@ export default function BringToLifeCard({
         body: JSON.stringify(buildPayload()),
         signal: controller.signal,
       });
-      if (!res.ok) throw new Error("Generation failed");
-      const data = await res.json() as { metadata: InstrumentalMetadata };
-      setInstrumentalMeta(data.metadata);
-      setInstrumentalStatus("ready");
-      toast({ title: "Instrumental Preview Ready", description: `${data.metadata.bpm} BPM · ${data.metadata.key}` });
+      if (!res.ok) throw new Error("Failed to start generation");
+
+      const { jobId } = (await res.json()) as { jobId: string; status: string };
+
+      instrPoller.startPolling(
+        jobId,
+        (data) => {
+          const meta = data.metadata as InstrumentalMetadata;
+          setInstrumentalMeta(meta);
+          setInstrumentalAudioUrl(data.audioUrl);
+          setInstrumentalStatus("ready");
+          toast({ title: "Instrumental Preview Ready", description: `${meta.bpm} BPM · ${meta.key}` });
+        },
+        (error) => {
+          setInstrumentalStatus("error");
+          toast({ title: "Instrumental generation failed", description: error, variant: "destructive" });
+        },
+      );
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
       setInstrumentalStatus("error");
-      toast({ title: "Generation failed", description: "Please try again.", variant: "destructive" });
+      toast({ title: "Could not start generation", description: "Please try again.", variant: "destructive" });
     }
-  }, [instrumentalStatus, buildPayload, toast]);
+  }, [instrumentalStatus, buildPayload, instrPoller, toast]);
+
+  // ── Vocal generation ───────────────────────────────────────────────────────
 
   const generateVocal = useCallback(async () => {
     if (vocalStatus === "loading") return;
+
     vocalAbortRef.current?.abort();
+    vocalPoller.stopPolling();
+
     const controller = new AbortController();
     vocalAbortRef.current = controller;
+
     setVocalStatus("loading");
     setVocalStep(0);
     setVocalMeta(null);
+    setVocalAudioUrl(null);
+
     try {
       const res = await fetch("/api/generate-vocal-demo", {
         method: "POST",
@@ -528,19 +640,34 @@ export default function BringToLifeCard({
         body: JSON.stringify(buildPayload()),
         signal: controller.signal,
       });
-      if (!res.ok) throw new Error("Generation failed");
-      const data = await res.json() as { metadata: VocalMetadata };
-      setVocalMeta(data.metadata);
-      setVocalStatus("ready");
-      toast({ title: "Vocal Demo Ready", description: `${data.metadata.vocalStyle} · ${data.metadata.key}` });
+      if (!res.ok) throw new Error("Failed to start generation");
+
+      const { jobId } = (await res.json()) as { jobId: string; status: string };
+
+      vocalPoller.startPolling(
+        jobId,
+        (data) => {
+          const meta = data.metadata as VocalMetadata;
+          setVocalMeta(meta);
+          setVocalAudioUrl(data.audioUrl);
+          setVocalStatus("ready");
+          toast({ title: "Vocal Demo Ready", description: `${meta.vocalStyle} · ${meta.key}` });
+        },
+        (error) => {
+          setVocalStatus("error");
+          toast({ title: "Vocal demo generation failed", description: error, variant: "destructive" });
+        },
+      );
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
       setVocalStatus("error");
-      toast({ title: "Generation failed", description: "Please try again.", variant: "destructive" });
+      toast({ title: "Could not start generation", description: "Please try again.", variant: "destructive" });
     }
-  }, [vocalStatus, buildPayload, toast]);
+  }, [vocalStatus, buildPayload, vocalPoller, toast]);
 
   const anyReady = instrumentalStatus === "ready" || vocalStatus === "ready";
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <motion.div
@@ -597,6 +724,7 @@ export default function BringToLifeCard({
           />
         </div>
 
+        {/* Instrumental track */}
         <AnimatePresence>
           {instrumentalStatus === "loading" && (
             <motion.div
@@ -606,7 +734,12 @@ export default function BringToLifeCard({
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <LoadingCard steps={INSTRUMENTAL_STEPS} activeStep={instrumentalStep} label="Building Instrumental Preview" accent="amber" />
+              <LoadingCard
+                steps={INSTRUMENTAL_STEPS}
+                activeStep={instrumentalStep}
+                label="Building Instrumental Preview"
+                accent="amber"
+              />
             </motion.div>
           )}
 
@@ -624,9 +757,12 @@ export default function BringToLifeCard({
                 gradientFrom="from-primary/5"
                 headerBorder="border-primary/8"
                 metadata={instrumentalMeta}
+                audioUrl={instrumentalAudioUrl}
                 draft={draft}
                 onRegenerate={generateInstrumental}
-                onDownload={() => toast({ title: "Instrumental MP3", description: "Full audio export unlocks when the render engine is connected." })}
+                onDownload={() =>
+                  toast({ title: "Instrumental MP3", description: "Full audio export unlocks when the render engine is connected." })
+                }
               />
             </motion.div>
           )}
@@ -638,6 +774,7 @@ export default function BringToLifeCard({
           )}
         </AnimatePresence>
 
+        {/* Vocal track */}
         <AnimatePresence>
           {vocalStatus === "loading" && (
             <motion.div
@@ -647,7 +784,12 @@ export default function BringToLifeCard({
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <LoadingCard steps={VOCAL_STEPS} activeStep={vocalStep} label="Building Vocal Demo" accent="violet" />
+              <LoadingCard
+                steps={VOCAL_STEPS}
+                activeStep={vocalStep}
+                label="Building Vocal Demo"
+                accent="violet"
+              />
             </motion.div>
           )}
 
@@ -665,9 +807,12 @@ export default function BringToLifeCard({
                 gradientFrom="from-violet-500/5"
                 headerBorder="border-violet-500/8"
                 metadata={vocalMeta}
+                audioUrl={vocalAudioUrl}
                 draft={draft}
                 onRegenerate={generateVocal}
-                onDownload={() => toast({ title: "Vocal Demo MP3", description: "Full audio export unlocks when the render engine is connected." })}
+                onDownload={() =>
+                  toast({ title: "Vocal Demo MP3", description: "Full audio export unlocks when the render engine is connected." })
+                }
               />
             </motion.div>
           )}
@@ -679,6 +824,7 @@ export default function BringToLifeCard({
           )}
         </AnimatePresence>
 
+        {/* Export */}
         <AnimatePresence>
           {anyReady && (
             <motion.div

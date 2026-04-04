@@ -25082,7 +25082,7 @@ var require_atomic_sleep = __commonJS({
   "../../node_modules/.pnpm/atomic-sleep@1.0.0/node_modules/atomic-sleep/index.js"(exports, module) {
     "use strict";
     if (typeof SharedArrayBuffer !== "undefined" && typeof Atomics !== "undefined") {
-      let sleep3 = function(ms) {
+      let sleep2 = function(ms) {
         const valid = ms > 0 && ms < Infinity;
         if (valid === false) {
           if (typeof ms !== "number" && typeof ms !== "bigint") {
@@ -25093,9 +25093,9 @@ var require_atomic_sleep = __commonJS({
         Atomics.wait(nil, 0, 0, Number(ms));
       };
       const nil = new Int32Array(new SharedArrayBuffer(4));
-      module.exports = sleep3;
+      module.exports = sleep2;
     } else {
-      let sleep3 = function(ms) {
+      let sleep2 = function(ms) {
         const valid = ms > 0 && ms < Infinity;
         if (valid === false) {
           if (typeof ms !== "number" && typeof ms !== "bigint") {
@@ -25107,7 +25107,7 @@ var require_atomic_sleep = __commonJS({
         while (target > Date.now()) {
         }
       };
-      module.exports = sleep3;
+      module.exports = sleep2;
     }
   }
 });
@@ -25120,7 +25120,7 @@ var require_sonic_boom = __commonJS({
     var EventEmitter = __require("events");
     var inherits = __require("util").inherits;
     var path2 = __require("path");
-    var sleep3 = require_atomic_sleep();
+    var sleep2 = require_atomic_sleep();
     var assert2 = __require("assert");
     var BUSY_WRITE_TIMEOUT = 100;
     var kEmptyBuffer = Buffer.allocUnsafe(0);
@@ -25266,7 +25266,7 @@ var require_sonic_boom = __commonJS({
           if ((err.code === "EAGAIN" || err.code === "EBUSY") && this.retryEAGAIN(err, this._writingBuf.length, this._len - this._writingBuf.length)) {
             if (this.sync) {
               try {
-                sleep3(BUSY_WRITE_TIMEOUT);
+                sleep2(BUSY_WRITE_TIMEOUT);
                 this.release(void 0, 0);
               } catch (err2) {
                 this.release(err2);
@@ -25579,7 +25579,7 @@ var require_sonic_boom = __commonJS({
           if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
             throw err;
           }
-          sleep3(BUSY_WRITE_TIMEOUT);
+          sleep2(BUSY_WRITE_TIMEOUT);
         }
       }
       try {
@@ -25616,7 +25616,7 @@ var require_sonic_boom = __commonJS({
           if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
             throw err;
           }
-          sleep3(BUSY_WRITE_TIMEOUT);
+          sleep2(BUSY_WRITE_TIMEOUT);
         }
       }
     }
@@ -26357,7 +26357,7 @@ var require_transport = __commonJS({
     var { createRequire } = __require("module");
     var getCallers = require_caller();
     var { join, isAbsolute, sep } = __require("node:path");
-    var sleep3 = require_atomic_sleep();
+    var sleep2 = require_atomic_sleep();
     var onExit = require_on_exit_leak_free();
     var ThreadStream = require_thread_stream();
     function setupOnExit(stream) {
@@ -26391,7 +26391,7 @@ var require_transport = __commonJS({
           return;
         }
         stream.flushSync();
-        sleep3(100);
+        sleep2(100);
         stream.end();
       }
       return stream;
@@ -50622,7 +50622,30 @@ var generate_song_default = router2;
 
 // src/routes/generate-audio.ts
 var import_express3 = __toESM(require_express2(), 1);
+import { randomUUID } from "crypto";
 var router3 = (0, import_express3.Router)();
+var JOB_TTL_MS = 30 * 60 * 1e3;
+var jobs = /* @__PURE__ */ new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, job] of jobs) {
+    if (now - job.createdAt > JOB_TTL_MS) jobs.delete(id);
+  }
+}, 5 * 60 * 1e3).unref();
+function createJob(type) {
+  const job = {
+    id: randomUUID(),
+    type,
+    status: "processing",
+    audioUrl: null,
+    duration: null,
+    metadata: null,
+    error: null,
+    createdAt: Date.now()
+  };
+  jobs.set(job.id, job);
+  return job;
+}
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
   if (m) return parseInt(m[1], 10);
@@ -50663,79 +50686,102 @@ function getDuration(songLength) {
   if (songLength === "Full") return "4:30";
   return "3:20";
 }
-function sleep2(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+function getVocalStyle(mood) {
+  const map2 = {
+    Romantic: "Smooth / Intimate",
+    Energetic: "Punchy / Assertive",
+    Sad: "Soulful / Breathy",
+    Spiritual: "Rich / Devotional",
+    Confident: "Confident / Sharp"
+  };
+  return map2[mood] ?? "Warm / Melodic";
 }
-router3.post("/api/generate-instrumental-preview", async (req, res) => {
-  try {
-    const {
-      genre,
-      mood,
-      songLength,
-      hitmakerMode,
-      productionNotes
-    } = req.body;
-    const chordVibe = productionNotes?.chordVibe ?? "";
-    const bpm = parseBpm(chordVibe, genre ?? "Afrobeats");
-    const key = parseKey(chordVibe, mood ?? "Uplifting");
-    const energy = getEnergy(mood ?? "Uplifting");
-    const duration3 = getDuration(songLength);
-    await sleep2(3e3 + Math.random() * 2e3);
-    logger.info({ genre, mood, bpm, key }, "Instrumental preview generated");
-    res.json({
-      status: "ready",
-      audioUrl: null,
-      metadata: {
-        genre: genre ?? "Afrobeats",
-        mood: mood ?? "Uplifting",
-        bpm,
-        key,
-        energy,
-        duration: duration3,
-        hitmakerMode: hitmakerMode ?? false,
-        hookRepeatLevel: req.body.hookRepeatLevel ?? "Medium",
-        audioType: "Instrumental Preview"
-      }
-    });
-  } catch (err) {
-    logger.error({ err }, "Instrumental preview error");
-    res.status(500).json({ error: "Failed to generate instrumental preview" });
-  }
+async function runInstrumentalProvider(job, payload) {
+  await new Promise((resolve) => setTimeout(resolve, 3e3 + Math.random() * 2e3));
+  const genre = payload.genre ?? "Afrobeats";
+  const mood = payload.mood ?? "Uplifting";
+  const chordVibe = payload.productionNotes?.chordVibe ?? "";
+  job.status = "completed";
+  job.audioUrl = null;
+  job.duration = getDuration(payload.songLength);
+  job.metadata = {
+    genre,
+    mood,
+    bpm: payload.bpm ?? parseBpm(chordVibe, genre),
+    key: payload.key ?? parseKey(chordVibe, mood),
+    energy: getEnergy(mood),
+    duration: job.duration,
+    hitmakerMode: payload.hitmakerMode ?? false,
+    hookRepeatLevel: payload.hookRepeatLevel ?? "Medium",
+    audioType: "Instrumental Preview"
+  };
+}
+async function runVocalProvider(job, payload) {
+  await new Promise((resolve) => setTimeout(resolve, 4e3 + Math.random() * 3e3));
+  const genre = payload.genre ?? "Afrobeats";
+  const mood = payload.mood ?? "Uplifting";
+  const chordVibe = payload.productionNotes?.chordVibe ?? "";
+  job.status = "completed";
+  job.audioUrl = null;
+  job.duration = getDuration(payload.songLength);
+  job.metadata = {
+    vocalStyle: getVocalStyle(mood),
+    bpm: payload.bpm ?? parseBpm(chordVibe, genre),
+    key: payload.key ?? parseKey(chordVibe, mood),
+    duration: job.duration,
+    genre,
+    mood,
+    hitmakerMode: payload.hitmakerMode ?? false,
+    audioType: "Vocal Demo"
+  };
+}
+router3.post("/generate-instrumental-preview", (req, res) => {
+  const payload = req.body;
+  const job = createJob("instrumental");
+  runInstrumentalProvider(job, payload).catch((err) => {
+    job.status = "failed";
+    job.error = "Instrumental generation failed";
+    logger.error({ err, jobId: job.id }, "Instrumental provider error");
+  });
+  logger.info({ jobId: job.id, genre: payload.genre, mood: payload.mood }, "Instrumental job created");
+  res.json({ success: true, jobId: job.id, status: "processing" });
 });
-router3.post("/api/generate-vocal-demo", async (req, res) => {
-  try {
-    const {
-      genre,
-      mood,
-      songLength,
-      hitmakerMode,
-      productionNotes
-    } = req.body;
-    const chordVibe = productionNotes?.chordVibe ?? "";
-    const bpm = parseBpm(chordVibe, genre ?? "Afrobeats");
-    const key = parseKey(chordVibe, mood ?? "Uplifting");
-    const duration3 = getDuration(songLength);
-    const vocalStyle = mood === "Romantic" ? "Smooth / Intimate" : mood === "Energetic" ? "Punchy / Assertive" : mood === "Sad" ? "Soulful / Breathy" : mood === "Spiritual" ? "Rich / Devotional" : mood === "Confident" ? "Confident / Sharp" : "Warm / Melodic";
-    await sleep2(4e3 + Math.random() * 3e3);
-    logger.info({ genre, mood, bpm, key, vocalStyle }, "Vocal demo generated");
-    res.json({
-      status: "ready",
-      audioUrl: null,
-      metadata: {
-        vocalStyle,
-        bpm,
-        key,
-        duration: duration3,
-        genre: genre ?? "Afrobeats",
-        mood: mood ?? "Uplifting",
-        hitmakerMode: hitmakerMode ?? false,
-        audioType: "Vocal Demo"
-      }
-    });
-  } catch (err) {
-    logger.error({ err }, "Vocal demo error");
-    res.status(500).json({ error: "Failed to generate vocal demo" });
+router3.post("/generate-vocal-demo", (req, res) => {
+  const payload = req.body;
+  const job = createJob("vocal");
+  runVocalProvider(job, payload).catch((err) => {
+    job.status = "failed";
+    job.error = "Vocal generation failed";
+    logger.error({ err, jobId: job.id }, "Vocal provider error");
+  });
+  logger.info({ jobId: job.id, genre: payload.genre, mood: payload.mood }, "Vocal job created");
+  res.json({ success: true, jobId: job.id, status: "processing" });
+});
+router3.get("/audio-job/:jobId", (req, res) => {
+  const job = jobs.get(req.params.jobId);
+  if (!job) {
+    res.status(404).json({ error: "Job not found or expired" });
+    return;
   }
+  if (job.status === "completed") {
+    res.json({
+      jobId: job.id,
+      status: "completed",
+      audioUrl: job.audioUrl,
+      duration: job.duration,
+      metadata: job.metadata
+    });
+    return;
+  }
+  if (job.status === "failed") {
+    res.json({
+      jobId: job.id,
+      status: "failed",
+      error: job.error ?? "Unknown error"
+    });
+    return;
+  }
+  res.json({ jobId: job.id, status: "processing" });
 });
 var generate_audio_default = router3;
 
