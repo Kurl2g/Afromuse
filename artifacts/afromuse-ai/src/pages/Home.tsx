@@ -51,7 +51,7 @@ export default function Home() {
                 Built for Afrobeat Creators
               </Badge>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black leading-[1.1] mb-6">
-                Write Your Next <span className="text-gradient-primary drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]">Hit Song</span><br />
+                Make Your Next <span className="text-gradient-primary drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]">Hit Song</span><br />
                 <span className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">With AfroMuse AI</span>
               </h1>
               <p className="text-base sm:text-lg text-muted-foreground/80 mb-10 leading-relaxed max-w-xl font-medium">
