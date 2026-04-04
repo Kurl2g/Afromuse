@@ -542,7 +542,7 @@ router.post("/generate-song", async (req, res) => {
 
   try {
     const response = await ai.chat.completions.create({
-      model: "qwen/qwen3-6b",
+      model: "qwen/qwen2_5-7b-instruct",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
