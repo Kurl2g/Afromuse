@@ -100,9 +100,6 @@ export default function Studio() {
   const [commercialMode, setCommercialMode] = useState(false);
   const [lyricalDepth, setLyricalDepth] = useState<"Simple" | "Balanced" | "Deep">("Balanced");
   const [hookRepeat, setHookRepeat] = useState<"Low" | "Medium" | "High">("Medium");
-  const [lyricsSource, setLyricsSource] = useState<"Studio Lyrics" | "Paste My Own" | "Instrumental Only">("Studio Lyrics");
-  const [genderVoiceModel, setGenderVoiceModel] = useState<"Male" | "Female" | "Mixed" | "Random">("Random");
-  const [performanceFeel, setPerformanceFeel] = useState("Smooth");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
@@ -143,7 +140,7 @@ export default function Studio() {
       const res = await fetch("/api/generate-song", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel }),
+        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat }),
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -204,9 +201,6 @@ export default function Studio() {
     setCommercialMode(false);
     setLyricalDepth("Balanced");
     setHookRepeat("Medium");
-    setLyricsSource("Studio Lyrics");
-    setGenderVoiceModel("Random");
-    setPerformanceFeel("Smooth");
     setStatus("idle");
     setDraft(null);
     setSeed(0);
@@ -421,32 +415,6 @@ export default function Studio() {
                   <p className="text-[11px] text-white/25 mt-1.5">The theme or story at the heart of the song</p>
                 </div>
 
-                {/* Lyrics Source */}
-                <div>
-                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
-                    Lyrics Source
-                  </label>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {(["Studio Lyrics", "Paste My Own", "Instrumental Only"] as const).map((src) => (
-                      <button
-                        key={src}
-                        type="button"
-                        onClick={() => setLyricsSource(src)}
-                        className={`h-10 rounded-xl text-[11px] font-bold tracking-wide transition-all border px-1 ${
-                          lyricsSource === src
-                            ? "bg-primary/15 border-primary/50 text-primary shadow-[0_0_12px_rgba(245,158,11,0.15)]"
-                            : "bg-white/3 border-white/8 text-white/40 hover:text-white/70 hover:border-white/20 hover:bg-white/5"
-                        }`}
-                      >
-                        {src === "Studio Lyrics" ? "Studio AI" : src === "Paste My Own" ? "My Lyrics" : "Beat Only"}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-white/25 mt-1.5">
-                    {lyricsSource === "Studio Lyrics" ? "AfroMuse writes full lyrics from your brief" : lyricsSource === "Paste My Own" ? "Your voice, AI structure & production notes" : "Instrumental session — no lyrics generated"}
-                  </p>
-                </div>
-
                 {/* Genre + Mood grid */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -653,50 +621,6 @@ export default function Studio() {
                       <p className="text-[11px] text-white/20 mt-1.5">
                         {hookRepeat === "Low" ? "More lyrical variation per chorus pass" : hookRepeat === "High" ? "Maximum chantability — built to stick on first listen" : "Balanced repetition and lyrical development"}
                       </p>
-                    </div>
-
-                    {/* Gender / Voice Model */}
-                    <div>
-                      <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Gender / Voice Model</label>
-                      <div className="grid grid-cols-4 gap-1.5">
-                        {(["Male", "Female", "Mixed", "Random"] as const).map((g) => (
-                          <button
-                            key={g}
-                            type="button"
-                            onClick={() => setGenderVoiceModel(g)}
-                            className={`h-9 rounded-xl text-xs font-bold tracking-wide transition-all border ${
-                              genderVoiceModel === g
-                                ? "bg-violet-500/15 border-violet-500/45 text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.12)]"
-                                : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
-                            }`}
-                          >
-                            {g}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-[11px] text-white/20 mt-1.5">Shapes vocal delivery cues and ad-lib placement in the draft</p>
-                    </div>
-
-                    {/* Performance Feel */}
-                    <div>
-                      <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Performance Feel</label>
-                      <div className="grid grid-cols-5 gap-1.5">
-                        {["Smooth", "Melodic", "Gritty", "Emotional", "Soulful", "Intimate", "Confident", "Airy", "Prayerful", "Street"].map((feel) => (
-                          <button
-                            key={feel}
-                            type="button"
-                            onClick={() => setPerformanceFeel(feel)}
-                            className={`h-8 rounded-xl text-[10px] font-bold tracking-wide transition-all border ${
-                              performanceFeel === feel
-                                ? "bg-sky-500/15 border-sky-500/45 text-sky-300 shadow-[0_0_10px_rgba(14,165,233,0.12)]"
-                                : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
-                            }`}
-                          >
-                            {feel}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-[11px] text-white/20 mt-1.5">Sets the energy and delivery register for vocal direction</p>
                     </div>
 
                   </div>
