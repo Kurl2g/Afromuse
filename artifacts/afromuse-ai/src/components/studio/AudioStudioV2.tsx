@@ -115,100 +115,159 @@ type AccentKey = "sky" | "violet" | "amber";
 
 const CARD_STYLES: Record<AccentKey, {
   idle: string; loading: string; success: string;
-  iconIdle: string; iconLoading: string; iconSuccess: string; dotLoading: string;
+  iconIdle: string; iconLoading: string; iconSuccess: string;
+  dotLoading: string; spinnerOuter: string; spinnerMid: string; spinnerInner: string;
+  loadingText: string; statusChip: string; topBar: string;
 }> = {
   sky: {
-    idle: "border-white/6 bg-white/[0.02]", loading: "border-sky-500/20 bg-sky-500/[0.03]",
-    success: "border-sky-500/20 bg-sky-500/[0.05]", iconIdle: "bg-white/4",
-    iconLoading: "bg-sky-500/10", iconSuccess: "bg-sky-500/12", dotLoading: "bg-sky-400/60",
+    idle:          "border-white/6 bg-white/[0.02]",
+    loading:       "border-sky-500/20 bg-sky-500/[0.03]",
+    success:       "border-sky-500/22 bg-sky-500/[0.04]",
+    iconIdle:      "bg-white/4",
+    iconLoading:   "bg-sky-500/10",
+    iconSuccess:   "bg-sky-500/14",
+    dotLoading:    "bg-sky-400/60",
+    spinnerOuter:  "border-t-sky-400/80",
+    spinnerMid:    "border-b-sky-300/40",
+    spinnerInner:  "border-t-sky-500/30",
+    loadingText:   "text-sky-400/80",
+    statusChip:    "bg-sky-500/10 border-sky-500/20 text-sky-400/80",
+    topBar:        "from-sky-500/40 to-sky-400/10",
   },
   violet: {
-    idle: "border-white/6 bg-white/[0.02]", loading: "border-violet-500/20 bg-violet-500/[0.03]",
-    success: "border-violet-500/20 bg-violet-500/[0.05]", iconIdle: "bg-white/4",
-    iconLoading: "bg-violet-500/10", iconSuccess: "bg-violet-500/12", dotLoading: "bg-violet-400/60",
+    idle:          "border-white/6 bg-white/[0.02]",
+    loading:       "border-violet-500/20 bg-violet-500/[0.03]",
+    success:       "border-violet-500/22 bg-violet-500/[0.04]",
+    iconIdle:      "bg-white/4",
+    iconLoading:   "bg-violet-500/10",
+    iconSuccess:   "bg-violet-500/14",
+    dotLoading:    "bg-violet-400/60",
+    spinnerOuter:  "border-t-violet-400/80",
+    spinnerMid:    "border-b-violet-300/40",
+    spinnerInner:  "border-t-violet-500/30",
+    loadingText:   "text-violet-400/80",
+    statusChip:    "bg-violet-500/10 border-violet-500/20 text-violet-400/80",
+    topBar:        "from-violet-500/40 to-violet-400/10",
   },
   amber: {
-    idle: "border-white/6 bg-white/[0.02]", loading: "border-amber-500/20 bg-amber-500/[0.03]",
-    success: "border-amber-500/20 bg-amber-500/[0.05]", iconIdle: "bg-white/4",
-    iconLoading: "bg-amber-500/10", iconSuccess: "bg-amber-500/12", dotLoading: "bg-amber-400/60",
+    idle:          "border-white/6 bg-white/[0.02]",
+    loading:       "border-amber-500/20 bg-amber-500/[0.03]",
+    success:       "border-amber-500/22 bg-amber-500/[0.04]",
+    iconIdle:      "bg-white/4",
+    iconLoading:   "bg-amber-500/10",
+    iconSuccess:   "bg-amber-500/14",
+    dotLoading:    "bg-amber-400/60",
+    spinnerOuter:  "border-t-amber-400/80",
+    spinnerMid:    "border-b-amber-300/40",
+    spinnerInner:  "border-t-amber-500/30",
+    loadingText:   "text-amber-400/80",
+    statusChip:    "bg-amber-500/10 border-amber-500/20 text-amber-400/80",
+    topBar:        "from-amber-500/40 to-amber-400/10",
   },
 };
 
 function ResultCard({
-  title, icon, status, accent, children, loadingLabel, muted = false, mutedLabel,
+  title, subtitle, icon, status, accent, children, loadingLabel,
+  statusLabel, emptyLabel, emptySubLabel,
+  muted = false, mutedLabel,
 }: {
-  title: string; icon: React.ReactNode; status: CardStatus; accent: AccentKey;
-  children: React.ReactNode; loadingLabel: string; muted?: boolean; mutedLabel?: string;
+  title: string; subtitle?: string; icon: React.ReactNode; status: CardStatus; accent: AccentKey;
+  children: React.ReactNode; loadingLabel: string;
+  statusLabel?: string; emptyLabel?: string; emptySubLabel?: string;
+  muted?: boolean; mutedLabel?: string;
 }) {
   const s = CARD_STYLES[accent];
   const containerClass = muted
-    ? "border-white/4 bg-white/[0.01] opacity-45"
+    ? "border-white/4 bg-white/[0.015] opacity-40"
     : status === "idle"    ? s.idle
     : status === "loading" ? s.loading
     : status === "success" ? s.success
     : "border-red-500/15 bg-red-500/[0.03]";
-  const iconClass = muted
-    ? "bg-white/3"
+  const iconClass = muted ? "bg-white/3"
     : status === "idle"    ? s.iconIdle
     : status === "loading" ? s.iconLoading
     : status === "success" ? s.iconSuccess
     : "bg-red-500/10";
 
   return (
-    <div className={`rounded-2xl border transition-all duration-300 overflow-hidden ${containerClass}`}>
-      <div className="px-5 py-4 border-b border-white/4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${iconClass}`}>
-            {muted            ? <VolumeX className="w-3.5 h-3.5 text-white/20" /> :
-             status === "loading" ? <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" /> :
-             status === "success" ? <Check   className="w-3.5 h-3.5 text-green-400" /> :
-             status === "error"   ? <AlertCircle className="w-3.5 h-3.5 text-red-400" /> :
-             <span className="text-white/30">{icon}</span>}
+    <div className={`rounded-2xl border transition-all duration-500 overflow-hidden flex flex-col ${containerClass}`}>
+      {/* Accent top-bar — only on success */}
+      {!muted && status === "success" && (
+        <div className={`h-[2px] bg-gradient-to-r ${s.topBar} w-full`} />
+      )}
+
+      {/* Header */}
+      <div className="px-5 py-3.5 border-b border-white/[0.045] flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${iconClass}`}>
+            {muted                   ? <VolumeX    className="w-3.5 h-3.5 text-white/20" /> :
+             status === "loading"    ? <Loader2    className={`w-3.5 h-3.5 animate-spin ${s.loadingText}`} /> :
+             status === "success"    ? <Check      className="w-3.5 h-3.5 text-green-400" /> :
+             status === "error"      ? <AlertCircle className="w-3.5 h-3.5 text-red-400" /> :
+             <span className="text-white/25">{icon}</span>}
           </div>
-          <span className="text-xs font-bold tracking-widest uppercase text-white/40">{title}</span>
+          <div>
+            <div className="text-[10px] font-bold tracking-[0.12em] uppercase text-white/45">{title}</div>
+            {subtitle && <div className="text-[9px] text-white/22 mt-0.5 tracking-wide">{subtitle}</div>}
+          </div>
         </div>
+        {/* Right side: status chip or loading dots */}
+        {!muted && status === "success" && statusLabel && (
+          <span className={`text-[8px] font-bold tracking-[0.1em] uppercase px-2 py-1 rounded-full border ${s.statusChip}`}>
+            {statusLabel}
+          </span>
+        )}
         {!muted && status === "loading" && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {[0, 1, 2].map((i) => (
               <motion.div key={i} className={`w-1 h-1 rounded-full ${s.dotLoading}`}
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.1, 0.8] }}
+                transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.22 }}
               />
             ))}
           </div>
         )}
       </div>
-      <div className="p-5">
+
+      {/* Body */}
+      <div className="p-5 flex-1">
         {muted && (
-          <div className="text-center py-8">
-            <VolumeX className="w-7 h-7 text-white/10 mx-auto mb-2.5" />
-            <p className="text-xs text-white/22 font-medium">{mutedLabel ?? "Not applicable in this mode"}</p>
-            <p className="text-[10px] text-white/12 mt-1">Switch off instrumental mode to enable</p>
+          <div className="text-center py-10">
+            <div className="w-9 h-9 rounded-xl bg-white/3 border border-white/5 flex items-center justify-center mx-auto mb-3">
+              <VolumeX className="w-4 h-4 text-white/15" />
+            </div>
+            <p className="text-xs text-white/20 font-medium">{mutedLabel ?? "Not available in this mode"}</p>
+            <p className="text-[10px] text-white/10 mt-1">Switch off beat-only mode to enable</p>
           </div>
         )}
         {!muted && status === "idle" && (
-          <div className="text-center py-8">
-            <div className="w-10 h-10 rounded-2xl bg-white/3 border border-white/6 flex items-center justify-center mx-auto mb-3">
-              <span className="opacity-25">{icon}</span>
+          <div className="text-center py-10">
+            <div className="w-10 h-10 rounded-2xl bg-white/[0.025] border border-white/6 flex items-center justify-center mx-auto mb-3.5">
+              <span className="opacity-20">{icon}</span>
             </div>
-            <p className="text-xs text-white/25 font-medium">Hit generate when ready</p>
-            <p className="text-[10px] text-white/15 mt-1">Set your controls above and launch</p>
+            <p className="text-xs text-white/28 font-medium leading-relaxed">
+              {emptyLabel ?? "Ready when you are."}
+            </p>
+            <p className="text-[10px] text-white/14 mt-1.5 leading-relaxed">
+              {emptySubLabel ?? "Configure above and hit generate."}
+            </p>
           </div>
         )}
         {!muted && status === "loading" && (
-          <div className="text-center py-8">
-            <div className="relative w-14 h-14 mx-auto mb-4">
-              <div className="absolute inset-0 rounded-full border-[2px] border-white/4 border-t-amber-400/70 animate-spin" />
-              <div className="absolute inset-[3px] rounded-full border-[2px] border-white/4 border-b-sky-400/50 animate-[spin_1.8s_linear_infinite_reverse]" />
-              <div className="absolute inset-[7px] rounded-full border-[2px] border-white/3 border-t-violet-400/40 animate-[spin_3s_linear_infinite]" />
+          <div className="text-center py-10">
+            <div className="relative w-12 h-12 mx-auto mb-4">
+              <div className={`absolute inset-0 rounded-full border-[2px] border-white/4 ${s.spinnerOuter} animate-[spin_1.2s_linear_infinite]`} />
+              <div className={`absolute inset-[3px] rounded-full border-[2px] border-white/3 ${s.spinnerMid} animate-[spin_2s_linear_infinite_reverse]`} />
+              <div className={`absolute inset-[7px] rounded-full border-[2px] border-white/[0.06] ${s.spinnerInner} animate-[spin_3.5s_linear_infinite]`} />
             </div>
-            <p className="text-xs text-amber-400/70 animate-pulse font-medium">{loadingLabel}</p>
+            <p className={`text-xs font-semibold animate-pulse ${s.loadingText}`}>{loadingLabel}</p>
           </div>
         )}
         {!muted && status === "error" && (
-          <div className="text-center py-6">
-            <AlertCircle className="w-8 h-8 text-red-400/50 mx-auto mb-2" />
-            <p className="text-xs text-red-400/70">Generation failed. Please try again.</p>
+          <div className="text-center py-8">
+            <AlertCircle className="w-7 h-7 text-red-400/50 mx-auto mb-2" />
+            <p className="text-xs text-red-400/60 font-medium">Generation failed</p>
+            <p className="text-[10px] text-white/20 mt-1">Please try again.</p>
           </div>
         )}
         {!muted && status === "success" && children}
@@ -1026,46 +1085,66 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
           {/* Beat Preview / Beat Structure */}
           <ResultCard
-            title={isProducer ? "Beat Structure" : "Beat Preview"}
+            title={isProducer ? "Beat Structure" : "Instrumental Preview"}
+            subtitle={isProducer ? "Groove · Arrangement · Pocket" : "Rhythm · Groove · Production"}
             icon={<Music2 className="w-3.5 h-3.5" />}
             status={instrumentalStatus}
             accent="sky"
-            loadingLabel={isProducer ? "Scripting your arrangement..." : "Building your groove..."}
+            statusLabel="Groove Ready"
+            emptyLabel="Your groove concept will appear here."
+            emptySubLabel="Set genre, energy, and BPM — then hit generate."
+            loadingLabel={isProducer ? "Building your pocket..." : "Building your pocket..."}
           >
             <div className="space-y-4">
               {intelligence && (
                 <>
+                  {/* Beat identity pill row */}
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-sky-500/10 border border-sky-500/18 text-sky-400/80">
+                      {audioGenre}
+                    </span>
+                    <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/40">
+                      {intelligence.stems[0]?.pct ?? 0}% Kick
+                    </span>
+                    <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/40">
+                      {energyLevel} Energy
+                    </span>
+                  </div>
+
                   {/* Beat summary / arrangement map */}
                   {isProducer ? (
-                    <div className="rounded-lg bg-white/[0.03] border border-violet-500/10 px-3 py-2">
-                      <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/50 mb-1">Arrangement Map</div>
-                      <p className="text-[10px] text-violet-300/55 leading-relaxed">{intelligence.arrangementMap}</p>
+                    <div className="rounded-xl bg-sky-500/[0.04] border border-sky-500/10 px-3.5 py-3">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-sky-400/50 mb-1.5">Arrangement Map</div>
+                      <p className="text-[10px] text-sky-300/55 leading-relaxed">{intelligence.arrangementMap}</p>
                     </div>
                   ) : (
-                    <p className="text-xs text-white/50 leading-relaxed">{intelligence.beatSummary}</p>
+                    <p className="text-[11px] text-white/45 leading-relaxed">{intelligence.beatSummary}</p>
                   )}
 
-                  {/* Intelligent stem bars */}
-                  <div className="space-y-3 pt-1">
-                    {intelligence.stems.map((stem) => (
-                      <div key={stem.label}>
-                        <StemBar label={stem.label} color={stem.color} pct={stem.pct} />
-                        <p className="text-[9px] text-white/28 mt-1 leading-relaxed pl-[calc(0.375rem+0.75rem+7rem)]">{stem.note}</p>
-                      </div>
-                    ))}
+                  {/* Stem bars with separator */}
+                  <div>
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/20 mb-2.5">Stem Weights</div>
+                    <div className="space-y-3">
+                      {intelligence.stems.map((stem) => (
+                        <div key={stem.label}>
+                          <StemBar label={stem.label} color={stem.color} pct={stem.pct} />
+                          <p className="text-[9px] text-white/25 mt-1 leading-relaxed pl-[calc(0.375rem+0.75rem+7rem)]">{stem.note}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Style influence tag */}
                   {intelligence.styleInfluence !== "neutral" && intelligence.styleDesc && (
-                    <div className="pt-1 border-t border-white/4">
-                      <p className="text-[10px] text-sky-400/50 leading-relaxed">{intelligence.styleDesc}</p>
+                    <div className="pt-2 border-t border-sky-500/8">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-sky-400/35 mb-1">Style Signal</div>
+                      <p className="text-[10px] text-sky-400/55 leading-relaxed">{intelligence.styleDesc}</p>
                     </div>
                   )}
 
-                  {/* Arrangement guide note (Artist mode) */}
                   {!isProducer && includeArrangementNotes && (
-                    <p className="text-[10px] text-white/22 pt-1 border-t border-white/4 leading-relaxed">
-                      Full arrangement guide included in the Session Blueprint →
+                    <p className="text-[10px] text-white/20 pt-1.5 border-t border-white/4 leading-relaxed">
+                      Full arrangement guide in Session Blueprint →
                     </p>
                   )}
                 </>
@@ -1073,119 +1152,157 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </div>
           </ResultCard>
 
-          {/* Vocal Guide / Vocal Blueprint */}
+          {/* Vocal Demo / Vocal Blueprint */}
           <ResultCard
-            title={isProducer ? "Vocal Blueprint" : "Vocal Guide"}
+            title={isProducer ? "Vocal Blueprint" : "Vocal Demo"}
+            subtitle={isProducer ? "Architecture · Delivery · Mix" : "Expression · Phrasing · Performance"}
             icon={<Mic2 className="w-3.5 h-3.5" />}
             status={vocalStatus}
             accent="violet"
-            loadingLabel={isProducer ? "Scripting vocal architecture..." : "Finding your vocal pocket..."}
+            statusLabel="Vocal Direction"
+            emptyLabel="Vocal direction will take shape here."
+            emptySubLabel="Add lyrics or a vocal style, then generate."
+            loadingLabel="Shaping vocal phrasing..."
             muted={isInstrumentalMode}
-            mutedLabel="Vocals are off in beat-only mode"
+            mutedLabel="Beat-only mode is active"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               {intelligence && (
                 <>
-                  <div className="rounded-lg bg-violet-500/[0.05] border border-violet-500/12 px-3 py-2">
-                    <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/50 mb-0.5">
+                  {/* Vocal identity pills */}
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-violet-500/10 border border-violet-500/18 text-violet-400/80">
+                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label}
+                    </span>
+                    {intelligence.lyricsTone !== "neutral" && (
+                      <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-violet-500/8 border border-violet-500/14 text-violet-300/60">
+                        {intelligence.lyricsTone} tone
+                      </span>
+                    )}
+                    <span className="text-[9px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/35">
+                      {audioGenre}
+                    </span>
+                  </div>
+
+                  {/* Vocal setup block */}
+                  <div className="rounded-xl bg-violet-500/[0.04] border border-violet-500/10 px-3.5 py-3">
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/50 mb-1">
                       {isProducer ? "Vocal Architecture" : "Vocal Setup"}
                     </div>
-                    <p className="text-[10px] text-violet-300/60 leading-snug">
-                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label} delivery — {audioGenre}
-                      {intelligence.lyricsTone !== "neutral" ? ` · Tone: ${intelligence.lyricsTone}` : ""}
+                    <p className="text-[10px] text-violet-300/65 leading-snug">
+                      {VOCAL_GENDERS.find((v) => v.value === vocalGender)?.label} delivery —{" "}
+                      {intelligence.exportNotes?.artist?.items.find((i) => i.label === "Vocal Delivery Summary")?.value.split("—")[1]?.trim().split(".")[0] ?? audioGenre + " style"}
                     </p>
                   </div>
-                  <div className="space-y-2.5">
-                    {intelligence.vocalSections.map(({ label, note, color }) => (
-                      <div key={label} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-violet-400/50 mt-1.5 shrink-0" />
-                        <div>
-                          <span className={`text-[10px] font-semibold block ${color}`}>{label}</span>
-                          <p className="text-[10px] text-white/30 leading-relaxed">{note}</p>
+
+                  {/* Section list */}
+                  <div>
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/20 mb-2.5">Vocal Sections</div>
+                    <div className="space-y-3">
+                      {intelligence.vocalSections.map(({ label, note, color }) => (
+                        <div key={label} className="flex items-start gap-2.5">
+                          <div className="w-1 h-1 rounded-full bg-violet-400/40 mt-[7px] shrink-0" />
+                          <div>
+                            <span className={`text-[10px] font-semibold block mb-0.5 ${color}`}>{label}</span>
+                            <p className="text-[10px] text-white/28 leading-relaxed">{note}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </>
               )}
             </div>
           </ResultCard>
 
-          {/* Session Blueprint */}
+          {/* Audio Blueprint */}
           <ResultCard
-            title="Session Blueprint"
+            title="Audio Blueprint"
+            subtitle="Structure · Identity · Session"
             icon={<Wand2 className="w-3.5 h-3.5" />}
             status={blueprintStatus}
             accent="amber"
-            loadingLabel={isProducer ? "Engineering your session blueprint..." : "Designing your session blueprint..."}
+            statusLabel="Blueprint Locked"
+            emptyLabel="Your production blueprint will build here."
+            emptySubLabel="Blueprint generates alongside the beat."
+            loadingLabel="Mapping your sonic identity..."
           >
             {blueprint && (
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "BPM",        value: blueprint.bpm,       color: "text-amber-400" },
-                    { label: "Key",        value: blueprint.key,       color: "text-sky-400" },
-                    { label: "Genre",      value: blueprint.genre,     color: "text-violet-400" },
-                    { label: "Energy",     value: blueprint.energy,    color: "text-green-400" },
-                    { label: "Vocal Type", value: blueprint.vocalType, color: "text-white/70" },
-                  ].map(({ label, value, color }) => (
-                    <div key={label} className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2">
-                      <div className="text-[9px] font-bold tracking-widest uppercase text-white/25 mb-0.5">{label}</div>
-                      <div className={`text-xs font-semibold ${color}`}>{value}</div>
-                    </div>
-                  ))}
-                  <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2 col-span-2">
-                    <div className="text-[9px] font-bold tracking-widest uppercase text-white/25 mb-0.5">Hook Focus</div>
-                    <div className="text-xs font-medium text-amber-300/70 leading-snug">{blueprint.hookFocus}</div>
-                  </div>
-                </div>
-
-                {/* Producer-mode detail badges */}
-                {isProducer && blueprint.drumDensity && (
-                  <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-3.5">
+                {/* Core session metadata grid */}
+                <div>
+                  <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/20 mb-2">Session Specs</div>
+                  <div className="grid grid-cols-2 gap-1.5">
                     {[
-                      { label: "Drums",      value: blueprint.drumDensity },
-                      { label: "Bass",       value: blueprint.bassWeight ?? "" },
-                      { label: "Transition", value: blueprint.transitionStyle ?? "" },
-                      { label: "Outro",      value: blueprint.outroStyle ?? "" },
-                    ].map(({ label, value }) => (
-                      <div key={label} className="rounded-lg bg-violet-500/[0.04] border border-violet-500/10 px-3 py-1.5">
-                        <div className="text-[9px] font-bold tracking-widest uppercase text-violet-400/40 mb-0.5">{label}</div>
-                        <div className="text-[10px] font-semibold text-violet-300/65">{value}</div>
+                      { label: "BPM",    value: blueprint.bpm,       color: "text-amber-400" },
+                      { label: "Key",    value: blueprint.key,       color: "text-sky-400" },
+                      { label: "Genre",  value: blueprint.genre,     color: "text-violet-400" },
+                      { label: "Energy", value: blueprint.energy,    color: "text-green-400" },
+                    ].map(({ label, value, color }) => (
+                      <div key={label} className="rounded-lg bg-white/[0.025] border border-white/[0.045] px-3 py-2">
+                        <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-white/22 mb-0.5">{label}</div>
+                        <div className={`text-xs font-bold ${color}`}>{value}</div>
                       </div>
                     ))}
                   </div>
+                  {/* Vocal type + hook — full width */}
+                  <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                    <div className="rounded-lg bg-white/[0.025] border border-white/[0.045] px-3 py-2">
+                      <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-white/22 mb-0.5">Vocal</div>
+                      <div className="text-xs font-bold text-white/65">{blueprint.vocalType}</div>
+                    </div>
+                    <div className="rounded-lg bg-amber-500/[0.05] border border-amber-500/12 px-3 py-2">
+                      <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-amber-400/50 mb-0.5">Hook Focus</div>
+                      <div className="text-[10px] font-semibold text-amber-300/75 leading-tight">{blueprint.hookFocus.split(".")[0]}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Producer-mode technical specs */}
+                {isProducer && blueprint.drumDensity && (
+                  <div>
+                    <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/30 mb-2">Engineering Specs</div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        { label: "Drums",      value: blueprint.drumDensity },
+                        { label: "Bass",       value: blueprint.bassWeight ?? "" },
+                        { label: "Transition", value: blueprint.transitionStyle ?? "" },
+                        { label: "Outro",      value: blueprint.outroStyle ?? "" },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="rounded-lg bg-violet-500/[0.035] border border-violet-500/10 px-3 py-1.5">
+                          <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-violet-400/38 mb-0.5">{label}</div>
+                          <div className="text-[10px] font-semibold text-violet-300/65">{value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
 
-                <div className="rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2">
-                  <div className="text-[9px] font-bold tracking-widest uppercase text-white/25 mb-1">Arrangement Style</div>
-                  <p className="text-xs text-white/50 leading-relaxed">{blueprint.arrangementStyle}</p>
-                </div>
-                <div className="rounded-lg bg-amber-500/[0.04] border border-amber-500/12 px-3 py-2">
-                  <div className="text-[9px] font-bold tracking-widest uppercase text-amber-400/60 mb-1">
-                    {isProducer ? "Engineering Notes" : "Producer Notes"}
-                  </div>
-                  <p className="text-[10px] text-white/40 leading-relaxed">{blueprint.producerNotes}</p>
+                {/* Arrangement style */}
+                <div className="rounded-xl bg-white/[0.02] border border-white/[0.045] px-3.5 py-3">
+                  <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/22 mb-1.5">Arrangement Style</div>
+                  <p className="text-[11px] text-white/45 leading-relaxed">{blueprint.arrangementStyle}</p>
                 </div>
 
-                {/* Intelligence context tags */}
+                {/* Intelligence tags row */}
                 {intelligence && (intelligence.lyricsTone !== "neutral" || intelligence.styleInfluence !== "neutral") && (
-                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {intelligence.lyricsTone !== "neutral" && (
-                      <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/35">
+                      <span className="text-[8px] font-bold tracking-[0.1em] uppercase px-2 py-1 rounded-full bg-white/4 border border-white/8 text-white/32">
                         Tone · {intelligence.lyricsTone}
                       </span>
                     )}
                     {intelligence.styleInfluence !== "neutral" && (
-                      <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full bg-sky-500/8 border border-sky-500/15 text-sky-400/50">
+                      <span className="text-[8px] font-bold tracking-[0.1em] uppercase px-2 py-1 rounded-full bg-amber-500/8 border border-amber-500/15 text-amber-400/55">
                         Style · {intelligence.styleInfluence.replace("-", " ")}
                       </span>
                     )}
                   </div>
                 )}
 
+                {/* Copy button */}
                 <button onClick={copyBlueprint}
-                  className="w-full h-8 rounded-lg bg-white/4 border border-white/8 text-[10px] font-semibold text-white/40 hover:text-white/70 hover:border-white/15 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full h-8 rounded-lg bg-white/3 border border-white/6 text-[10px] font-semibold text-white/35 hover:text-white/65 hover:border-white/12 hover:bg-white/5 transition-all flex items-center justify-center gap-1.5"
                 >
                   <Copy className="w-3 h-3" /> Copy Blueprint
                 </button>
