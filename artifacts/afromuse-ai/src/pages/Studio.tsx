@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
-  Mic2, Wand2, FileText, RotateCcw, Zap,
+  Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key,
 } from "lucide-react";
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
 import { useToast } from "@/hooks/use-toast";
@@ -711,7 +711,7 @@ export default function Studio() {
                   </p>
                   <p className="text-white/20 text-xs mb-8 italic">Hooks · Verses · Bridge · Chorus · Production Notes</p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {["Intro", "Verse 1", "Chorus", "Verse 2", "Bridge", "Outro", "Chord Vibe", "Melody Direction", "Arrangement"].map((tag) => (
+                    {["Intro", "Verse 1", "Chorus", "Verse 2", "Bridge", "Outro", "Keeper Line", "Metadata Panel", "Instrumental Guide", "Vocal Demo Guide"].map((tag) => (
                       <span key={tag} className="text-[11px] px-3 py-1 rounded-full bg-white/4 border border-white/7 text-white/35">
                         {tag}
                       </span>
@@ -939,30 +939,107 @@ export default function Studio() {
                         />
                       )}
 
-                      {/* PRODUCTION NOTES */}
-                      <div className="border-t border-white/6 pt-8">
-                        <div className="flex items-center gap-2 mb-5">
-                          <Sliders className="w-4 h-4 text-white/30" />
-                          <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Production Notes</span>
+                      {/* KEEPER LINE — V2 */}
+                      {draft.keeperLine && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Sparkles className="w-4 h-4 text-primary/60" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Keeper Line</span>
+                          </div>
+                          <div className="rounded-2xl border border-primary/15 bg-primary/5 p-5">
+                            <p className="text-base font-semibold text-white/90 italic mb-3">"{draft.keeperLine}"</p>
+                            {draft.keeperLineBackups && draft.keeperLineBackups.length > 0 && (
+                              <div className="space-y-1 border-t border-primary/10 pt-3 mt-3">
+                                <p className="text-[10px] font-bold tracking-widest uppercase text-primary/40 mb-2">Backup Lines</p>
+                                {draft.keeperLineBackups.map((b, i) => (
+                                  <p key={i} className="text-xs text-white/45 italic">"{b}"</p>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          <ProductionNoteCard
-                            color="gold"
-                            title="Chord / Vibe"
-                            content={draft.chordVibe}
-                          />
-                          <ProductionNoteCard
-                            color="violet"
-                            title="Melody Direction"
-                            content={draft.melodyDirection}
-                          />
-                          <ProductionNoteCard
-                            color="blue"
-                            title="Arrangement"
-                            content={draft.arrangement}
-                          />
+                      )}
+
+                      {/* METADATA PANEL — V2 */}
+                      {draft.productionNotes && (draft.productionNotes.key || draft.productionNotes.bpm || draft.productionNotes.energy) && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Radio className="w-4 h-4 text-white/30" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Metadata Panel</span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {draft.productionNotes.key && (
+                              <div className="rounded-2xl border border-primary/10 bg-primary/3 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-primary mb-2">Key</div>
+                                <p className="text-sm font-semibold text-white/80">{draft.productionNotes.key}</p>
+                              </div>
+                            )}
+                            {draft.productionNotes.bpm && (
+                              <div className="rounded-2xl border border-sky-500/10 bg-sky-500/3 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-sky-400 mb-2">BPM</div>
+                                <p className="text-sm font-semibold text-white/80">{draft.productionNotes.bpm}</p>
+                              </div>
+                            )}
+                            {draft.productionNotes.energy && (
+                              <div className="rounded-2xl border border-violet-500/10 bg-violet-500/3 p-4">
+                                <div className="text-[10px] font-bold tracking-widest uppercase text-violet-400 mb-2">Energy</div>
+                                <p className="text-sm font-semibold text-white/80">{draft.productionNotes.energy}</p>
+                              </div>
+                            )}
+                          </div>
+                          {(draft.productionNotes.melodyDirection || draft.productionNotes.arrangement) && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                              {draft.productionNotes.melodyDirection && (
+                                <ProductionNoteCard color="violet" title="Melody Direction" content={draft.productionNotes.melodyDirection} />
+                              )}
+                              {draft.productionNotes.arrangement && (
+                                <ProductionNoteCard color="blue" title="Arrangement" content={draft.productionNotes.arrangement} />
+                              )}
+                            </div>
+                          )}
                         </div>
-                      </div>
+                      )}
+
+                      {/* PRODUCTION NOTES (fallback for older V1 format) */}
+                      {!draft.productionNotes && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-5">
+                            <Sliders className="w-4 h-4 text-white/30" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Production Notes</span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <ProductionNoteCard color="gold" title="Chord / Vibe" content={draft.chordVibe} />
+                            <ProductionNoteCard color="violet" title="Melody Direction" content={draft.melodyDirection} />
+                            <ProductionNoteCard color="blue" title="Arrangement" content={draft.arrangement} />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* INSTRUMENTAL GUIDANCE — V2 */}
+                      {draft.instrumentalGuidance && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Guitar className="w-4 h-4 text-sky-400/60" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Instrumental Guidance</span>
+                          </div>
+                          <div className="rounded-2xl border border-sky-500/10 bg-sky-500/3 p-5">
+                            <p className="text-sm text-white/60 leading-relaxed">{draft.instrumentalGuidance}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* VOCAL DEMO GUIDANCE — V2 */}
+                      {draft.vocalDemoGuidance && (
+                        <div className="border-t border-white/6 pt-8">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Mic2 className="w-4 h-4 text-violet-400/60" />
+                            <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Vocal Demo Guidance</span>
+                          </div>
+                          <div className="rounded-2xl border border-violet-500/10 bg-violet-500/3 p-5">
+                            <p className="text-sm text-white/60 leading-relaxed">{draft.vocalDemoGuidance}</p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Bottom actions */}
                       <div className="border-t border-white/4 pt-6 flex flex-wrap gap-2 justify-center">

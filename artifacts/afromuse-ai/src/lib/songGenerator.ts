@@ -9,6 +9,18 @@ export interface SongDraft {
   chordVibe: string;
   melodyDirection: string;
   arrangement: string;
+  // V2 fields
+  keeperLine?: string;
+  keeperLineBackups?: string[];
+  productionNotes?: {
+    key?: string;
+    bpm?: string;
+    energy?: string;
+    arrangement?: string;
+    melodyDirection?: string;
+  };
+  instrumentalGuidance?: string;
+  vocalDemoGuidance?: string;
 }
 
 function pick<T>(arr: T[], seed: number, offset = 0): T {
@@ -736,16 +748,39 @@ export function formatDraftForClipboard(draft: SongDraft, genre: string, mood: s
     sections.push("[ FINAL CHORUS ]", ...draft.hook, "");
   }
 
-  sections.push(
-    line,
-    "PRODUCTION NOTES",
-    line,
-    `Chord / Vibe: ${draft.chordVibe}`,
-    `Melody Direction: ${draft.melodyDirection}`,
-    `Arrangement: ${draft.arrangement}`,
-    "",
-    "─ Created with AfroMuse AI ─",
-  );
+  sections.push(line, "PRODUCTION NOTES", line);
+
+  if (draft.productionNotes) {
+    const pn = draft.productionNotes;
+    if (pn.key) sections.push(`Key: ${pn.key}`);
+    if (pn.bpm) sections.push(`BPM: ${pn.bpm}`);
+    if (pn.energy) sections.push(`Energy: ${pn.energy}`);
+    if (pn.melodyDirection) sections.push(`Melody Direction: ${pn.melodyDirection}`);
+    if (pn.arrangement) sections.push(`Arrangement: ${pn.arrangement}`);
+  } else {
+    sections.push(
+      `Chord / Vibe: ${draft.chordVibe}`,
+      `Melody Direction: ${draft.melodyDirection}`,
+      `Arrangement: ${draft.arrangement}`,
+    );
+  }
+
+  if (draft.keeperLine) {
+    sections.push("", line, "KEEPER LINE", line, `Main: ${draft.keeperLine}`);
+    if (draft.keeperLineBackups?.length) {
+      draft.keeperLineBackups.forEach((b, i) => sections.push(`Backup ${i + 1}: ${b}`));
+    }
+  }
+
+  if (draft.instrumentalGuidance) {
+    sections.push("", line, "INSTRUMENTAL GUIDANCE", line, draft.instrumentalGuidance);
+  }
+
+  if (draft.vocalDemoGuidance) {
+    sections.push("", line, "VOCAL DEMO GUIDANCE", line, draft.vocalDemoGuidance);
+  }
+
+  sections.push("", "─ Created with AfroMuse AI V5 HITMAKER V2 ─");
 
   return sections.join("\n");
 }
