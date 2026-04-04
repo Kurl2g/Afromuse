@@ -133,7 +133,7 @@ export default function SendToAudioCard({
             ) : (
               <>
                 <Zap className="w-3.5 h-3.5" />
-                Generate Instrumental From This
+                Instrumental Quick Setup
               </>
             )}
           </motion.button>

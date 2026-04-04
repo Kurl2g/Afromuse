@@ -237,7 +237,7 @@ function ResultCard({
               <VolumeX className="w-4 h-4 text-white/15" />
             </div>
             <p className="text-xs text-white/20 font-medium">{mutedLabel ?? "Not available in this mode"}</p>
-            <p className="text-[10px] text-white/10 mt-1">Switch off beat-only mode to enable</p>
+            <p className="text-[10px] text-white/10 mt-1">Turn off Beat-only in Session Options to enable</p>
           </div>
         )}
         {!muted && status === "idle" && (
@@ -473,7 +473,6 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [energyLevel,          setEnergyLevel]          = useState("Medium");
 
   const [useGeneratedLyrics,       setUseGeneratedLyrics]       = useState(false);
-  const [generateOnlyInstrumental, setGenerateOnlyInstrumental] = useState(false);
   const [includeArrangementNotes,  setIncludeArrangementNotes]  = useState(true);
   const [includeStemsBreakdown,    setIncludeStemsBreakdown]    = useState(false);
   const [useHitmakerHookPriority,  setUseHitmakerHookPriority]  = useState(false);
@@ -493,7 +492,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
   const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
 
-  const isInstrumentalMode = generateOnlyInstrumental || generationMode === "instrumental";
+  const isInstrumentalMode = generationMode === "instrumental";
   const hasLyrics          = audioLyrics.trim().length > 0 || draft !== null;
   const isProducer         = workflowMode === "producer";
 
@@ -521,19 +520,15 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
       setUseGeneratedLyrics(true);
       if (mode === "instrumental") {
         setGenerationMode("instrumental");
-        setGenerateOnlyInstrumental(true);
       } else if (mode === "hook-only") {
         setSectionMode("hook");
         setGenerationMode("full");
-        setGenerateOnlyInstrumental(false);
       } else if (mode === "afrobeats-demo") {
         setAudioGenre("Afrobeats");
         setGenerationMode("full");
-        setGenerateOnlyInstrumental(false);
         setSectionMode("full");
       } else {
         setGenerationMode("full");
-        setGenerateOnlyInstrumental(false);
       }
       setHighlighted(true);
       setTimeout(() => setHighlighted(false), 2000);
@@ -545,7 +540,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     setUseGeneratedLyrics(next);
     if (next && draft) {
       setAudioLyrics(extractLyricsText(draft, genre, mood));
-      toast({ title: "Auto-sync on", description: "Lyrics will update whenever you generate in V1." });
+      toast({ title: "Auto-sync on", description: "Lyrics will update whenever you generate from the Lyrics Studio above." });
     }
   };
 
@@ -689,7 +684,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-400">V2</span>
                 <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-violet-500/12 border border-violet-500/25 text-violet-400">Workflow Intelligence</span>
               </div>
-              <p className="text-xs text-white/40">Write. Shape. Hear. — craft a beat, vocal guide, and full session blueprint from your lyrics.</p>
+              <p className="text-xs text-white/40">Write. Shape. Build. — craft a beat, vocal guide, and full session blueprint from your lyrics.</p>
             </div>
           </div>
           <motion.button
@@ -974,7 +969,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
               {([
                 { id: "useLyrics",   label: isProducer ? "Auto-sync lyric sheet from Lyrics Studio" : "Auto-sync lyrics from Lyrics Studio",  checked: useGeneratedLyrics,       onToggle: handleToggleAutoLyrics },
-                { id: "instOnly",    label: "Beat-only — skip vocals",                                                                          checked: generateOnlyInstrumental, onToggle: (v: boolean) => setGenerateOnlyInstrumental(v) },
+                { id: "instOnly",    label: "Beat-only — skip vocals",                                                                          checked: isInstrumentalMode,       onToggle: (v: boolean) => setGenerationMode(v ? "instrumental" : "full") },
                 { id: "arrangement", label: isProducer ? "Include full arrangement script" : "Include arrangement guide",                       checked: includeArrangementNotes,  onToggle: (v: boolean) => setIncludeArrangementNotes(v) },
                 { id: "stems",       label: isProducer ? "Include stems export map" : "Include stems breakdown",                                checked: includeStemsBreakdown,    onToggle: (v: boolean) => setIncludeStemsBreakdown(v) },
                 { id: "hitmaker",    label: isProducer ? "Engineer hook priority — coded for replay" : "Hitmaker hook priority",                checked: useHitmakerHookPriority,  onToggle: (v: boolean) => setUseHitmakerHookPriority(v) },
@@ -1075,7 +1070,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
           >
             {isGenerating
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Building...</>
-              : <><Zap className="w-4 h-4" />{isProducer ? "Build Full Session" : "Build Full Session"}</>
+              : <><Zap className="w-4 h-4" />{isProducer ? "Build Full Session" : "Build Session"}</>
             }
           </motion.button>
         </div>
@@ -1161,7 +1156,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             accent="violet"
             statusLabel="Vocal Direction"
             emptyLabel="Vocal direction will take shape here."
-            emptySubLabel="Add lyrics or a vocal style, then generate."
+            emptySubLabel="Add lyrics or a vocal style, then click Generate."
             loadingLabel="Shaping vocal phrasing..."
             muted={isInstrumentalMode}
             mutedLabel="Beat-only mode is active"
@@ -1224,7 +1219,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             accent="amber"
             statusLabel="Blueprint Locked"
             emptyLabel="Your production blueprint will build here."
-            emptySubLabel="Blueprint generates alongside the beat."
+            emptySubLabel="Generate a Beat Preview first to build the blueprint."
             loadingLabel="Mapping your sonic identity..."
           >
             {blueprint && (

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Music2, Mic2, Zap, Sparkles, Download, FileText, RefreshCw,
-  ChevronRight, AlertCircle, Lock,
+  ChevronRight, AlertCircle, Clock,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AudioPlayer from "./AudioPlayer";
@@ -351,8 +351,8 @@ function ExportSection({
 
   const notifyMp3Coming = (type: "instrumental" | "vocal") => {
     toast({
-      title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} MP3`,
-      description: "Full audio export unlocks when the render engine is connected.",
+      title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} MP3 — Coming Soon`,
+      description: "MP3 export will be available once the audio render engine is live.",
     });
   };
 
@@ -382,7 +382,7 @@ function ExportSection({
             onClick={() => notifyMp3Coming("instrumental")}
             className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-primary/20 text-xs text-primary/60 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
           >
-            <Lock className="w-3 h-3" />
+            <Clock className="w-3 h-3" />
             Instrumental MP3
             <span className="ml-1 text-[9px] text-primary/40 font-bold tracking-wider uppercase">Soon</span>
           </button>
@@ -392,7 +392,7 @@ function ExportSection({
             onClick={() => notifyMp3Coming("vocal")}
             className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-violet-500/20 text-xs text-violet-400/60 hover:text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/5 transition-all"
           >
-            <Lock className="w-3 h-3" />
+            <Clock className="w-3 h-3" />
             Vocal Demo MP3
             <span className="ml-1 text-[9px] text-violet-400/40 font-bold tracking-wider uppercase">Soon</span>
           </button>
@@ -761,7 +761,7 @@ export default function BringToLifeCard({
                 draft={draft}
                 onRegenerate={generateInstrumental}
                 onDownload={() =>
-                  toast({ title: "Instrumental MP3", description: "Full audio export unlocks when the render engine is connected." })
+                  toast({ title: "Instrumental MP3 — Coming Soon", description: "MP3 export will be available once the audio render engine is live." })
                 }
               />
             </motion.div>
@@ -811,7 +811,7 @@ export default function BringToLifeCard({
                 draft={draft}
                 onRegenerate={generateVocal}
                 onDownload={() =>
-                  toast({ title: "Vocal Demo MP3", description: "Full audio export unlocks when the render engine is connected." })
+                  toast({ title: "Vocal Demo MP3 — Coming Soon", description: "MP3 export will be available once the audio render engine is live." })
                 }
               />
             </motion.div>
