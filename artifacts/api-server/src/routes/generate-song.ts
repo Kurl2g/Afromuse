@@ -141,100 +141,80 @@ function buildUserPrompt(params: {
     ? `Custom: ${customFlavor.trim()}`
     : languageFlavor;
 
-  const lengthRules: Record<string, string[]> = {
-    Short: [
-      "✓ SONG LENGTH is SHORT — lean and concise, but still catchy and fully usable",
-      "✓ Intro: EXACTLY 2 lines — atmospheric teaser ONLY — no padding, no exceptions",
-      "✓ Verse 1: EXACTLY 8 lines — 4-bar grouping law — NOT 7, NOT 9, NOT 10 — exactly 8",
-      "✓ Chorus: EXACTLY 4 lines — the cleanest, stickiest commercial hook format",
-      "✓ Verse 2: EXACTLY 8 lines — new angle, never a repeat of Verse 1, exactly 8 lines",
-      "✓ Bridge: EXACTLY 4 lines — hard law, no exceptions",
-      "✓ Outro: EXACTLY 2 or 4 lines — clean close, no random counts",
-    ],
-    Standard: [
-      "✓ SONG LENGTH is STANDARD — full balanced draft",
-      "✓ Intro: EXACTLY 2 or 4 lines — short, atmospheric, functional — never 3 lines",
-      "✓ Verse 1: EXACTLY 8 or 12 lines (choose based on lyrical depth) — 4-bar grouping law — no odd counts",
-      "✓ Chorus: EXACTLY 4 or 8 lines — the emotional and melodic peak — no odd counts allowed",
-      "✓ Verse 2: EXACTLY 8 or 12 lines (match Verse 1 length) — new angle, deeper emotional territory",
-      "✓ Bridge: EXACTLY 4 lines — hard law, no exceptions, no more, no less",
-      "✓ Outro: EXACTLY 4 or 8 lines — structured close, no random counts",
-    ],
-    Full: [
-      "✓ SONG LENGTH is FULL — the most complete and developed draft possible",
-      "✓ Intro: EXACTLY 4 lines — atmosphere-building, cinematic opening, never more",
-      "✓ Verse 1: EXACTLY 12 or 16 lines (choose based on depth) — 4-bar grouping law — rich storytelling",
-      "✓ Chorus: EXACTLY 8 lines — fully developed hook with anchor phrase and chant energy",
-      "✓ Verse 2: EXACTLY 12 or 16 lines (match Verse 1 length) — deep new angle, elevated lyrical detail",
-      "✓ Bridge: EXACTLY 4 lines — hard law, no exceptions",
-      "✓ Outro: EXACTLY 4 or 8 lines — extended emotional release, structured count only",
-    ],
-  };
-
-  const selectedLengthRules = lengthRules[songLength] ?? lengthRules["Standard"];
+  // V2 hard structure rules — enforced for every generation
+  const v2StructureRules = [
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "V2 SONG STRUCTURE — ABSOLUTE HARD LAW",
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "Every generation MUST follow this structure. No deviations. No exceptions.",
+    "",
+    "✦ INTRO: EXACTLY 4 lines — atmospheric, cinematic teaser — set mood only — never a verse or chorus",
+    "✦ VERSE 1: EXACTLY 12 lines — 3 groups of 4-bar lines — deep storytelling — establish the emotional world",
+    "✦ CHORUS: EXACTLY 6 lines — 4 core hook lines + 2 chant/tag lines — main keeper line MUST appear here — high repeat energy",
+    "✦ VERSE 2: EXACTLY 12 lines — 3 groups of 4-bar lines — new angle, deeper emotional territory — never repeat Verse 1",
+    "✦ BRIDGE: EXACTLY 4 lines — NO MORE, NO LESS — reflective turn or emotional intensifier — hard law",
+    "✦ OUTRO: EXACTLY 4 lines — emotional fade — main keeper line MUST appear here — unified close",
+    "",
+    "STRUCTURE VALIDATOR — MANDATORY BEFORE OUTPUT:",
+    "Count lines in EVERY section. If ANY count is wrong → rewrite that section before returning output.",
+    "Intro ≠ 4? Rewrite. Verse ≠ 12? Rewrite. Chorus ≠ 6? Rewrite. Bridge ≠ 4? Rewrite. Outro ≠ 4? Rewrite.",
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+  ];
 
   const lines = [
-    "==== SONG REQUEST ====",
+    "==== HITMAKER MODE V2 — SONG REQUEST ====",
     `TOPIC: ${topic}`,
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
-    `SONG LENGTH: ${songLength}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
   ];
 
   if (style?.trim()) {
-    lines.push(`STYLE / ARTIST REFERENCE: ${style.trim()} — capture the feel, writing DNA, and performance energy only — do NOT copy lyrics, phrases, or signature lines`);
+    lines.push(`STYLE / ARTIST REFERENCE: ${style.trim()} — capture the feel and writing DNA only — do NOT copy lyrics`);
   }
 
   if (notes?.trim()) {
-    lines.push(`EXTRA NOTES / DIRECTION (HIGHEST PRIORITY — honor fully): ${notes.trim()}`);
+    lines.push(`EXTRA DIRECTION (HIGHEST PRIORITY — honor fully): ${notes.trim()}`);
   }
 
   if (commercialMode) {
-    lines.push(`GENERATION MODE: HITMAKER / COMMERCIAL MODE — ACTIVATED. This is the highest priority override after NOTES. Maximize hook stickiness. Keep ALL lines shorter than normal. Prioritize chant energy, first-listen memorability, and replay value above everything else. Chorus must be immediately singable. Title must feel like a hit single. Keeper line must feel like the caption of the year.`);
+    lines.push(`HITMAKER MODE: ACTIVATED — maximize hook stickiness, chant energy, first-listen memorability, and replay value above all else`);
   }
 
   const depthInstructions: Record<string, string> = {
-    Simple: "LYRICAL DEPTH: SIMPLE — use clean, easy phrasing, minimal metaphor, prioritize mainstream singability and hook clarity",
-    Balanced: "LYRICAL DEPTH: BALANCED — blend commercial catchiness with artistic depth, the default premium balance",
-    Deep: "LYRICAL DEPTH: DEEP — allow richer imagery, stronger emotional detail, more layered verse writing and introspection, while remaining musical and recordable",
+    Simple: "LYRICAL DEPTH: SIMPLE — clean phrasing, minimal metaphor, prioritize singability and hook clarity",
+    Balanced: "LYRICAL DEPTH: BALANCED — blend commercial catchiness with artistic depth",
+    Deep: "LYRICAL DEPTH: DEEP — rich imagery, strong emotional layering, introspective verses, human storytelling throughout",
   };
   lines.push(depthInstructions[lyricalDepth] ?? depthInstructions["Balanced"]);
 
   const hookRepeatInstructions: Record<string, string> = {
-    Low: "HOOK REPEAT LEVEL: LOW — favor lyrical variation in the chorus, less exact repetition, more melodic development across each chorus pass",
-    Medium: "HOOK REPEAT LEVEL: MEDIUM — balanced repetition and variation for commercial replay value",
-    High: "HOOK REPEAT LEVEL: HIGH — maximize chantability, use strong anchor phrase repetition throughout the chorus, build for first-listen memory and crowd singalong",
+    Low: "HOOK REPEAT LEVEL: LOW — lyrical variation in chorus, less exact repetition",
+    Medium: "HOOK REPEAT LEVEL: MEDIUM — balanced repetition and variation",
+    High: "HOOK REPEAT LEVEL: HIGH — maximum chantability, strong anchor phrase repetition, crowd singalong energy",
   };
   lines.push(hookRepeatInstructions[hookRepeat] ?? hookRepeatInstructions["Medium"]);
 
   lines.push(
     "",
-    "==== V5.1 HITMAKER GENERATION CHECKLIST ====",
-    `✓ GENRE: ${genre} — write IN the feel, rhythm, and cultural texture of this genre — think from inside the culture`,
-    `✓ MOOD: ${mood} — every line must embody this mood through word choice and phrasing, not just reference it`,
-    ...selectedLengthRules,
-    `✓ LANGUAGE / FLAVOR: ${effectiveFlavor} — apply naturally from first line to last, think in the culture, do not translate into it`,
-    "✓ PRE-GENERATE: silently create 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing the song",
-    "✓ TITLE FILTER: title must come from the keeper line — 1 to 5 words, emotionally sharp, artist-worthy — if generic → rewrite before output",
-    "✓ ANCHOR PHRASE: the MAIN KEEPER LINE woven into the chorus, intro, bridge or outro — song feels unified",
-    "✓ CHORUS HOOK: run the 5-question enforcer — if any answer is NO, rewrite the chorus before returning",
-    "✓ CHORUS STRENGTH: simpler, more singable, and more memorable than every verse — the emotional peak of the record",
-    "✓ KEEPER LINES: at least 2–4 lines a real artist would quote, caption, or build from — scattered across verses",
-    "✓ INTRO HARD ENFORCE: EXACTLY 2 or 4 lines ONLY — atmosphere/mood-setting, never a mini-chorus or mini-verse",
-    "✓ STRUCTURE VALIDATOR — MANDATORY: Before returning, count lines in EVERY section and enforce: Intro=2or4 / Verse=8,12,or16 / Chorus=4,6,or8 / Bridge=EXACTLY4 / Outro=2,4,or8 — if ANY section fails → rewrite that section before output",
-    "✓ SECTION ENERGY PROGRESSION: each section must push the record forward — intro teases, verse 1 establishes, chorus releases, verse 2 deepens, bridge turns, outro lands",
-    "✓ BAR-END PUNCH: last lines of intro, verses, chorus, and outro must be memorable, sharp, and quotable — no filler at section endings",
-    "✓ ARTIST REALISM: every line must pass 'would a real artist actually cut this?' — if not, rewrite it",
-    "✓ PERFORMANCE CHANT: at least one section must contain a phrase a live crowd could shout back",
-    "✓ MELODY POCKET: avoid overcrowded syllables, vary line lengths, create singable landing points and breath space",
-    "✓ SONG TIGHTNESS: every line must earn its place — fewer, stronger lines beat more, weaker lines",
-    "✓ NATURALNESS FILTER: reject any line that feels robotic, too formal, unnatural to sing, or emotionally flat",
-    "✓ REPLAY VALUE: strengthen hook, keeper line, or emotional angle until someone would replay this",
-    "✓ All sections (intro, verse1, hook, verse2, bridge, outro, chordVibe, melodyDirection, arrangement) must be in the JSON",
-    "✓ Respond with ONLY the JSON object — no text, explanation, or commentary before or after",
+    ...v2StructureRules,
     "",
-    "Generate the full AfroMuse V5.1 Hitmaker song draft now.",
+    "==== V2 HITMAKER GENERATION CHECKLIST ====",
+    `✓ GENRE: ${genre} — write from inside the culture, feel the rhythm and texture authentically`,
+    `✓ MOOD: ${mood} — every line must EMBODY this mood, not just reference it`,
+    `✓ LANGUAGE: ${effectiveFlavor} — apply naturally throughout, think in the culture`,
+    "✓ KEEPER LINE: silently generate 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing",
+    "✓ MAIN KEEPER LINE: must appear in BOTH the Chorus (hook) AND the Outro — this is non-negotiable",
+    "✓ TITLE: derive from the keeper line — 1 to 5 words, emotionally sharp, commercially credible",
+    "✓ HOOK ENFORCER: before finalizing chorus, run 5 checks — (1) would fans scream this live? (2) is it caption-worthy? (3) is it simple and memorable? (4) does it match verse emotion? (5) is it unique? — if any NO → rewrite",
+    "✓ VERSE QUALITY: every 4-bar group must advance the story — no filler, no repeated imagery from Verse 1 to Verse 2",
+    "✓ BRIDGE LAW: exactly 4 lines, reflective or intensifying — turns the emotional direction of the record",
+    "✓ NATURALNESS: reject any line that sounds robotic, formal, or AI-generated — every line must be singable",
+    "✓ TIGHTNESS: fewer, stronger lines — every line must earn its place",
+    "✓ PRODUCTION: include complete productionNotes, instrumentalGuidance, and vocalDemoGuidance in output",
+    "✓ OUTPUT: ONLY the JSON object — no text, explanation, or commentary before or after",
+    "",
+    "Generate the full AfroMuse V5 HITMAKER V2 song draft now.",
   );
 
   return lines.join("\n");
