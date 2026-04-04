@@ -5,6 +5,7 @@ import {
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
   Mic2, Wand2, FileText, RotateCcw, Zap,
 } from "lucide-react";
+import BringToLifeCard from "@/components/audio/BringToLifeCard";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import {
@@ -994,6 +995,21 @@ export default function Studio() {
 
                     </div>
                   </div>
+
+                  {/* BRING IT TO LIFE — V2 AUDIO MVP */}
+                  <BringToLifeCard
+                    draft={draft}
+                    genre={genre}
+                    mood={mood}
+                    topic={topic}
+                    songLength={songLength}
+                    languageFlavor={languageFlavor}
+                    style={style}
+                    commercialMode={commercialMode}
+                    lyricalDepth={lyricalDepth}
+                    hookRepeat={hookRepeat}
+                    customFlavor={customFlavor}
+                  />
 
                   {/* PLAN-GATED FEATURES PANEL */}
                   <PlanFeaturesPanel

@@ -20485,27 +20485,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router5;
+    module.exports = Router6;
     module.exports.Route = Route;
-    function Router5(options) {
-      if (!(this instanceof Router5)) {
-        return new Router5(options);
+    function Router6(options) {
+      if (!(this instanceof Router6)) {
+        return new Router6(options);
       }
       const opts = options || {};
-      function router5(req, res, next) {
-        router5.handle(req, res, next);
+      function router6(req, res, next) {
+        router6.handle(req, res, next);
       }
-      Object.setPrototypeOf(router5, this);
-      router5.caseSensitive = opts.caseSensitive;
-      router5.mergeParams = opts.mergeParams;
-      router5.params = {};
-      router5.strict = opts.strict;
-      router5.stack = [];
-      return router5;
+      Object.setPrototypeOf(router6, this);
+      router6.caseSensitive = opts.caseSensitive;
+      router6.mergeParams = opts.mergeParams;
+      router6.params = {};
+      router6.strict = opts.strict;
+      router6.stack = [];
+      return router6;
     }
-    Router5.prototype = function() {
+    Router6.prototype = function() {
     };
-    Router5.prototype.param = function param(name, fn) {
+    Router6.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20525,7 +20525,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router5.prototype.handle = function handle(req, res, callback) {
+    Router6.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20652,7 +20652,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router5.prototype.use = function use(handler) {
+    Router6.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20685,7 +20685,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router5.prototype.route = function route(path2) {
+    Router6.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20700,7 +20700,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router5.prototype[method] = function(path2) {
+      Router6.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20883,13 +20883,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router5 = require_router();
+    var Router6 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router5 = null;
+      var router6 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20898,13 +20898,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router5 === null) {
-            router5 = new Router5({
+          if (router6 === null) {
+            router6 = new Router6({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router5;
+          return router6;
         }
       });
     };
@@ -20975,15 +20975,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router5 = this.router;
+      var router6 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router5.use(path2, fn2);
+          return router6.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router5.use(path2, function mounted_app(req, res, next) {
+        router6.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23510,7 +23510,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router5 = require_router();
+    var Router6 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23532,8 +23532,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router5.Route;
-    exports.Router = Router5;
+    exports.Route = Router6.Route;
+    exports.Router = Router6;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -25082,7 +25082,7 @@ var require_atomic_sleep = __commonJS({
   "../../node_modules/.pnpm/atomic-sleep@1.0.0/node_modules/atomic-sleep/index.js"(exports, module) {
     "use strict";
     if (typeof SharedArrayBuffer !== "undefined" && typeof Atomics !== "undefined") {
-      let sleep2 = function(ms) {
+      let sleep3 = function(ms) {
         const valid = ms > 0 && ms < Infinity;
         if (valid === false) {
           if (typeof ms !== "number" && typeof ms !== "bigint") {
@@ -25093,9 +25093,9 @@ var require_atomic_sleep = __commonJS({
         Atomics.wait(nil, 0, 0, Number(ms));
       };
       const nil = new Int32Array(new SharedArrayBuffer(4));
-      module.exports = sleep2;
+      module.exports = sleep3;
     } else {
-      let sleep2 = function(ms) {
+      let sleep3 = function(ms) {
         const valid = ms > 0 && ms < Infinity;
         if (valid === false) {
           if (typeof ms !== "number" && typeof ms !== "bigint") {
@@ -25107,7 +25107,7 @@ var require_atomic_sleep = __commonJS({
         while (target > Date.now()) {
         }
       };
-      module.exports = sleep2;
+      module.exports = sleep3;
     }
   }
 });
@@ -25120,7 +25120,7 @@ var require_sonic_boom = __commonJS({
     var EventEmitter = __require("events");
     var inherits = __require("util").inherits;
     var path2 = __require("path");
-    var sleep2 = require_atomic_sleep();
+    var sleep3 = require_atomic_sleep();
     var assert2 = __require("assert");
     var BUSY_WRITE_TIMEOUT = 100;
     var kEmptyBuffer = Buffer.allocUnsafe(0);
@@ -25266,7 +25266,7 @@ var require_sonic_boom = __commonJS({
           if ((err.code === "EAGAIN" || err.code === "EBUSY") && this.retryEAGAIN(err, this._writingBuf.length, this._len - this._writingBuf.length)) {
             if (this.sync) {
               try {
-                sleep2(BUSY_WRITE_TIMEOUT);
+                sleep3(BUSY_WRITE_TIMEOUT);
                 this.release(void 0, 0);
               } catch (err2) {
                 this.release(err2);
@@ -25579,7 +25579,7 @@ var require_sonic_boom = __commonJS({
           if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
             throw err;
           }
-          sleep2(BUSY_WRITE_TIMEOUT);
+          sleep3(BUSY_WRITE_TIMEOUT);
         }
       }
       try {
@@ -25616,7 +25616,7 @@ var require_sonic_boom = __commonJS({
           if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
             throw err;
           }
-          sleep2(BUSY_WRITE_TIMEOUT);
+          sleep3(BUSY_WRITE_TIMEOUT);
         }
       }
     }
@@ -26357,7 +26357,7 @@ var require_transport = __commonJS({
     var { createRequire } = __require("module");
     var getCallers = require_caller();
     var { join, isAbsolute, sep } = __require("node:path");
-    var sleep2 = require_atomic_sleep();
+    var sleep3 = require_atomic_sleep();
     var onExit = require_on_exit_leak_free();
     var ThreadStream = require_thread_stream();
     function setupOnExit(stream) {
@@ -26391,7 +26391,7 @@ var require_transport = __commonJS({
           return;
         }
         stream.flushSync();
-        sleep2(100);
+        sleep3(100);
         stream.end();
       }
       return stream;
@@ -39176,13 +39176,13 @@ var require_lib5 = __commonJS({
 });
 
 // src/app.ts
-var import_express5 = __toESM(require_express2(), 1);
+var import_express6 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 
 // src/routes/index.ts
-var import_express4 = __toESM(require_express2(), 1);
+var import_express5 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -50620,8 +50620,127 @@ router2.post("/generate-song", async (req, res) => {
 });
 var generate_song_default = router2;
 
-// src/routes/auth.ts
+// src/routes/generate-audio.ts
 var import_express3 = __toESM(require_express2(), 1);
+var router3 = (0, import_express3.Router)();
+function parseBpm(chordVibe, genre) {
+  const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
+  if (m) return parseInt(m[1], 10);
+  const defaults3 = {
+    Afrobeats: 98,
+    Afropop: 104,
+    Amapiano: 112,
+    Dancehall: 90,
+    "R&B": 75,
+    "Afro-fusion": 96,
+    "Street Anthem": 100,
+    Spiritual: 72
+  };
+  return defaults3[genre] ?? 96;
+}
+function parseKey(chordVibe, mood) {
+  const minorM = chordVibe?.match(/\b([A-G][b#]?)m\b/);
+  const majorM = chordVibe?.match(/\b([A-G][b#]?)\s*(?:maj(?:or)?)?[-\u2013\s,]/);
+  if (minorM) return `${minorM[1]} Minor`;
+  if (majorM) return `${majorM[1]} Major`;
+  const byMood = {
+    Sad: "D Minor",
+    Uplifting: "G Major",
+    Romantic: "A\u266D Major",
+    Energetic: "E Minor",
+    Spiritual: "F Major",
+    Confident: "B\u266D Major"
+  };
+  return byMood[mood] ?? "F\u266F Minor";
+}
+function getEnergy(mood) {
+  if (["Energetic", "Confident"].includes(mood)) return "High";
+  if (["Sad", "Spiritual"].includes(mood)) return "Low";
+  return "Mid";
+}
+function getDuration(songLength) {
+  if (songLength === "Short") return "2:15";
+  if (songLength === "Full") return "4:30";
+  return "3:20";
+}
+function sleep2(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+router3.post("/api/generate-instrumental-preview", async (req, res) => {
+  try {
+    const {
+      genre,
+      mood,
+      songLength,
+      hitmakerMode,
+      productionNotes
+    } = req.body;
+    const chordVibe = productionNotes?.chordVibe ?? "";
+    const bpm = parseBpm(chordVibe, genre ?? "Afrobeats");
+    const key = parseKey(chordVibe, mood ?? "Uplifting");
+    const energy = getEnergy(mood ?? "Uplifting");
+    const duration3 = getDuration(songLength);
+    await sleep2(3e3 + Math.random() * 2e3);
+    logger.info({ genre, mood, bpm, key }, "Instrumental preview generated");
+    res.json({
+      status: "ready",
+      audioUrl: null,
+      metadata: {
+        genre: genre ?? "Afrobeats",
+        mood: mood ?? "Uplifting",
+        bpm,
+        key,
+        energy,
+        duration: duration3,
+        hitmakerMode: hitmakerMode ?? false,
+        hookRepeatLevel: req.body.hookRepeatLevel ?? "Medium",
+        audioType: "Instrumental Preview"
+      }
+    });
+  } catch (err) {
+    logger.error({ err }, "Instrumental preview error");
+    res.status(500).json({ error: "Failed to generate instrumental preview" });
+  }
+});
+router3.post("/api/generate-vocal-demo", async (req, res) => {
+  try {
+    const {
+      genre,
+      mood,
+      songLength,
+      hitmakerMode,
+      productionNotes
+    } = req.body;
+    const chordVibe = productionNotes?.chordVibe ?? "";
+    const bpm = parseBpm(chordVibe, genre ?? "Afrobeats");
+    const key = parseKey(chordVibe, mood ?? "Uplifting");
+    const duration3 = getDuration(songLength);
+    const vocalStyle = mood === "Romantic" ? "Smooth / Intimate" : mood === "Energetic" ? "Punchy / Assertive" : mood === "Sad" ? "Soulful / Breathy" : mood === "Spiritual" ? "Rich / Devotional" : mood === "Confident" ? "Confident / Sharp" : "Warm / Melodic";
+    await sleep2(4e3 + Math.random() * 3e3);
+    logger.info({ genre, mood, bpm, key, vocalStyle }, "Vocal demo generated");
+    res.json({
+      status: "ready",
+      audioUrl: null,
+      metadata: {
+        vocalStyle,
+        bpm,
+        key,
+        duration: duration3,
+        genre: genre ?? "Afrobeats",
+        mood: mood ?? "Uplifting",
+        hitmakerMode: hitmakerMode ?? false,
+        audioType: "Vocal Demo"
+      }
+    });
+  } catch (err) {
+    logger.error({ err }, "Vocal demo error");
+    res.status(500).json({ error: "Failed to generate vocal demo" });
+  }
+});
+var generate_audio_default = router3;
+
+// src/routes/auth.ts
+var import_express4 = __toESM(require_express2(), 1);
 var import_bcryptjs = __toESM(require_bcryptjs(), 1);
 var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
 
@@ -69012,7 +69131,7 @@ var pool = new Pool3({ connectionString: process.env.DATABASE_URL });
 var db = drizzle(pool, { schema: schema_exports });
 
 // src/routes/auth.ts
-var router3 = (0, import_express3.Router)();
+var router4 = (0, import_express4.Router)();
 var COOKIE_NAME = "auth_token";
 var COOKIE_OPTIONS = {
   httpOnly: true,
@@ -69038,7 +69157,7 @@ function verifyToken(token) {
     return null;
   }
 }
-router3.post("/auth/register", async (req, res) => {
+router4.post("/auth/register", async (req, res) => {
   const { name, email: email3, password } = req.body;
   if (!name || !email3 || !password) {
     res.status(400).json({ error: "Name, email, and password are required." });
@@ -69063,7 +69182,7 @@ router3.post("/auth/register", async (req, res) => {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
 });
-router3.post("/auth/login", async (req, res) => {
+router4.post("/auth/login", async (req, res) => {
   const { email: email3, password } = req.body;
   if (!email3 || !password) {
     res.status(400).json({ error: "Email and password are required." });
@@ -69087,11 +69206,11 @@ router3.post("/auth/login", async (req, res) => {
     res.status(500).json({ error: "Login failed. Please try again." });
   }
 });
-router3.post("/auth/logout", (_req, res) => {
+router4.post("/auth/logout", (_req, res) => {
   res.clearCookie(COOKIE_NAME, { path: "/" });
   res.json({ success: true });
 });
-router3.get("/auth/me", async (req, res) => {
+router4.get("/auth/me", async (req, res) => {
   const token = req.cookies?.[COOKIE_NAME];
   if (!token) {
     res.status(401).json({ error: "Not authenticated." });
@@ -69115,17 +69234,18 @@ router3.get("/auth/me", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch user." });
   }
 });
-var auth_default = router3;
+var auth_default = router4;
 
 // src/routes/index.ts
-var router4 = (0, import_express4.Router)();
-router4.use(auth_default);
-router4.use(health_default);
-router4.use(generate_song_default);
-var routes_default = router4;
+var router5 = (0, import_express5.Router)();
+router5.use(auth_default);
+router5.use(health_default);
+router5.use(generate_song_default);
+router5.use(generate_audio_default);
+var routes_default = router5;
 
 // src/app.ts
-var app = (0, import_express5.default)();
+var app = (0, import_express6.default)();
 app.use(
   (0, import_pino_http.default)({
     logger,
@@ -69147,8 +69267,8 @@ app.use(
 );
 app.use((0, import_cors.default)({ origin: true, credentials: true }));
 app.use((0, import_cookie_parser.default)());
-app.use(import_express5.default.json());
-app.use(import_express5.default.urlencoded({ extended: true }));
+app.use(import_express6.default.json());
+app.use(import_express6.default.urlencoded({ extended: true }));
 app.use("/api", routes_default);
 var app_default = app;
 
