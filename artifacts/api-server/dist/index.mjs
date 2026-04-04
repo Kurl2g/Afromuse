@@ -50187,6 +50187,8 @@ The JSON must use this exact structure:
     "key": "Musical key (e.g. F# minor)",
     "bpm": "BPM value or range (e.g. 94\u201398 BPM)",
     "energy": "Energy level and feel (e.g. Mid-tempo, emotionally heavy, reflective)",
+    "hookStrength": "Hook strength rating and reason (e.g. High \u2014 keeper line is instantly memorable and screaming-ready)",
+    "lyricalDepth": "Lyrical depth assessment (e.g. Deep \u2014 rich imagery, emotional layers, human storytelling throughout)",
     "arrangement": "Full arrangement roadmap from intro to outro",
     "melodyDirection": "Vocal guidance per section: verse delivery, chorus lift, bridge turn"
   },

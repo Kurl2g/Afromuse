@@ -961,12 +961,13 @@ export default function Studio() {
                       )}
 
                       {/* METADATA PANEL — V2 */}
-                      {draft.productionNotes && (draft.productionNotes.key || draft.productionNotes.bpm || draft.productionNotes.energy) && (
+                      {draft.productionNotes && (draft.productionNotes.key || draft.productionNotes.bpm || draft.productionNotes.energy || draft.productionNotes.hookStrength || draft.productionNotes.lyricalDepth) && (
                         <div className="border-t border-white/6 pt-8">
                           <div className="flex items-center gap-2 mb-4">
                             <Radio className="w-4 h-4 text-white/30" />
                             <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Metadata Panel</span>
                           </div>
+                          {/* Row 1: Key, BPM, Energy */}
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             {draft.productionNotes.key && (
                               <div className="rounded-2xl border border-primary/10 bg-primary/3 p-4">
@@ -987,6 +988,24 @@ export default function Studio() {
                               </div>
                             )}
                           </div>
+                          {/* Row 2: Hook Strength, Lyrical Depth */}
+                          {(draft.productionNotes.hookStrength || draft.productionNotes.lyricalDepth) && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                              {draft.productionNotes.hookStrength && (
+                                <div className="rounded-2xl border border-primary/10 bg-primary/3 p-4">
+                                  <div className="text-[10px] font-bold tracking-widest uppercase text-primary mb-2">Hook Strength</div>
+                                  <p className="text-sm text-white/70 leading-relaxed">{draft.productionNotes.hookStrength}</p>
+                                </div>
+                              )}
+                              {draft.productionNotes.lyricalDepth && (
+                                <div className="rounded-2xl border border-green-500/10 bg-green-500/3 p-4">
+                                  <div className="text-[10px] font-bold tracking-widest uppercase text-green-400 mb-2">Lyrical Depth</div>
+                                  <p className="text-sm text-white/70 leading-relaxed">{draft.productionNotes.lyricalDepth}</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {/* Row 3: Melody Direction, Arrangement */}
                           {(draft.productionNotes.melodyDirection || draft.productionNotes.arrangement) && (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                               {draft.productionNotes.melodyDirection && (

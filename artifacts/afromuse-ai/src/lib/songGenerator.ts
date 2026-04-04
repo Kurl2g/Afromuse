@@ -16,6 +16,8 @@ export interface SongDraft {
     key?: string;
     bpm?: string;
     energy?: string;
+    hookStrength?: string;
+    lyricalDepth?: string;
     arrangement?: string;
     melodyDirection?: string;
   };
@@ -755,6 +757,8 @@ export function formatDraftForClipboard(draft: SongDraft, genre: string, mood: s
     if (pn.key) sections.push(`Key: ${pn.key}`);
     if (pn.bpm) sections.push(`BPM: ${pn.bpm}`);
     if (pn.energy) sections.push(`Energy: ${pn.energy}`);
+    if (pn.hookStrength) sections.push(`Hook Strength: ${pn.hookStrength}`);
+    if (pn.lyricalDepth) sections.push(`Lyrical Depth: ${pn.lyricalDepth}`);
     if (pn.melodyDirection) sections.push(`Melody Direction: ${pn.melodyDirection}`);
     if (pn.arrangement) sections.push(`Arrangement: ${pn.arrangement}`);
   } else {
