@@ -6,6 +6,7 @@ import {
   Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key,
 } from "lucide-react";
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
+import AudioStudioV2 from "@/components/studio/AudioStudioV2";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import {
@@ -1189,6 +1190,10 @@ export default function Studio() {
             </AnimatePresence>
           </div>
         </div>
+
+        {/* ── V2 AUDIO STUDIO — full width below main grid ── */}
+        <AudioStudioV2 draft={draft} genre={genre} mood={mood} />
+
       </div>
     </div>
   );
