@@ -20388,7 +20388,7 @@ var require_route = __commonJS({
       }
       return methods2;
     };
-    Route.prototype.dispatch = function dispatch(req, res, done) {
+    Route.prototype.dispatch = function dispatch2(req, res, done) {
       let idx = 0;
       const stack = this.stack;
       let sync = 0;
@@ -26516,7 +26516,7 @@ var require_tools = __commonJS({
     } else {
       asJsonChan = {
         hasSubscribers: false,
-        traceSync(fn, store, thisArg, ...args) {
+        traceSync(fn, store2, thisArg, ...args) {
           return fn.call(thisArg, ...args);
         }
       };
@@ -26586,8 +26586,8 @@ var require_tools = __commonJS({
       if (asJsonChan.hasSubscribers === false) {
         return _asJson.call(this, obj, msg, num, time4);
       }
-      const store = { instance: this, arguments };
-      return asJsonChan.traceSync(_asJson, store, this, obj, msg, num, time4);
+      const store2 = { instance: this, arguments };
+      return asJsonChan.traceSync(_asJson, store2, this, obj, msg, num, time4);
     }
     function _asJson(obj, msg, num, time4) {
       const stringify3 = this[stringifySym];
@@ -46845,7 +46845,7 @@ var AssistantStream = class extends EventStream {
     }));
     return runner;
   }
-  async _createToolAssistantStream(run, runId, params, options) {
+  async _createToolAssistantStream(run4, runId, params, options) {
     const signal = options?.signal;
     if (signal) {
       if (signal.aborted)
@@ -46853,7 +46853,7 @@ var AssistantStream = class extends EventStream {
       signal.addEventListener("abort", () => this.controller.abort());
     }
     const body = { ...params, stream: true };
-    const stream = await run.submitToolOutputs(runId, body, {
+    const stream = await run4.submitToolOutputs(runId, body, {
       ...options,
       signal: this.controller.signal
     });
@@ -46926,7 +46926,7 @@ var AssistantStream = class extends EventStream {
     }
     return this._addRun(__classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_endRequest).call(this));
   }
-  async _createAssistantStream(run, threadId, params, options) {
+  async _createAssistantStream(run4, threadId, params, options) {
     const signal = options?.signal;
     if (signal) {
       if (signal.aborted)
@@ -46934,7 +46934,7 @@ var AssistantStream = class extends EventStream {
       signal.addEventListener("abort", () => this.controller.abort());
     }
     const body = { ...params, stream: true };
-    const stream = await run.create(threadId, body, { ...options, signal: this.controller.signal });
+    const stream = await run4.create(threadId, body, { ...options, signal: this.controller.signal });
     this._connected();
     for await (const event of stream) {
       __classPrivateFieldGet(this, _AssistantStream_instances, "m", _AssistantStream_addEvent).call(this, event);
@@ -46997,8 +46997,8 @@ var AssistantStream = class extends EventStream {
     }
     return acc;
   }
-  _addRun(run) {
-    return run;
+  _addRun(run4) {
+    return run4;
   }
   async _threadAssistantStream(params, thread, options) {
     return await this._createThreadAssistantStream(thread, params, options);
@@ -47331,8 +47331,8 @@ var Runs = class extends APIResource {
    * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
    */
   async createAndPoll(threadId, body, options) {
-    const run = await this.create(threadId, body, options);
-    return await this.poll(run.id, { thread_id: threadId }, options);
+    const run4 = await this.create(threadId, body, options);
+    return await this.poll(run4.id, { thread_id: threadId }, options);
   }
   /**
    * Create a Run stream
@@ -47356,11 +47356,11 @@ var Runs = class extends APIResource {
       }
     ]);
     while (true) {
-      const { data: run, response } = await this.retrieve(runId, params, {
+      const { data: run4, response } = await this.retrieve(runId, params, {
         ...options,
         headers: { ...options?.headers, ...headers }
       }).withResponse();
-      switch (run.status) {
+      switch (run4.status) {
         //If we are in any sort of intermediate state we poll
         case "queued":
         case "in_progress":
@@ -47386,7 +47386,7 @@ var Runs = class extends APIResource {
         case "completed":
         case "failed":
         case "expired":
-          return run;
+          return run4;
       }
     }
   }
@@ -47412,8 +47412,8 @@ var Runs = class extends APIResource {
    * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
    */
   async submitToolOutputsAndPoll(runId, params, options) {
-    const run = await this.submitToolOutputs(runId, params, options);
-    return await this.poll(run.id, params, options);
+    const run4 = await this.submitToolOutputs(runId, params, options);
+    return await this.poll(run4.id, params, options);
   }
   /**
    * Submit the tool outputs from a previous run and stream the run to a terminal
@@ -47494,8 +47494,8 @@ var Threads2 = class extends APIResource {
    * https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
    */
   async createAndRunPoll(body, options) {
-    const run = await this.createAndRun(body, options);
-    return await this.runs.poll(run.id, { thread_id: run.thread_id }, options);
+    const run4 = await this.createAndRun(body, options);
+    return await this.runs.poll(run4.id, { thread_id: run4.thread_id }, options);
   }
   /**
    * Create a thread and stream the run back
@@ -50417,34 +50417,67 @@ var generate_song_default = router2;
 
 // src/routes/generate-audio.ts
 var import_express3 = __toESM(require_express2(), 1);
+
+// src/engine/jobStore.ts
 import { randomUUID } from "crypto";
-var router3 = (0, import_express3.Router)();
 var JOB_TTL_MS = 30 * 60 * 1e3;
-var jobs = /* @__PURE__ */ new Map();
+var store = /* @__PURE__ */ new Map();
 setInterval(() => {
   const now = Date.now();
-  for (const [id, job] of jobs) {
-    if (now - job.createdAt > JOB_TTL_MS) jobs.delete(id);
+  for (const [id, job] of store) {
+    if (now - job.createdAt > JOB_TTL_MS) store.delete(id);
   }
 }, 5 * 60 * 1e3).unref();
-function createJob(type) {
+function createEngineJob(type, provider) {
   const job = {
-    id: randomUUID(),
+    jobId: randomUUID(),
+    provider,
     type,
-    status: "processing",
-    audioUrl: null,
-    duration: null,
-    metadata: null,
-    sessionData: null,
-    leadVocalSessionData: null,
-    mixMasterSessionData: null,
-    stemExtractionSessionData: null,
-    error: null,
-    createdAt: Date.now()
+    status: "queued",
+    createdAt: Date.now(),
+    response: null
   };
-  jobs.set(job.id, job);
+  store.set(job.jobId, job);
   return job;
 }
+function getEngineJob(jobId) {
+  return store.get(jobId);
+}
+function advanceJob(jobId, status, response) {
+  const job = store.get(jobId);
+  if (!job) return;
+  job.status = status;
+  if (response !== void 0) job.response = response;
+}
+function failJob(jobId, message) {
+  const job = store.get(jobId);
+  if (!job) return;
+  job.status = "failed";
+  job.response = {
+    status: "failed",
+    jobId,
+    provider: job.provider,
+    audioUrl: null,
+    wavUrl: null,
+    stemsUrl: null,
+    blueprintData: null,
+    notes: null,
+    error: { reason: "failed_generation", message },
+    outputRegistry: emptyOutputRegistry()
+  };
+}
+function emptyOutputRegistry() {
+  return {
+    instrumentalPreview: null,
+    vocalPreview: null,
+    arrangementBlueprint: null,
+    masteredMp3: null,
+    masteredWav: null,
+    stemsZip: null
+  };
+}
+
+// src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
   if (m) return parseInt(m[1], 10);
@@ -50462,7 +50495,7 @@ function parseBpm(chordVibe, genre) {
 }
 function parseKey(chordVibe, mood) {
   const minorM = chordVibe?.match(/\b([A-G][b#]?)m\b/);
-  const majorM = chordVibe?.match(/\b([A-G][b#]?)\s*(?:maj(?:or)?)?[-\u2013\s,]/);
+  const majorM = chordVibe?.match(/\b([A-G][b#]?)\s*(?:maj(?:or)?)?[-–\s,]/);
   if (minorM) return `${minorM[1]} Minor`;
   if (majorM) return `${majorM[1]} Major`;
   const byMood = {
@@ -50485,17 +50518,7 @@ function getDuration(songLength) {
   if (songLength === "Full") return "4:30";
   return "3:20";
 }
-function getVocalStyle(mood) {
-  const map2 = {
-    Romantic: "Smooth / Intimate",
-    Energetic: "Punchy / Assertive",
-    Sad: "Soulful / Breathy",
-    Spiritual: "Rich / Devotional",
-    Confident: "Confident / Sharp"
-  };
-  return map2[mood] ?? "Warm / Melodic";
-}
-var INSTRUMENTAL_SYSTEM_PROMPT = `You are AfroMuse Audio Intelligence \u2014 a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+var SYSTEM_PROMPT2 = `You are AfroMuse Audio Intelligence \u2014 a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed instrumental session brief as structured JSON.
 Your output shapes the sonic direction for real studio sessions and beat builds.
@@ -50505,18 +50528,18 @@ Rules:
 - Be genre-specific, culturally grounded, and musically precise
 - Every description must be actionable in a real studio session
 - ALWAYS return valid JSON only \u2014 no markdown, no explanation, no code fences`;
-function buildInstrumentalPrompt(payload) {
-  const genre = payload.genre ?? "Afrobeats";
-  const mood = payload.mood ?? "Uplifting";
-  const energy = payload.energy ?? "Medium";
-  const bpm = payload.bpm ?? 96;
-  const key = payload.key ?? "F# Minor";
-  const style = payload.soundReference ?? payload.styleReference ?? "";
-  const mixFeel = payload.mixFeel ?? "Balanced";
-  const introBehavior = payload.introBehavior ?? "Build up";
-  const chorusLift = payload.chorusLift ?? "Gradual swell";
-  const drumDensity = payload.drumDensity ?? "Mid";
-  const bassWeight = payload.bassWeight ?? "Punchy sub";
+function buildPrompt(p) {
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const energy = p.energy ?? "Medium";
+  const bpm = p.bpm ?? 96;
+  const key = p.key ?? "F# Minor";
+  const style = p.soundReference ?? p.styleReference ?? "";
+  const mixFeel = p.mixFeel ?? "Balanced";
+  const introBehavior = p.introBehavior ?? "Build up";
+  const chorusLift = p.chorusLift ?? "Gradual swell";
+  const drumDensity = p.drumDensity ?? "Mid";
+  const bassWeight = p.bassWeight ?? "Punchy sub";
   return `Generate an instrumental session brief for this configuration:
 
 GENRE: ${genre}
@@ -50546,76 +50569,117 @@ Return ONLY this JSON object with no markdown, no code fences, no extra text:
   "sessionBrief": "2-3 sentence quick producer brief written as if handing notes to a session engineer walking into the studio right now for this exact record"
 }`;
 }
-async function callNvidiaForSessionBrief(payload) {
+async function fetchAiSessionBrief(p) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    logger.warn("NVIDIA_API_KEY not set \u2014 skipping AI session brief generation");
+    logger.warn("NVIDIA_API_KEY not set \u2014 skipping instrumental AI brief");
     return null;
   }
-  const ai = new OpenAI({
-    apiKey,
-    baseURL: "https://integrate.api.nvidia.com/v1"
-  });
-  const response = await ai.chat.completions.create({
+  const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
+  const res = await ai.chat.completions.create({
     model: "qwen/qwen3.5-122b-a10b",
     messages: [
-      { role: "system", content: INSTRUMENTAL_SYSTEM_PROMPT },
-      { role: "user", content: buildInstrumentalPrompt(payload) }
+      { role: "system", content: SYSTEM_PROMPT2 },
+      { role: "user", content: buildPrompt(p) }
     ],
     temperature: 0.75,
     max_tokens: 1200
   });
-  const raw = response.choices[0]?.message?.content ?? "";
+  const raw = res.choices[0]?.message?.content ?? "";
   const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
-  const jsonStart = cleaned.indexOf("{");
-  const jsonEnd = cleaned.lastIndexOf("}");
-  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in model response");
-  const parsed = JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1));
-  return parsed;
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("No JSON in instrumental brief response");
+  return JSON.parse(cleaned.slice(start, end + 1));
 }
-async function runInstrumentalProvider(job, payload) {
-  const genre = payload.genre ?? "Afrobeats";
-  const mood = payload.mood ?? "Uplifting";
-  const chordVibe = payload.productionNotes?.chordVibe ?? "";
-  try {
-    const sessionData = await callNvidiaForSessionBrief(payload);
-    job.sessionData = sessionData;
-  } catch (err) {
-    logger.warn({ err, jobId: job.id }, "AI session brief failed \u2014 continuing with metadata only");
-  }
-  job.status = "completed";
-  job.audioUrl = null;
-  job.duration = getDuration(payload.songLength);
-  job.metadata = {
+async function run(jobId, p) {
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const chordVibe = p.productionNotes?.chordVibe ?? "";
+  const metadata = {
     genre,
     mood,
-    bpm: payload.bpm ?? parseBpm(chordVibe, genre),
-    key: payload.key ?? parseKey(chordVibe, mood),
-    energy: payload.energy ?? getEnergy(mood),
-    duration: job.duration,
-    hitmakerMode: payload.hitmakerMode ?? false,
-    hookRepeatLevel: payload.hookRepeatLevel ?? "Medium",
+    bpm: p.bpm ?? parseBpm(chordVibe, genre),
+    key: p.key ?? parseKey(chordVibe, mood),
+    energy: p.energy ?? getEnergy(mood),
+    duration: getDuration(p.songLength),
+    hitmakerMode: p.hitmakerMode ?? false,
+    hookRepeatLevel: p.hookRepeatLevel ?? "Medium",
     audioType: "Instrumental Preview"
   };
-}
-async function runVocalProvider(job, payload) {
-  await new Promise((resolve) => setTimeout(resolve, 4e3 + Math.random() * 3e3));
-  const genre = payload.genre ?? "Afrobeats";
-  const mood = payload.mood ?? "Uplifting";
-  const chordVibe = payload.productionNotes?.chordVibe ?? "";
-  job.status = "completed";
-  job.audioUrl = null;
-  job.duration = getDuration(payload.songLength);
-  job.metadata = {
-    vocalStyle: getVocalStyle(mood),
-    bpm: payload.bpm ?? parseBpm(chordVibe, genre),
-    key: payload.key ?? parseKey(chordVibe, mood),
-    duration: job.duration,
-    genre,
-    mood,
-    hitmakerMode: payload.hitmakerMode ?? false,
-    audioType: "Vocal Demo"
+  let aiBrief = null;
+  try {
+    aiBrief = await fetchAiSessionBrief(p);
+  } catch (err) {
+    logger.warn({ err, jobId }, "Instrumental AI brief failed \u2014 using metadata only");
+  }
+  const blueprintData = { ...metadata, ...aiBrief ?? {} };
+  return {
+    status: "completed",
+    jobId,
+    provider: "instrumental",
+    audioUrl: null,
+    // slot: real instrumental audio URL
+    wavUrl: null,
+    // slot: WAV download URL
+    stemsUrl: null,
+    blueprintData,
+    notes: blueprintData.sessionBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      instrumentalPreview: null,
+      // slot: real audio preview URL
+      arrangementBlueprint: blueprintData.arrangementMap ?? null
+    }
   };
+}
+
+// src/engine/providers/vocal.ts
+function parseBpm2(chordVibe, genre) {
+  const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
+  if (m) return parseInt(m[1], 10);
+  const defaults3 = {
+    Afrobeats: 98,
+    Afropop: 104,
+    Amapiano: 112,
+    Dancehall: 90,
+    "R&B": 75,
+    "Afro-fusion": 96,
+    "Street Anthem": 100,
+    Spiritual: 72
+  };
+  return defaults3[genre] ?? 96;
+}
+function parseKey2(chordVibe, mood) {
+  const minorM = chordVibe?.match(/\b([A-G][b#]?)m\b/);
+  const majorM = chordVibe?.match(/\b([A-G][b#]?)\s*(?:maj(?:or)?)?[-–\s,]/);
+  if (minorM) return `${minorM[1]} Minor`;
+  if (majorM) return `${majorM[1]} Major`;
+  const byMood = {
+    Sad: "D Minor",
+    Uplifting: "G Major",
+    Romantic: "A\u266D Major",
+    Energetic: "E Minor",
+    Spiritual: "F Major",
+    Confident: "B\u266D Major"
+  };
+  return byMood[mood] ?? "F\u266F Minor";
+}
+function getVocalStyle(mood) {
+  const map2 = {
+    Romantic: "Smooth / Intimate",
+    Energetic: "Punchy / Assertive",
+    Sad: "Soulful / Breathy",
+    Spiritual: "Rich / Devotional",
+    Confident: "Confident / Sharp"
+  };
+  return map2[mood] ?? "Warm / Melodic";
+}
+function getDuration2(songLength) {
+  if (songLength === "Short") return "2:15";
+  if (songLength === "Full") return "4:30";
+  return "3:20";
 }
 var LEAD_VOCAL_SYSTEM_PROMPT = `You are AfroMuse Vocal Intelligence \u2014 an elite AI vocal director and session engineer specialising in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
@@ -50626,20 +50690,19 @@ Rules:
 - Write like a top-tier vocal producer handing notes to a session vocalist and recording engineer
 - Be specific to genre, energy, and emotional context \u2014 never generic
 - Every note must be actionable in a real recording session
-- Phrasing, breathing, and sync notes must reference the actual lyric structure if provided
 - ALWAYS return valid JSON only \u2014 no markdown, no explanation, no code fences`;
-function buildLeadVocalPrompt(payload) {
-  const gender = payload.gender ?? "male";
-  const feel = payload.performanceFeel ?? "Smooth";
-  const style = payload.vocalStyle ?? "Melodic";
-  const tone = payload.emotionalTone ?? "Uplifting";
-  const buildMode = payload.buildMode ?? "full";
-  const genre = payload.genre ?? "Afrobeats";
-  const bpm = payload.bpm ?? 98;
-  const key = payload.key ?? "F# minor";
-  const hasUrl = payload.instrumentalUrl ? `Instrumental track provided at: ${payload.instrumentalUrl}` : "No instrumental URL provided \u2014 use genre/BPM/key context";
-  const lyricsBlock = payload.lyrics ? `LYRICS PROVIDED:
-${payload.lyrics.slice(0, 2e3)}` : "No lyrics provided \u2014 give general vocal direction for this configuration.";
+function buildLeadVocalPrompt(p) {
+  const gender = p.gender ?? "male";
+  const feel = p.performanceFeel ?? "Smooth";
+  const style = p.vocalStyle ?? "Melodic";
+  const tone = p.emotionalTone ?? "Uplifting";
+  const buildMode = p.buildMode ?? "full";
+  const genre = p.genre ?? "Afrobeats";
+  const bpm = p.bpm ?? 98;
+  const key = p.key ?? "F# minor";
+  const hasUrl = p.instrumentalUrl ? `Instrumental track provided at: ${p.instrumentalUrl}` : "No instrumental URL provided \u2014 use genre/BPM/key context";
+  const lyricsBlock = p.lyrics ? `LYRICS PROVIDED:
+${p.lyrics.slice(0, 2e3)}` : "No lyrics provided \u2014 give general vocal direction for this configuration.";
   return `Generate a lead vocal session brief for this configuration:
 
 VOCAL IDENTITY:
@@ -50660,123 +50723,110 @@ ${lyricsBlock}
 Return ONLY this JSON object with no markdown, no code fences, no extra text:
 {
   "vocalBrief": "One compelling headline brief (max 25 words) describing this vocal session's identity and direction \u2014 be specific to genre, feel, and tone",
-  "phrasingGuide": "Detailed phrasing, breathing and flow notes mapped to song sections (Intro \u2192 Verse \u2192 Hook \u2192 Bridge \u2192 Outro). Mention specific breath placement, held notes, and rhythmic emphasis. 4-6 sentences.",
-  "emotionalArc": "How the emotional delivery should evolve from the opening line to the final bar. Where to hold back and where to open up. 3-4 sentences.",
-  "syncNotes": "Specific guidance on how vocals sit in time with the instrumental \u2014 pocket feel, anticipation vs on-beat landing, ad-lib placement relative to gaps in the groove. 3 sentences.",
-  "performanceDirection": "Studio performance coaching \u2014 posture, mic distance, where to lean in, where to pull back, ad-lib timing, and energy control for this specific genre and feel. 4 sentences.",
-  "deliveryStyle": "Precise description of the vocal colour, texture, and delivery approach for this session \u2014 tone of voice, vibrato use, consonant sharpness, vocal warmth. 2-3 sentences.",
-  "vocalProcessingNotes": "Recommended processing chain \u2014 auto-tune level (natural/moderate/heavy), pitch correction style, compression attack/release direction, reverb depth, delay use, harmonic doubling notes. 3-4 sentences."
+  "phrasingGuide": "Detailed phrasing, breathing and flow notes mapped to song sections (Intro \u2192 Verse \u2192 Hook \u2192 Bridge \u2192 Outro). 4-6 sentences.",
+  "emotionalArc": "How the emotional delivery should evolve from the opening line to the final bar. 3-4 sentences.",
+  "syncNotes": "Specific guidance on how vocals sit in time with the instrumental \u2014 pocket feel, anticipation vs on-beat landing, ad-lib placement. 3 sentences.",
+  "performanceDirection": "Studio performance coaching \u2014 posture, mic distance, where to lean in, ad-lib timing, and energy control for this genre and feel. 4 sentences.",
+  "deliveryStyle": "Precise description of the vocal colour, texture, and delivery approach \u2014 tone, vibrato use, consonant sharpness, vocal warmth. 2-3 sentences.",
+  "vocalProcessingNotes": "Recommended processing chain \u2014 auto-tune level, pitch correction style, compression, reverb depth, delay use, harmonic doubling. 3-4 sentences."
 }`;
 }
-async function callNvidiaForLeadVocalBrief(payload) {
+async function fetchLeadVocalBrief(p) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    logger.warn("NVIDIA_API_KEY not set \u2014 skipping lead vocal AI brief generation");
+    logger.warn("NVIDIA_API_KEY not set \u2014 skipping lead vocal AI brief");
     return null;
   }
-  const ai = new OpenAI({
-    apiKey,
-    baseURL: "https://integrate.api.nvidia.com/v1"
-  });
-  const response = await ai.chat.completions.create({
+  const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
+  const res = await ai.chat.completions.create({
     model: "qwen/qwen3.5-122b-a10b",
     messages: [
       { role: "system", content: LEAD_VOCAL_SYSTEM_PROMPT },
-      { role: "user", content: buildLeadVocalPrompt(payload) }
+      { role: "user", content: buildLeadVocalPrompt(p) }
     ],
     temperature: 0.72,
     max_tokens: 1400
   });
-  const raw = response.choices[0]?.message?.content ?? "";
+  const raw = res.choices[0]?.message?.content ?? "";
   const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
-  const jsonStart = cleaned.indexOf("{");
-  const jsonEnd = cleaned.lastIndexOf("}");
-  if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in lead vocal model response");
-  return JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1));
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("No JSON in lead vocal brief response");
+  return JSON.parse(cleaned.slice(start, end + 1));
 }
-async function runLeadVocalProvider(job, payload) {
-  const genre = payload.genre ?? "Afrobeats";
-  const chordVibe = "";
-  try {
-    const leadVocalSessionData = await callNvidiaForLeadVocalBrief(payload);
-    job.leadVocalSessionData = leadVocalSessionData;
-  } catch (err) {
-    logger.warn({ err, jobId: job.id }, "Lead vocal AI brief failed \u2014 continuing with metadata only");
-  }
-  job.status = "completed";
-  job.audioUrl = null;
-  job.duration = getDuration(void 0);
-  job.metadata = {
-    vocalStyle: `${payload.performanceFeel ?? "Smooth"} / ${payload.vocalStyle ?? "Melodic"}`,
-    bpm: payload.bpm ?? parseBpm(chordVibe, genre),
-    key: payload.key ?? parseKey(chordVibe, payload.emotionalTone ?? "Uplifting"),
-    duration: job.duration,
+async function runVocalDemo(jobId, p) {
+  await new Promise((r) => setTimeout(r, 4e3 + Math.random() * 3e3));
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const chordVibe = p.productionNotes?.chordVibe ?? "";
+  const blueprintData = {
+    vocalStyle: getVocalStyle(mood),
+    bpm: p.bpm ?? parseBpm2(chordVibe, genre),
+    key: p.key ?? parseKey2(chordVibe, mood),
+    duration: getDuration2(p.songLength),
     genre,
-    mood: payload.emotionalTone ?? "Uplifting",
+    mood,
+    hitmakerMode: p.hitmakerMode ?? false,
+    audioType: "Vocal Demo"
+  };
+  return {
+    status: "completed",
+    jobId,
+    provider: "vocal",
+    audioUrl: null,
+    // slot: real vocal demo audio URL
+    wavUrl: null,
+    stemsUrl: null,
+    blueprintData,
+    notes: null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      vocalPreview: null
+      // slot: real vocal preview URL
+    }
+  };
+}
+async function runLeadVocal(jobId, p) {
+  const genre = p.genre ?? "Afrobeats";
+  const chordVibe = "";
+  const metadata = {
+    vocalStyle: `${p.performanceFeel ?? "Smooth"} / ${p.vocalStyle ?? "Melodic"}`,
+    bpm: p.bpm ?? parseBpm2(chordVibe, genre),
+    key: p.key ?? parseKey2(chordVibe, p.emotionalTone ?? "Uplifting"),
+    duration: getDuration2(void 0),
+    genre,
+    mood: p.emotionalTone ?? "Uplifting",
     hitmakerMode: false,
     audioType: "Vocal Demo"
   };
+  let aiBrief = null;
+  try {
+    aiBrief = await fetchLeadVocalBrief(p);
+  } catch (err) {
+    logger.warn({ err, jobId }, "Lead vocal AI brief failed \u2014 using metadata only");
+  }
+  const blueprintData = { ...metadata, ...aiBrief ?? {} };
+  return {
+    status: "completed",
+    jobId,
+    provider: "vocal",
+    audioUrl: null,
+    wavUrl: null,
+    stemsUrl: null,
+    blueprintData,
+    notes: blueprintData.vocalBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      vocalPreview: null
+      // slot: real vocal preview URL
+    }
+  };
 }
-router3.post("/generate-instrumental-preview", (req, res) => {
-  const payload = req.body;
-  const job = createJob("instrumental");
-  runInstrumentalProvider(job, payload).catch((err) => {
-    job.status = "failed";
-    job.error = "Instrumental generation failed";
-    logger.error({ err, jobId: job.id }, "Instrumental provider error");
-  });
-  logger.info({ jobId: job.id, genre: payload.genre, mood: payload.mood }, "Instrumental job created");
-  res.json({ success: true, jobId: job.id, status: "processing" });
-});
-router3.post("/generate-lead-vocals", (req, res) => {
-  const payload = req.body;
-  const job = createJob("lead-vocal");
-  runLeadVocalProvider(job, payload).catch((err) => {
-    job.status = "failed";
-    job.error = "Lead vocal generation failed";
-    logger.error({ err, jobId: job.id }, "Lead vocal provider error");
-  });
-  logger.info({ jobId: job.id, gender: payload.gender, feel: payload.performanceFeel }, "Lead vocal job created");
-  res.json({ success: true, jobId: job.id, status: "processing" });
-});
-router3.post("/generate-vocal-demo", (req, res) => {
-  const payload = req.body;
-  const job = createJob("vocal");
-  runVocalProvider(job, payload).catch((err) => {
-    job.status = "failed";
-    job.error = "Vocal generation failed";
-    logger.error({ err, jobId: job.id }, "Vocal provider error");
-  });
-  logger.info({ jobId: job.id, genre: payload.genre, mood: payload.mood }, "Vocal job created");
-  res.json({ success: true, jobId: job.id, status: "processing" });
-});
-router3.get("/audio-job/:jobId", (req, res) => {
-  const job = jobs.get(req.params.jobId);
-  if (!job) {
-    res.status(404).json({ error: "Job not found or expired" });
-    return;
-  }
-  if (job.status === "completed") {
-    res.json({
-      jobId: job.id,
-      status: "completed",
-      audioUrl: job.audioUrl,
-      duration: job.duration,
-      metadata: job.metadata,
-      sessionData: job.sessionData,
-      leadVocalSessionData: job.leadVocalSessionData,
-      mixMasterSessionData: job.mixMasterSessionData,
-      stemExtractionSessionData: job.stemExtractionSessionData
-    });
-    return;
-  }
-  if (job.status === "failed") {
-    res.json({ jobId: job.id, status: "failed", error: job.error ?? "Unknown error" });
-    return;
-  }
-  res.json({ jobId: job.id, status: "processing" });
-});
-var MIX_MASTER_SYSTEM_PROMPT = `You are AfroMuse Mix Intelligence \u2014 an elite AI mix engineer and mastering specialist with deep expertise in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+// src/engine/providers/mastering.ts
+var SYSTEM_PROMPT3 = `You are AfroMuse Mix Intelligence \u2014 an elite AI mix engineer and mastering specialist with deep expertise in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed mix and master brief as structured JSON.
 Your output provides studio-grade guidance for mixing levels, EQ, compression, spatial effects, and mastering chain decisions that translate directly to a professional, commercially-ready stereo master.
@@ -50792,7 +50842,7 @@ Return ONLY a raw JSON object \u2014 no markdown fences, no commentary \u2014 wi
   "outputNotes": "Final output specs: recommended MP3 (320kbps) and WAV (24-bit/48kHz) export settings, metadata tagging notes, platform-specific loudness considerations",
   "stemsNotes": "Stems export guidance (only if requested): recommended stem groupings, format, naming convention, and levels for DAW re-import"
 }`;
-function buildMixMasterPrompt(p) {
+function buildPrompt2(p) {
   const parts = [];
   if (p.genre) parts.push(`Genre: ${p.genre}`);
   if (p.bpm) parts.push(`BPM: ${p.bpm}`);
@@ -50807,7 +50857,7 @@ ${parts.join("\n")}
 
 Generate a complete, professional mix and master brief for this session. Be specific, technical, and actionable \u2014 this brief will be handed directly to a mix engineer.`;
 }
-async function callNvidiaForMixMasterBrief(payload) {
+async function fetchMixMasterBrief(p) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) return null;
   const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
@@ -50816,8 +50866,8 @@ async function callNvidiaForMixMasterBrief(payload) {
     body: JSON.stringify({
       model: "qwen/qwen3.5-122b-a10b",
       messages: [
-        { role: "system", content: MIX_MASTER_SYSTEM_PROMPT },
-        { role: "user", content: buildMixMasterPrompt(payload) }
+        { role: "system", content: SYSTEM_PROMPT3 },
+        { role: "user", content: buildPrompt2(p) }
       ],
       temperature: 0.55,
       max_tokens: 1400
@@ -50832,30 +50882,48 @@ async function callNvidiaForMixMasterBrief(payload) {
   const match = raw.match(/\{[\s\S]*\}/);
   if (!match) return null;
   const data = JSON.parse(match[0]);
-  if (!payload.includeStems) data.stemsNotes = null;
+  if (!p.includeStems) data.stemsNotes = null;
   return data;
 }
-async function runMixMasterProvider(job, payload) {
+async function run2(jobId, p) {
+  let aiBrief = null;
   try {
-    const mixMasterSessionData = await callNvidiaForMixMasterBrief(payload);
-    job.mixMasterSessionData = mixMasterSessionData;
+    aiBrief = await fetchMixMasterBrief(p);
   } catch (err) {
-    logger.warn({ err, jobId: job.id }, "Mix master AI brief failed \u2014 continuing with metadata only");
+    logger.warn({ err, jobId }, "Mix master AI brief failed \u2014 using metadata only");
   }
-  job.status = "completed";
+  const blueprintData = {
+    genre: p.genre,
+    bpm: p.bpm,
+    key: p.key,
+    ...aiBrief ?? {}
+  };
+  return {
+    status: "completed",
+    jobId,
+    provider: "mastering",
+    audioUrl: null,
+    wavUrl: null,
+    // slot: mastered WAV download URL
+    stemsUrl: null,
+    // slot: stems ZIP download URL
+    blueprintData,
+    notes: blueprintData.mixBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      masteredMp3: null,
+      // slot: real mastered MP3 URL
+      masteredWav: null,
+      // slot: real mastered WAV URL
+      stemsZip: null
+      // slot: real stems ZIP URL
+    }
+  };
 }
-router3.post("/mix-master", async (req, res) => {
-  const payload = req.body;
-  const job = createJob("mix-master");
-  runMixMasterProvider(job, payload).catch((err) => {
-    logger.error({ err, jobId: job.id }, "Mix master provider error");
-    job.status = "failed";
-    job.error = "Mix master generation failed";
-  });
-  logger.info({ jobId: job.id, feel: payload.mixFeel, genre: payload.genre }, "Mix master job created");
-  res.json({ success: true, jobId: job.id, status: "processing" });
-});
-var STEM_EXTRACTION_SYSTEM_PROMPT = `You are AfroMuse Stem Intelligence \u2014 an elite AI stem engineer specialising in Afro-inspired music production (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+
+// src/engine/providers/stems.ts
+var SYSTEM_PROMPT4 = `You are AfroMuse Stem Intelligence \u2014 an elite AI stem engineer specialising in Afro-inspired music production (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed stem extraction brief as structured JSON.
 Your output gives precise, phase-aware extraction guidance for each requested stem so the result is clean, phase-aligned, and ready for DAW import.
@@ -50873,11 +50941,11 @@ Return ONLY a raw JSON object \u2014 no markdown fences, no commentary \u2014 wi
   ],
   "phaseAlignmentNotes": "How to verify and ensure all stems are phase-aligned after export: null-test technique, time alignment check, mono-compatibility validation",
   "dawImportGuide": "Step-by-step guide to importing all stems into a DAW session: track naming, routing, tempo/grid alignment, and colour-coding recommendation",
-  "recommendedTool": "Best-in-class tool(s) for this extraction (e.g., iZotope RX, Demucs, Spleeter, stems from your original session, UAD stem splitter) with brief rationale"
+  "recommendedTool": "Best-in-class tool(s) for this extraction with brief rationale"
 }
 
 The "stems" array must contain one entry per requested stem (Drums, Bass, Synths, Vocals, Effects \u2014 only those requested).`;
-function buildStemExtractionPrompt(p) {
+function buildPrompt3(p) {
   const parts = [];
   if (p.masteredUrl) parts.push(`Mastered Track URL: ${p.masteredUrl}`);
   if (p.genre) parts.push(`Genre: ${p.genre}`);
@@ -50890,7 +50958,7 @@ ${parts.join("\n")}
 
 Generate a complete, technically precise stem extraction brief. Each stem entry must be specific to the genre and session characteristics described. The guidance should be actionable for both AI-assisted stem splitters and traditional multi-track extraction from a DAW session.`;
 }
-async function callNvidiaForStemExtractionBrief(payload) {
+async function fetchStemBrief(p) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) return null;
   const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
@@ -50899,8 +50967,8 @@ async function callNvidiaForStemExtractionBrief(payload) {
     body: JSON.stringify({
       model: "qwen/qwen3.5-122b-a10b",
       messages: [
-        { role: "system", content: STEM_EXTRACTION_SYSTEM_PROMPT },
-        { role: "user", content: buildStemExtractionPrompt(payload) }
+        { role: "system", content: SYSTEM_PROMPT4 },
+        { role: "user", content: buildPrompt3(p) }
       ],
       temperature: 0.5,
       max_tokens: 1600
@@ -50916,25 +50984,192 @@ async function callNvidiaForStemExtractionBrief(payload) {
   if (!match) return null;
   return JSON.parse(match[0]);
 }
-async function runStemExtractionProvider(job, payload) {
+async function run3(jobId, p) {
+  let aiBrief = null;
   try {
-    const stemExtractionSessionData = await callNvidiaForStemExtractionBrief(payload);
-    job.stemExtractionSessionData = stemExtractionSessionData;
+    aiBrief = await fetchStemBrief(p);
   } catch (err) {
-    logger.warn({ err, jobId: job.id }, "Stem extraction AI brief failed \u2014 continuing with metadata only");
+    logger.warn({ err, jobId }, "Stem extraction AI brief failed \u2014 using metadata only");
   }
-  job.status = "completed";
+  const blueprintData = {
+    genre: p.genre,
+    bpm: p.bpm,
+    key: p.key,
+    ...aiBrief ?? {}
+  };
+  return {
+    status: "completed",
+    jobId,
+    provider: "stems",
+    audioUrl: null,
+    wavUrl: null,
+    stemsUrl: null,
+    // slot: real stems ZIP download URL
+    blueprintData,
+    notes: blueprintData.extractionBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      stemsZip: null
+      // slot: real stems ZIP URL
+    }
+  };
 }
-router3.post("/extract-stems", async (req, res) => {
-  const payload = req.body;
-  const job = createJob("stem-extraction");
-  runStemExtractionProvider(job, payload).catch((err) => {
-    logger.error({ err, jobId: job.id }, "Stem extraction provider error");
-    job.status = "failed";
-    job.error = "Stem extraction failed";
+
+// src/engine/providers/registry.ts
+var REGISTRY = {
+  instrumental: {
+    category: "instrumental",
+    name: "AfroMuse Instrumental Engine",
+    description: "Generates AI session briefs for instrumental tracks. Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
+    isLive: false
+  },
+  vocal: {
+    category: "vocal",
+    name: "AfroMuse Vocal Engine",
+    description: "Generates vocal session briefs and demo guidance. Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
+    isLive: false
+  },
+  mastering: {
+    category: "mastering",
+    name: "AfroMuse Mix & Master Engine",
+    description: "Generates professional mix and mastering briefs. Slot: real mastering API (e.g. LANDR, CloudBounce, iZotope).",
+    isLive: false
+  },
+  stems: {
+    category: "stems",
+    name: "AfroMuse Stem Engine",
+    description: "Generates stem extraction briefs. Slot: real stem-splitter API (e.g. Demucs, Spleeter, iZotope RX).",
+    isLive: false
+  }
+};
+function listProviders() {
+  return Object.values(REGISTRY);
+}
+
+// src/routes/generate-audio.ts
+var router3 = (0, import_express3.Router)();
+function dispatch(jobId, runner, errorMessage) {
+  advanceJob(jobId, "processing");
+  runner().then((response) => advanceJob(jobId, "completed", response)).catch((err) => {
+    logger.error({ err, jobId }, errorMessage);
+    failJob(jobId, errorMessage);
   });
-  logger.info({ jobId: job.id, stems: payload.stems, genre: payload.genre }, "Stem extraction job created");
-  res.json({ success: true, jobId: job.id, status: "processing" });
+}
+router3.post("/generate-instrumental-preview", (req, res) => {
+  const payload = req.body;
+  const job = createEngineJob("instrumental", "instrumental");
+  dispatch(job.jobId, () => run(job.jobId, payload), "Instrumental generation failed");
+  logger.info({ jobId: job.jobId, genre: payload.genre, mood: payload.mood }, "Instrumental job created");
+  res.json({ success: true, jobId: job.jobId, status: "queued" });
+});
+router3.post("/generate-vocal-demo", (req, res) => {
+  const payload = req.body;
+  const job = createEngineJob("vocal", "vocal");
+  dispatch(job.jobId, () => runVocalDemo(job.jobId, payload), "Vocal demo generation failed");
+  logger.info({ jobId: job.jobId, genre: payload.genre, mood: payload.mood }, "Vocal demo job created");
+  res.json({ success: true, jobId: job.jobId, status: "queued" });
+});
+router3.post("/generate-lead-vocals", (req, res) => {
+  const payload = req.body;
+  const job = createEngineJob("lead-vocal", "vocal");
+  dispatch(job.jobId, () => runLeadVocal(job.jobId, payload), "Lead vocal generation failed");
+  logger.info({ jobId: job.jobId, gender: payload.gender, feel: payload.performanceFeel }, "Lead vocal job created");
+  res.json({ success: true, jobId: job.jobId, status: "queued" });
+});
+router3.post("/mix-master", (req, res) => {
+  const payload = req.body;
+  const job = createEngineJob("mix-master", "mastering");
+  dispatch(job.jobId, () => run2(job.jobId, payload), "Mix master generation failed");
+  logger.info({ jobId: job.jobId, feel: payload.mixFeel, genre: payload.genre }, "Mix master job created");
+  res.json({ success: true, jobId: job.jobId, status: "queued" });
+});
+router3.post("/extract-stems", (req, res) => {
+  const payload = req.body;
+  const job = createEngineJob("stem-extraction", "stems");
+  dispatch(job.jobId, () => run3(job.jobId, payload), "Stem extraction failed");
+  logger.info({ jobId: job.jobId, stems: payload.stems, genre: payload.genre }, "Stem extraction job created");
+  res.json({ success: true, jobId: job.jobId, status: "queued" });
+});
+router3.get("/audio-job/:jobId", (req, res) => {
+  const job = getEngineJob(req.params.jobId);
+  if (!job) {
+    res.status(404).json({ error: "Job not found or expired" });
+    return;
+  }
+  if (job.status === "queued" || job.status === "processing") {
+    res.json({ jobId: job.jobId, status: job.status });
+    return;
+  }
+  if (job.status === "failed") {
+    res.json({
+      jobId: job.jobId,
+      status: "failed",
+      error: job.response?.error?.message ?? "Unknown error"
+    });
+    return;
+  }
+  const r = job.response;
+  const bp = r.blueprintData ?? {};
+  res.json({
+    jobId: job.jobId,
+    status: "completed",
+    // Legacy fields the UI currently reads
+    audioUrl: r.audioUrl,
+    duration: bp.duration ?? null,
+    metadata: bp.audioType ? {
+      genre: bp.genre,
+      mood: bp.mood,
+      bpm: bp.bpm,
+      key: bp.key,
+      energy: bp.energy,
+      duration: bp.duration,
+      hitmakerMode: bp.hitmakerMode,
+      hookRepeatLevel: bp.hookRepeatLevel,
+      audioType: bp.audioType,
+      vocalStyle: bp.vocalStyle
+    } : null,
+    sessionData: bp.beatSummary ? {
+      beatSummary: bp.beatSummary,
+      arrangementMap: bp.arrangementMap,
+      producerNotes: bp.producerNotes,
+      hookFocus: bp.hookFocus,
+      arrangementStyle: bp.arrangementStyle,
+      sonicIdentity: bp.sonicIdentity,
+      sessionBrief: bp.sessionBrief
+    } : null,
+    leadVocalSessionData: bp.vocalBrief ? {
+      vocalBrief: bp.vocalBrief,
+      phrasingGuide: bp.phrasingGuide,
+      emotionalArc: bp.emotionalArc,
+      syncNotes: bp.syncNotes,
+      performanceDirection: bp.performanceDirection,
+      deliveryStyle: bp.deliveryStyle,
+      vocalProcessingNotes: bp.vocalProcessingNotes
+    } : null,
+    mixMasterSessionData: bp.mixBrief ? {
+      mixBrief: bp.mixBrief,
+      levelBalancing: bp.levelBalancing,
+      eqNotes: bp.eqNotes,
+      compressionNotes: bp.compressionNotes,
+      spatialEffects: bp.spatialEffects,
+      masteringChain: bp.masteringChain,
+      outputNotes: bp.outputNotes,
+      stemsNotes: bp.stemsNotes ?? null
+    } : null,
+    stemExtractionSessionData: bp.extractionBrief ? {
+      extractionBrief: bp.extractionBrief,
+      stems: bp.stems ?? [],
+      phaseAlignmentNotes: bp.phaseAlignmentNotes,
+      dawImportGuide: bp.dawImportGuide,
+      recommendedTool: bp.recommendedTool
+    } : null,
+    // New normalized fields
+    normalizedResponse: r
+  });
+});
+router3.get("/engine/providers", (_req, res) => {
+  res.json({ providers: listProviders() });
 });
 var generate_audio_default = router3;
 
