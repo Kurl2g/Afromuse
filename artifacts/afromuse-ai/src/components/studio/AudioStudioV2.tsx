@@ -501,6 +501,290 @@ function StudioExportNotesCard({
   );
 }
 
+/* ═══════════════════════════════════════════════════════════
+   PIPELINE STATUS BAR — Render Engine Layer
+═══════════════════════════════════════════════════════════ */
+
+type PipelineStage = "idle" | "processing" | "success" | "error";
+
+interface PipelineStageConfig {
+  label: string;
+  helper: string;
+  status: PipelineStage;
+  muted?: boolean;
+}
+
+function PipelineStatusBar({ stages, visible }: { stages: PipelineStageConfig[]; visible: boolean }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-2xl border border-white/6 bg-gradient-to-r from-white/[0.02] via-white/[0.015] to-white/[0.01] px-5 py-4"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Cpu className="w-3.5 h-3.5 text-sky-400/60" />
+            <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-white/35">Session Pipeline</span>
+            <div className="flex-1 h-px bg-white/5 ml-1" />
+            <span className="text-[8px] text-white/18 tracking-wider">Render Engine</span>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {stages.map((stage, i) => {
+              const isIdle       = stage.status === "idle";
+              const isProcessing = stage.status === "processing";
+              const isSuccess    = stage.status === "success";
+              const isError      = stage.status === "error";
+              return (
+                <div
+                  key={stage.label}
+                  className={`flex flex-col items-center gap-2 text-center transition-all duration-500 ${stage.muted ? "opacity-25 pointer-events-none" : ""}`}
+                >
+                  <div className="relative w-full flex items-center justify-center">
+                    <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500 ${
+                      isSuccess    ? "bg-green-500/15 border-green-500/40 shadow-[0_0_14px_rgba(34,197,94,0.22)]" :
+                      isProcessing ? "bg-sky-500/12 border-sky-500/35 shadow-[0_0_14px_rgba(14,165,233,0.20)]" :
+                      isError      ? "bg-red-500/12 border-red-500/30" :
+                      "bg-white/[0.03] border-white/8"
+                    }`}>
+                      {isSuccess    && <Check       className="w-3.5 h-3.5 text-green-400" />}
+                      {isError      && <AlertCircle className="w-3.5 h-3.5 text-red-400" />}
+                      {isProcessing && (
+                        <motion.div
+                          className="w-2.5 h-2.5 rounded-full bg-sky-400/80"
+                          animate={{ scale: [1, 1.35, 1], opacity: [0.6, 1, 0.6] }}
+                          transition={{ duration: 1.1, repeat: Infinity }}
+                        />
+                      )}
+                      {isIdle       && <div className="w-2 h-2 rounded-full bg-white/10" />}
+                    </div>
+                    {i < stages.length - 1 && (
+                      <div className={`absolute left-1/2 right-0 translate-x-4 h-px top-4 transition-colors duration-700 ${
+                        isSuccess ? "bg-green-500/25" : "bg-white/5"
+                      }`} />
+                    )}
+                  </div>
+                  <div className="px-1">
+                    <div className={`text-[8.5px] font-bold tracking-[0.1em] uppercase transition-colors duration-300 ${
+                      isSuccess    ? "text-green-400/75" :
+                      isProcessing ? "text-sky-400/80" :
+                      isError      ? "text-red-400/65" :
+                      "text-white/22"
+                    }`}>
+                      {stage.label}
+                    </div>
+                    <div className="text-[7.5px] text-white/16 mt-0.5 leading-snug">{stage.helper}</div>
+                    {isProcessing && (
+                      <div className="flex justify-center gap-0.5 mt-1.5">
+                        {[0, 1, 2].map((j) => (
+                          <motion.div
+                            key={j}
+                            className="w-1 h-1 rounded-full bg-sky-400/45"
+                            animate={{ opacity: [0.15, 1, 0.15] }}
+                            transition={{ duration: 1.2, repeat: Infinity, delay: j * 0.2 }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FINAL EXPORT CARD
+═══════════════════════════════════════════════════════════ */
+
+function FinalExportCard({
+  isReady, mixFeel, onToast,
+}: {
+  isReady: boolean;
+  mixFeel: string;
+  onToast: (title: string, description: string) => void;
+}) {
+  const QUALITY_OPTIONS = ["Preview", "Standard", "Studio"] as const;
+  const [quality, setQuality] = useState<"Preview" | "Standard" | "Studio">("Standard");
+
+  const exportButtons = [
+    { label: "Export MP3",       icon: <FileAudio className="w-3.5 h-3.5" />, color: "sky" },
+    { label: "Export WAV",       icon: <Music2    className="w-3.5 h-3.5" />, color: "violet" },
+    { label: "Download Stems",   icon: <Layers    className="w-3.5 h-3.5" />, color: "amber" },
+  ] as const;
+
+  const notReadyMsg = "Final export unlocks when the render engine completes the full session.";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="rounded-2xl border border-white/6 bg-white/[0.018] overflow-hidden"
+    >
+      <div className={`h-[2px] w-full bg-gradient-to-r transition-all duration-700 ${isReady ? "from-green-500/50 to-green-400/10" : "from-white/8 to-transparent"}`} />
+      <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all duration-500 ${isReady ? "bg-green-500/12 border-green-500/28" : "bg-white/4 border-white/8"}`}>
+            <Package className={`w-4 h-4 transition-colors duration-500 ${isReady ? "text-green-400" : "text-white/20"}`} />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold tracking-widest uppercase text-white/55">Final Export</div>
+            <div className="text-[9px] text-white/22 mt-0.5">Prepare your session for final delivery.</div>
+          </div>
+        </div>
+        <div className={`text-[8px] font-bold tracking-[0.1em] uppercase px-2.5 py-1 rounded-full border transition-all duration-500 ${
+          isReady
+            ? "bg-green-500/10 border-green-500/25 text-green-400/80"
+            : "bg-white/4 border-white/8 text-white/25"
+        }`}>
+          {isReady ? "Render Ready" : "Awaiting Render"}
+        </div>
+      </div>
+
+      <div className="p-5 space-y-4">
+        {/* Export buttons */}
+        <div className="grid grid-cols-3 gap-2">
+          {exportButtons.map(({ label, icon, color }) => {
+            const colorMap = {
+              sky:    { active: "bg-sky-500/10 border-sky-500/25 text-sky-300 hover:bg-sky-500/18 hover:border-sky-500/40", dim: "bg-white/3 border-white/6 text-white/20 cursor-not-allowed" },
+              violet: { active: "bg-violet-500/10 border-violet-500/25 text-violet-300 hover:bg-violet-500/18 hover:border-violet-500/40", dim: "bg-white/3 border-white/6 text-white/20 cursor-not-allowed" },
+              amber:  { active: "bg-amber-500/10 border-amber-500/25 text-amber-300 hover:bg-amber-500/18 hover:border-amber-500/40", dim: "bg-white/3 border-white/6 text-white/20 cursor-not-allowed" },
+            };
+            const cls = isReady ? colorMap[color].active : colorMap[color].dim;
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => {
+                  if (!isReady) {
+                    onToast("Export Not Ready", notReadyMsg);
+                  } else {
+                    onToast("Export Queued", `${label} queued — full audio export unlocks with the AfroMuse Pro audio layer.`);
+                  }
+                }}
+                className={`h-10 rounded-xl border text-[9px] font-bold tracking-wide flex flex-col items-center justify-center gap-1 transition-all duration-300 ${cls}`}
+              >
+                {icon}
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Mix Feel + Export Quality */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-xl bg-white/[0.02] border border-white/5 px-3.5 py-2.5">
+            <div className="text-[8.5px] font-bold tracking-widest uppercase text-white/25 mb-1">Mix Feel</div>
+            <div className="text-xs font-semibold text-white/50">{mixFeel}</div>
+          </div>
+          <div className="rounded-xl bg-white/[0.02] border border-white/5 px-3.5 py-2.5">
+            <div className="text-[8.5px] font-bold tracking-widest uppercase text-white/25 mb-1">Export Quality</div>
+            <div className="flex gap-1">
+              {QUALITY_OPTIONS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => setQuality(q)}
+                  className={`text-[8px] font-bold px-2 py-0.5 rounded-full border transition-all ${
+                    quality === q
+                      ? "bg-sky-500/12 border-sky-500/28 text-sky-400/80"
+                      : "bg-white/3 border-white/6 text-white/25 hover:text-white/40"
+                  }`}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Helper note */}
+        <p className="text-[9px] text-white/18 leading-relaxed text-center italic border-t border-white/4 pt-3">
+          Final export unlocks when the render engine completes the full session.
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RECENT SESSION BUILD — Lightweight History Panel
+═══════════════════════════════════════════════════════════ */
+
+function RecentSessionBuild({
+  sessionTitle,
+  mode,
+  lastStage,
+  startTime,
+}: {
+  sessionTitle: string;
+  mode: string;
+  lastStage: string | null;
+  startTime: number | null;
+}) {
+  const [, forceUpdate] = useState(0);
+
+  useEffect(() => {
+    if (!startTime) return;
+    const id = setInterval(() => forceUpdate((n) => n + 1), 10000);
+    return () => clearInterval(id);
+  }, [startTime]);
+
+  const getTimeLabel = () => {
+    if (!startTime) return null;
+    const diff = Date.now() - startTime;
+    if (diff < 10000) return "Just now";
+    if (diff < 60000) return "Moments ago";
+    const mins = Math.floor(diff / 60000);
+    return `${mins}m ago`;
+  };
+
+  if (!startTime) return null;
+
+  const timeLabel = getTimeLabel();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="rounded-2xl border border-white/5 bg-white/[0.012] px-5 py-4"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <Star className="w-3 h-3 text-amber-400/40" />
+        <span className="text-[9px] font-bold tracking-[0.16em] uppercase text-white/30">Recent Session Build</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div>
+          <div className="text-[8px] font-bold tracking-widest uppercase text-white/20 mb-1">Session</div>
+          <div className="text-[10px] font-semibold text-white/45 truncate">{sessionTitle}</div>
+        </div>
+        <div>
+          <div className="text-[8px] font-bold tracking-widest uppercase text-white/20 mb-1">Mode</div>
+          <div className="text-[10px] font-semibold text-white/45">{mode}</div>
+        </div>
+        <div>
+          <div className="text-[8px] font-bold tracking-widest uppercase text-white/20 mb-1">Last Stage</div>
+          <div className={`text-[10px] font-semibold ${lastStage ? "text-green-400/60" : "text-white/22"}`}>
+            {lastStage ?? "—"}
+          </div>
+        </div>
+        <div>
+          <div className="text-[8px] font-bold tracking-widest uppercase text-white/20 mb-1">When</div>
+          <div className="text-[10px] font-semibold text-white/35">{timeLabel}</div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function getGenreDefaults(g: string): { bpm: string; key: string } {
   const map: Record<string, { bpm: string; key: string }> = {
     "Amapiano":   { bpm: "112–116", key: "A minor" },
@@ -880,6 +1164,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [selectedStems,      setSelectedStems]      = useState<string[]>([...ALL_STEMS]);
   const [blueprint,          setBlueprint]          = useState<Blueprint | null>(null);
   const [intelligence,       setIntelligence]       = useState<FullIntelligence | null>(null);
+  const [sessionStartTime,   setSessionStartTime]   = useState<number | null>(null);
 
   const isInstrumentalMode = generationMode === "instrumental";
   const hasLyrics          = audioLyrics.trim().length > 0 || draft !== null;
@@ -997,6 +1282,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   };
 
   const handleGenerateInstrumental = () => {
+    setSessionStartTime(Date.now());
     setInstrumentalStatus("idle");
     setBlueprintStatus("idle");
     setBlueprint(null);
@@ -1006,6 +1292,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
   const handleGenerateVocal = () => {
     if (!validateForVocal()) return;
+    setSessionStartTime(Date.now());
     setVocalStatus("idle");
     void runVocal();
   };
@@ -1207,6 +1494,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
   const handleGenerateFull = () => {
     if (!isInstrumentalMode && !validateForVocal()) return;
+    setSessionStartTime(Date.now());
     setInstrumentalStatus("idle");
     setVocalStatus("idle");
     setBlueprintStatus("idle");
@@ -1243,6 +1531,58 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success" || stemStatus === "success";
   const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading" || mixMasterStatus === "loading" || stemStatus === "loading";
   const genreDefaults = getGenreDefaults(audioGenre);
+
+  const masterExportReady = isInstrumentalMode
+    ? instrumentalStatus === "success"
+    : instrumentalStatus === "success" && vocalStatus === "success";
+
+  const masterExportPipelineStatus: PipelineStage =
+    masterExportReady ? "success"
+    : (instrumentalStatus === "loading" || (!isInstrumentalMode && vocalStatus === "loading")) ? "processing"
+    : (instrumentalStatus === "error" || vocalStatus === "error") ? "error"
+    : "idle";
+
+  const pipelineStages: PipelineStageConfig[] = [
+    {
+      label: "Instrumental",
+      helper: "Building sonic direction",
+      status: instrumentalStatus === "loading" ? "processing" : instrumentalStatus === "success" ? "success" : instrumentalStatus === "error" ? "error" : "idle",
+    },
+    {
+      label: "Vocals",
+      helper: "Preparing vocal performance",
+      status: isInstrumentalMode ? "idle" : vocalStatus === "loading" ? "processing" : vocalStatus === "success" ? "success" : vocalStatus === "error" ? "error" : "idle",
+      muted: isInstrumentalMode,
+    },
+    {
+      label: "Blueprint",
+      helper: "Mapping arrangement",
+      status: blueprintStatus === "loading" ? "processing" : blueprintStatus === "success" ? "success" : blueprintStatus === "error" ? "error" : "idle",
+    },
+    {
+      label: "Master Export",
+      helper: "Preparing final render",
+      status: masterExportPipelineStatus,
+    },
+  ];
+
+  const pipelineVisible = sessionStartTime !== null;
+
+  const sessionTitle = audioLyrics.trim()
+    ? audioLyrics.trim().split("\n").find((l) => l.trim().length > 3 && !l.startsWith("["))?.trim().slice(0, 28) ?? "Untitled Session"
+    : `${audioGenre} Session`;
+
+  const modeLabel =
+    generationMode === "full" ? "Full Session" :
+    generationMode === "instrumental" ? "Instrumental Only" :
+    "Vocal Demo Setup";
+
+  const lastCompletedStage =
+    masterExportReady ? "Master Export" :
+    blueprintStatus === "success" ? "Blueprint" :
+    vocalStatus === "success" ? "Vocals" :
+    instrumentalStatus === "success" ? "Instrumental" :
+    null;
 
   const BUILD_MODES = [
     {
@@ -2215,6 +2555,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         </div>
 
         {/* ══════════════════════════════════════════
+            SESSION PIPELINE STATUS BAR
+        ══════════════════════════════════════════ */}
+        <PipelineStatusBar stages={pipelineStages} visible={pipelineVisible} />
+
+        {/* ══════════════════════════════════════════
             SESSION OUTPUT
         ══════════════════════════════════════════ */}
         <div>
@@ -3083,6 +3428,27 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ══════════════════════════════════════════
+            FINAL EXPORT CARD
+        ══════════════════════════════════════════ */}
+        {pipelineVisible && (
+          <FinalExportCard
+            isReady={masterExportReady}
+            mixFeel={mixFeel}
+            onToast={(title, description) => toast({ title, description })}
+          />
+        )}
+
+        {/* ══════════════════════════════════════════
+            RECENT SESSION BUILD
+        ══════════════════════════════════════════ */}
+        <RecentSessionBuild
+          sessionTitle={sessionTitle}
+          mode={modeLabel}
+          lastStage={lastCompletedStage}
+          startTime={sessionStartTime}
+        />
 
         {/* ══════════════════════════════════════════
             PRO TOOLS — V2 PREMIUM EXPANSION LAYER
