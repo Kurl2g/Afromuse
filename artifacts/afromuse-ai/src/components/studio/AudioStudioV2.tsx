@@ -4,6 +4,8 @@ import {
   Mic2, Music2, Wand2, Loader2, Check, AlertCircle,
   ChevronDown, Zap, Sliders, FileText, Download, Copy, VolumeX,
   Headphones, Radio,
+  Lock, Sparkles, CheckCircle2, ArrowRight, Package,
+  FileAudio, Layers, Guitar, LayoutList, Tag, Star,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
@@ -442,6 +444,320 @@ function getGenreDefaults(g: string): { bpm: string; key: string } {
     "Afrobeats":  { bpm: "98–104",  key: "F# minor" },
   };
   return map[g] ?? { bpm: "98–104", key: "F# minor" };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRO TOOLS SECTION — V2 PREMIUM EXPANSION
+═══════════════════════════════════════════════════════════ */
+
+interface ProFeatureCard {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  miniLabel: string;
+  badge: string;
+  badgeColor: string;
+  accent: "amber" | "violet" | "sky" | "gray";
+  toastMessage: string;
+}
+
+const PRO_FEATURE_CARDS: ProFeatureCard[] = [
+  {
+    icon: <Layers className="w-4 h-4" />,
+    title: "Stems Export",
+    description: "Download separated session parts for flexible mixing and arrangement.",
+    miniLabel: "Drums • Bass • Music • Guide Vocals",
+    badge: "COMING SOON",
+    badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
+    accent: "amber",
+    toastMessage: "Stems Export is part of the upcoming AfroMuse Pro audio layer.",
+  },
+  {
+    icon: <FileAudio className="w-4 h-4" />,
+    title: "Full WAV Export",
+    description: "Export your session as a high-quality studio-ready bounce.",
+    miniLabel: "24-bit master-ready output",
+    badge: "COMING SOON",
+    badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
+    accent: "amber",
+    toastMessage: "Full WAV Export will be available in AfroMuse Pro. Your session is being prepared for this.",
+  },
+  {
+    icon: <Download className="w-4 h-4" />,
+    title: "MP3 Session Export",
+    description: "Download a quick-share version for phone playback, demos, and previews.",
+    miniLabel: "Fast artist sharing",
+    badge: "COMING SOON",
+    badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
+    accent: "amber",
+    toastMessage: "MP3 export is part of the AfroMuse Pro sharing layer — coming soon.",
+  },
+  {
+    icon: <Mic2 className="w-4 h-4" />,
+    title: "Vocal Model Slots",
+    description: "Choose and save different vocal identities for future demo renders.",
+    miniLabel: "Lead • Alt Lead • Harmony Voice",
+    badge: "BETA PREP",
+    badgeColor: "bg-violet-500/12 text-violet-400/80 border-violet-500/20",
+    accent: "violet",
+    toastMessage: "Vocal Model Slots are in beta preparation — your vocal direction is already being tracked.",
+  },
+  {
+    icon: <Sparkles className="w-4 h-4" />,
+    title: "Hook Alternates",
+    description: "Generate alternate hook melodies, toplines, or chorus directions.",
+    miniLabel: "For stronger replay value",
+    badge: "PLANNED",
+    badgeColor: "bg-violet-500/10 text-violet-400/65 border-violet-500/15",
+    accent: "violet",
+    toastMessage: "Hook Alternates will let you explore multiple chorus directions. Coming in the next update.",
+  },
+  {
+    icon: <Guitar className="w-4 h-4" />,
+    title: "Instrumental Variations",
+    description: "Build alternate beat directions for the same song idea or vocal concept.",
+    miniLabel: "Club • Smooth • Dark • Acoustic-lite",
+    badge: "PLANNED",
+    badgeColor: "bg-sky-500/10 text-sky-400/65 border-sky-500/15",
+    accent: "sky",
+    toastMessage: "Instrumental Variations will generate alternative beat directions from your session data.",
+  },
+  {
+    icon: <LayoutList className="w-4 h-4" />,
+    title: "Arrangement Export",
+    description: "Export a producer-friendly structure sheet for recording and beat building.",
+    miniLabel: "Intro • Verse • Hook • Bridge map",
+    badge: "READY SOON",
+    badgeColor: "bg-sky-500/14 text-sky-400/85 border-sky-500/22",
+    accent: "sky",
+    toastMessage: "Arrangement Export is nearly ready — your structure map is already built inside your session.",
+  },
+  {
+    icon: <Package className="w-4 h-4" />,
+    title: "Release Pack",
+    description: "Prepare song title, writing sheet, credits, and session notes in one place.",
+    miniLabel: "Artist-ready organization",
+    badge: "PLANNED",
+    badgeColor: "bg-white/8 text-white/45 border-white/12",
+    accent: "gray",
+    toastMessage: "Release Pack will bundle your full session into an artist-ready delivery format.",
+  },
+];
+
+const ACCENT_MAP = {
+  amber: {
+    icon: "text-amber-400/70",
+    card: "bg-amber-500/[0.03] border-amber-500/[0.09] hover:border-amber-500/20 hover:bg-amber-500/[0.06]",
+    glow: "from-amber-500/5",
+    mini: "text-amber-400/40",
+  },
+  violet: {
+    icon: "text-violet-400/70",
+    card: "bg-violet-500/[0.03] border-violet-500/[0.09] hover:border-violet-500/20 hover:bg-violet-500/[0.06]",
+    glow: "from-violet-500/5",
+    mini: "text-violet-400/40",
+  },
+  sky: {
+    icon: "text-sky-400/70",
+    card: "bg-sky-500/[0.03] border-sky-500/[0.09] hover:border-sky-500/20 hover:bg-sky-500/[0.06]",
+    glow: "from-sky-500/5",
+    mini: "text-sky-400/40",
+  },
+  gray: {
+    icon: "text-white/30",
+    card: "bg-white/[0.02] border-white/[0.07] hover:border-white/14 hover:bg-white/[0.035]",
+    glow: "from-white/3",
+    mini: "text-white/28",
+  },
+};
+
+const SESSION_READY = [
+  "Lyrics Input",
+  "Genre + Mood Direction",
+  "BPM / Key Setup",
+  "Vocal Identity Setup",
+  "Instrumental Build Path",
+  "Vocal Demo Setup",
+  "Session Blueprint",
+];
+
+const NEXT_UNLOCKS = [
+  "Stems Download",
+  "WAV Bounce",
+  "Vocal Model Saving",
+  "Hook Alternate Generator",
+  "Beat Variation Engine",
+  "Release Pack Export",
+];
+
+function ProToolsSection({ onToast }: { onToast: (title: string, description: string) => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="mt-8 space-y-6"
+    >
+      {/* ── Divider ── */}
+      <div className="flex items-center gap-4">
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/8 bg-white/[0.02]">
+          <Star className="w-2.5 h-2.5 text-amber-400/60" />
+          <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-white/28">Pro Tools</span>
+          <Star className="w-2.5 h-2.5 text-amber-400/60" />
+        </div>
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      </div>
+
+      {/* ── Section Header ── */}
+      <div className="text-center space-y-1.5">
+        <h3 className="text-sm font-bold tracking-[0.08em] uppercase text-white/70">Pro Tools</h3>
+        <p className="text-[11px] text-white/32 tracking-wide">Premium session tools for artists, writers, and producers.</p>
+      </div>
+
+      {/* ══ PART 1 — Feature Grid ══ */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {PRO_FEATURE_CARDS.map((card) => {
+          const a = ACCENT_MAP[card.accent];
+          return (
+            <motion.button
+              key={card.title}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => onToast(card.title, card.toastMessage)}
+              className={`relative text-left rounded-2xl border p-4 transition-all duration-200 cursor-pointer group overflow-hidden ${a.card}`}
+            >
+              {/* Subtle glow */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${a.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+
+              <div className="relative z-10 space-y-3">
+                {/* Icon + Badge row */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className={`p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] ${a.icon}`}>
+                    {card.icon}
+                  </div>
+                  <span className={`text-[7.5px] font-bold tracking-[0.14em] uppercase px-2 py-0.5 rounded-full border ${card.badgeColor}`}>
+                    {card.badge}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <div>
+                  <div className="text-[11px] font-bold text-white/75 leading-tight mb-1">{card.title}</div>
+                  <p className="text-[9.5px] text-white/32 leading-relaxed">{card.description}</p>
+                </div>
+
+                {/* Mini label */}
+                <div className={`text-[8.5px] font-medium leading-snug ${a.mini}`}>{card.miniLabel}</div>
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* ══ PART 2 — Session Readiness Panel ══ */}
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] overflow-hidden">
+        {/* Panel header */}
+        <div className="px-5 py-4 border-b border-white/[0.06] bg-white/[0.01]">
+          <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-white/50 mb-0.5">Session Readiness</div>
+          <p className="text-[10px] text-white/25">A quick look at what your session already has and what unlocks next.</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.06]">
+          {/* Left — Ready now */}
+          <div className="px-5 py-4 space-y-2.5">
+            <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-green-400/60 mb-3">Current Session Ready</div>
+            {SESSION_READY.map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-3 h-3 text-green-400/70 shrink-0" />
+                <span className="text-[10px] text-white/55">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right — Next unlocks */}
+          <div className="px-5 py-4 space-y-2.5">
+            <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-amber-400/50 mb-3">Next Pro Unlocks</div>
+            {NEXT_UNLOCKS.map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <Lock className="w-3 h-3 text-white/22 shrink-0" />
+                <span className="text-[10px] text-white/32">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ══ PART 3 — Positioning Strip ══ */}
+      <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-r from-white/[0.015] to-white/[0.008] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1">
+          <div className="text-xs font-semibold text-white/60">Built for both artists and producers.</div>
+          <p className="text-[10px] text-white/28 leading-relaxed max-w-md">
+            Start with lyrics, shape the session, test the vocal identity, and prepare the structure before final audio rendering.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5 shrink-0">
+          {["Songwriting", "Beat Prep", "Vocal Direction", "Session Planning"].map((tag) => (
+            <div key={tag} className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-white/10 bg-white/[0.03]">
+              <Tag className="w-2.5 h-2.5 text-white/25" />
+              <span className="text-[8.5px] font-semibold tracking-wide text-white/40">{tag}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══ PART 4 — CTA Panel ══ */}
+      <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.025] via-white/[0.012] to-transparent overflow-hidden">
+        {/* Decorative top accent line */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-400/30 to-transparent" />
+
+        <div className="px-6 py-6 space-y-5">
+          {/* Header */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400/70" />
+              <h4 className="text-sm font-bold tracking-wide text-white/80">AfroMuse Pro Engine</h4>
+            </div>
+            <p className="text-[11px] text-white/35 leading-relaxed">
+              The next layer of AfroMuse will expand from writing into real session generation, export, and artist-ready delivery.
+            </p>
+          </div>
+
+          {/* Bullets */}
+          <div className="space-y-2">
+            {[
+              "More realistic audio generation",
+              "Export-ready session tools",
+              "Stronger artist / producer workflow",
+            ].map((bullet) => (
+              <div key={bullet} className="flex items-center gap-2.5">
+                <ArrowRight className="w-3 h-3 text-amber-400/50 shrink-0" />
+                <span className="text-[10px] text-white/45">{bullet}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap gap-3 pt-1">
+            <button
+              onClick={() => onToast("AfroMuse Pro", "The full Pro engine is on the roadmap. Your session data is already shaping the upcoming features.")}
+              className="h-9 px-5 rounded-xl bg-amber-500/14 border border-amber-500/28 text-xs font-semibold text-amber-300 hover:bg-amber-500/22 hover:border-amber-500/40 transition-all flex items-center gap-2"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              See What's Coming
+            </button>
+            <button
+              onClick={() => onToast("Session Prepared", "Your current session structure, vocal identity, and sonic direction are locked in and ready for the Pro layer.")}
+              className="h-9 px-5 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-semibold text-white/50 hover:bg-white/[0.07] hover:text-white/70 hover:border-white/18 transition-all flex items-center gap-2"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Prepare My Session
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudioV2({ draft, genre, mood }, ref) {
@@ -1550,6 +1866,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ══════════════════════════════════════════
+            PRO TOOLS — V2 PREMIUM EXPANSION LAYER
+        ══════════════════════════════════════════ */}
+        <ProToolsSection onToast={(title, description) => toast({ title, description })} />
 
       </div>
     </section>
