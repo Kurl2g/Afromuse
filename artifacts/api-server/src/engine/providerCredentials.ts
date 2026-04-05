@@ -51,7 +51,7 @@ const CREDENTIAL_SLOTS: Record<ProviderCategory, ProviderCredentialSlot> = {
    * isCredentialReady() returns true as soon as ELEVENLABS_API_KEY is set.
    */
   instrumental: {
-    apiKey:    process.env.ELEVENLABS_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
+    apiKey:    process.env.ELEVENLABS_API_KEY ?? process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
     endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1/music/compose",
     model:     process.env.INSTRUMENTAL_MODEL ?? null,
     region:    process.env.INSTRUMENTAL_REGION ?? null,
