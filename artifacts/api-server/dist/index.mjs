@@ -50477,6 +50477,83 @@ function emptyOutputRegistry() {
   };
 }
 
+// src/engine/adapters.ts
+function adaptInstrumental(raw) {
+  const bp = raw.blueprintData;
+  return {
+    status: raw.status,
+    jobId: raw.jobId,
+    provider: "instrumental",
+    audioUrl: raw.audioUrl ?? raw.previewUrl ?? null,
+    wavUrl: raw.wavUrl,
+    stemsUrl: null,
+    blueprintData: Object.keys(bp).length > 0 ? bp : null,
+    notes: bp.sessionBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      instrumentalPreview: raw.previewUrl ?? raw.audioUrl ?? null,
+      arrangementBlueprint: bp.arrangementMap ?? null
+    }
+  };
+}
+function adaptVocal(raw) {
+  const bp = raw.blueprintData;
+  return {
+    status: raw.status,
+    jobId: raw.jobId,
+    provider: "vocal",
+    audioUrl: raw.audioUrl ?? raw.vocalPreviewUrl ?? null,
+    wavUrl: raw.wavUrl,
+    stemsUrl: null,
+    blueprintData: Object.keys(bp).length > 0 ? bp : null,
+    notes: bp.vocalBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      vocalPreview: raw.vocalPreviewUrl ?? raw.audioUrl ?? null
+    }
+  };
+}
+function adaptMastering(raw) {
+  const bp = raw.blueprintData;
+  return {
+    status: raw.status,
+    jobId: raw.jobId,
+    provider: "mastering",
+    audioUrl: raw.masteredMp3Url,
+    wavUrl: raw.masteredWavUrl,
+    stemsUrl: raw.stemsZipUrl ?? null,
+    blueprintData: Object.keys(bp).length > 0 ? bp : null,
+    notes: bp.mixBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      masteredMp3: raw.masteredMp3Url,
+      masteredWav: raw.masteredWavUrl,
+      stemsZip: raw.stemsZipUrl ?? null
+    }
+  };
+}
+function adaptStems(raw) {
+  const bp = raw.blueprintData;
+  return {
+    status: raw.status,
+    jobId: raw.jobId,
+    provider: "stems",
+    audioUrl: null,
+    wavUrl: null,
+    stemsUrl: raw.stemsZipUrl,
+    blueprintData: Object.keys(bp).length > 0 ? bp : null,
+    notes: bp.extractionBrief ?? null,
+    error: null,
+    outputRegistry: {
+      ...emptyOutputRegistry(),
+      stemsZip: raw.stemsZipUrl
+    }
+  };
+}
+
 // src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -50614,25 +50691,22 @@ async function run(jobId, p) {
     logger.warn({ err, jobId }, "Instrumental AI brief failed \u2014 using metadata only");
   }
   const blueprintData = { ...metadata, ...aiBrief ?? {} };
-  return {
-    status: "completed",
+  const raw = {
     jobId,
-    provider: "instrumental",
+    status: "completed",
     audioUrl: null,
-    // slot: real instrumental audio URL
+    // slot: real beat audio URL
     wavUrl: null,
     // slot: WAV download URL
-    stemsUrl: null,
     blueprintData,
-    notes: blueprintData.sessionBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      instrumentalPreview: null,
-      // slot: real audio preview URL
-      arrangementBlueprint: blueprintData.arrangementMap ?? null
-    }
+    externalJobId: null,
+    // slot: provider's own track/job ID
+    previewUrl: null,
+    // slot: short beat preview clip URL
+    coverArt: null
+    // slot: generated cover art URL
   };
+  return adaptInstrumental(raw);
 }
 
 // src/engine/providers/vocal.ts
@@ -50769,23 +50843,22 @@ async function runVocalDemo(jobId, p) {
     hitmakerMode: p.hitmakerMode ?? false,
     audioType: "Vocal Demo"
   };
-  return {
-    status: "completed",
+  const raw = {
     jobId,
-    provider: "vocal",
+    status: "completed",
     audioUrl: null,
     // slot: real vocal demo audio URL
     wavUrl: null,
-    stemsUrl: null,
+    // slot: WAV download URL
     blueprintData,
-    notes: null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      vocalPreview: null
-      // slot: real vocal preview URL
-    }
+    externalJobId: null,
+    // slot: synthesis provider job ID
+    vocalPreviewUrl: null,
+    // slot: short preview clip URL
+    syncScore: null
+    // slot: vocal-to-beat sync quality score
   };
+  return adaptVocal(raw);
 }
 async function runLeadVocal(jobId, p) {
   const genre = p.genre ?? "Afrobeats";
@@ -50807,22 +50880,22 @@ async function runLeadVocal(jobId, p) {
     logger.warn({ err, jobId }, "Lead vocal AI brief failed \u2014 using metadata only");
   }
   const blueprintData = { ...metadata, ...aiBrief ?? {} };
-  return {
-    status: "completed",
+  const raw = {
     jobId,
-    provider: "vocal",
+    status: "completed",
     audioUrl: null,
+    // slot: full lead vocal audio URL
     wavUrl: null,
-    stemsUrl: null,
+    // slot: WAV download URL
     blueprintData,
-    notes: blueprintData.vocalBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      vocalPreview: null
-      // slot: real vocal preview URL
-    }
+    externalJobId: null,
+    // slot: synthesis provider job ID
+    vocalPreviewUrl: null,
+    // slot: preview clip URL
+    syncScore: null
+    // slot: vocal-to-beat sync quality score
   };
+  return adaptVocal(raw);
 }
 
 // src/engine/providers/mastering.ts
@@ -50898,28 +50971,22 @@ async function run2(jobId, p) {
     key: p.key,
     ...aiBrief ?? {}
   };
-  return {
-    status: "completed",
+  const raw = {
     jobId,
-    provider: "mastering",
-    audioUrl: null,
-    wavUrl: null,
+    status: "completed",
+    masteredMp3Url: null,
+    // slot: mastered MP3 download URL
+    masteredWavUrl: null,
     // slot: mastered WAV download URL
-    stemsUrl: null,
-    // slot: stems ZIP download URL
+    stemsZipUrl: null,
+    // slot: stems bundle ZIP URL
     blueprintData,
-    notes: blueprintData.mixBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      masteredMp3: null,
-      // slot: real mastered MP3 URL
-      masteredWav: null,
-      // slot: real mastered WAV URL
-      stemsZip: null
-      // slot: real stems ZIP URL
-    }
+    externalJobId: null,
+    // slot: mastering API job reference
+    loudnessLufs: null
+    // slot: achieved LUFS from mastering engine
   };
+  return adaptMastering(raw);
 }
 
 // src/engine/providers/stems.ts
@@ -50997,23 +51064,90 @@ async function run3(jobId, p) {
     key: p.key,
     ...aiBrief ?? {}
   };
-  return {
-    status: "completed",
+  const raw = {
     jobId,
-    provider: "stems",
-    audioUrl: null,
-    wavUrl: null,
-    stemsUrl: null,
-    // slot: real stems ZIP download URL
+    status: "completed",
+    stemsZipUrl: null,
+    // slot: stems ZIP archive URL
     blueprintData,
-    notes: blueprintData.extractionBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      stemsZip: null
-      // slot: real stems ZIP URL
-    }
+    externalJobId: null,
+    // slot: stem splitter job reference
+    stemTrackUrls: null,
+    // slot: individual per-stem audio URLs
+    qualityScore: null
+    // slot: extraction quality score (0–100)
   };
+  return adaptStems(raw);
+}
+
+// src/engine/capabilities.ts
+var CAPABILITY_PROFILES = {
+  instrumental: {
+    supportsInstrumental: true,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI session brief (always available)
+    supportsMastering: false,
+    supportsStems: false,
+    supportsPreviewOnly: true,
+    // mock: brief only; live: beat preview audio
+    supportsFullExport: false,
+    // not until real beat-gen API is connected
+    supportsPolling: true,
+    // fire-and-poll job pattern
+    supportsRealtime: false,
+    // slot: SSE / websocket streaming (future)
+    supportsCustomLyrics: false
+    // instrumental — no lyric input
+  },
+  vocal: {
+    supportsInstrumental: false,
+    supportsVocals: true,
+    supportsBlueprint: true,
+    // AI vocal brief (always available)
+    supportsMastering: false,
+    supportsStems: false,
+    supportsPreviewOnly: true,
+    // mock: brief only; live: vocal demo audio
+    supportsFullExport: false,
+    // not until real vocal synthesis API is connected
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: true
+    // accepts user-supplied lyrics for lead vocal
+  },
+  mastering: {
+    supportsInstrumental: false,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI mix & master brief (always available)
+    supportsMastering: true,
+    supportsStems: true,
+    // can produce stems guidance alongside master
+    supportsPreviewOnly: false,
+    supportsFullExport: true,
+    // slot: real mastered MP3 + WAV
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: false
+  },
+  stems: {
+    supportsInstrumental: false,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI stem extraction brief (always available)
+    supportsMastering: false,
+    supportsStems: true,
+    supportsPreviewOnly: false,
+    supportsFullExport: true,
+    // slot: real stems ZIP
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: false
+  }
+};
+function getCapabilities(category) {
+  return CAPABILITY_PROFILES[category];
 }
 
 // src/engine/providers/registry.ts
@@ -51022,29 +51156,61 @@ var REGISTRY = {
     category: "instrumental",
     name: "AfroMuse Instrumental Engine",
     description: "Generates AI session briefs for instrumental tracks. Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
+    status: "mock",
     isLive: false
   },
   vocal: {
     category: "vocal",
     name: "AfroMuse Vocal Engine",
     description: "Generates vocal session briefs and demo guidance. Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
+    status: "mock",
     isLive: false
   },
   mastering: {
     category: "mastering",
     name: "AfroMuse Mix & Master Engine",
     description: "Generates professional mix and mastering briefs. Slot: real mastering API (e.g. LANDR, CloudBounce, iZotope).",
+    status: "mock",
     isLive: false
   },
   stems: {
     category: "stems",
     name: "AfroMuse Stem Engine",
     description: "Generates stem extraction briefs. Slot: real stem-splitter API (e.g. Demucs, Spleeter, iZotope RX).",
+    status: "mock",
     isLive: false
   }
 };
 function listProviders() {
-  return Object.values(REGISTRY);
+  return Object.values(REGISTRY).map((config2) => ({
+    ...config2,
+    capabilities: getCapabilities(config2.category)
+  }));
+}
+function isProviderActive(category) {
+  const cfg = REGISTRY[category];
+  return cfg.isLive && cfg.status === "live-ready";
+}
+
+// src/engine/compatibility.ts
+function canProviderHandleBuildMode(category, buildMode) {
+  const caps = getCapabilities(category);
+  if (buildMode === "demo") {
+    return caps.supportsPreviewOnly || caps.supportsVocals;
+  }
+  if (buildMode === "full") {
+    return caps.supportsFullExport || caps.supportsInstrumental || caps.supportsVocals;
+  }
+  return true;
+}
+function canProviderHandleMasteredExport(category) {
+  return getCapabilities(category).supportsMastering;
+}
+function canProviderHandleCustomLyrics(category) {
+  return getCapabilities(category).supportsCustomLyrics;
+}
+function canProviderHandleStems(category) {
+  return getCapabilities(category).supportsStems;
 }
 
 // src/routes/generate-audio.ts
@@ -51072,6 +51238,14 @@ router3.post("/generate-vocal-demo", (req, res) => {
 });
 router3.post("/generate-lead-vocals", (req, res) => {
   const payload = req.body;
+  if (!canProviderHandleCustomLyrics("vocal")) {
+    res.status(400).json({ error: "Vocal provider does not support custom lyrics in this mode" });
+    return;
+  }
+  if (payload.buildMode && !canProviderHandleBuildMode("vocal", payload.buildMode)) {
+    res.status(400).json({ error: `Vocal provider does not support build mode: ${payload.buildMode}` });
+    return;
+  }
   const job = createEngineJob("lead-vocal", "vocal");
   dispatch(job.jobId, () => runLeadVocal(job.jobId, payload), "Lead vocal generation failed");
   logger.info({ jobId: job.jobId, gender: payload.gender, feel: payload.performanceFeel }, "Lead vocal job created");
@@ -51079,6 +51253,10 @@ router3.post("/generate-lead-vocals", (req, res) => {
 });
 router3.post("/mix-master", (req, res) => {
   const payload = req.body;
+  if (!canProviderHandleMasteredExport("mastering")) {
+    res.status(400).json({ error: "Mastering provider is not available for this operation" });
+    return;
+  }
   const job = createEngineJob("mix-master", "mastering");
   dispatch(job.jobId, () => run2(job.jobId, payload), "Mix master generation failed");
   logger.info({ jobId: job.jobId, feel: payload.mixFeel, genre: payload.genre }, "Mix master job created");
@@ -51086,6 +51264,10 @@ router3.post("/mix-master", (req, res) => {
 });
 router3.post("/extract-stems", (req, res) => {
   const payload = req.body;
+  if (!canProviderHandleStems("stems")) {
+    res.status(400).json({ error: "Stems provider is not available for this operation" });
+    return;
+  }
   const job = createEngineJob("stem-extraction", "stems");
   dispatch(job.jobId, () => run3(job.jobId, payload), "Stem extraction failed");
   logger.info({ jobId: job.jobId, stems: payload.stems, genre: payload.genre }, "Stem extraction job created");
@@ -51169,7 +51351,12 @@ router3.get("/audio-job/:jobId", (req, res) => {
   });
 });
 router3.get("/engine/providers", (_req, res) => {
-  res.json({ providers: listProviders() });
+  const providers = listProviders();
+  const anyLive = providers.some((p) => isProviderActive(p.category));
+  res.json({
+    providers,
+    engineMode: anyLive ? "partial-live" : "mock"
+  });
 });
 var generate_audio_default = router3;
 

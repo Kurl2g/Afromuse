@@ -97,6 +97,53 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 - `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
 
+## Engine Integration Readiness Layer (V2 Architecture Upgrade)
+
+Six-component internal architecture upgrade hardening the engine before real audio API integration. No UI changes.
+
+### New Files
+
+**`artifacts/api-server/src/engine/capabilities.ts`**
+Capability profiles for all four providers. Each profile declares 10 boolean flags:
+`supportsInstrumental`, `supportsVocals`, `supportsBlueprint`, `supportsMastering`, `supportsStems`, `supportsPreviewOnly`, `supportsFullExport`, `supportsPolling`, `supportsRealtime`, `supportsCustomLyrics`.
+Exports `getCapabilities(category)` and `listAllCapabilities()`.
+
+**`artifacts/api-server/src/engine/translators.ts`**
+Payload translation layer. Five functions translate the internal `AfroMuseSessionState` into each provider's specific request payload:
+`toInstrumentalPayload`, `toVocalDemoPayload`, `toLeadVocalPayload`, `toMasteringPayload`, `toStemExtractionPayload`.
+When a new real provider has a different request shape, only the relevant translator changes.
+
+**`artifacts/api-server/src/engine/adapters.ts`**
+Response adapter layer. Four raw provider response types (`RawInstrumentalResponse`, `RawVocalResponse`, `RawMasteringResponse`, `RawStemExtractionResponse`) with adapter functions that normalize them to `NormalizedResponse`.
+All four mock providers now build a raw response and pass it through the adapter — proving the architecture end-to-end with current mock data.
+
+**`artifacts/api-server/src/engine/compatibility.ts`**
+Feature/mode compatibility checks called before dispatching jobs:
+`canProviderHandleBuildMode`, `canProviderHandleMasteredExport`, `canProviderHandleCustomLyrics`, `canProviderHandleStems`, `canProviderHandleRealtime`, `canProviderHandlePolling`, `checkCapability` (generic).
+
+### Updated Files
+
+**`artifacts/api-server/src/engine/types.ts`**
+Added `ProviderStatus` ("mock" | "live-ready" | "unavailable" | "disabled"), `ProviderCapabilities` interface, and `AfroMuseSessionState` (canonical session input to all translators).
+
+**`artifacts/api-server/src/engine/providers/registry.ts`**
+`ProviderConfig` now has `status: ProviderStatus` alongside `isLive`. `listProviders()` now includes the full capability profile per provider. Added `isProviderActive(category)` helper.
+
+**`artifacts/api-server/src/engine/providers/instrumental.ts` / `vocal.ts` / `mastering.ts` / `stems.ts`**
+All four providers refactored: they build a `RawXxxResponse` and call `adaptXxx()` before returning. Live swap pattern is documented inline — replace the raw response block with a real API call.
+
+**`artifacts/api-server/src/routes/generate-audio.ts`**
+Compatibility checks wired into dispatch routes: `canProviderHandleCustomLyrics` before lead-vocal, `canProviderHandleMasteredExport` before mix-master, `canProviderHandleStems` before extract-stems. `GET /engine/providers` now returns capability profiles and `engineMode` field.
+
+### Live Swap Pattern
+When a real API is ready for any provider:
+1. Call the real API with the translated payload (from `translators.ts`).
+2. Map its response to the relevant `RawXxxResponse` type.
+3. Pass it to the adapter (`adaptXxx()`).
+4. Set `status: "live-ready"` and `isLive: true` in `registry.ts`.
+5. Update capability profile in `capabilities.ts` if the real API has different capabilities.
+Changes are isolated to the relevant provider module + its translator — routes and UI are untouched.
+
 ## Project Library / Saved Sessions (V2 Upgrade)
 
 Local-first session persistence layer added to the Studio page. Architecture is designed to be swapped for a real backend later without touching the UI layer.

@@ -3,14 +3,19 @@
  *
  * Handles both vocal-demo and lead-vocal job types.
  * Current mode: AI session brief (NVIDIA) + mock placeholders.
- * Swap in a real vocal synthesis API (ElevenLabs, Musicfy, etc.) inside `run()`
- * and set registry isLive = true when ready.
+ *
+ * Live swap pattern:
+ *   1. Call the real vocal synthesis API with the translated payload.
+ *   2. Map its response to RawVocalResponse.
+ *   3. Pass it to adaptVocal() — NormalizedResponse comes out.
+ *   4. Set registry status to "live-ready" and isLive to true.
+ *   Nothing in routes or the UI changes.
  */
 
 import OpenAI from "openai";
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
-import { emptyOutputRegistry } from "../jobStore.js";
+import { adaptVocal, type RawVocalResponse } from "../adapters.js";
 
 // ─── Payloads ─────────────────────────────────────────────────────────────────
 
@@ -179,7 +184,7 @@ export async function runVocalDemo(jobId: string, p: VocalDemoPayload): Promise<
   const mood = p.mood ?? "Uplifting";
   const chordVibe = p.productionNotes?.chordVibe ?? "";
 
-  const blueprintData: SessionBlueprintData = {
+  const blueprintData: Partial<SessionBlueprintData> = {
     vocalStyle: getVocalStyle(mood),
     bpm: p.bpm ?? parseBpm(chordVibe, genre),
     key: p.key ?? parseKey(chordVibe, mood),
@@ -190,21 +195,20 @@ export async function runVocalDemo(jobId: string, p: VocalDemoPayload): Promise<
     audioType: "Vocal Demo",
   };
 
-  return {
-    status: "completed",
+  // Build raw response → adapter normalises.
+  // When a real vocal synthesis API is connected, replace this block.
+  const raw: RawVocalResponse = {
     jobId,
-    provider: "vocal",
-    audioUrl: null,         // slot: real vocal demo audio URL
-    wavUrl: null,
-    stemsUrl: null,
+    status: "completed",
+    audioUrl: null,           // slot: real vocal demo audio URL
+    wavUrl: null,             // slot: WAV download URL
     blueprintData,
-    notes: null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      vocalPreview: null,   // slot: real vocal preview URL
-    },
+    externalJobId: null,      // slot: synthesis provider job ID
+    vocalPreviewUrl: null,    // slot: short preview clip URL
+    syncScore: null,          // slot: vocal-to-beat sync quality score
   };
+
+  return adaptVocal(raw);
 }
 
 export async function runLeadVocal(jobId: string, p: LeadVocalPayload): Promise<NormalizedResponse> {
@@ -229,21 +233,20 @@ export async function runLeadVocal(jobId: string, p: LeadVocalPayload): Promise<
     logger.warn({ err, jobId }, "Lead vocal AI brief failed — using metadata only");
   }
 
-  const blueprintData: SessionBlueprintData = { ...metadata, ...(aiBrief ?? {}) };
+  const blueprintData: Partial<SessionBlueprintData> = { ...metadata, ...(aiBrief ?? {}) };
 
-  return {
-    status: "completed",
+  // Build raw response → adapter normalises.
+  // When a real lead vocal API is connected, replace this block.
+  const raw: RawVocalResponse = {
     jobId,
-    provider: "vocal",
-    audioUrl: null,
-    wavUrl: null,
-    stemsUrl: null,
+    status: "completed",
+    audioUrl: null,           // slot: full lead vocal audio URL
+    wavUrl: null,             // slot: WAV download URL
     blueprintData,
-    notes: blueprintData.vocalBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      vocalPreview: null,   // slot: real vocal preview URL
-    },
+    externalJobId: null,      // slot: synthesis provider job ID
+    vocalPreviewUrl: null,    // slot: preview clip URL
+    syncScore: null,          // slot: vocal-to-beat sync quality score
   };
+
+  return adaptVocal(raw);
 }

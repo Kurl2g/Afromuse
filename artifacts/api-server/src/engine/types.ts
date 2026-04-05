@@ -14,6 +14,83 @@ export type ProviderCategory =
   | "mastering"
   | "stems";
 
+// ─── Provider Status ──────────────────────────────────────────────────────────
+
+/**
+ * Describes the operational state of a provider.
+ *   mock        — AI brief / mock audio mode (current default)
+ *   live-ready  — real API integrated, ready to activate (isLive = true)
+ *   unavailable — intended provider is temporarily down or rate-limited
+ *   disabled    — deliberately turned off; will not dispatch jobs
+ */
+export type ProviderStatus = "mock" | "live-ready" | "unavailable" | "disabled";
+
+// ─── Provider Capability Profile ──────────────────────────────────────────────
+
+/**
+ * Declares exactly what a provider can and cannot do.
+ * Used by compatibility checks before dispatching jobs.
+ */
+export interface ProviderCapabilities {
+  supportsInstrumental: boolean;
+  supportsVocals: boolean;
+  supportsBlueprint: boolean;
+  supportsMastering: boolean;
+  supportsStems: boolean;
+  supportsPreviewOnly: boolean;
+  supportsFullExport: boolean;
+  supportsPolling: boolean;
+  supportsRealtime: boolean;
+  supportsCustomLyrics: boolean;
+}
+
+// ─── AfroMuse Session State ───────────────────────────────────────────────────
+
+/**
+ * The canonical internal session representation that the translators accept.
+ * This is the single source of truth for what the Studio knows about a session.
+ * Translators convert this into each provider's specific payload shape.
+ */
+export interface AfroMuseSessionState {
+  title?: string;
+  topic?: string;
+  genre?: string;
+  mood?: string;
+  bpm?: number;
+  key?: string;
+  energy?: string;
+  songLength?: string;
+  lyricsText?: string;
+  hitmakerMode?: boolean;
+  lyricalDepth?: string;
+  hookRepeatLevel?: string;
+  soundReference?: string;
+  mixFeel?: string;
+  styleReference?: string;
+  introBehavior?: string;
+  chorusLift?: string;
+  drumDensity?: string;
+  bassWeight?: string;
+  productionNotes?: { chordVibe?: string; melodyDirection?: string; arrangement?: string };
+  // Vocal identity
+  gender?: string;
+  performanceFeel?: string;
+  vocalStyle?: string;
+  emotionalTone?: string;
+  buildMode?: string;
+  instrumentalUrl?: string;
+  vocalUrl?: string;
+  // Lyric sections (vocal demo)
+  lyrics?: { hook?: string[]; verse1?: string[]; chorus?: string[] };
+  keeperLine?: string;
+  melodyDirection?: string;
+  // Mastering
+  includeStems?: boolean;
+  // Stems
+  stems?: string[];
+  masteredUrl?: string;
+}
+
 // ─── Job Lifecycle ────────────────────────────────────────────────────────────
 
 export type JobStatus = "queued" | "processing" | "completed" | "failed";

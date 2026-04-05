@@ -2,14 +2,19 @@
  * AfroMuse Instrumental Provider
  *
  * Current mode: AI session brief (NVIDIA) + mock audio placeholders.
- * To connect a real beat-generation API, replace the body of `run()` below
- * and set registry isLive = true. Nothing else needs to change.
+ *
+ * Live swap pattern:
+ *   1. Call the real beat-generation API with `p` (already translated by toInstrumentalPayload).
+ *   2. Map the API's response to RawInstrumentalResponse.
+ *   3. Pass it to adaptInstrumental() — NormalizedResponse comes out.
+ *   4. Set registry status to "live-ready" and isLive to true.
+ *   Nothing in routes or the UI changes.
  */
 
 import OpenAI from "openai";
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
-import { emptyOutputRegistry } from "../jobStore.js";
+import { adaptInstrumental, type RawInstrumentalResponse } from "../adapters.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -160,7 +165,7 @@ async function fetchAiSessionBrief(p: InstrumentalPayload): Promise<Partial<Sess
   return JSON.parse(cleaned.slice(start, end + 1)) as Partial<SessionBlueprintData>;
 }
 
-// ─── Provider Entry Point ────────────────────────────────────────────────────
+// ─── Provider Entry Point ─────────────────────────────────────────────────────
 
 export async function run(jobId: string, p: InstrumentalPayload): Promise<NormalizedResponse> {
   const genre = p.genre ?? "Afrobeats";
@@ -186,22 +191,21 @@ export async function run(jobId: string, p: InstrumentalPayload): Promise<Normal
     logger.warn({ err, jobId }, "Instrumental AI brief failed — using metadata only");
   }
 
-  const blueprintData: SessionBlueprintData = { ...metadata, ...(aiBrief ?? {}) };
+  const blueprintData: Partial<SessionBlueprintData> = { ...metadata, ...(aiBrief ?? {}) };
 
-  return {
-    status: "completed",
+  // Build the raw response, then normalise through the adapter.
+  // When a real beat-gen API is connected, replace this block with the live API call
+  // and map its response to RawInstrumentalResponse before calling adaptInstrumental().
+  const raw: RawInstrumentalResponse = {
     jobId,
-    provider: "instrumental",
-    audioUrl: null,         // slot: real instrumental audio URL
-    wavUrl: null,           // slot: WAV download URL
-    stemsUrl: null,
+    status: "completed",
+    audioUrl: null,           // slot: real beat audio URL
+    wavUrl: null,             // slot: WAV download URL
     blueprintData,
-    notes: blueprintData.sessionBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      instrumentalPreview: null,              // slot: real audio preview URL
-      arrangementBlueprint: blueprintData.arrangementMap ?? null,
-    },
+    externalJobId: null,      // slot: provider's own track/job ID
+    previewUrl: null,         // slot: short beat preview clip URL
+    coverArt: null,           // slot: generated cover art URL
   };
+
+  return adaptInstrumental(raw);
 }

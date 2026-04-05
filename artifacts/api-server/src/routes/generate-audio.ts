@@ -16,7 +16,13 @@ import { run as runInstrumental, type InstrumentalPayload } from "../engine/prov
 import { runVocalDemo, runLeadVocal, type VocalDemoPayload, type LeadVocalPayload } from "../engine/providers/vocal.js";
 import { run as runMastering, type MasteringPayload } from "../engine/providers/mastering.js";
 import { run as runStems, type StemExtractionPayload } from "../engine/providers/stems.js";
-import { listProviders } from "../engine/providers/registry.js";
+import { listProviders, isProviderActive } from "../engine/providers/registry.js";
+import {
+  canProviderHandleBuildMode,
+  canProviderHandleCustomLyrics,
+  canProviderHandleStems,
+  canProviderHandleMasteredExport,
+} from "../engine/compatibility.js";
 
 // Re-export legacy types so any downstream code that imports them continues to work
 export type { InstrumentalPayload };
@@ -72,6 +78,17 @@ router.post("/generate-vocal-demo", (req, res) => {
 
 router.post("/generate-lead-vocals", (req, res) => {
   const payload = req.body as LeadVocalPayload;
+
+  if (!canProviderHandleCustomLyrics("vocal")) {
+    res.status(400).json({ error: "Vocal provider does not support custom lyrics in this mode" });
+    return;
+  }
+
+  if (payload.buildMode && !canProviderHandleBuildMode("vocal", payload.buildMode)) {
+    res.status(400).json({ error: `Vocal provider does not support build mode: ${payload.buildMode}` });
+    return;
+  }
+
   const job = createEngineJob("lead-vocal", "vocal");
 
   dispatch(job.jobId, () => runLeadVocal(job.jobId, payload), "Lead vocal generation failed");
@@ -82,6 +99,12 @@ router.post("/generate-lead-vocals", (req, res) => {
 
 router.post("/mix-master", (req, res) => {
   const payload = req.body as MasteringPayload;
+
+  if (!canProviderHandleMasteredExport("mastering")) {
+    res.status(400).json({ error: "Mastering provider is not available for this operation" });
+    return;
+  }
+
   const job = createEngineJob("mix-master", "mastering");
 
   dispatch(job.jobId, () => runMastering(job.jobId, payload), "Mix master generation failed");
@@ -92,6 +115,12 @@ router.post("/mix-master", (req, res) => {
 
 router.post("/extract-stems", (req, res) => {
   const payload = req.body as StemExtractionPayload;
+
+  if (!canProviderHandleStems("stems")) {
+    res.status(400).json({ error: "Stems provider is not available for this operation" });
+    return;
+  }
+
   const job = createEngineJob("stem-extraction", "stems");
 
   dispatch(job.jobId, () => runStems(job.jobId, payload), "Stem extraction failed");
@@ -188,10 +217,20 @@ router.get("/audio-job/:jobId", (req, res) => {
   });
 });
 
-// ─── Provider Info (utility endpoint) ────────────────────────────────────────
+// ─── Provider Info & Engine Status ───────────────────────────────────────────
 
+/**
+ * GET /engine/providers
+ * Returns all provider configs, capability profiles, and live-activation state.
+ * Useful for admin tooling, feature flags, and future provider management UI.
+ */
 router.get("/engine/providers", (_req, res) => {
-  res.json({ providers: listProviders() });
+  const providers = listProviders();
+  const anyLive = providers.some((p) => isProviderActive(p.category));
+  res.json({
+    providers,
+    engineMode: anyLive ? "partial-live" : "mock",
+  });
 });
 
 export default router;

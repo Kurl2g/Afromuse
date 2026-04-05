@@ -3,13 +3,18 @@
  *
  * Handles mix & master jobs.
  * Current mode: AI mix brief (NVIDIA) + mock output placeholders.
- * Swap in a real mastering API (LANDR, CloudBounce, iZotope) inside `run()`
- * and set registry isLive = true when ready.
+ *
+ * Live swap pattern:
+ *   1. Call the real mastering API with the translated payload.
+ *   2. Map its response to RawMasteringResponse.
+ *   3. Pass it to adaptMastering() — NormalizedResponse comes out.
+ *   4. Set registry status to "live-ready" and isLive to true.
+ *   Nothing in routes or the UI changes.
  */
 
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
-import { emptyOutputRegistry } from "../jobStore.js";
+import { adaptMastering, type RawMasteringResponse } from "../adapters.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -99,28 +104,25 @@ export async function run(jobId: string, p: MasteringPayload): Promise<Normalize
     logger.warn({ err, jobId }, "Mix master AI brief failed — using metadata only");
   }
 
-  const blueprintData: SessionBlueprintData = {
+  const blueprintData: Partial<SessionBlueprintData> = {
     genre: p.genre,
     bpm: p.bpm,
     key: p.key,
     ...(aiBrief ?? {}),
   };
 
-  return {
-    status: "completed",
+  // Build raw response → adapter normalises.
+  // When a real mastering API is connected, replace this block.
+  const raw: RawMasteringResponse = {
     jobId,
-    provider: "mastering",
-    audioUrl: null,
-    wavUrl: null,           // slot: mastered WAV download URL
-    stemsUrl: null,         // slot: stems ZIP download URL
+    status: "completed",
+    masteredMp3Url: null,     // slot: mastered MP3 download URL
+    masteredWavUrl: null,     // slot: mastered WAV download URL
+    stemsZipUrl: null,        // slot: stems bundle ZIP URL
     blueprintData,
-    notes: blueprintData.mixBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      masteredMp3: null,    // slot: real mastered MP3 URL
-      masteredWav: null,    // slot: real mastered WAV URL
-      stemsZip: null,       // slot: real stems ZIP URL
-    },
+    externalJobId: null,      // slot: mastering API job reference
+    loudnessLufs: null,       // slot: achieved LUFS from mastering engine
   };
+
+  return adaptMastering(raw);
 }

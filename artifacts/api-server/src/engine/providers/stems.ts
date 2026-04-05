@@ -3,13 +3,18 @@
  *
  * Handles stem extraction jobs.
  * Current mode: AI extraction brief (NVIDIA) + mock placeholders.
- * Swap in a real stem-splitter API (Demucs, Spleeter, iZotope RX) inside `run()`
- * and set registry isLive = true when ready.
+ *
+ * Live swap pattern:
+ *   1. Call the real stem-splitter API with the translated payload.
+ *   2. Map its response to RawStemExtractionResponse.
+ *   3. Pass it to adaptStems() — NormalizedResponse comes out.
+ *   4. Set registry status to "live-ready" and isLive to true.
+ *   Nothing in routes or the UI changes.
  */
 
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
-import { emptyOutputRegistry } from "../jobStore.js";
+import { adaptStems, type RawStemExtractionResponse } from "../adapters.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -99,26 +104,24 @@ export async function run(jobId: string, p: StemExtractionPayload): Promise<Norm
     logger.warn({ err, jobId }, "Stem extraction AI brief failed — using metadata only");
   }
 
-  const blueprintData: SessionBlueprintData = {
+  const blueprintData: Partial<SessionBlueprintData> = {
     genre: p.genre,
     bpm: p.bpm,
     key: p.key,
     ...(aiBrief ?? {}),
   };
 
-  return {
-    status: "completed",
+  // Build raw response → adapter normalises.
+  // When a real stem splitter is connected, replace this block.
+  const raw: RawStemExtractionResponse = {
     jobId,
-    provider: "stems",
-    audioUrl: null,
-    wavUrl: null,
-    stemsUrl: null,         // slot: real stems ZIP download URL
+    status: "completed",
+    stemsZipUrl: null,        // slot: stems ZIP archive URL
     blueprintData,
-    notes: blueprintData.extractionBrief ?? null,
-    error: null,
-    outputRegistry: {
-      ...emptyOutputRegistry(),
-      stemsZip: null,       // slot: real stems ZIP URL
-    },
+    externalJobId: null,      // slot: stem splitter job reference
+    stemTrackUrls: null,      // slot: individual per-stem audio URLs
+    qualityScore: null,       // slot: extraction quality score (0–100)
   };
+
+  return adaptStems(raw);
 }
