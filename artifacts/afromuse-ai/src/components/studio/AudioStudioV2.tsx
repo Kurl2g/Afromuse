@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Mic2, Music2, Wand2, Loader2, Check, AlertCircle,
   ChevronDown, Zap, Sliders, FileText, Download, Copy, VolumeX,
-  Headphones, Radio,
+  Headphones, Radio, Clock,
   Lock, Sparkles, CheckCircle2, ArrowRight, Package,
   FileAudio, Layers, Guitar, LayoutList, Tag, Star,
   Link2, Heart, Cpu,
@@ -828,30 +828,30 @@ const PRO_FEATURE_CARDS: ProFeatureCard[] = [
     title: "Stems Export",
     description: "Download separated session parts for flexible mixing and arrangement.",
     miniLabel: "Drums • Bass • Music • Guide Vocals",
-    badge: "COMING SOON",
+    badge: "IN DEVELOPMENT",
     badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
     accent: "amber",
-    toastMessage: "Stems Export is part of the upcoming AfroMuse Pro audio layer.",
+    toastMessage: "Stems Export is being built as part of the AfroMuse Pro audio layer.",
   },
   {
     icon: <FileAudio className="w-4 h-4" />,
     title: "Full WAV Export",
     description: "Export your session as a high-quality studio-ready bounce.",
     miniLabel: "24-bit master-ready output",
-    badge: "COMING SOON",
+    badge: "IN DEVELOPMENT",
     badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
     accent: "amber",
-    toastMessage: "Full WAV Export will be available in AfroMuse Pro. Your session is being prepared for this.",
+    toastMessage: "WAV Export is being prepared. Your session structure is ready — the audio engine is next.",
   },
   {
     icon: <Download className="w-4 h-4" />,
     title: "MP3 Session Export",
     description: "Download a quick-share version for phone playback, demos, and previews.",
     miniLabel: "Fast artist sharing",
-    badge: "COMING SOON",
-    badgeColor: "bg-amber-500/12 text-amber-400/80 border-amber-500/20",
+    badge: "MP3 AVAILABLE",
+    badgeColor: "bg-emerald-500/12 text-emerald-400/80 border-emerald-500/20",
     accent: "amber",
-    toastMessage: "MP3 export is part of the AfroMuse Pro sharing layer — coming soon.",
+    toastMessage: "MP3 preview is available — use the Download button in your instrumental player to save it.",
   },
   {
     icon: <Mic2 className="w-4 h-4" />,
@@ -888,7 +888,7 @@ const PRO_FEATURE_CARDS: ProFeatureCard[] = [
     title: "Arrangement Export",
     description: "Export a producer-friendly structure sheet for recording and beat building.",
     miniLabel: "Intro • Verse • Hook • Bridge map",
-    badge: "READY SOON",
+    badge: "PREPARING",
     badgeColor: "bg-sky-500/14 text-sky-400/85 border-sky-500/22",
     accent: "sky",
     toastMessage: "Arrangement Export is nearly ready — your structure map is already built inside your session.",
@@ -2788,10 +2788,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                           <FileText className="w-2.5 h-2.5" /> Session Notes
                         </button>
                         <button
-                          onClick={() => toast({ title: "MP3 Export", description: "MP3 export is part of the AfroMuse Pro sharing layer — coming soon." })}
+                          onClick={() => toast({ title: "WAV Export Preparing", description: "WAV export is in development. MP3 preview is available via the player above." })}
                           className="flex-1 h-7 rounded-lg bg-white/4 border border-white/8 text-[9px] font-semibold text-white/28 hover:text-white/50 hover:border-white/14 transition-all flex items-center justify-center gap-1"
                         >
-                          <Download className="w-2.5 h-2.5" /> MP3 Soon
+                          <Clock className="w-2.5 h-2.5" /> WAV Preparing
                         </button>
                       </div>
                     </div>
@@ -3300,25 +3300,25 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => toast({ title: "Coming soon", description: "Mastered MP3 export will be available in a future update." })}
+                        onClick={() => toast({ title: "MP3 Preview Available", description: "Mastered MP3 export is in development. Use the instrumental player to download your preview." })}
                         className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
                       >
                         <Download className="w-3 h-3" /> MP3
                       </button>
                       <button
                         type="button"
-                        onClick={() => toast({ title: "Coming soon", description: "Mastered WAV export will be available in a future update." })}
-                        className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                        onClick={() => toast({ title: "WAV Export Preparing", description: "WAV export is being prepared. Your session is master-ready — the export engine is next." })}
+                        className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/40 hover:bg-emerald-500/10 hover:text-emerald-400/70 transition-all flex items-center gap-1.5"
                       >
-                        <FileAudio className="w-3 h-3" /> WAV
+                        <Clock className="w-3 h-3" /> WAV
                       </button>
                       {mixMasterData.stemsNotes && (
                         <button
                           type="button"
-                          onClick={() => toast({ title: "Coming soon", description: "Stems export will be available in a future update." })}
-                          className="h-8 px-4 rounded-xl bg-emerald-500/8 border border-emerald-500/18 text-[10px] font-semibold text-emerald-400/70 hover:bg-emerald-500/14 hover:text-emerald-300 transition-all flex items-center gap-1.5"
+                          onClick={() => toast({ title: "Stems Export — In Development", description: "Stems export is being built. Your session brief is structured and ready." })}
+                          className="h-8 px-4 rounded-xl bg-white/4 border border-white/8 text-[10px] font-semibold text-white/30 hover:text-white/50 hover:border-white/14 transition-all flex items-center gap-1.5"
                         >
-                          <Layers className="w-3 h-3" /> Stems
+                          <Clock className="w-3 h-3" /> Stems
                         </button>
                       )}
                     </div>
@@ -3440,10 +3440,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                             <div className={`text-[10px] font-bold tracking-[0.12em] uppercase ${c.text}`}>{stem.name}</div>
                             <button
                               type="button"
-                              onClick={() => toast({ title: "Coming soon", description: `${stem.name} WAV download will be available in a future update.` })}
-                              className={`h-6 px-2.5 rounded-lg text-[9px] font-semibold flex items-center gap-1 border transition-all ${c.bg} ${c.border} ${c.text} hover:opacity-80`}
+                              onClick={() => toast({ title: `${stem.name} — In Development`, description: `${stem.name} WAV download is being prepared as part of the stems export engine.` })}
+                              className={`h-6 px-2.5 rounded-lg text-[9px] font-semibold flex items-center gap-1 border transition-all opacity-50 hover:opacity-70 ${c.bg} ${c.border} ${c.text}`}
                             >
-                              <Download className="w-2.5 h-2.5" /> Download WAV
+                              <Clock className="w-2.5 h-2.5" /> WAV Preparing
                             </button>
                           </div>
                           <p className={`text-[10px] leading-relaxed mb-1.5 ${c.sub}`}>{stem.extractionNotes}</p>
@@ -3556,10 +3556,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   <Copy className="w-3 h-3" /> Copy Blueprint
                 </button>
                 <button
-                  onClick={() => toast({ title: "Coming soon", description: "Full session export unlocks in AfroMuse Gold." })}
-                  className="h-8 px-3 rounded-lg bg-amber-500/10 border border-amber-500/22 text-xs text-amber-400 hover:bg-amber-500/16 transition-all flex items-center gap-1.5"
+                  onClick={() => toast({ title: "Export Expanding", description: "Full session export is in development. Blueprint copy is available now." })}
+                  className="h-8 px-3 rounded-lg bg-amber-500/10 border border-amber-500/22 text-xs text-amber-400/60 hover:bg-amber-500/14 hover:text-amber-400/90 transition-all flex items-center gap-1.5"
                 >
-                  <Download className="w-3 h-3" /> Export Session
+                  <Clock className="w-3 h-3" /> Export Session
                 </button>
               </div>
             </motion.div>

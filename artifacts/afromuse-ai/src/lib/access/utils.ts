@@ -66,7 +66,7 @@ export function getProToolAccessState(
   const result = checkFeatureAccess(planId, feature);
 
   if (result.gateState === "upcoming") {
-    return { state: "upcoming", label: "Coming Soon", reason: null };
+    return { state: "upcoming", label: "In Development", reason: null };
   }
 
   if (!result.allowed) {
@@ -88,7 +88,7 @@ export function getProToolAccessState(
  */
 export function getGateBadge(state: GateState): string {
   if (state === "available") return "Included";
-  if (state === "upcoming") return "Coming Soon";
+  if (state === "upcoming") return "In Development";
   return "Pro";
 }
 

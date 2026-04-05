@@ -1009,7 +1009,7 @@ export default function BringToLifeCard({
                 draft={draft}
                 onRegenerate={generateVocal}
                 onDownload={() =>
-                  toast({ title: "Vocal Demo MP3 — Coming Soon", description: "MP3 export will be available once the audio render engine is live." })
+                  toast({ title: "Vocal MP3 — Awaiting Engine", description: "Vocal MP3 export will be ready once the vocal render engine is fully live." })
                 }
                 isLive={false}
                 isFallback={false}
