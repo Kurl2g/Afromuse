@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
 import { formatDraftForClipboard } from "@/lib/songGenerator";
 import { buildFullIntelligence, type FullIntelligence, type ExportNoteBlock } from "@/lib/audioIntelligence";
+import AudioPlayer from "@/components/audio/AudioPlayer";
 
 interface Props {
   draft: SongDraft | null;
@@ -1158,6 +1159,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [hookLift,        setHookLift]        = useState(BEAT_DNA_HOOK_LIFTS[1]);
 
   const [instrumentalUrl,       setInstrumentalUrl]       = useState("");
+  const [instrumentalAudioUrl,  setInstrumentalAudioUrl]  = useState<string | null>(null);
+  const [instrumentalIsLive,    setInstrumentalIsLive]    = useState(false);
   const [emotionalTone,         setEmotionalTone]         = useState("Uplifting");
   const [leadVocalBuildMode,    setLeadVocalBuildMode]    = useState("full");
 
@@ -1289,12 +1292,91 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
   const runInstrumental = async () => {
     setInstrumentalStatus("loading");
-    await new Promise((r) => setTimeout(r, 2800));
+    setInstrumentalAudioUrl(null);
+    setInstrumentalIsLive(false);
+
+    // Build local blueprint immediately for instant UI feedback
     const { bp, intel } = buildBlueprintAndIntelligence();
-    setInstrumentalStatus("success");
-    setBlueprintStatus("success");
     setBlueprint(bp);
     setIntelligence(intel);
+
+    try {
+      const defaults = getGenreDefaults(audioGenre);
+      const resolvedBpm = bpm ? Number(bpm.replace(/\D.*/, "")) || undefined : undefined;
+      const resolvedKey = musicalKey || defaults.key;
+
+      const payload = {
+        genre: audioGenre,
+        mood: mood || "Uplifting",
+        bpm: resolvedBpm,
+        key: resolvedKey,
+        energy: energyLevel,
+        hitmakerMode: useHitmakerHookPriority,
+        soundReference: audioStyleReference || undefined,
+        mixFeel,
+        introBehavior: isProducer ? introBehavior : undefined,
+        chorusLift: isProducer ? chorusLift : undefined,
+        drumDensity: isProducer ? drumDensity : undefined,
+        bassWeight: isProducer ? bassWeight : undefined,
+        transitionStyle: isProducer ? transitionStyle : undefined,
+        outroStyle: isProducer ? outroStyle : undefined,
+        bounceStyle: bounceStyle || undefined,
+        melodyDensity: melodyDensity || undefined,
+        drumCharacter: drumCharacter || undefined,
+        hookLift: hookLift || undefined,
+        buildMode: generationMode,
+        lyricsText: audioLyrics || undefined,
+      };
+
+      const res = await fetch("/api/generate-instrumental-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Failed to start instrumental generation");
+      const { jobId } = await res.json() as { jobId: string };
+
+      // Poll for result — ElevenLabs can take up to 90s
+      const MAX_POLLS = 60;
+      let polls = 0;
+      while (polls < MAX_POLLS) {
+        await new Promise((r) => setTimeout(r, 2000));
+        polls++;
+        const poll = await fetch(`/api/audio-job/${jobId}`, { credentials: "include" });
+        if (!poll.ok) throw new Error("Polling failed");
+        const data = await poll.json() as {
+          status: string;
+          audioUrl?: string | null;
+          isLive?: boolean;
+          error?: string;
+        };
+        if (data.status === "completed") {
+          if (data.audioUrl) {
+            setInstrumentalAudioUrl(data.audioUrl);
+            setInstrumentalIsLive(data.isLive ?? false);
+          }
+          setInstrumentalStatus("success");
+          setBlueprintStatus("success");
+          return;
+        }
+        if (data.status === "failed") {
+          throw new Error(data.error ?? "Generation failed");
+        }
+      }
+      throw new Error("Request timed out after 2 minutes");
+    } catch (err) {
+      console.error("Instrumental generation error:", err);
+      // Blueprint is already set — show success with a warning about audio
+      setInstrumentalStatus("success");
+      setBlueprintStatus("success");
+      toast({
+        title: "Audio generation failed",
+        description: "Session blueprint is ready, but audio playback could not be retrieved.",
+        variant: "destructive",
+      });
+    }
   };
 
   const runVocal = async () => {
@@ -2724,6 +2806,23 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               loadingLabel="Shaping instrumental direction..."
             >
               <div className="space-y-4">
+                {instrumentalAudioUrl && (
+                  <AudioPlayer
+                    audioUrl={instrumentalAudioUrl}
+                    duration="3:20"
+                    title={`${audioGenre} Instrumental`}
+                    audioType="Instrumental Preview"
+                    isLive={instrumentalIsLive}
+                    onRegenerate={handleGenerateInstrumental}
+                    onDownload={() => {
+                      const a = document.createElement("a");
+                      a.href = instrumentalAudioUrl;
+                      a.download = `${audioGenre.toLowerCase()}_instrumental_preview.mp3`;
+                      a.click();
+                    }}
+                    sessionMeta={{ genre: audioGenre, energy: energyLevel, hitmakerMode: useHitmakerHookPriority }}
+                  />
+                )}
                 {intelligence && (
                   <>
                     {/* Info chips row */}
