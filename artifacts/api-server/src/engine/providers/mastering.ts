@@ -69,7 +69,7 @@ async function fetchMixMasterBrief(p: MasteringPayload): Promise<Partial<Session
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "qwen/qwen3.5-122b-a10b",
+      model: "qwen/qwen3.5-122b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: buildPrompt(p) },

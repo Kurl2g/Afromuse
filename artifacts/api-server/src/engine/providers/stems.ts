@@ -71,7 +71,7 @@ async function fetchStemBrief(p: StemExtractionPayload): Promise<Partial<Session
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "qwen/qwen3.5-122b-a10b",
+      model: "qwen/qwen3.5-122b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: buildPrompt(p) },

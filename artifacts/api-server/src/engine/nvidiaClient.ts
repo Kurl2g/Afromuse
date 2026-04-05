@@ -28,7 +28,7 @@ const MODEL_DEFAULTS: Record<string, string> = {
   VOCAL_DIRECTION_MODEL:       "meta/llama-3.3-70b-instruct",
   MASTERING_NOTES_MODEL:       "meta/llama-4-maverick-17b-128e-instruct",
   STEM_EXTRACTION:             "meta/llama-4-maverick-17b-128e-instruct",
-  REASONING_MODEL:             "deepseek-ai/deepseek-r1-distill-llama-8b",
+  REASONING_MODEL:             "deepseek-ai/deepseek-r1",
   SONGWRITINGMODEL:            "meta/llama-3.3-70b-instruct",
   GENERATE_MASTER_MIX:         "meta/llama-4-maverick-17b-128e-instruct",
   LYRICS_MODEL:                "meta/llama-3.3-70b-instruct",

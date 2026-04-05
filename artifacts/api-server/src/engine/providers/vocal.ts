@@ -151,7 +151,7 @@ async function fetchLeadVocalBrief(p: LeadVocalPayload): Promise<Partial<Session
 
   const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
   const res = await ai.chat.completions.create({
-    model: "qwen/qwen3.5-122b-a10b",
+    model: "qwen/qwen3.5-122b",
     messages: [
       { role: "system", content: LEAD_VOCAL_SYSTEM_PROMPT },
       { role: "user", content: buildLeadVocalPrompt(p) },
