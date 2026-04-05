@@ -51181,6 +51181,9 @@ var REGISTRY = {
     isLive: false
   }
 };
+function getProvider(category) {
+  return REGISTRY[category];
+}
 function listProviders() {
   return Object.values(REGISTRY).map((config2) => ({
     ...config2,
@@ -51211,6 +51214,242 @@ function canProviderHandleCustomLyrics(category) {
 }
 function canProviderHandleStems(category) {
   return getCapabilities(category).supportsStems;
+}
+
+// src/engine/engineConfig.ts
+var DEVELOPMENT_CONFIG = {
+  environment: "development",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
+    mastering: { mode: "mock", fallbackToMock: true },
+    stems: { mode: "mock", fallbackToMock: true }
+  },
+  safety: {
+    allowLiveInDev: false,
+    strictMode: false
+  }
+};
+var STAGING_CONFIG = {
+  environment: "staging",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
+    mastering: { mode: "mock", fallbackToMock: true },
+    stems: { mode: "mock", fallbackToMock: true }
+  },
+  safety: {
+    allowLiveInDev: true,
+    strictMode: false
+  }
+};
+var PRODUCTION_CONFIG = {
+  environment: "production",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: false },
+    vocal: { mode: "mock", fallbackToMock: false },
+    mastering: { mode: "mock", fallbackToMock: false },
+    stems: { mode: "mock", fallbackToMock: false }
+  },
+  safety: {
+    allowLiveInDev: false,
+    strictMode: true
+  }
+};
+var ENV_CONFIGS = {
+  development: DEVELOPMENT_CONFIG,
+  staging: STAGING_CONFIG,
+  production: PRODUCTION_CONFIG
+};
+function getActiveEnvironment() {
+  const env = process.env.NODE_ENV ?? "development";
+  if (env === "production") return "production";
+  if (env === "staging") return "staging";
+  return "development";
+}
+function getActiveEngineConfig() {
+  return ENV_CONFIGS[getActiveEnvironment()];
+}
+function getProviderModeConfig(category) {
+  return getActiveEngineConfig().providerModes[category];
+}
+var _modeOverrides = {};
+function getProviderModeOverride(category) {
+  return _modeOverrides[category];
+}
+
+// src/engine/providerCredentials.ts
+var CREDENTIAL_SLOTS = {
+  /**
+   * Instrumental / Beat Generation
+   * Candidate APIs: Udio, Suno, Stability Audio, MusicGen
+   */
+  instrumental: {
+    apiKey: process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? null,
+    model: process.env.INSTRUMENTAL_MODEL ?? null,
+    region: process.env.INSTRUMENTAL_REGION ?? null,
+    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 3e4)
+  },
+  /**
+   * Vocal Synthesis
+   * Candidate APIs: ElevenLabs, Musicfy, Suno (vocals), PlayHT
+   */
+  vocal: {
+    apiKey: process.env.VOCAL_API_KEY ?? null,
+    endpoint: process.env.VOCAL_API_ENDPOINT ?? null,
+    model: process.env.VOCAL_MODEL ?? null,
+    region: process.env.VOCAL_REGION ?? null,
+    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 3e4)
+  },
+  /**
+   * Mix & Mastering
+   * Candidate APIs: LANDR, CloudBounce, iZotope Ozone API, Matchering
+   */
+  mastering: {
+    apiKey: process.env.MASTERING_API_KEY ?? null,
+    endpoint: process.env.MASTERING_API_ENDPOINT ?? null,
+    model: process.env.MASTERING_MODEL ?? null,
+    region: process.env.MASTERING_REGION ?? null,
+    timeoutMs: Number(process.env.MASTERING_TIMEOUT_MS ?? 6e4)
+  },
+  /**
+   * Stem Extraction / Separation
+   * Candidate APIs: Demucs, Spleeter, iZotope RX, AudioShake
+   */
+  stems: {
+    apiKey: process.env.STEMS_API_KEY ?? null,
+    endpoint: process.env.STEMS_API_ENDPOINT ?? null,
+    model: process.env.STEMS_MODEL ?? null,
+    region: process.env.STEMS_REGION ?? null,
+    timeoutMs: Number(process.env.STEMS_TIMEOUT_MS ?? 12e4)
+  }
+};
+function isCredentialReady(category) {
+  const slot = CREDENTIAL_SLOTS[category];
+  return slot.apiKey !== null && slot.endpoint !== null;
+}
+function getCredentialSummary(category) {
+  const slot = CREDENTIAL_SLOTS[category];
+  return {
+    apiKeySet: slot.apiKey !== null,
+    endpointSet: slot.endpoint !== null,
+    modelSet: slot.model !== null,
+    regionSet: slot.region !== null,
+    timeoutMs: slot.timeoutMs
+  };
+}
+
+// src/engine/providerResolver.ts
+function resolveProviderMode(category, requestedMode) {
+  const registryEntry = getProvider(category);
+  const envModeConfig = getProviderModeConfig(category);
+  const runtimeOverride = getProviderModeOverride(category);
+  const engineConfig = getActiveEngineConfig();
+  let resolvedMode;
+  let source;
+  if (requestedMode !== void 0) {
+    resolvedMode = requestedMode;
+    source = "runtime-override";
+  } else if (runtimeOverride !== void 0) {
+    resolvedMode = runtimeOverride;
+    source = "runtime-override";
+  } else {
+    resolvedMode = envModeConfig.mode;
+    source = "env-config";
+  }
+  if (registryEntry.status === "disabled") {
+    resolvedMode = "disabled";
+    source = "registry-forced-disabled";
+  }
+  if (resolvedMode === "live" && engineConfig.environment === "development" && !engineConfig.safety.allowLiveInDev) {
+    resolvedMode = "mock";
+    source = "safety-guard";
+  }
+  const isLiveCapable = isProviderActive(category);
+  const credentialsReady = isCredentialReady(category);
+  let canRun = true;
+  let disabledReason = null;
+  if (resolvedMode === "disabled") {
+    canRun = false;
+    disabledReason = `Provider '${category}' is disabled`;
+  } else if (resolvedMode === "live" && !isLiveCapable) {
+    canRun = false;
+    disabledReason = `Provider '${category}' is set to live but registry status is not 'live-ready'. Set registry status \u2192 "live-ready" and isLive \u2192 true to activate.`;
+  } else if (resolvedMode === "live" && !credentialsReady) {
+    canRun = false;
+    disabledReason = `Provider '${category}' is set to live but API credentials are not configured. Set the required env vars (${category.toUpperCase()}_API_KEY, ${category.toUpperCase()}_API_ENDPOINT).`;
+  }
+  return {
+    category,
+    resolvedMode,
+    source,
+    isLiveCapable,
+    credentialsReady,
+    canRun,
+    disabledReason
+  };
+}
+function resolveAllProviders() {
+  const categories = ["instrumental", "vocal", "mastering", "stems"];
+  return Object.fromEntries(
+    categories.map((cat) => [cat, resolveProviderMode(cat)])
+  );
+}
+
+// src/engine/diagnostics.ts
+function getEngineDiagnostics() {
+  const config2 = getActiveEngineConfig();
+  const environment = getActiveEnvironment();
+  const resolved = resolveAllProviders();
+  const categories = ["instrumental", "vocal", "mastering", "stems"];
+  const providers = categories.map((category) => {
+    const res = resolved[category];
+    const reg = getProvider(category);
+    const modeConfig = config2.providerModes[category];
+    return {
+      category,
+      registryStatus: reg.status,
+      isLiveCapable: res.isLiveCapable,
+      resolvedMode: res.resolvedMode,
+      modeSource: res.source,
+      credentials: getCredentialSummary(category),
+      canRun: res.canRun,
+      disabledReason: res.disabledReason,
+      fallbackToMock: modeConfig.fallbackToMock,
+      capabilities: getCapabilities(category)
+    };
+  });
+  const mockCount = providers.filter((p) => p.resolvedMode === "mock").length;
+  const liveCount = providers.filter((p) => p.resolvedMode === "live").length;
+  const disabledCount = providers.filter((p) => p.resolvedMode === "disabled").length;
+  const anyFallbackEnabled = categories.some((c) => config2.providerModes[c].fallbackToMock);
+  let engineMode;
+  if (disabledCount === categories.length) {
+    engineMode = "all-disabled";
+  } else if (liveCount === 0) {
+    engineMode = "all-mock";
+  } else if (liveCount === categories.length - disabledCount) {
+    engineMode = "all-live";
+  } else {
+    engineMode = "partial-live";
+  }
+  return {
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    environment,
+    engineMode,
+    anyFallbackEnabled,
+    providers,
+    safety: config2.safety,
+    capabilitySummary: {
+      anyLiveCapable: providers.some((p) => p.isLiveCapable),
+      anyCredentialsReady: providers.some((p) => p.credentials.apiKeySet && p.credentials.endpointSet),
+      totalProviders: categories.length,
+      mockCount,
+      liveCount,
+      disabledCount
+    }
+  };
 }
 
 // src/routes/generate-audio.ts
@@ -51357,6 +51596,10 @@ router3.get("/engine/providers", (_req, res) => {
     providers,
     engineMode: anyLive ? "partial-live" : "mock"
   });
+});
+router3.get("/engine/diagnostics", (_req, res) => {
+  const diagnostics = getEngineDiagnostics();
+  res.json(diagnostics);
 });
 var generate_audio_default = router3;
 

@@ -23,6 +23,7 @@ import {
   canProviderHandleStems,
   canProviderHandleMasteredExport,
 } from "../engine/compatibility.js";
+import { getEngineDiagnostics } from "../engine/diagnostics.js";
 
 // Re-export legacy types so any downstream code that imports them continues to work
 export type { InstrumentalPayload };
@@ -231,6 +232,28 @@ router.get("/engine/providers", (_req, res) => {
     providers,
     engineMode: anyLive ? "partial-live" : "mock",
   });
+});
+
+/**
+ * GET /engine/diagnostics
+ * Full internal engine state snapshot for admin readiness and debug inspection.
+ *
+ * Returns:
+ *   - Current environment
+ *   - Resolved mode per provider (and the source of that decision)
+ *   - Provider registry statuses and live-capability flags
+ *   - Credential slot readiness (no actual secret values exposed)
+ *   - Provider capability profiles
+ *   - Fallback configuration
+ *   - Overall engine mode classification
+ *   - Active safety settings
+ *
+ * NOTE: This endpoint is for internal / admin use only.
+ * In production, protect this route with auth middleware before exposing it.
+ */
+router.get("/engine/diagnostics", (_req, res) => {
+  const diagnostics = getEngineDiagnostics();
+  res.json(diagnostics);
 });
 
 export default router;

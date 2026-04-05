@@ -97,6 +97,45 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 - `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
 
+## Live Engine Control Layer (V2 Operations Upgrade)
+
+Second architectural upgrade adding full operational control before real audio API integration. Zero UI changes. Zero breaking changes to existing engine, routes, or providers.
+
+### New Files
+
+**`artifacts/api-server/src/engine/engineConfig.ts`**
+Per-environment engine mode configuration. Defines `EngineMode` ("mock" | "live" | "disabled") and `EngineEnvironment` ("development" | "staging" | "production"). Each environment (dev/staging/prod) has independent mode defaults and `fallbackToMock` flags per provider. Supports runtime overrides via `setProviderModeOverride(category, mode)` / `clearProviderModeOverride(category)`. Key exports: `getActiveEngineConfig()`, `getProviderModeConfig(category)`, `getProviderModeOverride(category)`.
+
+**`artifacts/api-server/src/engine/providerCredentials.ts`**
+Credential slot registry for future live provider API keys. Each provider (instrumental, vocal, mastering, stems) has a `ProviderCredentialSlot` with `apiKey`, `endpoint`, `model`, `region`, `timeoutMs` — all sourced from env vars (e.g. `INSTRUMENTAL_API_KEY`, `INSTRUMENTAL_API_ENDPOINT`). All null by default — safe to deploy now. Key exports: `getProviderCredentials(category)`, `isCredentialReady(category)`, `getCredentialSummary(category)` (no secret values).
+
+**`artifacts/api-server/src/engine/providerResolver.ts`**
+Single decision point for "what mode should this provider run in?" Resolution priority: (1) caller-specified override → (2) runtime override → (3) env-config default → (4) registry forced-disabled. Safety guard prevents live mode from running in development unless `allowLiveInDev` is explicitly set. Returns `ResolvedProviderMode` with `resolvedMode`, `source`, `isLiveCapable`, `credentialsReady`, `canRun`, `disabledReason`. Key exports: `resolveProviderMode(category, requestedMode?)`, `resolveAllProviders()`.
+
+**`artifacts/api-server/src/engine/fallback.ts`**
+Structured fallback behavior for live provider failures. Supports two strategies per provider: "fall back to mock" (reads `fallbackToMock` from env config) or "fail cleanly" (structured `NormalizedResponse` with error). Never silently swallows failures. Key exports: `buildFailureResponse(jobId, category, reason, message)`, `executeFallback(jobId, category, error, mockRunner)`.
+
+**`artifacts/api-server/src/engine/diagnostics.ts`**
+Complete engine state snapshot for admin/debug inspection. Reports: current environment, resolved modes and their sources, registry statuses, credential slot readiness (no secret values), capability profiles, fallback config, overall engine mode classification ("all-mock" | "partial-live" | "all-live" | "all-disabled"), safety settings. Key exports: `getEngineDiagnostics()` → `EngineDiagnostics`.
+
+### Updated Files
+
+**`artifacts/api-server/src/engine/types.ts`**
+Added `EngineMode` type ("mock" | "live" | "disabled") alongside existing `ProviderStatus`.
+
+**`artifacts/api-server/src/routes/generate-audio.ts`**
+Added `GET /engine/diagnostics` endpoint that returns a full `EngineDiagnostics` snapshot. Internal/admin use only — gate with auth middleware before exposing publicly in production.
+
+### Live Provider Activation Checklist (per category)
+1. Set registry `status → "live-ready"`, `isLive → true` in `providers/registry.ts`
+2. Set environment config `mode → "live"` in `engineConfig.ts`
+3. Configure credential env vars (`<CATEGORY>_API_KEY`, `<CATEGORY>_API_ENDPOINT`, etc.)
+4. Implement the live `run()` logic inside the provider module
+5. The resolver automatically enables it — routes and UI untouched
+
+### Diagnostics Endpoint
+`GET /api/engine/diagnostics` — returns full engine state. No auth required in development. Add auth middleware before exposing in production.
+
 ## Engine Integration Readiness Layer (V2 Architecture Upgrade)
 
 Six-component internal architecture upgrade hardening the engine before real audio API integration. No UI changes.

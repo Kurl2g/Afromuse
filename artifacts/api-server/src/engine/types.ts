@@ -25,6 +25,17 @@ export type ProviderCategory =
  */
 export type ProviderStatus = "mock" | "live-ready" | "unavailable" | "disabled";
 
+// ─── Engine Mode ──────────────────────────────────────────────────────────────
+
+/**
+ * The engine-level control mode for a provider category.
+ * Set via engineConfig.ts per-environment or via runtime override.
+ *   mock     — AI brief generation only; no real audio API calls
+ *   live     — calls the real external audio API (requires credentials + live-ready registry)
+ *   disabled — completely off; jobs fail cleanly at dispatch
+ */
+export type EngineMode = "mock" | "live" | "disabled";
+
 // ─── Provider Capability Profile ──────────────────────────────────────────────
 
 /**
