@@ -97,6 +97,25 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 - `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
 
+## Project Library / Saved Sessions (V2 Upgrade)
+
+Local-first session persistence layer added to the Studio page. Architecture is designed to be swapped for a real backend later without touching the UI layer.
+
+### New Files
+
+- **`artifacts/afromuse-ai/src/lib/projectLibrary.ts`** — `SavedSession` model, localStorage persistence (up to 50 sessions), status intelligence (`Draft → In Progress → Instrumental Ready → Vocal Ready → Export Ready`), CRUD helpers (`saveSession`, `deleteSessionById`, `duplicateSessionById`, `updateSessionOutputRegistry`).
+- **`artifacts/afromuse-ai/src/context/ProjectLibraryContext.tsx`** — React context provider (`ProjectLibraryProvider`) with `saveCurrentSession`, `deleteSession`, `duplicateSession`, and `refresh`. Also exports `extractResumeState` helper.
+- **`artifacts/afromuse-ai/src/components/studio/ProjectLibraryPanel.tsx`** — Compact collapsible "Project Library" sidebar panel showing saved sessions with status badges, last-updated timestamps, and Resume / Duplicate / Delete actions.
+
+### Integration Points
+
+- **`artifacts/afromuse-ai/src/App.tsx`** — `ProjectLibraryProvider` wraps the Studio route.
+- **`artifacts/afromuse-ai/src/pages/Studio.tsx`** — Uses `useProjectLibrary` to save sessions, and `handleResume` to restore all form state + draft from a saved session. "Save to Projects" button now saves locally without requiring login.
+
+### Session Fields
+
+`sessionId`, `sessionTitle`, `topic`, `genre`, `mood`, `songLength`, `lyricsSource`, `lyricsText`, `languageFlavor`, `customFlavor`, `style`, `notes`, `commercialMode`, `lyricalDepth`, `hookRepeat`, `genderVoiceModel`, `performanceFeel`, `bpm`, `key`, `energy`, `atmosphere`, `leadVoice`, `mixFeel`, `buildMode`, `currentStage`, `exportStatus`, `draft`, `outputRegistry`, `createdAt`, `updatedAt`.
+
 ## Lead Vocal Generation Feature
 
 Added `POST /api/generate-lead-vocals` endpoint in `artifacts/api-server/src/routes/generate-audio.ts`.

@@ -8,15 +8,17 @@ import {
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
 import SendToAudioCard from "@/components/audio/SendToAudioCard";
 import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
+import ProjectLibraryPanel from "@/components/studio/ProjectLibraryPanel";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import {
   formatDraftForClipboard,
-  saveProjectToStorage,
   type SongDraft,
 } from "@/lib/songGenerator";
 import { useAuth } from "@/context/AuthContext";
 import { usePlan, PLAN_LIMITS, type Plan } from "@/context/PlanContext";
+import { useProjectLibrary, extractResumeState } from "@/context/ProjectLibraryContext";
+import type { SavedSession } from "@/lib/projectLibrary";
 
 type GenerationStatus = "idle" | "generating" | "done";
 
@@ -71,6 +73,7 @@ const LANGUAGE_FLAVORS = [
 export default function Studio() {
   const { toast } = useToast();
   const { isLoggedIn } = useAuth();
+  const { saveCurrentSession } = useProjectLibrary();
   const {
     plan,
     hasAccess,
@@ -106,6 +109,7 @@ export default function Studio() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
 
@@ -211,6 +215,7 @@ export default function Studio() {
     setDraft(null);
     setSeed(0);
     setSaved(false);
+    setActiveSessionId(null);
   };
 
   const copyToClipboard = async () => {
@@ -233,16 +238,57 @@ export default function Studio() {
 
   const saveProject = () => {
     if (!draft) return;
-    if (!isLoggedIn) {
-      setShowLoginModal(true);
-      return;
-    }
-    saveProjectToStorage(topic, genre, mood, style, draft);
+    const persistedSession = saveCurrentSession({
+      sessionId: activeSessionId ?? undefined,
+      topic,
+      genre,
+      mood,
+      songLength,
+      lyricsSource,
+      languageFlavor,
+      customFlavor,
+      style,
+      notes,
+      commercialMode,
+      lyricalDepth,
+      hookRepeat,
+      genderVoiceModel,
+      performanceFeel,
+      draft,
+    });
+    setActiveSessionId(persistedSession.sessionId);
     setSaved(true);
     toast({
-      title: "Project saved!",
-      description: `"${draft.title}" saved to My Projects.`,
+      title: "Session saved!",
+      description: `"${draft.title}" saved to your Project Library.`,
     });
+  };
+
+  const handleResume = (session: SavedSession) => {
+    const state = extractResumeState(session);
+    setTopic(state.topic);
+    setGenre(state.genre);
+    setMood(state.mood);
+    setSongLength(state.songLength as SongLength);
+    setLyricsSource(state.lyricsSource as "Studio Lyrics" | "Paste My Own" | "Instrumental Only");
+    setLanguageFlavor(state.languageFlavor);
+    setCustomFlavor(state.customFlavor);
+    setStyle(state.style);
+    setNotes(state.notes);
+    setCommercialMode(state.commercialMode);
+    setLyricalDepth(state.lyricalDepth as "Simple" | "Balanced" | "Deep");
+    setHookRepeat(state.hookRepeat as "Low" | "Medium" | "High");
+    setGenderVoiceModel(state.genderVoiceModel as "Male" | "Female" | "Mixed" | "Random");
+    setPerformanceFeel(state.performanceFeel);
+    setDraft(state.draft);
+    setActiveSessionId(state.sessionId);
+    setSaved(false);
+    setStatus(state.draft ? "done" : "idle");
+    toast({
+      title: "Session resumed",
+      description: `"${state.sessionTitle}" loaded into the studio.`,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -391,8 +437,12 @@ export default function Studio() {
 
         <div className="grid lg:grid-cols-12 gap-6 xl:gap-8 items-start">
 
-          {/* ── LEFT PANEL: Form ──────────────────────────────────────── */}
-          <div className="lg:col-span-4 lg:sticky lg:top-28">
+          {/* ── LEFT PANEL: Library + Form ───────────────────────────── */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-4">
+
+            {/* Project Library Panel */}
+            <ProjectLibraryPanel onResume={handleResume} />
+
             <div className="rounded-3xl border border-white/8 bg-gradient-to-b from-[#0e0e1a] to-[#090912] backdrop-blur-xl shadow-2xl overflow-hidden">
 
               {/* Form header */}

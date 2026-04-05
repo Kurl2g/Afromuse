@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { PlanProvider } from "@/context/PlanContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { PlanSync } from "@/context/PlanSync";
+import { ProjectLibraryProvider } from "@/context/ProjectLibraryContext";
 
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -71,7 +72,9 @@ function Router() {
 
       <Route path="/studio">
         <ProtectedRoute>
-          <PageLayout><Studio /></PageLayout>
+          <ProjectLibraryProvider>
+            <PageLayout><Studio /></PageLayout>
+          </ProjectLibraryProvider>
         </ProtectedRoute>
       </Route>
 
