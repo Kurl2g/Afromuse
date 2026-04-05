@@ -117,6 +117,7 @@ externalPort = 6800
 [userenv.shared]
 PORT = "5000"
 BASE_PATH = "/"
+ELEVENLABS_MUSIC_ENABLED = "true"
 
 [deployment]
 deploymentTarget = "cloudrun"

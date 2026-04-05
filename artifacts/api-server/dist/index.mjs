@@ -50555,23 +50555,34 @@ function adaptStems(raw) {
 }
 
 // src/engine/engineConfig.ts
+function resolveElevenLabsInstrumentalMode() {
+  const explicit = (process.env.ELEVENLABS_PROVIDER_MODE ?? "").trim().toLowerCase();
+  if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
+    return explicit;
+  }
+  const enabled = (process.env.ELEVENLABS_MUSIC_ENABLED ?? "").trim().toLowerCase();
+  if (enabled === "true" || enabled === "1" || enabled === "yes") return "live";
+  return "mock";
+}
+var ELEVENLABS_INSTRUMENTAL_MODE = resolveElevenLabsInstrumentalMode();
+var ELEVENLABS_ALLOW_LIVE_IN_DEV = ELEVENLABS_INSTRUMENTAL_MODE === "live";
 var DEVELOPMENT_CONFIG = {
   environment: "development",
   providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: true },
+    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
     vocal: { mode: "mock", fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
   },
   safety: {
-    allowLiveInDev: false,
+    allowLiveInDev: ELEVENLABS_ALLOW_LIVE_IN_DEV,
     strictMode: false
   }
 };
 var STAGING_CONFIG = {
   environment: "staging",
   providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: true },
+    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
     vocal: { mode: "mock", fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
@@ -50584,7 +50595,7 @@ var STAGING_CONFIG = {
 var PRODUCTION_CONFIG = {
   environment: "production",
   providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: false },
+    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
     vocal: { mode: "mock", fallbackToMock: false },
     mastering: { mode: "mock", fallbackToMock: false },
     stems: { mode: "mock", fallbackToMock: false }
@@ -50690,10 +50701,10 @@ function getCapabilities(category) {
 var REGISTRY = {
   instrumental: {
     category: "instrumental",
-    name: "AfroMuse Instrumental Engine",
-    description: "Generates AI session briefs for instrumental tracks. Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
-    status: "mock",
-    isLive: false
+    name: "AfroMuse Instrumental Engine \u2014 ElevenLabs Music",
+    description: "Generates real instrumental audio via ElevenLabs Music API, enriched with an AI session brief from the NVIDIA producer brain.",
+    status: "live-ready",
+    isLive: true
   },
   vocal: {
     category: "vocal",
@@ -50734,15 +50745,18 @@ function isProviderActive(category) {
 // src/engine/providerCredentials.ts
 var CREDENTIAL_SLOTS = {
   /**
-   * Instrumental / Beat Generation
-   * Candidate APIs: Udio, Suno, Stability Audio, MusicGen
+   * Instrumental / Beat Generation — ElevenLabs Music API
+   * Primary key: ELEVENLABS_API_KEY
+   * Fallback key: INSTRUMENTAL_API_KEY (legacy slot)
+   * Endpoint defaults to the ElevenLabs Music compose endpoint so that
+   * isCredentialReady() returns true as soon as ELEVENLABS_API_KEY is set.
    */
   instrumental: {
-    apiKey: process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? null,
+    apiKey: process.env.ELEVENLABS_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1/music/compose",
     model: process.env.INSTRUMENTAL_MODEL ?? null,
     region: process.env.INSTRUMENTAL_REGION ?? null,
-    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 3e4)
+    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 9e4)
   },
   /**
    * Vocal Synthesis
@@ -51100,12 +51114,91 @@ async function runMock(jobId, p) {
   logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental mock execution complete");
   return adaptInstrumental(raw);
 }
+function buildElevenLabsPrompt(p) {
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const bpm = p.bpm ?? 96;
+  const key = p.key ?? "F# Minor";
+  const energy = p.energy ?? "Medium";
+  const parts = [genre];
+  parts.push(`${mood.toLowerCase()} mood`);
+  parts.push(`${bpm} BPM`);
+  parts.push(`key of ${key}`);
+  parts.push(`${energy.toLowerCase()} energy`);
+  if (p.soundReference) parts.push(`inspired by ${p.soundReference}`);
+  if (p.styleReference && p.styleReference !== p.soundReference)
+    parts.push(p.styleReference);
+  if (p.mixFeel) parts.push(`${p.mixFeel.toLowerCase()} mix feel`);
+  if (p.drumDensity) parts.push(`${p.drumDensity.toLowerCase()} drum density`);
+  if (p.bassWeight) parts.push(`${p.bassWeight.toLowerCase()} bass`);
+  if (p.productionNotes?.chordVibe) parts.push(p.productionNotes.chordVibe);
+  if (p.productionNotes?.melodyDirection) parts.push(p.productionNotes.melodyDirection);
+  if (p.productionNotes?.arrangement) parts.push(p.productionNotes.arrangement);
+  if (p.introBehavior) parts.push(`${p.introBehavior.toLowerCase()} intro`);
+  if (p.chorusLift) parts.push(`${p.chorusLift.toLowerCase()} chorus lift`);
+  return parts.join(", ") + ". Instrumental only, no vocals.";
+}
+function resolveDurationMs(songLength) {
+  const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;
+  if (!isNaN(overrideSecs) && overrideSecs >= 3 && overrideSecs <= 600) {
+    return overrideSecs * 1e3;
+  }
+  if (songLength === "Short") return 135e3;
+  if (songLength === "Full") return 27e4;
+  return 2e5;
+}
 async function callLiveInstrumentalProvider(p, jobId) {
   const creds = getProviderCredentials("instrumental");
-  void creds;
-  throw new Error(
-    "Live instrumental provider is not yet implemented. Implement callLiveInstrumentalProvider() body and set INSTRUMENTAL_API_KEY + INSTRUMENTAL_API_ENDPOINT."
+  if (!creds.apiKey) {
+    throw new Error(
+      "ELEVENLABS_API_KEY is not configured. Set the secret to enable live instrumental generation."
+    );
+  }
+  const prompt = buildElevenLabsPrompt(p);
+  const durationMs = resolveDurationMs(p.songLength);
+  const endpoint = creds.endpoint;
+  logger.info({ jobId, prompt, durationMs }, "ElevenLabs Music API \u2014 requesting generation");
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "xi-api-key": creds.apiKey,
+      "Content-Type": "application/json",
+      "Accept": "audio/mpeg, audio/*, */*"
+    },
+    body: JSON.stringify({
+      prompt,
+      duration_ms: durationMs,
+      force_instrumental: true
+    }),
+    signal: AbortSignal.timeout(creds.timeoutMs)
+  });
+  if (!response.ok) {
+    const errText = await response.text().catch(() => response.statusText);
+    throw new Error(`ElevenLabs Music API error: ${response.status} \u2014 ${errText}`);
+  }
+  const audioBuffer = await response.arrayBuffer();
+  const base643 = Buffer.from(audioBuffer).toString("base64");
+  const dataUrl = `data:audio/mpeg;base64,${base643}`;
+  const durationSecs = Math.round(durationMs / 1e3);
+  const mins = Math.floor(durationSecs / 60);
+  const secs = durationSecs % 60;
+  const durationStr = `${mins}:${secs.toString().padStart(2, "0")}`;
+  logger.info(
+    { jobId, durationStr, audioBytes: audioBuffer.byteLength },
+    "ElevenLabs Music API \u2014 audio received"
   );
+  return {
+    previewUrl: dataUrl,
+    wavUrl: null,
+    externalJobId: null,
+    generationTitle: `${p.genre ?? "Afrobeats"} Instrumental \u2014 ${p.mood ?? "Uplifting"}`,
+    sonicNotes: `ElevenLabs Music \u2014 ${prompt.slice(0, 100)}`,
+    duration: durationStr,
+    coverArtUrl: null,
+    waveformMeta: {
+      durationSeconds: durationSecs
+    }
+  };
 }
 async function runLive(jobId, p) {
   logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental live execution starting");

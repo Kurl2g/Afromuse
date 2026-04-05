@@ -38,12 +38,12 @@ export interface ProviderConfig {
 const REGISTRY: Record<ProviderCategory, ProviderConfig> = {
   instrumental: {
     category: "instrumental",
-    name: "AfroMuse Instrumental Engine",
+    name: "AfroMuse Instrumental Engine — ElevenLabs Music",
     description:
-      "Generates AI session briefs for instrumental tracks. " +
-      "Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
-    status: "mock",
-    isLive: false,
+      "Generates real instrumental audio via ElevenLabs Music API, " +
+      "enriched with an AI session brief from the NVIDIA producer brain.",
+    status: "live-ready",
+    isLive: true,
   },
   vocal: {
     category: "vocal",

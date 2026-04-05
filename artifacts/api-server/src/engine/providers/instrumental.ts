@@ -265,17 +265,61 @@ async function runMock(jobId: string, p: InstrumentalPayload): Promise<Normalize
   return adaptInstrumental(raw);
 }
 
-// ─── Live Request Execution Block ─────────────────────────────────────────────
-// This is the isolated slot for the real beat-generation API call.
+// ─── ElevenLabs Music API — Prompt Builder ────────────────────────────────────
+// Translates AfroMuse session fields into a rich ElevenLabs music prompt.
+// The prompt is the primary creative control surface for ElevenLabs generation.
+
+function buildElevenLabsPrompt(p: InstrumentalPayload): string {
+  const genre   = p.genre   ?? "Afrobeats";
+  const mood    = p.mood    ?? "Uplifting";
+  const bpm     = p.bpm     ?? 96;
+  const key     = p.key     ?? "F# Minor";
+  const energy  = p.energy  ?? "Medium";
+  const parts: string[] = [genre];
+
+  parts.push(`${mood.toLowerCase()} mood`);
+  parts.push(`${bpm} BPM`);
+  parts.push(`key of ${key}`);
+  parts.push(`${energy.toLowerCase()} energy`);
+
+  if (p.soundReference)                  parts.push(`inspired by ${p.soundReference}`);
+  if (p.styleReference && p.styleReference !== p.soundReference)
+                                          parts.push(p.styleReference);
+  if (p.mixFeel)                          parts.push(`${p.mixFeel.toLowerCase()} mix feel`);
+  if (p.drumDensity)                      parts.push(`${p.drumDensity.toLowerCase()} drum density`);
+  if (p.bassWeight)                       parts.push(`${p.bassWeight.toLowerCase()} bass`);
+  if (p.productionNotes?.chordVibe)       parts.push(p.productionNotes.chordVibe);
+  if (p.productionNotes?.melodyDirection) parts.push(p.productionNotes.melodyDirection);
+  if (p.productionNotes?.arrangement)     parts.push(p.productionNotes.arrangement);
+  if (p.introBehavior)                    parts.push(`${p.introBehavior.toLowerCase()} intro`);
+  if (p.chorusLift)                       parts.push(`${p.chorusLift.toLowerCase()} chorus lift`);
+
+  return parts.join(", ") + ". Instrumental only, no vocals.";
+}
+
+// ─── ElevenLabs Music API — Duration Mapper ───────────────────────────────────
+
+function resolveDurationMs(songLength?: string): number {
+  const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS
+    ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10)
+    : NaN;
+  if (!isNaN(overrideSecs) && overrideSecs >= 3 && overrideSecs <= 600) {
+    return overrideSecs * 1000;
+  }
+  if (songLength === "Short") return 135_000; // 2:15
+  if (songLength === "Full")  return 270_000; // 4:30
+  return 200_000;                              // 3:20 default
+}
+
+// ─── Live Request Execution Block — ElevenLabs Music API ──────────────────────
+// Calls POST /v1/music/compose, receives binary MP3 audio, converts to a
+// base64 data URL that the client can use as a direct <audio> src.
 //
-// TO INTEGRATE A REAL PROVIDER:
-//   1. Read credentials from getProviderCredentials("instrumental") — already wired.
-//   2. Build the provider-specific HTTP request using `p` (the InstrumentalPayload).
-//   3. Await the response from the real API.
-//   4. Map its fields into LiveInstrumentalProviderResponse and return it.
-//   5. Everything downstream (blueprint enrichment, adapter, normalization) is ready.
-//
-// The function signature and return type must not change — only the body.
+// Supported env vars (all optional beyond ELEVENLABS_API_KEY):
+//   ELEVENLABS_MUSIC_ENABLED          — "true" | "1" activates live mode
+//   ELEVENLABS_PROVIDER_MODE          — "live" | "mock" | "disabled" explicit override
+//   ELEVENLABS_OUTPUT_FORMAT          — informational; ElevenLabs returns MP3 by default
+//   ELEVENLABS_DEFAULT_DURATION_SECONDS — integer, overrides per-session duration
 
 async function callLiveInstrumentalProvider(
   p: InstrumentalPayload,
@@ -283,46 +327,67 @@ async function callLiveInstrumentalProvider(
 ): Promise<LiveInstrumentalProviderResponse> {
   const creds = getProviderCredentials("instrumental");
 
-  // ── DROP-IN ZONE ────────────────────────────────────────────────────────────
-  // Replace the block below with a real provider API call.
-  // Example (Udio / Suno / Stability Audio / custom endpoint):
-  //
-  //   const response = await fetch(creds.endpoint!, {
-  //     method: "POST",
-  //     headers: {
-  //       "Authorization": `Bearer ${creds.apiKey}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       genre: p.genre,
-  //       mood: p.mood,
-  //       bpm: p.bpm,
-  //       key: p.key,
-  //       // ... provider-specific fields
-  //     }),
-  //     signal: AbortSignal.timeout(creds.timeoutMs),
-  //   });
-  //   if (!response.ok) throw new Error(`Provider error: ${response.status} ${response.statusText}`);
-  //   const data = await response.json();
-  //   return {
-  //     previewUrl:    data.audio_url ?? null,
-  //     wavUrl:        data.wav_url ?? null,
-  //     externalJobId: data.job_id ?? null,
-  //     generationTitle: data.title ?? null,
-  //     sonicNotes:    data.tags ?? null,
-  //     duration:      data.duration ?? null,
-  //     coverArtUrl:   data.cover_image_url ?? null,
-  //     waveformMeta:  data.waveform ?? null,
-  //   };
-  // ────────────────────────────────────────────────────────────────────────────
+  if (!creds.apiKey) {
+    throw new Error(
+      "ELEVENLABS_API_KEY is not configured. " +
+      "Set the secret to enable live instrumental generation.",
+    );
+  }
 
-  // Structural placeholder — throws so the live path triggers fallback correctly.
-  // Remove this line when a real provider is implemented above.
-  void creds; // consumed — suppress unused warning until real implementation
-  throw new Error(
-    "Live instrumental provider is not yet implemented. " +
-    "Implement callLiveInstrumentalProvider() body and set INSTRUMENTAL_API_KEY + INSTRUMENTAL_API_ENDPOINT.",
+  const prompt     = buildElevenLabsPrompt(p);
+  const durationMs = resolveDurationMs(p.songLength);
+  const endpoint   = creds.endpoint!; // always set — defaults in providerCredentials.ts
+
+  logger.info({ jobId, prompt, durationMs }, "ElevenLabs Music API — requesting generation");
+
+  const response = await fetch(endpoint, {
+    method:  "POST",
+    headers: {
+      "xi-api-key":   creds.apiKey,
+      "Content-Type": "application/json",
+      "Accept":       "audio/mpeg, audio/*, */*",
+    },
+    body: JSON.stringify({
+      prompt,
+      duration_ms:       durationMs,
+      force_instrumental: true,
+    }),
+    signal: AbortSignal.timeout(creds.timeoutMs),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => response.statusText);
+    throw new Error(`ElevenLabs Music API error: ${response.status} — ${errText}`);
+  }
+
+  // ElevenLabs returns raw binary audio — convert to a base64 data URL so the
+  // client can use it as an <audio> src without needing file storage.
+  const audioBuffer = await response.arrayBuffer();
+  const base64      = Buffer.from(audioBuffer).toString("base64");
+  const dataUrl     = `data:audio/mpeg;base64,${base64}`;
+
+  const durationSecs = Math.round(durationMs / 1000);
+  const mins  = Math.floor(durationSecs / 60);
+  const secs  = durationSecs % 60;
+  const durationStr = `${mins}:${secs.toString().padStart(2, "0")}`;
+
+  logger.info(
+    { jobId, durationStr, audioBytes: audioBuffer.byteLength },
+    "ElevenLabs Music API — audio received",
   );
+
+  return {
+    previewUrl:      dataUrl,
+    wavUrl:          null,
+    externalJobId:   null,
+    generationTitle: `${p.genre ?? "Afrobeats"} Instrumental — ${p.mood ?? "Uplifting"}`,
+    sonicNotes:      `ElevenLabs Music — ${prompt.slice(0, 100)}`,
+    duration:        durationStr,
+    coverArtUrl:     null,
+    waveformMeta: {
+      durationSeconds: durationSecs,
+    },
+  };
 }
 
 // ─── Live Execution Path ──────────────────────────────────────────────────────

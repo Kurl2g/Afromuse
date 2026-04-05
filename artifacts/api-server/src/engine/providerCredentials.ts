@@ -44,15 +44,18 @@ export interface ProviderCredentialSlot {
 
 const CREDENTIAL_SLOTS: Record<ProviderCategory, ProviderCredentialSlot> = {
   /**
-   * Instrumental / Beat Generation
-   * Candidate APIs: Udio, Suno, Stability Audio, MusicGen
+   * Instrumental / Beat Generation — ElevenLabs Music API
+   * Primary key: ELEVENLABS_API_KEY
+   * Fallback key: INSTRUMENTAL_API_KEY (legacy slot)
+   * Endpoint defaults to the ElevenLabs Music compose endpoint so that
+   * isCredentialReady() returns true as soon as ELEVENLABS_API_KEY is set.
    */
   instrumental: {
-    apiKey:    process.env.INSTRUMENTAL_API_KEY    ?? null,
-    endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? null,
-    model:     process.env.INSTRUMENTAL_MODEL     ?? null,
-    region:    process.env.INSTRUMENTAL_REGION    ?? null,
-    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 30_000),
+    apiKey:    process.env.ELEVENLABS_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1/music/compose",
+    model:     process.env.INSTRUMENTAL_MODEL ?? null,
+    region:    process.env.INSTRUMENTAL_REGION ?? null,
+    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 90_000),
   },
 
   /**
