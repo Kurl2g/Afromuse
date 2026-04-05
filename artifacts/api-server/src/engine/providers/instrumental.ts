@@ -25,13 +25,13 @@
  * ──────────────────────────────────────────────────────────────────────────────
  */
 
-import OpenAI from "openai";
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
 import { adaptInstrumental, type RawInstrumentalResponse } from "../adapters.js";
 import { resolveProviderMode } from "../providerResolver.js";
 import { executeFallback, buildFailureResponse } from "../fallback.js";
 import { getProviderCredentials } from "../providerCredentials.js";
+import { resolveModelAndClient } from "../nvidiaClient.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -204,15 +204,14 @@ async function fetchAiSessionBrief(
   p: InstrumentalPayload,
   jobId: string,
 ): Promise<Partial<SessionBlueprintData> | null> {
-  const apiKey = process.env.NVIDIA_API_KEY;
-  if (!apiKey) {
+  const { model, client: ai } = resolveModelAndClient("GENERATE_INSTRUMENTAL_MODEL");
+  if (!ai) {
     logger.warn({ jobId }, "NVIDIA_API_KEY not set — skipping instrumental AI brief");
     return null;
   }
 
-  const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
   const res = await ai.chat.completions.create({
-    model: "qwen/qwen3.5-122b-a10b",
+    model,
     messages: [
       { role: "system", content: AI_SYSTEM_PROMPT },
       { role: "user", content: buildAiPrompt(p) },
