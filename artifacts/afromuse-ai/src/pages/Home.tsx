@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button, Badge } from "@/components/ui-elements";
-import { Sparkles, Music, PenTool, Layers, Play, CheckCircle2, Lock, ArrowRight, ArrowUpRight, Mic2, Sliders, FileText, Copy, Volume2, Music2, Download } from "lucide-react";
+import { Sparkles, Music, PenTool, Layers, Play, CheckCircle2, Lock, ArrowRight, ArrowUpRight, Mic2, Sliders, FileText, Copy, UserCircle, Users, Globe } from "lucide-react";
 
 export default function Home() {
   return (
