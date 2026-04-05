@@ -32,10 +32,10 @@ const MODEL_DEFAULTS: Record<string, string> = {
   MASTERING_NOTES_MODEL:       "meta/llama-3.3-70b-instruct",
   STEM_EXTRACTION:             "meta/llama-3.3-70b-instruct",
   REASONING_MODEL:             "deepseek-ai/deepseek-r1-distill-qwen-32b",
-  SONGWRITINGMODEL:            "meta/llama-3.3-70b-instruct",
+  SONGWRITINGMODEL:            "qwen/qwen3.5-122b-a10b",
   GENERATE_MASTER_MIX:         "meta/llama-3.3-70b-instruct",
-  LYRICS_MODEL:                "meta/llama-3.3-70b-instruct",
-  ARRANGEMENT_MODEL:           "meta/llama-3.3-70b-instruct",
+  LYRICS_MODEL:                "qwen/qwen3.5-122b-a10b",
+  ARRANGEMENT_MODEL:           "qwen/qwen3.5-122b-a10b",
   SECTION_INTELEGENCE_MODEL:   "meta/llama-3.3-70b-instruct",
 };
 
