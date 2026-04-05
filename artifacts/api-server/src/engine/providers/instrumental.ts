@@ -32,6 +32,7 @@ import { resolveProviderMode } from "../providerResolver.js";
 import { executeFallback, buildFailureResponse } from "../fallback.js";
 import { getProviderCredentials } from "../providerCredentials.js";
 import { resolveModelAndClient } from "../nvidiaClient.js";
+import { analyzeLyricsSignal, resolveLyricsInfluence, buildLyricsAiContext } from "../lyricsSignal.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,9 @@ export interface InstrumentalPayload {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  // Lyrics intelligence — raw lyrics text for signal derivation
+  // Used to shape the ElevenLabs prompt and NVIDIA AI brief without exposing raw text in the prompt
+  lyricsText?: string;
 }
 
 // ─── Live Provider Response Shape ─────────────────────────────────────────────
@@ -184,6 +188,10 @@ function buildAiPrompt(p: InstrumentalPayload): string {
   const drumCharacter = (p.drumCharacter ?? "").trim() || "Punchy";
   const hookLift      = (p.hookLift      ?? "").trim() || "Balanced";
 
+  // Lyrics-aware context block — only included when lyrics are present
+  const lyricsSignal = p.lyricsText?.trim() ? analyzeLyricsSignal(p.lyricsText) : null;
+  const lyricsAiBlock = lyricsSignal ? buildLyricsAiContext(lyricsSignal) + "\n\n" : "";
+
   return `Generate an instrumental session brief for this configuration:
 
 GENRE: ${genre}
@@ -203,7 +211,7 @@ BEAT DNA:
   Drum Character: ${drumCharacter}
   Hook Lift: ${hookLift}
 
-Return ONLY this JSON object with no markdown, no code fences, no extra text:
+${lyricsAiBlock}Return ONLY this JSON object with no markdown, no code fences, no extra text:
 {
   "beatSummary": "One compelling line (max 20 words) describing this beat's groove character and feel — be specific to genre + BPM",
   "arrangementMap": "Full arrangement breakdown with specific producer notes for each section: Intro → Verse → Chorus/Hook → Bridge → Outro. 3-4 sentences total.",
@@ -632,9 +640,14 @@ export function buildElevenLabsPrompt(p: InstrumentalPayload): BuiltPrompt {
   if (hookLiftDesc)  sentence5Parts.push(hookLiftDesc);
   const sentence5 = sentence5Parts.length ? sentence5Parts.join(". ") + "." : null;
 
+  // ── Sentence 6: Lyrics-aware direction ───────────────────────────────────────
+  // When lyrics are present, derive a signal and inject a beat-shaping sentence.
+  // The signal is deterministic and does not expose raw lyric content in the prompt.
+  const lyricsSignal = p.lyricsText?.trim() ? analyzeLyricsSignal(p.lyricsText) : null;
+  const sentence6 = lyricsSignal ? resolveLyricsInfluence(lyricsSignal) : null;
+
   // ── Assemble final prompt ─────────────────────────────────────────────────────
-  // Keep it to ≤ 5 sentences. Trim anything empty.
-  const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5]
+  const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5, sentence6]
     .filter((s): s is string => Boolean(s?.trim()));
 
   const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
@@ -650,6 +663,7 @@ export function buildElevenLabsPrompt(p: InstrumentalPayload): BuiltPrompt {
     melodyDensRaw   ? `Melody: ${melodyDensRaw}`         : null,
     drumCharRaw     ? `Drum char: ${drumCharRaw}`        : null,
     hookLiftRaw     ? `Hook lift: ${hookLiftRaw}`        : null,
+    lyricsSignal    ? `Lyrics: ${lyricsSignal.summary}`  : null,
   ].filter(Boolean).join(" · ");
 
   return { prompt, brief };
@@ -738,8 +752,12 @@ async function callLiveInstrumentalProvider(
   );
 
   // sonicNotes stores: the diagnostic brief + the first 120 chars of the built prompt.
+  // Includes lyrics signal summary when lyrics were provided.
   // This is safe for internal inspection/tuning — it is NOT exposed to the main UI.
-  const sonicNotes = `[AfroMuse Brief] ${brief} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "…" : ""}`;
+  const lyricsNote = p.lyricsText?.trim()
+    ? (() => { const sig = analyzeLyricsSignal(p.lyricsText!); return sig ? ` | LyricsSignal: ${sig.summary}` : ""; })()
+    : "";
+  const sonicNotes = `[AfroMuse Brief] ${brief}${lyricsNote} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "…" : ""}`;
 
   return {
     previewUrl:      dataUrl,

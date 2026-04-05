@@ -481,6 +481,69 @@ export function buildVocalSections(opts: {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Lyrics Beat Direction
+// Maps a LyricsTone to specific beat-shaping language for arrangement and
+// producer notes — making the beat feel built around the song.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface LyricsDirection {
+  arrangementHint: string;
+  percussionHint: string;
+  melodicHint: string;
+  spaceHint: string;
+  hookHint: string;
+}
+
+const LYRICS_DIRECTION_MAP: Record<LyricsTone, LyricsDirection> = {
+  spiritual: {
+    arrangementHint: "Restraint and openness — emotional space is the arrangement decision.",
+    percussionHint:  "Light percussion — spiritual songs breathe; avoid aggressive drum attack.",
+    melodicHint:     "Warm harmonic pads and ambient lift — melody serves reverence, not dominance.",
+    spaceHint:       "Wide, reverb-soaked mix — the space itself carries emotion.",
+    hookHint:        "Congregational hook architecture — the hook must be immediately singable back.",
+  },
+  intimate: {
+    arrangementHint: "Arrangement breathes for vocal intimacy — space around the vocal at all times.",
+    percussionHint:  "Soft, understated drums — the groove supports, never competes with the vocal.",
+    melodicHint:     "Soft guitar runs, silky pads, and gentle melodic phrases in the space.",
+    spaceHint:       "Spacious, close-mic mix feel — warm, personal, never wide or distant.",
+    hookHint:        "Vulnerable hook delivery — protect the emotional weight, no over-production.",
+  },
+  street: {
+    arrangementHint: "Percussion-forward arrangement — the groove carries the confidence of the lyrics.",
+    percussionHint:  "Stronger drum attitude, firmer assertive low end, sharp transient energy.",
+    melodicHint:     "Confident chord stabs and assertive melodic movement — swagger in the texture.",
+    spaceHint:       "Punchy, forward mix — the vocal and the beat share the same authority.",
+    hookHint:        "Hook must land hard on the 1 — crowd-chant ready, works on any speaker.",
+  },
+  party: {
+    arrangementHint: "High-replay arrangement — chorus payoff engineered for movement and return.",
+    percussionHint:  "Full rhythmic momentum — energetic hi-hat patterns, crowd-coded groove.",
+    melodicHint:     "Bright melodic stabs, infectious hook phrases, wide stereo celebration.",
+    spaceHint:       "Open, bright, club-translated mix — the energy should fill a room.",
+    hookHint:        "Repeat-coded hook — the chorus must work on its 3rd repeat as well as its 1st.",
+  },
+  defiant: {
+    arrangementHint: "Bold, raw arrangement — minimum polish, maximum truth in the production.",
+    percussionHint:  "Gritty drum texture with rough character — unpolished confidence.",
+    melodicHint:     "Forward, assertive melodic voice — melody doesn't decorate, it pushes back.",
+    spaceHint:       "Compressed, punchy mix — no retreat in the sound design.",
+    hookHint:        "Raw, powerful hook — protect the rawness, don't over-produce the emotion out of it.",
+  },
+  neutral: {
+    arrangementHint: "",
+    percussionHint:  "",
+    melodicHint:     "",
+    spaceHint:       "",
+    hookHint:        "",
+  },
+};
+
+export function deriveLyricsDirection(tone: LyricsTone): LyricsDirection {
+  return LYRICS_DIRECTION_MAP[tone] ?? LYRICS_DIRECTION_MAP.neutral;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Blueprint Builder
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -492,25 +555,30 @@ export function buildArrangementStyle(opts: {
   introBehavior?: string;
   transitionStyle?: string;
   outroStyle?: string;
+  lyricsTone?: LyricsTone;
 }): string {
-  const { genre, section, isInstrumentalMode, isProducer, introBehavior, transitionStyle, outroStyle } = opts;
+  const { genre, section, isInstrumentalMode, isProducer, introBehavior, transitionStyle, outroStyle, lyricsTone } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
 
-  if (isInstrumentalMode) return `Pure instrumental — no vocal layer. ${profile.arrangement}`;
+  // Lyrics-aware arrangement modifier — appended to the base arrangement string
+  const lyricsDir = lyricsTone && lyricsTone !== "neutral" ? deriveLyricsDirection(lyricsTone) : null;
+  const lyricsArrangementSuffix = lyricsDir?.arrangementHint ? ` ${lyricsDir.arrangementHint}` : "";
 
-  if (section === "hook")   return `Hook-only scope — ${profile.hookStyle}. Max repetition, chant pocket, crowd energy coded in.`;
-  if (section === "verse")  return `Verse scope — ${profile.verseStyle}. Cadence and phrasing are the priority.`;
-  if (section === "chorus") return `Chorus scope — ${profile.hookStyle}. Lift, replay value, and section energy are the focus.`;
+  if (isInstrumentalMode) return `Pure instrumental — no vocal layer. ${profile.arrangement}${lyricsArrangementSuffix}`;
+
+  if (section === "hook")   return `Hook-only scope — ${profile.hookStyle}. Max repetition, chant pocket, crowd energy coded in.${lyricsArrangementSuffix}`;
+  if (section === "verse")  return `Verse scope — ${profile.verseStyle}. Cadence and phrasing are the priority.${lyricsArrangementSuffix}`;
+  if (section === "chorus") return `Chorus scope — ${profile.hookStyle}. Lift, replay value, and section energy are the focus.${lyricsArrangementSuffix}`;
 
   // Full song
   if (isProducer) {
     const intro = introBehavior ?? "Build up";
     const trans = transitionStyle ?? "Filter sweep";
     const outro = outroStyle ?? "Fade out";
-    return `Full arrangement: ${intro} → ${profile.arrangement} → ${outro}. Transitions: ${trans}. ${profile.transitionFeel}.`;
+    return `Full arrangement: ${intro} → ${profile.arrangement} → ${outro}. Transitions: ${trans}. ${profile.transitionFeel}.${lyricsArrangementSuffix}`;
   }
 
-  return `${profile.arrangement}. ${profile.transitionFeel}.`;
+  return `${profile.arrangement}. ${profile.transitionFeel}.${lyricsArrangementSuffix}`;
 }
 
 export function buildHookFocus(opts: {
