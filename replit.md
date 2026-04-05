@@ -231,6 +231,31 @@ Local-first session persistence layer added to the Studio page. Architecture is 
 
 `sessionId`, `sessionTitle`, `topic`, `genre`, `mood`, `songLength`, `lyricsSource`, `lyricsText`, `languageFlavor`, `customFlavor`, `style`, `notes`, `commercialMode`, `lyricalDepth`, `hookRepeat`, `genderVoiceModel`, `performanceFeel`, `bpm`, `key`, `energy`, `atmosphere`, `leadVoice`, `mixFeel`, `buildMode`, `currentStage`, `exportStatus`, `draft`, `outputRegistry`, `createdAt`, `updatedAt`.
 
+## Lyrics-Aware Beat Shaping System
+
+Deep lyrical analysis layer that intelligently shapes instrumental direction from song content — making the Audio Studio feel like it builds a beat around the song, not beside it.
+
+**`deriveLyricsSignal(lyrics: string): LyricsSignal`** — the core analysis function that derives:
+- `tone` — existing LyricsTone keyword scan (spiritual / intimate / street / party / defiant / neutral)
+- `energyLevel` — high/medium/low from energy word lists + exclamations + ALL CAPS
+- `hookPotential` — high/medium/low from line repetition and short-line ratio  
+- `pacingFeel` — slow/medium/fast from average words-per-line
+- `intimacyScale` — intimate or performance (derived from tone)
+- `writingLead` — storytelling or vibe (narrative word density + uniqueness ratio)
+- `beatShapingHints` — array of actionable beat direction strings derived from all signals
+- `diagnosticSummary` — compact one-line internal diagnostic string
+
+**Wired into the intelligence pipeline:**
+- `buildFullIntelligence` computes `lyricsSignal` first, uses it for `lyricsTone`, and passes it through all builders
+- `buildArrangementStyle` now receives `lyricsTone` (previously missing — arrangement hints were never applied)
+- `buildProducerNotes` uses top 3 `beatShapingHints` for lyrics-aware beat shaping (replaces simple tone note)
+- `buildStudioExportNotes` surfaces lyrics intelligence, beat shaping derived hints, hook direction, and arrangement signal in the Session Notes block
+- `FullIntelligence` includes `lyricsSignal` for diagnostic access
+
+**UI microcopy:** "· lyrics-aware" badge appears in the lyrics section header when lyrics contain sufficient content (>30 chars)
+
+**Works for:** Lyrics Studio generated lyrics AND user-pasted custom lyrics — both flow through `audioLyrics` state and into `buildFullIntelligence`
+
 ## Beat DNA Feature (V2 Completion)
 
 A premium musical control layer inside the Audio Studio that makes AfroMuse producer-aware and beat-intentional.

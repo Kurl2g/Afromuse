@@ -1936,6 +1936,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   {audioLyrics && (
                     <span className="text-[10px] text-white/20">{audioLyrics.split("\n").filter(Boolean).length} lines</span>
                   )}
+                  {audioLyrics.trim().length > 30 && (
+                    <span className="text-[10px] font-medium text-sky-400/50 tracking-wide">· lyrics-aware</span>
+                  )}
                 </div>
               </div>
               <textarea

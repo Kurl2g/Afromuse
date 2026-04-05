@@ -544,6 +544,114 @@ export function deriveLyricsDirection(tone: LyricsTone): LyricsDirection {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Lyrics Signal System
+// Deep lyrical analysis that shapes beat intelligence from song content
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface LyricsSignal {
+  tone: LyricsTone;
+  energyLevel: "low" | "medium" | "high";
+  hookPotential: "high" | "medium" | "low";
+  pacingFeel: "slow" | "medium" | "fast";
+  intimacyScale: "intimate" | "performance";
+  writingLead: "storytelling" | "vibe";
+  beatShapingHints: string[];
+  diagnosticSummary: string;
+}
+
+const ENERGY_HIGH_WORDS = ["fire","energy","bounce","jump","turn up","lit","run","power","loud","rise","fight","scream","rage","wild","crazy","hype","anthem","thunder","blast","explode","massive"];
+const ENERGY_LOW_WORDS  = ["slow","quiet","wait","breathe","hold","miss","alone","soft","tender","cry","tears","still","calm","peace","whisper","gentle","rest","fade","silent"];
+const STORYTELLING_WORDS = ["was","when","then","because","remember","after","before","every time","years","days","nights","since","until","while","suddenly","realized","thought","knew"];
+
+function detectEnergyLevel(lyrics: string): "low" | "medium" | "high" {
+  const lower = lyrics.toLowerCase();
+  let high = 0, low = 0;
+  ENERGY_HIGH_WORDS.forEach(w => { if (lower.includes(w)) high++; });
+  ENERGY_LOW_WORDS.forEach(w  => { if (lower.includes(w)) low++;  });
+  high += (lyrics.match(/!/g) ?? []).length * 0.5;
+  high += (lyrics.match(/\b[A-Z]{3,}\b/g) ?? []).length * 0.5;
+  if (high >= low + 2) return "high";
+  if (low  >= high + 2) return "low";
+  return "medium";
+}
+
+function detectHookPotential(lyrics: string): "high" | "medium" | "low" {
+  const lines = lyrics.split("\n").map(l => l.trim()).filter(l => l.length > 2 && !l.startsWith("["));
+  if (lines.length < 2) return "low";
+  const counts = new Map<string, number>();
+  for (const line of lines) counts.set(line.toLowerCase(), (counts.get(line.toLowerCase()) ?? 0) + 1);
+  const maxRepeat = Math.max(...counts.values());
+  const shortRatio = lines.filter(l => l.split(" ").length <= 6).length / lines.length;
+  if (maxRepeat >= 3 || shortRatio >= 0.5) return "high";
+  if (maxRepeat >= 2 || shortRatio >= 0.3) return "medium";
+  return "low";
+}
+
+function detectPacingFeel(lyrics: string): "slow" | "medium" | "fast" {
+  const lines = lyrics.split("\n").map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return "medium";
+  const avg = lines.reduce((s, l) => s + l.split(/\s+/).length, 0) / lines.length;
+  if (avg <= 4.5) return "slow";
+  if (avg >= 8)   return "fast";
+  return "medium";
+}
+
+function detectWritingLead(lyrics: string): "storytelling" | "vibe" {
+  const lower = lyrics.toLowerCase();
+  let score = 0;
+  STORYTELLING_WORDS.forEach(w => { if (lower.includes(w)) score++; });
+  const lines = lyrics.split("\n").filter(l => l.trim().length > 2);
+  const uniqueRatio = new Set(lines.map(l => l.trim().toLowerCase())).size / Math.max(lines.length, 1);
+  return score >= 2 || uniqueRatio >= 0.85 ? "storytelling" : "vibe";
+}
+
+function buildBeatShapingHints(
+  tone: LyricsTone,
+  energyLevel: "low" | "medium" | "high",
+  hookPotential: "high" | "medium" | "low",
+  pacingFeel: "slow" | "medium" | "fast",
+  intimacyScale: "intimate" | "performance",
+  writingLead: "storytelling" | "vibe",
+): string[] {
+  const dir = deriveLyricsDirection(tone);
+  const hints: string[] = [];
+  if (dir.percussionHint) hints.push(dir.percussionHint);
+  if (dir.melodicHint)    hints.push(dir.melodicHint);
+  if (dir.spaceHint)      hints.push(dir.spaceHint);
+  if (energyLevel === "high") hints.push("High lyrical energy — groove can be more assertive, percussion sits further forward.");
+  if (energyLevel === "low")  hints.push("Low lyrical energy — restrain the arrangement; give space for the emotional weight.");
+  if (hookPotential === "high") hints.push("Strong hook repetition — engineer maximum replay energy into the chorus drop.");
+  if (hookPotential === "low")  hints.push("Non-repetitive structure — support with a smooth arc rather than a hook-first approach.");
+  if (pacingFeel === "fast") hints.push("Fast lyrical pacing — hi-hat movement and groove density should match the syllable rate.");
+  if (pacingFeel === "slow") hints.push("Slow lyrical pacing — the groove should breathe; space is part of the rhythm.");
+  if (intimacyScale === "intimate")    hints.push("Intimate scale — keep the mix close; avoid wide spatial processing on lead elements.");
+  if (intimacyScale === "performance") hints.push("Performance-coded lyrics — the arrangement should feel large and crowd-ready.");
+  if (writingLead === "storytelling") hints.push("Storytelling lyrics — smooth arrangement support; avoid chaotic movement that competes with the narrative.");
+  if (writingLead === "vibe")         hints.push("Vibe-led lyrics — the groove IS the song; engineer for feel and replay over narrative support.");
+  return hints;
+}
+
+export function deriveLyricsSignal(lyrics: string): LyricsSignal {
+  if (!lyrics || lyrics.trim().length < 20) {
+    return {
+      tone: "neutral", energyLevel: "medium", hookPotential: "medium",
+      pacingFeel: "medium", intimacyScale: "performance", writingLead: "vibe",
+      beatShapingHints: [],
+      diagnosticSummary: "No lyrics — beat shaped by genre and Beat DNA controls only.",
+    };
+  }
+  const tone          = analyzeLyricsTone(lyrics);
+  const energyLevel   = detectEnergyLevel(lyrics);
+  const hookPotential = detectHookPotential(lyrics);
+  const pacingFeel    = detectPacingFeel(lyrics);
+  const intimacyScale = (tone === "intimate" || tone === "spiritual") ? "intimate" : "performance" as const;
+  const writingLead   = detectWritingLead(lyrics);
+  const beatShapingHints = buildBeatShapingHints(tone, energyLevel, hookPotential, pacingFeel, intimacyScale, writingLead);
+  const diagnosticSummary = `Tone: ${tone} | Energy: ${energyLevel} | Hook: ${hookPotential} | Pacing: ${pacingFeel} | Scale: ${intimacyScale} | Writing: ${writingLead}`;
+  return { tone, energyLevel, hookPotential, pacingFeel, intimacyScale, writingLead, beatShapingHints, diagnosticSummary };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Blueprint Builder
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -673,13 +781,14 @@ export function buildProducerNotes(opts: {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  lyricsSignal?: LyricsSignal;
 }): string {
   const {
     genre, bpm, key, energy, section, vocalLabel, isInstrumentalMode, isProducer,
     includeArrangementNotes, includeStemsBreakdown,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
     lyricsTone, styleInfluence, styleDesc,
-    bounceStyle, melodyDensity, drumCharacter, hookLift,
+    bounceStyle, melodyDensity, drumCharacter, hookLift, lyricsSignal,
   } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
   const e = energy as "Low" | "Medium" | "High";
@@ -733,8 +842,11 @@ export function buildProducerNotes(opts: {
     parts.push(`Vocal: ${vocalLabel} — ${profile.vocalCharacter}. Booth setup: close-mic dynamic, minimal tracking reverb, leave 6dB headroom.`);
   }
 
-  // Lyrics tone
-  if (lyricsTone !== "neutral") {
+  // Lyrics-aware beat shaping — use signal if available, fall back to basic tone note
+  if (lyricsSignal && lyricsSignal.beatShapingHints.length) {
+    const topHints = lyricsSignal.beatShapingHints.slice(0, 3);
+    parts.push(`Lyrics-aware beat shaping: ${topHints.join(" | ")}`);
+  } else if (lyricsTone !== "neutral") {
     const toneNotes: Record<LyricsTone, string> = {
       spiritual: "Lyrics carry a spiritual tone — space and reverb should feel reverent, not loud.",
       intimate:  "Lyrics read intimate — keep the mix close, avoid wide reverb on verses.",
@@ -942,12 +1054,13 @@ export function buildStudioExportNotes(opts: {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  lyricsSignal?: LyricsSignal;
 }): StudioExportNotes {
   const {
     genre, bpm, key, energy, section, vocalLabel, isInstrumentalMode, isProducer,
     lyricsTone, styleInfluence, styleDesc, hookFocus, arrangementStyle,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
-    bounceStyle, melodyDensity, drumCharacter, hookLift,
+    bounceStyle, melodyDensity, drumCharacter, hookLift, lyricsSignal,
   } = opts;
 
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
@@ -1026,6 +1139,17 @@ export function buildStudioExportNotes(opts: {
     ],
   };
 
+  const lyricsSignalItems: { label: string; value: string }[] = [];
+  if (lyricsSignal && lyricsSignal.tone !== "neutral") {
+    lyricsSignalItems.push({ label: "Lyrics Intelligence",  value: lyricsSignal.diagnosticSummary });
+    if (lyricsSignal.beatShapingHints.length) {
+      lyricsSignalItems.push({ label: "Beat Shaping Derived", value: lyricsSignal.beatShapingHints.slice(0, 2).join(" | ") });
+    }
+    const dir = deriveLyricsDirection(lyricsSignal.tone);
+    if (dir.hookHint) lyricsSignalItems.push({ label: "Hook Direction",     value: dir.hookHint });
+    if (dir.arrangementHint) lyricsSignalItems.push({ label: "Arrangement Signal", value: dir.arrangementHint });
+  }
+
   const sessionBlock: ExportNoteBlock = {
     title: "Session Notes",
     items: [
@@ -1033,6 +1157,7 @@ export function buildStudioExportNotes(opts: {
       { label: "Strongest Section",     value: strongestSection },
       { label: "Replay Section",        value: replaySection },
       { label: "What to Protect",       value: hookProtection(lyricsTone, genre, styleInfluence) },
+      ...lyricsSignalItems,
     ],
   };
 
@@ -1076,6 +1201,7 @@ export interface FullIntelligence {
   styleInfluence: StyleInfluence;
   styleDesc: string;
   exportNotes: StudioExportNotes;
+  lyricsSignal: LyricsSignal;
 }
 
 export function buildFullIntelligence(opts: {
@@ -1113,7 +1239,8 @@ export function buildFullIntelligence(opts: {
     bounceStyle, melodyDensity, drumCharacter, hookLift,
   } = opts;
 
-  const lyricsTone = analyzeLyricsTone(lyrics);
+  const lyricsSignal = deriveLyricsSignal(lyrics);
+  const lyricsTone = lyricsSignal.tone;
   const { influence: styleInfluence, desc: styleDesc } = parseStyleReference(styleReference);
 
   const stems = buildStemData(genre, energy, section, isProducer, drumDensity, bassWeight);
@@ -1127,6 +1254,7 @@ export function buildFullIntelligence(opts: {
 
   const arrangementStyle = buildArrangementStyle({
     genre, section, isInstrumentalMode, isProducer, introBehavior, transitionStyle, outroStyle,
+    lyricsTone,
   });
 
   const hookFocus = buildHookFocus({
@@ -1139,6 +1267,7 @@ export function buildFullIntelligence(opts: {
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
     lyricsTone, styleInfluence, styleDesc,
     bounceStyle, melodyDensity, drumCharacter, hookLift,
+    lyricsSignal,
   });
 
   const beatSummary = buildBeatSummary({ genre, bpm, key, energy, section, styleInfluence, lyricsTone, bounceStyle, melodyDensity, drumCharacter, hookLift });
@@ -1159,10 +1288,12 @@ export function buildFullIntelligence(opts: {
       ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle }
       : {}),
     bounceStyle, melodyDensity, drumCharacter, hookLift,
+    lyricsSignal,
   });
 
   return {
     stems, vocalSections, arrangementStyle, hookFocus, producerNotes,
     beatSummary, arrangementMap, lyricsTone, styleInfluence, styleDesc, exportNotes,
+    lyricsSignal,
   };
 }
