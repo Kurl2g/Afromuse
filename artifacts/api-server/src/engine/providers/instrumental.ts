@@ -1,20 +1,37 @@
 /**
  * AfroMuse Instrumental Provider
  *
- * Current mode: AI session brief (NVIDIA) + mock audio placeholders.
+ * Supports two execution modes resolved at runtime by the engine control layer:
  *
- * Live swap pattern:
- *   1. Call the real beat-generation API with `p` (already translated by toInstrumentalPayload).
- *   2. Map the API's response to RawInstrumentalResponse.
- *   3. Pass it to adaptInstrumental() — NormalizedResponse comes out.
- *   4. Set registry status to "live-ready" and isLive to true.
- *   Nothing in routes or the UI changes.
+ *   mock — AI session brief (NVIDIA) + null audio placeholders (current default)
+ *   live — real beat-generation API call + AI brief enrichment + real audio URLs
+ *
+ * Mode is resolved by resolveProviderMode("instrumental") which reads:
+ *   → runtime overrides → environment config → registry status → safety guards
+ *
+ * Live path is structurally complete and ready for a real provider to be
+ * dropped in. See: callLiveInstrumentalProvider() below.
+ *
+ * Fallback behavior (live → mock or live → clean failure) is driven by the
+ * environment config's fallbackToMock flag for the instrumental category.
+ *
+ * ─── Live Provider Drop-in Checklist ──────────────────────────────────────────
+ *   [ ] Set registry status → "live-ready", isLive → true  (providers/registry.ts)
+ *   [ ] Set env config mode → "live"                       (engineConfig.ts)
+ *   [ ] Set env vars: INSTRUMENTAL_API_KEY, INSTRUMENTAL_API_ENDPOINT,
+ *                     INSTRUMENTAL_MODEL, INSTRUMENTAL_TIMEOUT_MS
+ *   [ ] Implement the body of callLiveInstrumentalProvider() below
+ *   [ ] Nothing in routes, adapters, or the UI changes
+ * ──────────────────────────────────────────────────────────────────────────────
  */
 
 import OpenAI from "openai";
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
 import { adaptInstrumental, type RawInstrumentalResponse } from "../adapters.js";
+import { resolveProviderMode } from "../providerResolver.js";
+import { executeFallback, buildFailureResponse } from "../fallback.js";
+import { getProviderCredentials } from "../providerCredentials.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -39,6 +56,37 @@ export interface InstrumentalPayload {
   bassWeight?: string;
   transitionStyle?: string;
   outroStyle?: string;
+}
+
+// ─── Live Provider Response Shape ─────────────────────────────────────────────
+// This represents the expected raw response from a real beat-generation API.
+// When integrating a real provider (Udio, Suno, Stability Audio, etc.),
+// map its response fields into this shape inside callLiveInstrumentalProvider().
+
+export interface LiveInstrumentalProviderResponse {
+  /** The primary audio preview URL returned by the real provider (MP3/stream). */
+  previewUrl: string | null;
+  /** Full-quality WAV download URL, if the provider returns one. */
+  wavUrl: string | null;
+  /** The provider's own internal track/job ID for reference and polling. */
+  externalJobId: string | null;
+  /** Human-readable title or name the provider assigned to this generation. */
+  generationTitle: string | null;
+  /** Any sonic or generation notes the provider returns (e.g. model used, tags). */
+  sonicNotes: string | null;
+  /** Duration string if the provider returns it (e.g. "3:22"). */
+  duration: string | null;
+  /** Cover art URL if the provider generates one. */
+  coverArtUrl: string | null;
+  /**
+   * Optional waveform-ready metadata for future UI waveform rendering.
+   * Shape is intentionally flexible — populate once a real provider is connected.
+   */
+  waveformMeta?: {
+    peaks?: number[];
+    durationSeconds?: number;
+    sampleRate?: number;
+  } | null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -77,9 +125,28 @@ function getDuration(songLength?: string): string {
   return "3:20";
 }
 
-// ─── AI Session Brief (NVIDIA) ────────────────────────────────────────────────
+function buildBaseMetadata(p: InstrumentalPayload): Partial<SessionBlueprintData> {
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const chordVibe = p.productionNotes?.chordVibe ?? "";
+  return {
+    genre,
+    mood,
+    bpm: p.bpm ?? parseBpm(chordVibe, genre),
+    key: p.key ?? parseKey(chordVibe, mood),
+    energy: p.energy ?? getEnergy(mood),
+    duration: getDuration(p.songLength),
+    hitmakerMode: p.hitmakerMode ?? false,
+    hookRepeatLevel: p.hookRepeatLevel ?? "Medium",
+    audioType: "Instrumental Preview",
+  };
+}
 
-const SYSTEM_PROMPT = `You are AfroMuse Audio Intelligence — a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+// ─── AI Session Brief (NVIDIA) ────────────────────────────────────────────────
+// Always runs in both mock and live modes to enrich the blueprint data.
+// Gracefully skipped if NVIDIA_API_KEY is not set.
+
+const AI_SYSTEM_PROMPT = `You are AfroMuse Audio Intelligence — a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed instrumental session brief as structured JSON.
 Your output shapes the sonic direction for real studio sessions and beat builds.
@@ -90,7 +157,7 @@ Rules:
 - Every description must be actionable in a real studio session
 - ALWAYS return valid JSON only — no markdown, no explanation, no code fences`;
 
-function buildPrompt(p: InstrumentalPayload): string {
+function buildAiPrompt(p: InstrumentalPayload): string {
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
   const energy = p.energy ?? "Medium";
@@ -133,10 +200,13 @@ Return ONLY this JSON object with no markdown, no code fences, no extra text:
 }`;
 }
 
-async function fetchAiSessionBrief(p: InstrumentalPayload): Promise<Partial<SessionBlueprintData> | null> {
+async function fetchAiSessionBrief(
+  p: InstrumentalPayload,
+  jobId: string,
+): Promise<Partial<SessionBlueprintData> | null> {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    logger.warn("NVIDIA_API_KEY not set — skipping instrumental AI brief");
+    logger.warn({ jobId }, "NVIDIA_API_KEY not set — skipping instrumental AI brief");
     return null;
   }
 
@@ -144,8 +214,8 @@ async function fetchAiSessionBrief(p: InstrumentalPayload): Promise<Partial<Sess
   const res = await ai.chat.completions.create({
     model: "qwen/qwen3.5-122b-a10b",
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: buildPrompt(p) },
+      { role: "system", content: AI_SYSTEM_PROMPT },
+      { role: "user", content: buildAiPrompt(p) },
     ],
     temperature: 0.75,
     max_tokens: 1200,
@@ -165,47 +235,195 @@ async function fetchAiSessionBrief(p: InstrumentalPayload): Promise<Partial<Sess
   return JSON.parse(cleaned.slice(start, end + 1)) as Partial<SessionBlueprintData>;
 }
 
-// ─── Provider Entry Point ─────────────────────────────────────────────────────
+// ─── Mock Execution Path ──────────────────────────────────────────────────────
+// Current default for all environments. Generates an AI session brief and
+// returns null audio URLs (structural placeholders for when real audio arrives).
 
-export async function run(jobId: string, p: InstrumentalPayload): Promise<NormalizedResponse> {
-  const genre = p.genre ?? "Afrobeats";
-  const mood = p.mood ?? "Uplifting";
-  const chordVibe = p.productionNotes?.chordVibe ?? "";
-
-  const metadata: Partial<SessionBlueprintData> = {
-    genre,
-    mood,
-    bpm: p.bpm ?? parseBpm(chordVibe, genre),
-    key: p.key ?? parseKey(chordVibe, mood),
-    energy: p.energy ?? getEnergy(mood),
-    duration: getDuration(p.songLength),
-    hitmakerMode: p.hitmakerMode ?? false,
-    hookRepeatLevel: p.hookRepeatLevel ?? "Medium",
-    audioType: "Instrumental Preview",
-  };
+async function runMock(jobId: string, p: InstrumentalPayload): Promise<NormalizedResponse> {
+  const metadata = buildBaseMetadata(p);
 
   let aiBrief: Partial<SessionBlueprintData> | null = null;
   try {
-    aiBrief = await fetchAiSessionBrief(p);
+    aiBrief = await fetchAiSessionBrief(p, jobId);
   } catch (err) {
     logger.warn({ err, jobId }, "Instrumental AI brief failed — using metadata only");
   }
 
   const blueprintData: Partial<SessionBlueprintData> = { ...metadata, ...(aiBrief ?? {}) };
 
-  // Build the raw response, then normalise through the adapter.
-  // When a real beat-gen API is connected, replace this block with the live API call
-  // and map its response to RawInstrumentalResponse before calling adaptInstrumental().
   const raw: RawInstrumentalResponse = {
     jobId,
     status: "completed",
-    audioUrl: null,           // slot: real beat audio URL
-    wavUrl: null,             // slot: WAV download URL
+    audioUrl: null,        // slot: real beat audio URL
+    wavUrl: null,          // slot: WAV download URL
     blueprintData,
-    externalJobId: null,      // slot: provider's own track/job ID
-    previewUrl: null,         // slot: short beat preview clip URL
-    coverArt: null,           // slot: generated cover art URL
+    externalJobId: null,   // slot: provider's own track/job ID
+    previewUrl: null,      // slot: short beat preview clip URL
+    coverArt: null,        // slot: generated cover art URL
   };
 
+  logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental mock execution complete");
   return adaptInstrumental(raw);
+}
+
+// ─── Live Request Execution Block ─────────────────────────────────────────────
+// This is the isolated slot for the real beat-generation API call.
+//
+// TO INTEGRATE A REAL PROVIDER:
+//   1. Read credentials from getProviderCredentials("instrumental") — already wired.
+//   2. Build the provider-specific HTTP request using `p` (the InstrumentalPayload).
+//   3. Await the response from the real API.
+//   4. Map its fields into LiveInstrumentalProviderResponse and return it.
+//   5. Everything downstream (blueprint enrichment, adapter, normalization) is ready.
+//
+// The function signature and return type must not change — only the body.
+
+async function callLiveInstrumentalProvider(
+  p: InstrumentalPayload,
+  jobId: string,
+): Promise<LiveInstrumentalProviderResponse> {
+  const creds = getProviderCredentials("instrumental");
+
+  // ── DROP-IN ZONE ────────────────────────────────────────────────────────────
+  // Replace the block below with a real provider API call.
+  // Example (Udio / Suno / Stability Audio / custom endpoint):
+  //
+  //   const response = await fetch(creds.endpoint!, {
+  //     method: "POST",
+  //     headers: {
+  //       "Authorization": `Bearer ${creds.apiKey}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       genre: p.genre,
+  //       mood: p.mood,
+  //       bpm: p.bpm,
+  //       key: p.key,
+  //       // ... provider-specific fields
+  //     }),
+  //     signal: AbortSignal.timeout(creds.timeoutMs),
+  //   });
+  //   if (!response.ok) throw new Error(`Provider error: ${response.status} ${response.statusText}`);
+  //   const data = await response.json();
+  //   return {
+  //     previewUrl:    data.audio_url ?? null,
+  //     wavUrl:        data.wav_url ?? null,
+  //     externalJobId: data.job_id ?? null,
+  //     generationTitle: data.title ?? null,
+  //     sonicNotes:    data.tags ?? null,
+  //     duration:      data.duration ?? null,
+  //     coverArtUrl:   data.cover_image_url ?? null,
+  //     waveformMeta:  data.waveform ?? null,
+  //   };
+  // ────────────────────────────────────────────────────────────────────────────
+
+  // Structural placeholder — throws so the live path triggers fallback correctly.
+  // Remove this line when a real provider is implemented above.
+  void creds; // consumed — suppress unused warning until real implementation
+  throw new Error(
+    "Live instrumental provider is not yet implemented. " +
+    "Implement callLiveInstrumentalProvider() body and set INSTRUMENTAL_API_KEY + INSTRUMENTAL_API_ENDPOINT.",
+  );
+}
+
+// ─── Live Execution Path ──────────────────────────────────────────────────────
+// Calls the real provider, enriches the response with the AI session brief,
+// maps everything into RawInstrumentalResponse, and normalizes through the adapter.
+
+async function runLive(jobId: string, p: InstrumentalPayload): Promise<NormalizedResponse> {
+  logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental live execution starting");
+
+  // Call the real beat-generation provider
+  const liveResponse = await callLiveInstrumentalProvider(p, jobId);
+
+  // Base metadata from the payload
+  const metadata = buildBaseMetadata(p);
+
+  // Overlay the provider's duration if it returned one
+  if (liveResponse.duration) {
+    metadata.duration = liveResponse.duration;
+  }
+
+  // Enrich with AI session brief (runs alongside live audio — always attempted)
+  let aiBrief: Partial<SessionBlueprintData> | null = null;
+  try {
+    aiBrief = await fetchAiSessionBrief(p, jobId);
+  } catch (err) {
+    logger.warn({ err, jobId }, "Instrumental AI brief failed during live run — continuing without enrichment");
+  }
+
+  const blueprintData: Partial<SessionBlueprintData> = { ...metadata, ...(aiBrief ?? {}) };
+
+  // Map the live response into the RawInstrumentalResponse shape
+  const raw: RawInstrumentalResponse = {
+    jobId,
+    status: "completed",
+    audioUrl: liveResponse.previewUrl,          // real beat audio URL from provider
+    wavUrl: liveResponse.wavUrl,                // WAV download URL from provider
+    blueprintData,
+    externalJobId: liveResponse.externalJobId,  // provider's own track/job ID
+    previewUrl: liveResponse.previewUrl,         // short preview clip (same as audioUrl here)
+    coverArt: liveResponse.coverArtUrl,          // generated cover art from provider
+  };
+
+  logger.info(
+    {
+      jobId,
+      hasAudio: !!raw.audioUrl,
+      externalJobId: raw.externalJobId,
+      hasAiBrief: !!aiBrief,
+    },
+    "Instrumental live execution complete",
+  );
+
+  return adaptInstrumental(raw);
+}
+
+// ─── Provider Entry Point ─────────────────────────────────────────────────────
+// Resolves the engine mode and dispatches to the correct execution path.
+// Routes and the UI always call this function — they never see mock vs live.
+
+export async function run(jobId: string, p: InstrumentalPayload): Promise<NormalizedResponse> {
+  const resolved = resolveProviderMode("instrumental");
+
+  logger.info(
+    {
+      jobId,
+      resolvedMode: resolved.resolvedMode,
+      modeSource: resolved.source,
+      canRun: resolved.canRun,
+    },
+    "Instrumental provider resolved",
+  );
+
+  // ── Disabled ─────────────────────────────────────────────────────────────────
+  if (!resolved.canRun || resolved.resolvedMode === "disabled") {
+    const reason = resolved.disabledReason ?? "Instrumental provider is disabled";
+    logger.warn({ jobId, reason }, "Instrumental provider disabled — returning clean failure");
+    return buildFailureResponse(jobId, "instrumental", "unsupported_mode", reason);
+  }
+
+  // ── Live ──────────────────────────────────────────────────────────────────────
+  if (resolved.resolvedMode === "live") {
+    try {
+      return await runLive(jobId, p);
+    } catch (err) {
+      logger.error({ err, jobId }, "Instrumental live provider failed — evaluating fallback");
+      const fallback = await executeFallback(
+        jobId,
+        "instrumental",
+        err,
+        () => runMock(jobId, p),
+      );
+      if (!fallback.usedFallback) {
+        logger.warn({ jobId, reason: fallback.reason }, "Instrumental: clean failure (no fallback)");
+      } else {
+        logger.info({ jobId }, "Instrumental: fell back to mock successfully");
+      }
+      return fallback.response;
+    }
+  }
+
+  // ── Mock (default) ───────────────────────────────────────────────────────────
+  return runMock(jobId, p);
 }

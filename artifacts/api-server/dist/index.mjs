@@ -50554,6 +50554,362 @@ function adaptStems(raw) {
   };
 }
 
+// src/engine/engineConfig.ts
+var DEVELOPMENT_CONFIG = {
+  environment: "development",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
+    mastering: { mode: "mock", fallbackToMock: true },
+    stems: { mode: "mock", fallbackToMock: true }
+  },
+  safety: {
+    allowLiveInDev: false,
+    strictMode: false
+  }
+};
+var STAGING_CONFIG = {
+  environment: "staging",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
+    mastering: { mode: "mock", fallbackToMock: true },
+    stems: { mode: "mock", fallbackToMock: true }
+  },
+  safety: {
+    allowLiveInDev: true,
+    strictMode: false
+  }
+};
+var PRODUCTION_CONFIG = {
+  environment: "production",
+  providerModes: {
+    instrumental: { mode: "mock", fallbackToMock: false },
+    vocal: { mode: "mock", fallbackToMock: false },
+    mastering: { mode: "mock", fallbackToMock: false },
+    stems: { mode: "mock", fallbackToMock: false }
+  },
+  safety: {
+    allowLiveInDev: false,
+    strictMode: true
+  }
+};
+var ENV_CONFIGS = {
+  development: DEVELOPMENT_CONFIG,
+  staging: STAGING_CONFIG,
+  production: PRODUCTION_CONFIG
+};
+function getActiveEnvironment() {
+  const env = process.env.NODE_ENV ?? "development";
+  if (env === "production") return "production";
+  if (env === "staging") return "staging";
+  return "development";
+}
+function getActiveEngineConfig() {
+  return ENV_CONFIGS[getActiveEnvironment()];
+}
+function getProviderModeConfig(category) {
+  return getActiveEngineConfig().providerModes[category];
+}
+var _modeOverrides = {};
+function getProviderModeOverride(category) {
+  return _modeOverrides[category];
+}
+
+// src/engine/capabilities.ts
+var CAPABILITY_PROFILES = {
+  instrumental: {
+    supportsInstrumental: true,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI session brief (always available)
+    supportsMastering: false,
+    supportsStems: false,
+    supportsPreviewOnly: true,
+    // mock: brief only; live: beat preview audio
+    supportsFullExport: false,
+    // not until real beat-gen API is connected
+    supportsPolling: true,
+    // fire-and-poll job pattern
+    supportsRealtime: false,
+    // slot: SSE / websocket streaming (future)
+    supportsCustomLyrics: false
+    // instrumental — no lyric input
+  },
+  vocal: {
+    supportsInstrumental: false,
+    supportsVocals: true,
+    supportsBlueprint: true,
+    // AI vocal brief (always available)
+    supportsMastering: false,
+    supportsStems: false,
+    supportsPreviewOnly: true,
+    // mock: brief only; live: vocal demo audio
+    supportsFullExport: false,
+    // not until real vocal synthesis API is connected
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: true
+    // accepts user-supplied lyrics for lead vocal
+  },
+  mastering: {
+    supportsInstrumental: false,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI mix & master brief (always available)
+    supportsMastering: true,
+    supportsStems: true,
+    // can produce stems guidance alongside master
+    supportsPreviewOnly: false,
+    supportsFullExport: true,
+    // slot: real mastered MP3 + WAV
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: false
+  },
+  stems: {
+    supportsInstrumental: false,
+    supportsVocals: false,
+    supportsBlueprint: true,
+    // AI stem extraction brief (always available)
+    supportsMastering: false,
+    supportsStems: true,
+    supportsPreviewOnly: false,
+    supportsFullExport: true,
+    // slot: real stems ZIP
+    supportsPolling: true,
+    supportsRealtime: false,
+    supportsCustomLyrics: false
+  }
+};
+function getCapabilities(category) {
+  return CAPABILITY_PROFILES[category];
+}
+
+// src/engine/providers/registry.ts
+var REGISTRY = {
+  instrumental: {
+    category: "instrumental",
+    name: "AfroMuse Instrumental Engine",
+    description: "Generates AI session briefs for instrumental tracks. Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
+    status: "mock",
+    isLive: false
+  },
+  vocal: {
+    category: "vocal",
+    name: "AfroMuse Vocal Engine",
+    description: "Generates vocal session briefs and demo guidance. Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
+    status: "mock",
+    isLive: false
+  },
+  mastering: {
+    category: "mastering",
+    name: "AfroMuse Mix & Master Engine",
+    description: "Generates professional mix and mastering briefs. Slot: real mastering API (e.g. LANDR, CloudBounce, iZotope).",
+    status: "mock",
+    isLive: false
+  },
+  stems: {
+    category: "stems",
+    name: "AfroMuse Stem Engine",
+    description: "Generates stem extraction briefs. Slot: real stem-splitter API (e.g. Demucs, Spleeter, iZotope RX).",
+    status: "mock",
+    isLive: false
+  }
+};
+function getProvider(category) {
+  return REGISTRY[category];
+}
+function listProviders() {
+  return Object.values(REGISTRY).map((config2) => ({
+    ...config2,
+    capabilities: getCapabilities(config2.category)
+  }));
+}
+function isProviderActive(category) {
+  const cfg = REGISTRY[category];
+  return cfg.isLive && cfg.status === "live-ready";
+}
+
+// src/engine/providerCredentials.ts
+var CREDENTIAL_SLOTS = {
+  /**
+   * Instrumental / Beat Generation
+   * Candidate APIs: Udio, Suno, Stability Audio, MusicGen
+   */
+  instrumental: {
+    apiKey: process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? null,
+    model: process.env.INSTRUMENTAL_MODEL ?? null,
+    region: process.env.INSTRUMENTAL_REGION ?? null,
+    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 3e4)
+  },
+  /**
+   * Vocal Synthesis
+   * Candidate APIs: ElevenLabs, Musicfy, Suno (vocals), PlayHT
+   */
+  vocal: {
+    apiKey: process.env.VOCAL_API_KEY ?? null,
+    endpoint: process.env.VOCAL_API_ENDPOINT ?? null,
+    model: process.env.VOCAL_MODEL ?? null,
+    region: process.env.VOCAL_REGION ?? null,
+    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 3e4)
+  },
+  /**
+   * Mix & Mastering
+   * Candidate APIs: LANDR, CloudBounce, iZotope Ozone API, Matchering
+   */
+  mastering: {
+    apiKey: process.env.MASTERING_API_KEY ?? null,
+    endpoint: process.env.MASTERING_API_ENDPOINT ?? null,
+    model: process.env.MASTERING_MODEL ?? null,
+    region: process.env.MASTERING_REGION ?? null,
+    timeoutMs: Number(process.env.MASTERING_TIMEOUT_MS ?? 6e4)
+  },
+  /**
+   * Stem Extraction / Separation
+   * Candidate APIs: Demucs, Spleeter, iZotope RX, AudioShake
+   */
+  stems: {
+    apiKey: process.env.STEMS_API_KEY ?? null,
+    endpoint: process.env.STEMS_API_ENDPOINT ?? null,
+    model: process.env.STEMS_MODEL ?? null,
+    region: process.env.STEMS_REGION ?? null,
+    timeoutMs: Number(process.env.STEMS_TIMEOUT_MS ?? 12e4)
+  }
+};
+function getProviderCredentials(category) {
+  return CREDENTIAL_SLOTS[category];
+}
+function isCredentialReady(category) {
+  const slot = CREDENTIAL_SLOTS[category];
+  return slot.apiKey !== null && slot.endpoint !== null;
+}
+function getCredentialSummary(category) {
+  const slot = CREDENTIAL_SLOTS[category];
+  return {
+    apiKeySet: slot.apiKey !== null,
+    endpointSet: slot.endpoint !== null,
+    modelSet: slot.model !== null,
+    regionSet: slot.region !== null,
+    timeoutMs: slot.timeoutMs
+  };
+}
+
+// src/engine/providerResolver.ts
+function resolveProviderMode(category, requestedMode) {
+  const registryEntry = getProvider(category);
+  const envModeConfig = getProviderModeConfig(category);
+  const runtimeOverride = getProviderModeOverride(category);
+  const engineConfig = getActiveEngineConfig();
+  let resolvedMode;
+  let source;
+  if (requestedMode !== void 0) {
+    resolvedMode = requestedMode;
+    source = "runtime-override";
+  } else if (runtimeOverride !== void 0) {
+    resolvedMode = runtimeOverride;
+    source = "runtime-override";
+  } else {
+    resolvedMode = envModeConfig.mode;
+    source = "env-config";
+  }
+  if (registryEntry.status === "disabled") {
+    resolvedMode = "disabled";
+    source = "registry-forced-disabled";
+  }
+  if (resolvedMode === "live" && engineConfig.environment === "development" && !engineConfig.safety.allowLiveInDev) {
+    resolvedMode = "mock";
+    source = "safety-guard";
+  }
+  const isLiveCapable = isProviderActive(category);
+  const credentialsReady = isCredentialReady(category);
+  let canRun = true;
+  let disabledReason = null;
+  if (resolvedMode === "disabled") {
+    canRun = false;
+    disabledReason = `Provider '${category}' is disabled`;
+  } else if (resolvedMode === "live" && !isLiveCapable) {
+    canRun = false;
+    disabledReason = `Provider '${category}' is set to live but registry status is not 'live-ready'. Set registry status \u2192 "live-ready" and isLive \u2192 true to activate.`;
+  } else if (resolvedMode === "live" && !credentialsReady) {
+    canRun = false;
+    disabledReason = `Provider '${category}' is set to live but API credentials are not configured. Set the required env vars (${category.toUpperCase()}_API_KEY, ${category.toUpperCase()}_API_ENDPOINT).`;
+  }
+  return {
+    category,
+    resolvedMode,
+    source,
+    isLiveCapable,
+    credentialsReady,
+    canRun,
+    disabledReason
+  };
+}
+function resolveAllProviders() {
+  const categories = ["instrumental", "vocal", "mastering", "stems"];
+  return Object.fromEntries(
+    categories.map((cat) => [cat, resolveProviderMode(cat)])
+  );
+}
+
+// src/engine/fallback.ts
+function buildFailureResponse(jobId, category, reason, message) {
+  return {
+    status: "failed",
+    jobId,
+    provider: category,
+    audioUrl: null,
+    wavUrl: null,
+    stemsUrl: null,
+    blueprintData: null,
+    notes: null,
+    error: { reason, message },
+    outputRegistry: emptyOutputRegistry()
+  };
+}
+async function executeFallback(jobId, category, originalError, mockRunner) {
+  const modeConfig = getProviderModeConfig(category);
+  const errMessage = originalError instanceof Error ? originalError.message : String(originalError);
+  logger.warn(
+    { jobId, category, errMessage },
+    "Live provider failed \u2014 evaluating fallback strategy"
+  );
+  if (modeConfig.fallbackToMock) {
+    logger.info({ jobId, category }, "Fallback strategy: mock provider");
+    try {
+      const mockResponse = await mockRunner();
+      logger.info({ jobId, category }, "Mock fallback succeeded");
+      return {
+        usedFallback: true,
+        reason: `Live provider failed (${errMessage}). Fell back to mock provider.`,
+        response: {
+          ...mockResponse,
+          // Annotate the notes field so diagnostics can see a fallback occurred
+          notes: mockResponse.notes ? `[Mock fallback] ${mockResponse.notes}` : "[Mock fallback active]"
+        }
+      };
+    } catch (mockErr) {
+      const mockErrMessage = mockErr instanceof Error ? mockErr.message : String(mockErr);
+      logger.error({ jobId, category, mockErrMessage }, "Mock fallback also failed");
+      return {
+        usedFallback: false,
+        reason: `Both live and mock providers failed. Live error: ${errMessage}. Mock error: ${mockErrMessage}`,
+        response: buildFailureResponse(jobId, category, "failed_generation", mockErrMessage)
+      };
+    }
+  }
+  logger.warn(
+    { jobId, category },
+    "Fallback strategy: clean failure (fallbackToMock is false for this environment)"
+  );
+  return {
+    usedFallback: false,
+    reason: `Live provider failed. Fallback not configured for '${category}' in this environment.`,
+    response: buildFailureResponse(jobId, category, "failed_generation", errMessage)
+  };
+}
+
 // src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -50595,7 +50951,23 @@ function getDuration(songLength) {
   if (songLength === "Full") return "4:30";
   return "3:20";
 }
-var SYSTEM_PROMPT2 = `You are AfroMuse Audio Intelligence \u2014 a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+function buildBaseMetadata(p) {
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const chordVibe = p.productionNotes?.chordVibe ?? "";
+  return {
+    genre,
+    mood,
+    bpm: p.bpm ?? parseBpm(chordVibe, genre),
+    key: p.key ?? parseKey(chordVibe, mood),
+    energy: p.energy ?? getEnergy(mood),
+    duration: getDuration(p.songLength),
+    hitmakerMode: p.hitmakerMode ?? false,
+    hookRepeatLevel: p.hookRepeatLevel ?? "Medium",
+    audioType: "Instrumental Preview"
+  };
+}
+var AI_SYSTEM_PROMPT = `You are AfroMuse Audio Intelligence \u2014 a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed instrumental session brief as structured JSON.
 Your output shapes the sonic direction for real studio sessions and beat builds.
@@ -50605,7 +50977,7 @@ Rules:
 - Be genre-specific, culturally grounded, and musically precise
 - Every description must be actionable in a real studio session
 - ALWAYS return valid JSON only \u2014 no markdown, no explanation, no code fences`;
-function buildPrompt(p) {
+function buildAiPrompt(p) {
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
   const energy = p.energy ?? "Medium";
@@ -50646,18 +51018,18 @@ Return ONLY this JSON object with no markdown, no code fences, no extra text:
   "sessionBrief": "2-3 sentence quick producer brief written as if handing notes to a session engineer walking into the studio right now for this exact record"
 }`;
 }
-async function fetchAiSessionBrief(p) {
+async function fetchAiSessionBrief(p, jobId) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    logger.warn("NVIDIA_API_KEY not set \u2014 skipping instrumental AI brief");
+    logger.warn({ jobId }, "NVIDIA_API_KEY not set \u2014 skipping instrumental AI brief");
     return null;
   }
   const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
   const res = await ai.chat.completions.create({
     model: "qwen/qwen3.5-122b-a10b",
     messages: [
-      { role: "system", content: SYSTEM_PROMPT2 },
-      { role: "user", content: buildPrompt(p) }
+      { role: "system", content: AI_SYSTEM_PROMPT },
+      { role: "user", content: buildAiPrompt(p) }
     ],
     temperature: 0.75,
     max_tokens: 1200
@@ -50669,24 +51041,11 @@ async function fetchAiSessionBrief(p) {
   if (start === -1 || end === -1) throw new Error("No JSON in instrumental brief response");
   return JSON.parse(cleaned.slice(start, end + 1));
 }
-async function run(jobId, p) {
-  const genre = p.genre ?? "Afrobeats";
-  const mood = p.mood ?? "Uplifting";
-  const chordVibe = p.productionNotes?.chordVibe ?? "";
-  const metadata = {
-    genre,
-    mood,
-    bpm: p.bpm ?? parseBpm(chordVibe, genre),
-    key: p.key ?? parseKey(chordVibe, mood),
-    energy: p.energy ?? getEnergy(mood),
-    duration: getDuration(p.songLength),
-    hitmakerMode: p.hitmakerMode ?? false,
-    hookRepeatLevel: p.hookRepeatLevel ?? "Medium",
-    audioType: "Instrumental Preview"
-  };
+async function runMock(jobId, p) {
+  const metadata = buildBaseMetadata(p);
   let aiBrief = null;
   try {
-    aiBrief = await fetchAiSessionBrief(p);
+    aiBrief = await fetchAiSessionBrief(p, jobId);
   } catch (err) {
     logger.warn({ err, jobId }, "Instrumental AI brief failed \u2014 using metadata only");
   }
@@ -50706,7 +51065,92 @@ async function run(jobId, p) {
     coverArt: null
     // slot: generated cover art URL
   };
+  logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental mock execution complete");
   return adaptInstrumental(raw);
+}
+async function callLiveInstrumentalProvider(p, jobId) {
+  const creds = getProviderCredentials("instrumental");
+  void creds;
+  throw new Error(
+    "Live instrumental provider is not yet implemented. Implement callLiveInstrumentalProvider() body and set INSTRUMENTAL_API_KEY + INSTRUMENTAL_API_ENDPOINT."
+  );
+}
+async function runLive(jobId, p) {
+  logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental live execution starting");
+  const liveResponse = await callLiveInstrumentalProvider(p, jobId);
+  const metadata = buildBaseMetadata(p);
+  if (liveResponse.duration) {
+    metadata.duration = liveResponse.duration;
+  }
+  let aiBrief = null;
+  try {
+    aiBrief = await fetchAiSessionBrief(p, jobId);
+  } catch (err) {
+    logger.warn({ err, jobId }, "Instrumental AI brief failed during live run \u2014 continuing without enrichment");
+  }
+  const blueprintData = { ...metadata, ...aiBrief ?? {} };
+  const raw = {
+    jobId,
+    status: "completed",
+    audioUrl: liveResponse.previewUrl,
+    // real beat audio URL from provider
+    wavUrl: liveResponse.wavUrl,
+    // WAV download URL from provider
+    blueprintData,
+    externalJobId: liveResponse.externalJobId,
+    // provider's own track/job ID
+    previewUrl: liveResponse.previewUrl,
+    // short preview clip (same as audioUrl here)
+    coverArt: liveResponse.coverArtUrl
+    // generated cover art from provider
+  };
+  logger.info(
+    {
+      jobId,
+      hasAudio: !!raw.audioUrl,
+      externalJobId: raw.externalJobId,
+      hasAiBrief: !!aiBrief
+    },
+    "Instrumental live execution complete"
+  );
+  return adaptInstrumental(raw);
+}
+async function run(jobId, p) {
+  const resolved = resolveProviderMode("instrumental");
+  logger.info(
+    {
+      jobId,
+      resolvedMode: resolved.resolvedMode,
+      modeSource: resolved.source,
+      canRun: resolved.canRun
+    },
+    "Instrumental provider resolved"
+  );
+  if (!resolved.canRun || resolved.resolvedMode === "disabled") {
+    const reason = resolved.disabledReason ?? "Instrumental provider is disabled";
+    logger.warn({ jobId, reason }, "Instrumental provider disabled \u2014 returning clean failure");
+    return buildFailureResponse(jobId, "instrumental", "unsupported_mode", reason);
+  }
+  if (resolved.resolvedMode === "live") {
+    try {
+      return await runLive(jobId, p);
+    } catch (err) {
+      logger.error({ err, jobId }, "Instrumental live provider failed \u2014 evaluating fallback");
+      const fallback = await executeFallback(
+        jobId,
+        "instrumental",
+        err,
+        () => runMock(jobId, p)
+      );
+      if (!fallback.usedFallback) {
+        logger.warn({ jobId, reason: fallback.reason }, "Instrumental: clean failure (no fallback)");
+      } else {
+        logger.info({ jobId }, "Instrumental: fell back to mock successfully");
+      }
+      return fallback.response;
+    }
+  }
+  return runMock(jobId, p);
 }
 
 // src/engine/providers/vocal.ts
@@ -50899,7 +51343,7 @@ async function runLeadVocal(jobId, p) {
 }
 
 // src/engine/providers/mastering.ts
-var SYSTEM_PROMPT3 = `You are AfroMuse Mix Intelligence \u2014 an elite AI mix engineer and mastering specialist with deep expertise in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+var SYSTEM_PROMPT2 = `You are AfroMuse Mix Intelligence \u2014 an elite AI mix engineer and mastering specialist with deep expertise in Afro-inspired music (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed mix and master brief as structured JSON.
 Your output provides studio-grade guidance for mixing levels, EQ, compression, spatial effects, and mastering chain decisions that translate directly to a professional, commercially-ready stereo master.
@@ -50915,7 +51359,7 @@ Return ONLY a raw JSON object \u2014 no markdown fences, no commentary \u2014 wi
   "outputNotes": "Final output specs: recommended MP3 (320kbps) and WAV (24-bit/48kHz) export settings, metadata tagging notes, platform-specific loudness considerations",
   "stemsNotes": "Stems export guidance (only if requested): recommended stem groupings, format, naming convention, and levels for DAW re-import"
 }`;
-function buildPrompt2(p) {
+function buildPrompt(p) {
   const parts = [];
   if (p.genre) parts.push(`Genre: ${p.genre}`);
   if (p.bpm) parts.push(`BPM: ${p.bpm}`);
@@ -50939,8 +51383,8 @@ async function fetchMixMasterBrief(p) {
     body: JSON.stringify({
       model: "qwen/qwen3.5-122b-a10b",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT3 },
-        { role: "user", content: buildPrompt2(p) }
+        { role: "system", content: SYSTEM_PROMPT2 },
+        { role: "user", content: buildPrompt(p) }
       ],
       temperature: 0.55,
       max_tokens: 1400
@@ -50990,7 +51434,7 @@ async function run2(jobId, p) {
 }
 
 // src/engine/providers/stems.ts
-var SYSTEM_PROMPT4 = `You are AfroMuse Stem Intelligence \u2014 an elite AI stem engineer specialising in Afro-inspired music production (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
+var SYSTEM_PROMPT3 = `You are AfroMuse Stem Intelligence \u2014 an elite AI stem engineer specialising in Afro-inspired music production (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion).
 
 You receive a session configuration and return a detailed stem extraction brief as structured JSON.
 Your output gives precise, phase-aware extraction guidance for each requested stem so the result is clean, phase-aligned, and ready for DAW import.
@@ -51012,7 +51456,7 @@ Return ONLY a raw JSON object \u2014 no markdown fences, no commentary \u2014 wi
 }
 
 The "stems" array must contain one entry per requested stem (Drums, Bass, Synths, Vocals, Effects \u2014 only those requested).`;
-function buildPrompt3(p) {
+function buildPrompt2(p) {
   const parts = [];
   if (p.masteredUrl) parts.push(`Mastered Track URL: ${p.masteredUrl}`);
   if (p.genre) parts.push(`Genre: ${p.genre}`);
@@ -51034,8 +51478,8 @@ async function fetchStemBrief(p) {
     body: JSON.stringify({
       model: "qwen/qwen3.5-122b-a10b",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT4 },
-        { role: "user", content: buildPrompt3(p) }
+        { role: "system", content: SYSTEM_PROMPT3 },
+        { role: "user", content: buildPrompt2(p) }
       ],
       temperature: 0.5,
       max_tokens: 1600
@@ -51080,121 +51524,6 @@ async function run3(jobId, p) {
   return adaptStems(raw);
 }
 
-// src/engine/capabilities.ts
-var CAPABILITY_PROFILES = {
-  instrumental: {
-    supportsInstrumental: true,
-    supportsVocals: false,
-    supportsBlueprint: true,
-    // AI session brief (always available)
-    supportsMastering: false,
-    supportsStems: false,
-    supportsPreviewOnly: true,
-    // mock: brief only; live: beat preview audio
-    supportsFullExport: false,
-    // not until real beat-gen API is connected
-    supportsPolling: true,
-    // fire-and-poll job pattern
-    supportsRealtime: false,
-    // slot: SSE / websocket streaming (future)
-    supportsCustomLyrics: false
-    // instrumental — no lyric input
-  },
-  vocal: {
-    supportsInstrumental: false,
-    supportsVocals: true,
-    supportsBlueprint: true,
-    // AI vocal brief (always available)
-    supportsMastering: false,
-    supportsStems: false,
-    supportsPreviewOnly: true,
-    // mock: brief only; live: vocal demo audio
-    supportsFullExport: false,
-    // not until real vocal synthesis API is connected
-    supportsPolling: true,
-    supportsRealtime: false,
-    supportsCustomLyrics: true
-    // accepts user-supplied lyrics for lead vocal
-  },
-  mastering: {
-    supportsInstrumental: false,
-    supportsVocals: false,
-    supportsBlueprint: true,
-    // AI mix & master brief (always available)
-    supportsMastering: true,
-    supportsStems: true,
-    // can produce stems guidance alongside master
-    supportsPreviewOnly: false,
-    supportsFullExport: true,
-    // slot: real mastered MP3 + WAV
-    supportsPolling: true,
-    supportsRealtime: false,
-    supportsCustomLyrics: false
-  },
-  stems: {
-    supportsInstrumental: false,
-    supportsVocals: false,
-    supportsBlueprint: true,
-    // AI stem extraction brief (always available)
-    supportsMastering: false,
-    supportsStems: true,
-    supportsPreviewOnly: false,
-    supportsFullExport: true,
-    // slot: real stems ZIP
-    supportsPolling: true,
-    supportsRealtime: false,
-    supportsCustomLyrics: false
-  }
-};
-function getCapabilities(category) {
-  return CAPABILITY_PROFILES[category];
-}
-
-// src/engine/providers/registry.ts
-var REGISTRY = {
-  instrumental: {
-    category: "instrumental",
-    name: "AfroMuse Instrumental Engine",
-    description: "Generates AI session briefs for instrumental tracks. Slot: real beat-generation API (e.g. Udio, Suno, Stability Audio).",
-    status: "mock",
-    isLive: false
-  },
-  vocal: {
-    category: "vocal",
-    name: "AfroMuse Vocal Engine",
-    description: "Generates vocal session briefs and demo guidance. Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
-    status: "mock",
-    isLive: false
-  },
-  mastering: {
-    category: "mastering",
-    name: "AfroMuse Mix & Master Engine",
-    description: "Generates professional mix and mastering briefs. Slot: real mastering API (e.g. LANDR, CloudBounce, iZotope).",
-    status: "mock",
-    isLive: false
-  },
-  stems: {
-    category: "stems",
-    name: "AfroMuse Stem Engine",
-    description: "Generates stem extraction briefs. Slot: real stem-splitter API (e.g. Demucs, Spleeter, iZotope RX).",
-    status: "mock",
-    isLive: false
-  }
-};
-function getProvider(category) {
-  return REGISTRY[category];
-}
-function listProviders() {
-  return Object.values(REGISTRY).map((config2) => ({
-    ...config2,
-    capabilities: getCapabilities(config2.category)
-  }));
-}
-function isProviderActive(category) {
-  const cfg = REGISTRY[category];
-  return cfg.isLive && cfg.status === "live-ready";
-}
-
 // src/engine/compatibility.ts
 function canProviderHandleBuildMode(category, buildMode) {
   const caps = getCapabilities(category);
@@ -51214,187 +51543,6 @@ function canProviderHandleCustomLyrics(category) {
 }
 function canProviderHandleStems(category) {
   return getCapabilities(category).supportsStems;
-}
-
-// src/engine/engineConfig.ts
-var DEVELOPMENT_CONFIG = {
-  environment: "development",
-  providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: true },
-    vocal: { mode: "mock", fallbackToMock: true },
-    mastering: { mode: "mock", fallbackToMock: true },
-    stems: { mode: "mock", fallbackToMock: true }
-  },
-  safety: {
-    allowLiveInDev: false,
-    strictMode: false
-  }
-};
-var STAGING_CONFIG = {
-  environment: "staging",
-  providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: true },
-    vocal: { mode: "mock", fallbackToMock: true },
-    mastering: { mode: "mock", fallbackToMock: true },
-    stems: { mode: "mock", fallbackToMock: true }
-  },
-  safety: {
-    allowLiveInDev: true,
-    strictMode: false
-  }
-};
-var PRODUCTION_CONFIG = {
-  environment: "production",
-  providerModes: {
-    instrumental: { mode: "mock", fallbackToMock: false },
-    vocal: { mode: "mock", fallbackToMock: false },
-    mastering: { mode: "mock", fallbackToMock: false },
-    stems: { mode: "mock", fallbackToMock: false }
-  },
-  safety: {
-    allowLiveInDev: false,
-    strictMode: true
-  }
-};
-var ENV_CONFIGS = {
-  development: DEVELOPMENT_CONFIG,
-  staging: STAGING_CONFIG,
-  production: PRODUCTION_CONFIG
-};
-function getActiveEnvironment() {
-  const env = process.env.NODE_ENV ?? "development";
-  if (env === "production") return "production";
-  if (env === "staging") return "staging";
-  return "development";
-}
-function getActiveEngineConfig() {
-  return ENV_CONFIGS[getActiveEnvironment()];
-}
-function getProviderModeConfig(category) {
-  return getActiveEngineConfig().providerModes[category];
-}
-var _modeOverrides = {};
-function getProviderModeOverride(category) {
-  return _modeOverrides[category];
-}
-
-// src/engine/providerCredentials.ts
-var CREDENTIAL_SLOTS = {
-  /**
-   * Instrumental / Beat Generation
-   * Candidate APIs: Udio, Suno, Stability Audio, MusicGen
-   */
-  instrumental: {
-    apiKey: process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? null,
-    model: process.env.INSTRUMENTAL_MODEL ?? null,
-    region: process.env.INSTRUMENTAL_REGION ?? null,
-    timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 3e4)
-  },
-  /**
-   * Vocal Synthesis
-   * Candidate APIs: ElevenLabs, Musicfy, Suno (vocals), PlayHT
-   */
-  vocal: {
-    apiKey: process.env.VOCAL_API_KEY ?? null,
-    endpoint: process.env.VOCAL_API_ENDPOINT ?? null,
-    model: process.env.VOCAL_MODEL ?? null,
-    region: process.env.VOCAL_REGION ?? null,
-    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 3e4)
-  },
-  /**
-   * Mix & Mastering
-   * Candidate APIs: LANDR, CloudBounce, iZotope Ozone API, Matchering
-   */
-  mastering: {
-    apiKey: process.env.MASTERING_API_KEY ?? null,
-    endpoint: process.env.MASTERING_API_ENDPOINT ?? null,
-    model: process.env.MASTERING_MODEL ?? null,
-    region: process.env.MASTERING_REGION ?? null,
-    timeoutMs: Number(process.env.MASTERING_TIMEOUT_MS ?? 6e4)
-  },
-  /**
-   * Stem Extraction / Separation
-   * Candidate APIs: Demucs, Spleeter, iZotope RX, AudioShake
-   */
-  stems: {
-    apiKey: process.env.STEMS_API_KEY ?? null,
-    endpoint: process.env.STEMS_API_ENDPOINT ?? null,
-    model: process.env.STEMS_MODEL ?? null,
-    region: process.env.STEMS_REGION ?? null,
-    timeoutMs: Number(process.env.STEMS_TIMEOUT_MS ?? 12e4)
-  }
-};
-function isCredentialReady(category) {
-  const slot = CREDENTIAL_SLOTS[category];
-  return slot.apiKey !== null && slot.endpoint !== null;
-}
-function getCredentialSummary(category) {
-  const slot = CREDENTIAL_SLOTS[category];
-  return {
-    apiKeySet: slot.apiKey !== null,
-    endpointSet: slot.endpoint !== null,
-    modelSet: slot.model !== null,
-    regionSet: slot.region !== null,
-    timeoutMs: slot.timeoutMs
-  };
-}
-
-// src/engine/providerResolver.ts
-function resolveProviderMode(category, requestedMode) {
-  const registryEntry = getProvider(category);
-  const envModeConfig = getProviderModeConfig(category);
-  const runtimeOverride = getProviderModeOverride(category);
-  const engineConfig = getActiveEngineConfig();
-  let resolvedMode;
-  let source;
-  if (requestedMode !== void 0) {
-    resolvedMode = requestedMode;
-    source = "runtime-override";
-  } else if (runtimeOverride !== void 0) {
-    resolvedMode = runtimeOverride;
-    source = "runtime-override";
-  } else {
-    resolvedMode = envModeConfig.mode;
-    source = "env-config";
-  }
-  if (registryEntry.status === "disabled") {
-    resolvedMode = "disabled";
-    source = "registry-forced-disabled";
-  }
-  if (resolvedMode === "live" && engineConfig.environment === "development" && !engineConfig.safety.allowLiveInDev) {
-    resolvedMode = "mock";
-    source = "safety-guard";
-  }
-  const isLiveCapable = isProviderActive(category);
-  const credentialsReady = isCredentialReady(category);
-  let canRun = true;
-  let disabledReason = null;
-  if (resolvedMode === "disabled") {
-    canRun = false;
-    disabledReason = `Provider '${category}' is disabled`;
-  } else if (resolvedMode === "live" && !isLiveCapable) {
-    canRun = false;
-    disabledReason = `Provider '${category}' is set to live but registry status is not 'live-ready'. Set registry status \u2192 "live-ready" and isLive \u2192 true to activate.`;
-  } else if (resolvedMode === "live" && !credentialsReady) {
-    canRun = false;
-    disabledReason = `Provider '${category}' is set to live but API credentials are not configured. Set the required env vars (${category.toUpperCase()}_API_KEY, ${category.toUpperCase()}_API_ENDPOINT).`;
-  }
-  return {
-    category,
-    resolvedMode,
-    source,
-    isLiveCapable,
-    credentialsReady,
-    canRun,
-    disabledReason
-  };
-}
-function resolveAllProviders() {
-  const categories = ["instrumental", "vocal", "mastering", "stems"];
-  return Object.fromEntries(
-    categories.map((cat) => [cat, resolveProviderMode(cat)])
-  );
 }
 
 // src/engine/diagnostics.ts

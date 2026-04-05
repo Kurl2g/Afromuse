@@ -136,6 +136,35 @@ Added `GET /engine/diagnostics` endpoint that returns a full `EngineDiagnostics`
 ### Diagnostics Endpoint
 `GET /api/engine/diagnostics` — returns full engine state. No auth required in development. Add auth middleware before exposing in production.
 
+## Instrumental Live Provider Bridge (V2 First Live Provider Path)
+
+Focused upgrade to the instrumental provider only. All other providers (vocal, mastering, stems) are untouched and remain fully mocked.
+
+### What Changed
+
+**`artifacts/api-server/src/engine/providers/instrumental.ts`** — Complete refactor. File structure:
+
+1. **`InstrumentalPayload`** — unchanged public interface (routes still work as-is)
+2. **`LiveInstrumentalProviderResponse`** — new shape for real provider responses, including: `previewUrl`, `wavUrl`, `externalJobId`, `generationTitle`, `sonicNotes`, `duration`, `coverArtUrl`, `waveformMeta`
+3. **`buildBaseMetadata()`** — extracted helper (was inline in `run()`)
+4. **`fetchAiSessionBrief()`** — unchanged AI brief logic, now called by both mock and live paths
+5. **`runMock()`** — all previous mock logic, cleanly isolated
+6. **`callLiveInstrumentalProvider()`** — isolated live request execution block. Reads credentials from `getProviderCredentials("instrumental")`. Contains the clearly marked DROP-IN ZONE where real API call logic goes. Throws a structured error until implemented (triggers fallback correctly)
+7. **`runLive()`** — complete live execution path: calls provider → enriches with AI brief → maps into `RawInstrumentalResponse` → normalizes through adapter
+8. **`run()`** — new dispatcher: calls `resolveProviderMode("instrumental")`, routes to mock/live/disabled, wires live failures through `executeFallback()`
+
+### Live Drop-in Checklist (Instrumental)
+1. Set `registry.ts` → `status: "live-ready"`, `isLive: true`
+2. Set `engineConfig.ts` dev/staging/prod → `instrumental.mode: "live"`
+3. Set env vars: `INSTRUMENTAL_API_KEY`, `INSTRUMENTAL_API_ENDPOINT`, `INSTRUMENTAL_MODEL`, `INSTRUMENTAL_TIMEOUT_MS`
+4. Implement the body of `callLiveInstrumentalProvider()` — map provider response to `LiveInstrumentalProviderResponse`
+5. Zero changes to routes, adapters, job store, or UI
+
+### Fallback Behavior (Instrumental)
+- In development/staging: `fallbackToMock: true` — live failure → mock run, annotated in notes
+- In production: `fallbackToMock: false` — live failure → clean `NormalizedResponse` with structured error
+- Disabled mode → immediate clean failure, no dispatch
+
 ## Engine Integration Readiness Layer (V2 Architecture Upgrade)
 
 Six-component internal architecture upgrade hardening the engine before real audio API integration. No UI changes.
