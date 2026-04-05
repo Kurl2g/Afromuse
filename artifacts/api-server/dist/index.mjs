@@ -50910,6 +50910,39 @@ async function executeFallback(jobId, category, originalError, mockRunner) {
   };
 }
 
+// src/engine/nvidiaClient.ts
+var NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
+var MODEL_DEFAULTS = {
+  GENERATE_INSTRUMENTAL_MODEL: "meta/llama-4-maverick-17b-128e-instruct",
+  VOCAL_DEMO_MODEL: "meta/llama-3.3-70b-instruct",
+  VOCAL_DIRECTION_MODEL: "meta/llama-3.3-70b-instruct",
+  MASTERING_NOTES_MODEL: "meta/llama-4-maverick-17b-128e-instruct",
+  STEM_EXTRACTION: "meta/llama-4-maverick-17b-128e-instruct",
+  REASONING_MODEL: "deepseek-ai/deepseek-r1-distill-llama-8b",
+  SONGWRITINGMODEL: "meta/llama-3.3-70b-instruct",
+  GENERATE_MASTER_MIX: "meta/llama-4-maverick-17b-128e-instruct",
+  LYRICS_MODEL: "meta/llama-3.3-70b-instruct",
+  ARRANGEMENT_MODEL: "meta/llama-3.3-70b-instruct",
+  SECTION_INTELEGENCE_MODEL: "meta/llama-4-maverick-17b-128e-instruct"
+};
+function resolveModel(envKey) {
+  const raw = process.env[envKey];
+  const trimmed = raw?.trim();
+  if (trimmed) return trimmed;
+  return MODEL_DEFAULTS[envKey] ?? "meta/llama-3.3-70b-instruct";
+}
+function getNvidiaClient(model) {
+  const isDeepSeek = model.startsWith("deepseek-ai/");
+  const apiKey = isDeepSeek ? process.env.NVIDIA_DEEPSEEK_API_KEY || process.env.NVIDIA_API_KEY : process.env.NVIDIA_API_KEY;
+  if (!apiKey) return null;
+  return new OpenAI({ apiKey, baseURL: NVIDIA_BASE_URL });
+}
+function resolveModelAndClient(envKey) {
+  const model = resolveModel(envKey);
+  const client = getNvidiaClient(model);
+  return { model, client };
+}
+
 // src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -51019,14 +51052,13 @@ Return ONLY this JSON object with no markdown, no code fences, no extra text:
 }`;
 }
 async function fetchAiSessionBrief(p, jobId) {
-  const apiKey = process.env.NVIDIA_API_KEY;
-  if (!apiKey) {
+  const { model, client: ai } = resolveModelAndClient("GENERATE_INSTRUMENTAL_MODEL");
+  if (!ai) {
     logger.warn({ jobId }, "NVIDIA_API_KEY not set \u2014 skipping instrumental AI brief");
     return null;
   }
-  const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
   const res = await ai.chat.completions.create({
-    model: "qwen/qwen3.5-122b-a10b",
+    model,
     messages: [
       { role: "system", content: AI_SYSTEM_PROMPT },
       { role: "user", content: buildAiPrompt(p) }
