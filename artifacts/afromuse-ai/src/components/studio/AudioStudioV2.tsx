@@ -43,6 +43,10 @@ interface Blueprint {
   bassWeight?: string;
   transitionStyle?: string;
   outroStyle?: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }
 
 const AUDIO_GENRES = [
@@ -150,6 +154,11 @@ const DRUM_DENSITIES    = ["Sparse", "Mid", "Heavy", "Trap-lite", "Afro-percussi
 const BASS_WEIGHTS      = ["Punchy sub", "Rolling bass", "Minimal", "Deep sine", "Afrobeats pocket"];
 const TRANSITION_STYLES = ["Hard cut", "Filter sweep", "Reverb trail", "Riser + impact", "Beat drop"];
 const OUTRO_STYLES      = ["Fade out", "Cold cut", "Loop decay", "Outro chant", "Breakdown end"];
+
+const BEAT_DNA_BOUNCE_STYLES  = ["Smooth Glide", "Club Bounce", "Street Bounce", "Late Night Swing", "Festival Lift", "Slow Wine", "Log Drum Drive"];
+const BEAT_DNA_MELODY_DENSITIES = ["Minimal", "Balanced", "Rich", "Lush", "Cinematic"];
+const BEAT_DNA_DRUM_CHARACTERS  = ["Clean", "Punchy", "Raw", "Dusty", "Percussive", "Heavy Groove"];
+const BEAT_DNA_HOOK_LIFTS       = ["Subtle", "Balanced", "Big", "Anthemic", "Explosive"];
 
 function hashString(s: string): number {
   let h = 2166136261;
@@ -1143,6 +1152,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [transitionStyle, setTransitionStyle] = useState(TRANSITION_STYLES[3]);
   const [outroStyle,      setOutroStyle]      = useState(OUTRO_STYLES[0]);
 
+  const [bounceStyle,     setBounceStyle]     = useState(BEAT_DNA_BOUNCE_STYLES[1]);
+  const [melodyDensity,   setMelodyDensity]   = useState(BEAT_DNA_MELODY_DENSITIES[1]);
+  const [drumCharacter,   setDrumCharacter]   = useState(BEAT_DNA_DRUM_CHARACTERS[1]);
+  const [hookLift,        setHookLift]        = useState(BEAT_DNA_HOOK_LIFTS[1]);
+
   const [instrumentalUrl,       setInstrumentalUrl]       = useState("");
   const [emotionalTone,         setEmotionalTone]         = useState("Uplifting");
   const [leadVocalBuildMode,    setLeadVocalBuildMode]    = useState("full");
@@ -1240,6 +1254,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
       lyrics: audioLyrics,
       styleReference: audioStyleReference,
       ...(isProducer ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle } : {}),
+      bounceStyle,
+      melodyDensity,
+      drumCharacter,
+      hookLift,
     });
 
     const bp: Blueprint = {
@@ -1252,6 +1270,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
       hookFocus:        intel.hookFocus,
       producerNotes:    intel.producerNotes,
       ...(isProducer ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle } : {}),
+      bounceStyle,
+      melodyDensity,
+      drumCharacter,
+      hookLift,
     };
 
     return { bp, intel };
@@ -1520,6 +1542,13 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         `Intro: ${blueprint.introBehavior}`, `Chorus Lift: ${blueprint.chorusLift}`,
         `Drum Density: ${blueprint.drumDensity}`, `Bass Weight: ${blueprint.bassWeight}`,
         `Transitions: ${blueprint.transitionStyle}`, `Outro: ${blueprint.outroStyle}`,
+      ] : []),
+      ...(blueprint.bounceStyle ? [
+        ``, `— Beat DNA —`,
+        `Bounce Style: ${blueprint.bounceStyle}`,
+        `Melody Density: ${blueprint.melodyDensity}`,
+        `Drum Character: ${blueprint.drumCharacter}`,
+        `Hook Lift: ${blueprint.hookLift}`,
       ] : []),
       ``, `Producer Notes:`, blueprint.producerNotes,
     ];
@@ -1992,6 +2021,114 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* ── Beat DNA ───────────────────────────────────────────── */}
+            <div className="mx-4 mb-4 rounded-xl border border-amber-500/15 bg-gradient-to-b from-amber-500/[0.03] to-transparent overflow-hidden">
+              <div className="px-4 py-3 border-b border-amber-500/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-md bg-amber-500/15 flex items-center justify-center">
+                    <Zap className="w-2.5 h-2.5 text-amber-400" />
+                  </div>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-amber-400/70">Beat DNA</span>
+                </div>
+                <span className="text-[9px] text-amber-400/35 italic">shapes beat personality + prompt</span>
+              </div>
+              <div className="p-4 space-y-4">
+
+                {/* Bounce Style */}
+                <div>
+                  <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-2">
+                    Bounce Style <span className="text-white/15 font-normal normal-case tracking-normal">groove motion</span>
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BEAT_DNA_BOUNCE_STYLES.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setBounceStyle(v)}
+                        className={`h-7 px-2.5 rounded-lg text-[10px] font-semibold transition-all ${
+                          bounceStyle === v
+                            ? "bg-amber-500/18 border border-amber-500/40 text-amber-300"
+                            : "bg-white/[0.03] border border-white/6 text-white/30 hover:border-white/14 hover:text-white/50"
+                        }`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Melody Density */}
+                <div>
+                  <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-2">
+                    Melody Density <span className="text-white/15 font-normal normal-case tracking-normal">melodic layer weight</span>
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BEAT_DNA_MELODY_DENSITIES.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setMelodyDensity(v)}
+                        className={`h-7 px-2.5 rounded-lg text-[10px] font-semibold transition-all ${
+                          melodyDensity === v
+                            ? "bg-amber-500/18 border border-amber-500/40 text-amber-300"
+                            : "bg-white/[0.03] border border-white/6 text-white/30 hover:border-white/14 hover:text-white/50"
+                        }`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Drum Character + Hook Lift — side by side */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-2">
+                      Drum Character <span className="text-white/15 font-normal normal-case tracking-normal">rhythm texture</span>
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {BEAT_DNA_DRUM_CHARACTERS.map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setDrumCharacter(v)}
+                          className={`h-7 px-2.5 rounded-lg text-[10px] font-semibold transition-all ${
+                            drumCharacter === v
+                              ? "bg-amber-500/18 border border-amber-500/40 text-amber-300"
+                              : "bg-white/[0.03] border border-white/6 text-white/30 hover:border-white/14 hover:text-white/50"
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-2">
+                      Hook Lift <span className="text-white/15 font-normal normal-case tracking-normal">chorus payoff</span>
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {BEAT_DNA_HOOK_LIFTS.map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setHookLift(v)}
+                          className={`h-7 px-2.5 rounded-lg text-[10px] font-semibold transition-all ${
+                            hookLift === v
+                              ? "bg-amber-500/18 border border-amber-500/40 text-amber-300"
+                              : "bg-white/[0.03] border border-white/6 text-white/30 hover:border-white/14 hover:text-white/50"
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
 

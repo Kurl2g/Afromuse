@@ -944,6 +944,10 @@ export function buildFullIntelligence(opts: {
   bassWeight?: string;
   transitionStyle?: string;
   outroStyle?: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }): FullIntelligence {
   const {
     genre, bpm, key, energy, section, vocalGender, vocalLabel,

@@ -51036,6 +51036,10 @@ function buildAiPrompt(p) {
   const chorusLift = p.chorusLift ?? "Gradual swell";
   const drumDensity = p.drumDensity ?? "Mid";
   const bassWeight = p.bassWeight ?? "Punchy sub";
+  const bounceStyle = (p.bounceStyle ?? "").trim() || "default";
+  const melodyDensity = (p.melodyDensity ?? "").trim() || "Balanced";
+  const drumCharacter = (p.drumCharacter ?? "").trim() || "Punchy";
+  const hookLift = (p.hookLift ?? "").trim() || "Balanced";
   return `Generate an instrumental session brief for this configuration:
 
 GENRE: ${genre}
@@ -51049,6 +51053,11 @@ INTRO BEHAVIOR: ${introBehavior}
 CHORUS LIFT: ${chorusLift}
 DRUM DENSITY: ${drumDensity}
 BASS WEIGHT: ${bassWeight}
+BEAT DNA:
+  Bounce Style: ${bounceStyle}
+  Melody Density: ${melodyDensity}
+  Drum Character: ${drumCharacter}
+  Hook Lift: ${hookLift}
 
 Return ONLY this JSON object with no markdown, no code fences, no extra text:
 {
@@ -51274,6 +51283,50 @@ function extractProductionContext(notes) {
   const combined = parts.join("; ");
   return combined.length > 120 ? combined.slice(0, 117) + "\u2026" : combined;
 }
+function resolveBounceStyle(bounceStyle) {
+  const style = bounceStyle.toLowerCase().trim();
+  const map2 = {
+    "smooth glide": "smooth, gliding rhythmic motion with seamless groove flow and effortless pocket",
+    "club bounce": "kinetic club-ready bounce with strong rhythmic momentum and dancefloor pull",
+    "street bounce": "raw street-energy bounce with gritty rhythmic drive and working-class grit",
+    "late night swing": "relaxed late-night pocket with sensual swing placement and slow-burning rhythm feel",
+    "festival lift": "uplifting festival-ready momentum with anthemic crowd energy and wide open groove",
+    "slow wine": "slow, deliberate wine rhythm with deep groove weight and sensual pocket authority",
+    "log drum drive": "log drum-powered Amapiano groove drive with rolling rhythmic authority and deep bounce"
+  };
+  for (const [key, desc2] of Object.entries(map2)) {
+    if (style === key || style.includes(key.split(" ")[0])) return desc2;
+  }
+  return null;
+}
+function resolveMelodyDensityLayer(melodyDensity) {
+  const density = melodyDensity.toLowerCase().trim();
+  if (density === "minimal") return "sparse, restrained melodic presence \u2014 air and space take priority over layering";
+  if (density === "balanced") return "balanced melodic layering \u2014 clear harmonic hooks without overcrowding";
+  if (density === "rich") return "rich, textured melodic arrangement with warm harmonic depth and layered expression";
+  if (density === "lush") return "lush, dense melodic environment \u2014 stacked harmonic layers and full sonic warmth";
+  if (density === "cinematic") return "expansive cinematic melodic language \u2014 wide emotional sweep, orchestral ambition, and moving harmonic arcs";
+  return null;
+}
+function resolveDrumCharacterLayer(drumCharacter) {
+  const char2 = drumCharacter.toLowerCase().trim();
+  if (char2 === "clean") return "tight transients and clean pocket \u2014 polished engineering with precise drum placement";
+  if (char2 === "punchy") return "punchy hit attack with forward drum placement and snappy transient energy";
+  if (char2 === "raw") return "raw, gritty rhythm texture with rough character and unpolished street edge";
+  if (char2 === "dusty") return "dusty, lo-fi textured drums with vintage character and worn analog patina";
+  if (char2 === "percussive") return "percussion-forward arrangement with layered rhythmic complexity and poly-rhythmic depth";
+  if (char2 === "heavy groove") return "heavy, pressure-building groove with commanding low-end drum weight and authoritative presence";
+  return null;
+}
+function resolveHookLiftLayer(hookLift) {
+  const lift = hookLift.toLowerCase().trim();
+  if (lift === "subtle") return "Restrained chorus energy \u2014 the hook is felt, not forced; understatement drives replay";
+  if (lift === "balanced") return "Natural chorus payoff with clean arrangement lift and satisfying hook resolution";
+  if (lift === "big") return "Strong hook drop with clear arrangement escalation, high replay draw and audience lock";
+  if (lift === "anthemic") return "Anthem-level chorus payoff \u2014 maximum replay architecture, crowd-building energy, and hook dominance";
+  if (lift === "explosive") return "Explosive chorus release \u2014 full arrangement detonation, massive drop payoff, and electric crowd momentum";
+  return null;
+}
 function buildElevenLabsPrompt(p) {
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
@@ -51286,6 +51339,10 @@ function buildElevenLabsPrompt(p) {
   const bassWt = (p.bassWeight ?? "Balanced").trim();
   const hitmaker = p.hitmakerMode ?? false;
   const buildMode = (p.buildMode ?? "").trim();
+  const bounceStyleRaw = (p.bounceStyle ?? "").trim();
+  const melodyDensRaw = (p.melodyDensity ?? "").trim();
+  const drumCharRaw = (p.drumCharacter ?? "").trim();
+  const hookLiftRaw = (p.hookLift ?? "").trim();
   const moodProfile = getMoodProfile(mood);
   const grooveWord = GENRE_GROOVE[genre] ?? `${genre} groove`;
   const energyDesc = resolveEnergyDescriptor(energy, mood);
@@ -51295,9 +51352,14 @@ function buildElevenLabsPrompt(p) {
   const buildIntent = buildMode ? resolveBuildModeIntent(buildMode) : null;
   const hitmakerLine = resolveHitmakerAdditions(hitmaker, genre, energy);
   const productionCtx = extractProductionContext(p.productionNotes);
-  const sentence1 = `A ${energyDesc} ${grooveWord} in ${key} at ${bpm} BPM.`;
-  const sentence2 = `${moodProfile.lane.charAt(0).toUpperCase()}${moodProfile.lane.slice(1)} emotional lane \u2014 ${moodProfile.texture}, ${moodProfile.space} sonic space.`;
-  const sentence3 = percLine;
+  const bounceDesc = bounceStyleRaw ? resolveBounceStyle(bounceStyleRaw) : null;
+  const melodyDesc = melodyDensRaw ? resolveMelodyDensityLayer(melodyDensRaw) : null;
+  const drumCharDesc = drumCharRaw ? resolveDrumCharacterLayer(drumCharRaw) : null;
+  const hookLiftDesc = hookLiftRaw ? resolveHookLiftLayer(hookLiftRaw) : null;
+  const sentence1 = bounceDesc ? `A ${energyDesc} ${grooveWord} in ${key} at ${bpm} BPM \u2014 ${bounceDesc}.` : `A ${energyDesc} ${grooveWord} in ${key} at ${bpm} BPM.`;
+  const textureLayer = melodyDesc ?? moodProfile.texture;
+  const sentence2 = `${moodProfile.lane.charAt(0).toUpperCase()}${moodProfile.lane.slice(1)} emotional lane \u2014 ${textureLayer}, ${moodProfile.space} sonic space.`;
+  const sentence3 = drumCharDesc ? `${percLine.replace(/\.$/, "")} \u2014 ${drumCharDesc}.` : percLine;
   const sentence4Parts = [];
   if (mixDesc) sentence4Parts.push(mixDesc.charAt(0).toUpperCase() + mixDesc.slice(1));
   if (soundLane) sentence4Parts.push(`Direction: ${soundLane}`);
@@ -51306,6 +51368,7 @@ function buildElevenLabsPrompt(p) {
   const sentence5Parts = [];
   if (buildIntent) sentence5Parts.push(buildIntent);
   if (hitmakerLine) sentence5Parts.push(hitmakerLine);
+  if (hookLiftDesc) sentence5Parts.push(hookLiftDesc);
   const sentence5 = sentence5Parts.length ? sentence5Parts.join(". ") + "." : null;
   const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5].filter((s) => Boolean(s?.trim()));
   const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
@@ -51314,7 +51377,11 @@ function buildElevenLabsPrompt(p) {
     soundRef ? `Sound ref: ${soundRef}` : null,
     mixFeel ? `Mix feel: ${mixFeel}` : null,
     hitmaker ? "Hitmaker: ON" : null,
-    buildMode ? `Build mode: ${buildMode}` : null
+    buildMode ? `Build mode: ${buildMode}` : null,
+    bounceStyleRaw ? `Bounce: ${bounceStyleRaw}` : null,
+    melodyDensRaw ? `Melody: ${melodyDensRaw}` : null,
+    drumCharRaw ? `Drum char: ${drumCharRaw}` : null,
+    hookLiftRaw ? `Hook lift: ${hookLiftRaw}` : null
   ].filter(Boolean).join(" \xB7 ");
   return { prompt, brief };
 }
