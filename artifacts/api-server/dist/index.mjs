@@ -51114,29 +51114,209 @@ async function runMock(jobId, p) {
   logger.info({ jobId, genre: p.genre, mood: p.mood }, "Instrumental mock execution complete");
   return adaptInstrumental(raw);
 }
+var GENRE_GROOVE = {
+  Afrobeats: "syncopated Afrobeats groove",
+  Amapiano: "log drum-driven Amapiano groove",
+  Afropop: "bright, melodic Afropop feel",
+  "Afro-fusion": "hybrid Afro-fusion pocket",
+  Dancehall: "steppers Dancehall pattern",
+  "R&B": "smooth R&B pocket",
+  "Street Anthem": "raw street-energy bounce",
+  Spiritual: "reverent spiritual groove",
+  Gospel: "uplifting Gospel swing"
+};
+var GENRE_DEFAULTS = {
+  Afrobeats: 98,
+  Afropop: 104,
+  Amapiano: 112,
+  Dancehall: 90,
+  "R&B": 78,
+  "Afro-fusion": 96,
+  "Street Anthem": 100,
+  Spiritual: 72,
+  Gospel: 76
+};
+var MOOD_PROFILES = {
+  Uplifting: { lane: "uplifting and forward-moving", texture: "warm melodic layers with rhythmic brightness", space: "open and anthemic" },
+  Romantic: { lane: "intimate and warm", texture: "soft guitar runs, silky pads, and gentle melodic phrases", space: "spacious with breathing room" },
+  Energetic: { lane: "high-energy and driven", texture: "punchy transients, dense rhythmic movement", space: "tight and forward" },
+  Confident: { lane: "bold and assured", texture: "powerful chord stabs, assertive low end, sharp percussive hits", space: "commanding and crisp" },
+  Sad: { lane: "reflective and melancholic", texture: "minor-key piano or guitar, restrained percussion, emotional space", space: "slow-release and intimate" },
+  Spiritual: { lane: "reverent and elevated", texture: "choir pads, warm bass, light percussion", space: "vast and ethereal" },
+  Playful: { lane: "light and infectious", texture: "bright melodic stabs, swinging hi-hat patterns", space: "bouncy and open" },
+  Aggressive: { lane: "intense and driving", texture: "hard-hitting drums, gritty synths, edgy low end", space: "compressed and punchy" }
+};
+function getMoodProfile(mood) {
+  return MOOD_PROFILES[mood] ?? {
+    lane: `${mood.toLowerCase()} and intentional`,
+    texture: "balanced melodic and rhythmic layers",
+    space: "well-balanced"
+  };
+}
+function resolveEnergyDescriptor(energy, mood) {
+  const e = energy.toLowerCase();
+  if (e === "high" || e === "hard") {
+    return "high-energy, club-ready intensity";
+  }
+  if (e === "low" || e === "soft") {
+    return "low-key, laid-back groove";
+  }
+  if (["Romantic", "Sad", "Spiritual"].includes(mood)) return "measured, emotive energy";
+  return "mid-level, steady groove energy";
+}
+function resolvePercussionLine(drumDensity, bassWeight, genre, energy) {
+  const density = drumDensity.toLowerCase();
+  const bass = bassWeight.toLowerCase();
+  const isAfro = ["Afrobeats", "Afropop", "Afro-fusion"].includes(genre);
+  const isAmapiano = genre === "Amapiano";
+  const highEnergy = ["high", "hard"].includes(energy.toLowerCase());
+  let drumDesc;
+  if (isAmapiano) {
+    if (density.includes("heavy") || density.includes("dense")) {
+      drumDesc = "dense log drum rolls with layered percussion";
+    } else if (density.includes("light") || density.includes("minimal")) {
+      drumDesc = "sparse log drum placement with open hi-hats";
+    } else {
+      drumDesc = "rolling log drum patterns with organic percussion texture";
+    }
+  } else if (density.includes("heavy") || density.includes("dense")) {
+    drumDesc = isAfro ? "heavy layered Afro drums with tight snare and stacked percussion" : "dense, driving drum arrangement with layered hits";
+  } else if (density.includes("light") || density.includes("minimal")) {
+    drumDesc = "minimal, tasteful drum placement with room to breathe";
+  } else {
+    drumDesc = isAfro ? `syncopated ${genre} drum pattern with clean snare placement` : "balanced drum arrangement with natural movement";
+  }
+  let bassDesc;
+  if (bass.includes("heavy") || bass.includes("sub") || bass.includes("deep")) {
+    bassDesc = highEnergy ? "deep sub bass driving the low end with club-ready weight" : "warm sub-heavy bass grounding the mix";
+  } else if (bass.includes("light") || bass.includes("thin")) {
+    bassDesc = "clean, restrained bass sitting behind the groove";
+  } else if (bass.includes("punchy")) {
+    bassDesc = "punchy, well-defined bass with tight transient attack";
+  } else {
+    bassDesc = "solid, well-balanced low end";
+  }
+  return `${drumDesc.charAt(0).toUpperCase()}${drumDesc.slice(1)}, with ${bassDesc}.`;
+}
+function resolveMixFeel(mixFeel) {
+  const mf = mixFeel.toLowerCase();
+  if (mf.includes("bright") || mf.includes("crisp")) {
+    return "bright, airy mix with clear transient definition and open high end";
+  }
+  if (mf.includes("dark") || mf.includes("gritty")) {
+    return "dark, gritty mix with textured low-mids and raw sonic edge";
+  }
+  if (mf.includes("warm") || mf.includes("analog")) {
+    return "warm, analog-feeling mix with rich midrange and gentle saturation";
+  }
+  if (mf.includes("club") || mf.includes("loud")) {
+    return "loud, punchy club mix with heavy limiting and forward impact";
+  }
+  if (mf.includes("cinematic") || mf.includes("wide")) {
+    return "wide, cinematic mix with deep stereo imaging and spatial reverb";
+  }
+  return "balanced, clean mix with natural space and clarity";
+}
+var ARTIST_LANES = {
+  "burna": "Afrofusion lane \u2014 evolving sonic layers, deep cultural groove, and international crossover feel",
+  "burna boy": "Afrofusion lane \u2014 evolving sonic layers, deep cultural groove, and international crossover feel",
+  "wizkid": "smooth, melodic Afrobeats lane \u2014 effortless groove, intimate atmosphere, and understated percussion",
+  "asake": "high-energy Afropop/Amapiano lane \u2014 log-drum movement, call-and-response melody, and raw street energy",
+  "tems": "atmospheric Afro-soul lane \u2014 expansive space, emotional warmth, and slow-building tension",
+  "davido": "anthem-ready Afrobeats lane \u2014 commercial hook structure, punchy percussion, and celebratory energy",
+  "ayra starr": "cool Afropop lane \u2014 smooth melodic lines, light percussion, and modern production clarity",
+  "omah lay": "introspective Afropop lane \u2014 intimate vocal space, soft guitar runs, and laid-back groove",
+  "shallipopi": "street-energy Amapiano lane \u2014 raw bounce, log drum pressure, and working-class spirit",
+  "ckay": "melodic Afrobeats lane \u2014 emotional chord progressions, romantic energy, and international softness",
+  "fireboy": "Afro-RnB lane \u2014 lush melodies, smooth bass, and emotional lyrical space"
+};
+function interpretSoundReference(soundRef) {
+  if (!soundRef.trim()) return null;
+  const lower = soundRef.toLowerCase();
+  for (const [key, desc2] of Object.entries(ARTIST_LANES)) {
+    if (lower.includes(key)) return `${desc2}`;
+  }
+  return `${soundRef.trim()} sonic lane and production aesthetic`;
+}
+function resolveBuildModeIntent(buildMode) {
+  const bm = buildMode.toLowerCase();
+  if (bm.includes("instrumental") || bm === "producer") {
+    return "Focus entirely on the beat arrangement, harmonic movement, and percussive dynamics \u2014 no vocal accommodation needed";
+  }
+  if (bm.includes("vocal demo") || bm.includes("demo setup")) {
+    return "Leave consistent pocket and breathing room for a vocalist \u2014 melodic leads should support, not compete";
+  }
+  if (bm.includes("full") || bm.includes("session")) {
+    return "Arrange with hook lift, verse build, and vocal space in mind \u2014 the track should breathe and support full song structure";
+  }
+  if (bm.includes("artist")) {
+    return "Build for artist performance \u2014 leave room for lead vocal delivery with strong hook arrangement";
+  }
+  return null;
+}
+function resolveHitmakerAdditions(hitmaker, genre, energy) {
+  if (!hitmaker) return null;
+  const highEnergy = ["high", "hard"].includes((energy ?? "").toLowerCase());
+  if (genre === "Amapiano") {
+    return "Engineered for commercial impact \u2014 peak log drum movement, singable melodic hook, and radio-ready arrangement";
+  }
+  if (highEnergy) {
+    return "Hitmaker mode \u2014 maximum replay value, strong hook architecture, and club-tested rhythm dynamics";
+  }
+  return "Hitmaker mode \u2014 commercially balanced production with strong melodic identity and replay-engineered arrangement";
+}
+function extractProductionContext(notes) {
+  if (!notes) return null;
+  const parts = [];
+  if (notes.chordVibe?.trim()) parts.push(notes.chordVibe.trim());
+  if (notes.melodyDirection?.trim()) parts.push(notes.melodyDirection.trim());
+  if (!parts.length) return null;
+  const combined = parts.join("; ");
+  return combined.length > 120 ? combined.slice(0, 117) + "\u2026" : combined;
+}
 function buildElevenLabsPrompt(p) {
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
-  const bpm = p.bpm ?? 96;
-  const key = p.key ?? "F# Minor";
-  const energy = p.energy ?? "Medium";
-  const parts = [genre];
-  parts.push(`${mood.toLowerCase()} mood`);
-  parts.push(`${bpm} BPM`);
-  parts.push(`key of ${key}`);
-  parts.push(`${energy.toLowerCase()} energy`);
-  if (p.soundReference) parts.push(`inspired by ${p.soundReference}`);
-  if (p.styleReference && p.styleReference !== p.soundReference)
-    parts.push(p.styleReference);
-  if (p.mixFeel) parts.push(`${p.mixFeel.toLowerCase()} mix feel`);
-  if (p.drumDensity) parts.push(`${p.drumDensity.toLowerCase()} drum density`);
-  if (p.bassWeight) parts.push(`${p.bassWeight.toLowerCase()} bass`);
-  if (p.productionNotes?.chordVibe) parts.push(p.productionNotes.chordVibe);
-  if (p.productionNotes?.melodyDirection) parts.push(p.productionNotes.melodyDirection);
-  if (p.productionNotes?.arrangement) parts.push(p.productionNotes.arrangement);
-  if (p.introBehavior) parts.push(`${p.introBehavior.toLowerCase()} intro`);
-  if (p.chorusLift) parts.push(`${p.chorusLift.toLowerCase()} chorus lift`);
-  return parts.join(", ") + ". Instrumental only, no vocals.";
+  const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
+  const key = p.key ?? "F\u266F Minor";
+  const energy = p.energy ?? "Mid";
+  const soundRef = (p.soundReference ?? "").trim();
+  const mixFeel = (p.mixFeel ?? "").trim();
+  const drumDens = (p.drumDensity ?? "Mid").trim();
+  const bassWt = (p.bassWeight ?? "Balanced").trim();
+  const hitmaker = p.hitmakerMode ?? false;
+  const buildMode = (p.buildMode ?? "").trim();
+  const moodProfile = getMoodProfile(mood);
+  const grooveWord = GENRE_GROOVE[genre] ?? `${genre} groove`;
+  const energyDesc = resolveEnergyDescriptor(energy, mood);
+  const percLine = resolvePercussionLine(drumDens, bassWt, genre, energy);
+  const soundLane = interpretSoundReference(soundRef);
+  const mixDesc = mixFeel ? resolveMixFeel(mixFeel) : null;
+  const buildIntent = buildMode ? resolveBuildModeIntent(buildMode) : null;
+  const hitmakerLine = resolveHitmakerAdditions(hitmaker, genre, energy);
+  const productionCtx = extractProductionContext(p.productionNotes);
+  const sentence1 = `A ${energyDesc} ${grooveWord} in ${key} at ${bpm} BPM.`;
+  const sentence2 = `${moodProfile.lane.charAt(0).toUpperCase()}${moodProfile.lane.slice(1)} emotional lane \u2014 ${moodProfile.texture}, ${moodProfile.space} sonic space.`;
+  const sentence3 = percLine;
+  const sentence4Parts = [];
+  if (mixDesc) sentence4Parts.push(mixDesc.charAt(0).toUpperCase() + mixDesc.slice(1));
+  if (soundLane) sentence4Parts.push(`Direction: ${soundLane}`);
+  if (productionCtx) sentence4Parts.push(productionCtx);
+  const sentence4 = sentence4Parts.length ? sentence4Parts.join(". ") + "." : null;
+  const sentence5Parts = [];
+  if (buildIntent) sentence5Parts.push(buildIntent);
+  if (hitmakerLine) sentence5Parts.push(hitmakerLine);
+  const sentence5 = sentence5Parts.length ? sentence5Parts.join(". ") + "." : null;
+  const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5].filter((s) => Boolean(s?.trim()));
+  const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
+  const brief = [
+    `Genre: ${genre} | BPM: ${bpm} | Key: ${key} | Energy: ${energy} | Mood: ${mood}`,
+    soundRef ? `Sound ref: ${soundRef}` : null,
+    mixFeel ? `Mix feel: ${mixFeel}` : null,
+    hitmaker ? "Hitmaker: ON" : null,
+    buildMode ? `Build mode: ${buildMode}` : null
+  ].filter(Boolean).join(" \xB7 ");
+  return { prompt, brief };
 }
 function resolveDurationMs(songLength) {
   const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;
@@ -51154,10 +51334,13 @@ async function callLiveInstrumentalProvider(p, jobId) {
       "ELEVENLABS_API_KEY is not configured. Set the secret to enable live instrumental generation."
     );
   }
-  const prompt = buildElevenLabsPrompt(p);
+  const { prompt, brief } = buildElevenLabsPrompt(p);
   const durationMs = resolveDurationMs(p.songLength);
   const endpoint = creds.endpoint;
-  logger.info({ jobId, prompt, durationMs }, "ElevenLabs Music API \u2014 requesting generation");
+  logger.info(
+    { jobId, prompt, brief, durationMs },
+    "ElevenLabs Music API \u2014 requesting generation"
+  );
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -51187,12 +51370,13 @@ async function callLiveInstrumentalProvider(p, jobId) {
     { jobId, durationStr, audioBytes: audioBuffer.byteLength },
     "ElevenLabs Music API \u2014 audio received"
   );
+  const sonicNotes = `[AfroMuse Brief] ${brief} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "\u2026" : ""}`;
   return {
     previewUrl: dataUrl,
     wavUrl: null,
     externalJobId: null,
     generationTitle: `${p.genre ?? "Afrobeats"} Instrumental \u2014 ${p.mood ?? "Uplifting"}`,
-    sonicNotes: `ElevenLabs Music \u2014 ${prompt.slice(0, 100)}`,
+    sonicNotes,
     duration: durationStr,
     coverArtUrl: null,
     waveformMeta: {

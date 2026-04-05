@@ -46,6 +46,10 @@ export function toInstrumentalPayload(session: AfroMuseSessionState): Instrument
     chorusLift: session.chorusLift,
     drumDensity: session.drumDensity,
     bassWeight: session.bassWeight,
+    // Extended intelligence fields forwarded to the prompt builder
+    buildMode: session.buildMode,
+    emotionalTone: session.emotionalTone,
+    theme: session.topic,
   };
 }
 
