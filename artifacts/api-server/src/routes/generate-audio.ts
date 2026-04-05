@@ -160,8 +160,10 @@ router.get("/audio-job/:jobId", (req, res) => {
 
   // Derive live/fallback flags from the normalized response.
   // A real ElevenLabs result carries a data: URL; mock output does not.
+  // fallback.ts annotates notes as "[Mock fallback] ..." (with notes) or
+  // "[Mock fallback active]" (without notes) — check for the shared prefix.
   const isLive = typeof r.audioUrl === "string" && r.audioUrl.startsWith("data:audio/");
-  const isFallback = !isLive && (r.notes?.includes("[Mock fallback active]") ?? false);
+  const isFallback = !isLive && (r.notes?.includes("[Mock fallback]") ?? false);
 
   res.json({
     jobId: job.jobId,
