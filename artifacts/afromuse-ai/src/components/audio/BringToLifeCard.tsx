@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Music2, Mic2, Zap, Sparkles, Download, FileText, RefreshCw,
-  ChevronRight, AlertCircle, Clock,
+  ChevronRight, AlertCircle, Clock, Radio, ShieldCheck, Info,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AudioPlayer from "./AudioPlayer";
@@ -37,7 +37,16 @@ export interface VocalMetadata {
 
 type JobPollResponse =
   | { jobId: string; status: "processing" }
-  | { jobId: string; status: "completed"; audioUrl: string | null; duration: string; metadata: InstrumentalMetadata | VocalMetadata }
+  | {
+      jobId: string;
+      status: "completed";
+      audioUrl: string | null;
+      duration: string;
+      metadata: InstrumentalMetadata | VocalMetadata;
+      isLive: boolean;
+      isFallback: boolean;
+      provider: string;
+    }
   | { jobId: string; status: "failed"; error: string };
 
 interface BringToLifeCardProps {
@@ -138,16 +147,25 @@ function MetaChip({ label, value }: { label: string; value: string | number | bo
   );
 }
 
-function AudioMetadataPanel({ metadata }: { metadata: InstrumentalMetadata | VocalMetadata }) {
+function AudioMetadataPanel({
+  metadata,
+  jobId,
+  isLive,
+}: {
+  metadata: InstrumentalMetadata | VocalMetadata;
+  jobId?: string | null;
+  isLive?: boolean;
+}) {
   const isInstrumental = metadata.audioType === "Instrumental Preview";
   return (
     <div className="rounded-xl border border-white/6 bg-white/[0.025] px-5 py-4 mt-3">
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-[9px] font-bold tracking-widest uppercase text-white/30">Song Audio Specs</span>
+        <span className="text-[9px] font-bold tracking-widest uppercase text-white/30">Audio Specs</span>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-6 gap-y-4">
-        <MetaChip label="Key" value={metadata.key} />
         <MetaChip label="BPM" value={metadata.bpm} />
+        <MetaChip label="Key" value={metadata.key} />
+        {metadata.duration && <MetaChip label="Duration" value={metadata.duration} />}
         <MetaChip label="Genre" value={metadata.genre} />
         <MetaChip label="Mood" value={metadata.mood} />
         {isInstrumental && (
@@ -160,8 +178,60 @@ function AudioMetadataPanel({ metadata }: { metadata: InstrumentalMetadata | Voc
           <MetaChip label="Vocal Style" value={(metadata as VocalMetadata).vocalStyle} />
         )}
         <MetaChip label="Hitmaker" value={metadata.hitmakerMode} />
-        <MetaChip label="Audio Type" value={metadata.audioType} />
+        <MetaChip label="Build Mode" value={isLive ? "Live" : "Session"} />
+        {jobId && (
+          <div className="flex flex-col gap-0.5 col-span-2">
+            <span className="text-[9px] font-bold tracking-widest uppercase text-white/25">Job ID</span>
+            <span className="text-[10px] font-mono text-white/30 truncate">{jobId.slice(0, 16)}…</span>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+function EngineBadge({ isLive, provider }: { isLive: boolean; provider?: string }) {
+  if (isLive) {
+    return (
+      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-primary/25 bg-primary/8">
+        <Radio className="w-3 h-3 text-primary" />
+        <span className="text-[9px] font-bold tracking-widest uppercase text-primary">
+          {provider === "instrumental" ? "ElevenLabs Music" : "Live Engine"}
+        </span>
+        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+        <span className="text-[9px] font-bold tracking-widest uppercase text-primary/70">Live</span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 bg-white/[0.03]">
+      <Info className="w-3 h-3 text-white/30" />
+      <span className="text-[9px] font-bold tracking-widest uppercase text-white/30">Session Preview</span>
+    </div>
+  );
+}
+
+function FallbackNotice() {
+  return (
+    <div className="flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/[0.025] px-4 py-3 mt-3">
+      <ShieldCheck className="w-3.5 h-3.5 text-white/30 shrink-0 mt-0.5" />
+      <div>
+        <p className="text-[11px] font-semibold text-white/50">Session Preview · Blueprint Mode</p>
+        <p className="text-[10px] text-white/25 mt-0.5 leading-relaxed">
+          This is an AI-generated session guide, not a rendered audio file. Live generation was unavailable — your blueprint is ready to proceed.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function LiveSuccessNotice() {
+  return (
+    <div className="flex items-center gap-2.5 rounded-xl border border-primary/15 bg-primary/5 px-4 py-3 mt-3">
+      <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
+      <p className="text-[11px] font-semibold text-primary/80">
+        Real audio generated — this is a true rendered preview from ElevenLabs.
+      </p>
     </div>
   );
 }
@@ -254,6 +324,10 @@ function AudioResultCard({
   draft,
   onRegenerate,
   onDownload,
+  isLive,
+  isFallback,
+  jobId,
+  provider,
 }: {
   label: string;
   dotColor: string;
@@ -265,21 +339,30 @@ function AudioResultCard({
   draft: SongDraft;
   onRegenerate: () => void;
   onDownload: () => void;
+  isLive: boolean;
+  isFallback: boolean;
+  jobId?: string | null;
+  provider?: string;
 }) {
+  const successLabel = isLive ? "Generated Successfully" : label;
+
   return (
     <div className={`rounded-2xl border overflow-hidden ${borderColor} bg-gradient-to-b ${gradientFrom} to-transparent`}>
       <div className={`px-5 pt-4 pb-3 flex items-center justify-between border-b ${headerBorder}`}>
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${dotColor}`} />
-          <span className="text-xs font-bold text-white/70">{label}</span>
+          <div className={`w-2 h-2 rounded-full ${dotColor}${isLive ? " animate-pulse" : ""}`} />
+          <span className="text-xs font-bold text-white/70">{successLabel}</span>
         </div>
-        <button
-          onClick={onRegenerate}
-          className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
-        >
-          <RefreshCw className="w-3 h-3" />
-          Regenerate
-        </button>
+        <div className="flex items-center gap-2">
+          <EngineBadge isLive={isLive} provider={provider} />
+          <button
+            onClick={onRegenerate}
+            className="flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition-colors"
+          >
+            <RefreshCw className="w-3 h-3" />
+            Regenerate
+          </button>
+        </div>
       </div>
       <div className="p-4">
         <AudioPlayer
@@ -290,7 +373,9 @@ function AudioResultCard({
           onRegenerate={onRegenerate}
           onDownload={onDownload}
         />
-        <AudioMetadataPanel metadata={metadata} />
+        {isLive && <LiveSuccessNotice />}
+        {isFallback && <FallbackNotice />}
+        <AudioMetadataPanel metadata={metadata} jobId={isLive ? jobId : null} isLive={isLive} />
       </div>
     </div>
   );
@@ -302,12 +387,16 @@ function ExportSection({
   mood,
   instrumentalMeta,
   vocalMeta,
+  instrumentalAudioUrl,
+  instrumentalIsLive,
 }: {
   draft: SongDraft;
   genre: string;
   mood: string;
   instrumentalMeta: InstrumentalMetadata | null;
   vocalMeta: VocalMetadata | null;
+  instrumentalAudioUrl: string | null;
+  instrumentalIsLive: boolean;
 }) {
   const { toast } = useToast();
 
@@ -349,12 +438,26 @@ function ExportSection({
     toast({ title: "Production notes downloaded" });
   };
 
+  const downloadInstrumentalMp3 = () => {
+    if (!instrumentalAudioUrl) return;
+    const a = document.createElement("a");
+    a.href = instrumentalAudioUrl;
+    a.download = `${draft.title.toLowerCase().replace(/\s+/g, "_")}_instrumental_preview.mp3`;
+    a.click();
+    toast({ title: "Downloading Instrumental Preview", description: `${draft.title} · MP3` });
+  };
+
   const notifyMp3Coming = (type: "instrumental" | "vocal") => {
     toast({
       title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} MP3 — Coming Soon`,
       description: "MP3 export will be available once the audio render engine is live.",
     });
   };
+
+  const hasRealInstrumental =
+    instrumentalIsLive &&
+    typeof instrumentalAudioUrl === "string" &&
+    instrumentalAudioUrl.startsWith("data:audio/");
 
   return (
     <div className="rounded-2xl border border-white/6 bg-white/[0.018] p-5 mt-5">
@@ -377,14 +480,24 @@ function ExportSection({
           <FileText className="w-3 h-3" />
           Download Production Notes
         </button>
-        {instrumentalMeta && (
+        {instrumentalMeta && hasRealInstrumental && (
+          <button
+            onClick={downloadInstrumentalMp3}
+            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-primary/25 text-xs text-primary/80 hover:text-primary hover:border-primary/50 hover:bg-primary/8 transition-all"
+          >
+            <Download className="w-3 h-3" />
+            Download Preview
+            <span className="ml-1 text-[9px] text-primary/50 font-bold tracking-wider uppercase">MP3</span>
+          </button>
+        )}
+        {instrumentalMeta && !hasRealInstrumental && (
           <button
             onClick={() => notifyMp3Coming("instrumental")}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-primary/20 text-xs text-primary/60 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
+            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-white/10 text-xs text-white/35 hover:text-white/50 hover:border-white/20 hover:bg-white/3 transition-all"
           >
             <Clock className="w-3 h-3" />
-            Instrumental MP3
-            <span className="ml-1 text-[9px] text-primary/40 font-bold tracking-wider uppercase">Soon</span>
+            Instrumental Preview
+            <span className="ml-1 text-[9px] text-white/25 font-bold tracking-wider uppercase">Soon</span>
           </button>
         )}
         {vocalMeta && (
@@ -486,6 +599,10 @@ export default function BringToLifeCard({
   const [instrumentalStep, setInstrumentalStep] = useState(0);
   const [instrumentalMeta, setInstrumentalMeta] = useState<InstrumentalMetadata | null>(null);
   const [instrumentalAudioUrl, setInstrumentalAudioUrl] = useState<string | null>(null);
+  const [instrumentalIsLive, setInstrumentalIsLive] = useState(false);
+  const [instrumentalIsFallback, setInstrumentalIsFallback] = useState(false);
+  const [instrumentalJobId, setInstrumentalJobId] = useState<string | null>(null);
+  const [instrumentalProvider, setInstrumentalProvider] = useState<string | undefined>(undefined);
 
   const [vocalStatus, setVocalStatus] = useState<AudioStatus>("idle");
   const [vocalStep, setVocalStep] = useState(0);
@@ -584,6 +701,10 @@ export default function BringToLifeCard({
     setInstrumentalStep(0);
     setInstrumentalMeta(null);
     setInstrumentalAudioUrl(null);
+    setInstrumentalIsLive(false);
+    setInstrumentalIsFallback(false);
+    setInstrumentalJobId(null);
+    setInstrumentalProvider(undefined);
 
     try {
       const res = await fetch("/api/generate-instrumental-preview", {
@@ -600,10 +721,21 @@ export default function BringToLifeCard({
         jobId,
         (data) => {
           const meta = data.metadata as InstrumentalMetadata;
+          const live = data.isLive ?? false;
+          const fallback = data.isFallback ?? false;
           setInstrumentalMeta(meta);
           setInstrumentalAudioUrl(data.audioUrl);
+          setInstrumentalIsLive(live);
+          setInstrumentalIsFallback(fallback);
+          setInstrumentalJobId(data.jobId);
+          setInstrumentalProvider(data.provider);
           setInstrumentalStatus("ready");
-          toast({ title: "Instrumental Preview Ready", description: `${meta.bpm} BPM · ${meta.key}` });
+          const toastTitle = live
+            ? "Instrumental Generated — Live Audio Ready"
+            : fallback
+            ? "Session Preview Ready"
+            : "Instrumental Preview Ready";
+          toast({ title: toastTitle, description: `${meta.bpm} BPM · ${meta.key}` });
         },
         (error) => {
           setInstrumentalStatus("error");
@@ -753,16 +885,32 @@ export default function BringToLifeCard({
               <AudioResultCard
                 label="Instrumental Preview Ready"
                 dotColor="bg-primary"
-                borderColor="border-primary/15"
+                borderColor={instrumentalIsLive ? "border-primary/20" : "border-primary/15"}
                 gradientFrom="from-primary/5"
                 headerBorder="border-primary/8"
                 metadata={instrumentalMeta}
                 audioUrl={instrumentalAudioUrl}
                 draft={draft}
                 onRegenerate={generateInstrumental}
-                onDownload={() =>
-                  toast({ title: "Instrumental MP3 — Coming Soon", description: "MP3 export will be available once the audio render engine is live." })
-                }
+                onDownload={() => {
+                  if (
+                    instrumentalIsLive &&
+                    typeof instrumentalAudioUrl === "string" &&
+                    instrumentalAudioUrl.startsWith("data:audio/")
+                  ) {
+                    const a = document.createElement("a");
+                    a.href = instrumentalAudioUrl;
+                    a.download = `${draft.title.toLowerCase().replace(/\s+/g, "_")}_instrumental_preview.mp3`;
+                    a.click();
+                    toast({ title: "Downloading Instrumental Preview", description: `${draft.title} · MP3` });
+                  } else {
+                    toast({ title: "Instrumental Preview", description: "A real audio file will be downloadable once live generation is active." });
+                  }
+                }}
+                isLive={instrumentalIsLive}
+                isFallback={instrumentalIsFallback}
+                jobId={instrumentalJobId}
+                provider={instrumentalProvider}
               />
             </motion.div>
           )}
@@ -813,6 +961,8 @@ export default function BringToLifeCard({
                 onDownload={() =>
                   toast({ title: "Vocal Demo MP3 — Coming Soon", description: "MP3 export will be available once the audio render engine is live." })
                 }
+                isLive={false}
+                isFallback={false}
               />
             </motion.div>
           )}
@@ -839,6 +989,8 @@ export default function BringToLifeCard({
                 mood={mood}
                 instrumentalMeta={instrumentalMeta}
                 vocalMeta={vocalMeta}
+                instrumentalAudioUrl={instrumentalAudioUrl}
+                instrumentalIsLive={instrumentalIsLive}
               />
             </motion.div>
           )}

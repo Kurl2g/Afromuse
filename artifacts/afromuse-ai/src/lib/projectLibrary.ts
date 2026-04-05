@@ -14,7 +14,8 @@ import type { OutputRegistryEntry } from "./engine/outputRegistry";
 export type SessionStatus =
   | "Draft"
   | "In Progress"
-  | "Instrumental Ready"
+  | "Beat Ready"
+  | "Live Audio Ready"
   | "Vocal Ready"
   | "Export Ready";
 
@@ -75,9 +76,19 @@ export function deriveSessionStatus(
 
   if (reg.masteredMp3 || reg.masteredWav) return "Export Ready";
   if (reg.vocalPreview || reg.vocalBrief) return "Vocal Ready";
-  if (reg.instrumentalPreview || reg.sessionBrief || reg.producerNotes || reg.beatSummary) {
-    return "Instrumental Ready";
+
+  // Distinguish real generated audio from AI session blueprint output.
+  // A live ElevenLabs result is stored as a data: URL in instrumentalPreview.
+  if (
+    typeof reg.instrumentalPreview === "string" &&
+    reg.instrumentalPreview.startsWith("data:audio/")
+  ) {
+    return "Live Audio Ready";
   }
+  if (reg.sessionBrief || reg.producerNotes || reg.beatSummary || reg.instrumentalPreview) {
+    return "Beat Ready";
+  }
+
   if (reg.arrangementMap || reg.mixBrief || reg.extractionBrief) return "In Progress";
 
   return "Draft";

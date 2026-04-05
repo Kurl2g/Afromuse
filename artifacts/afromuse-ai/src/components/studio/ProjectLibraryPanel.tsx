@@ -17,19 +17,21 @@ import { useProjectLibrary } from "@/context/ProjectLibraryContext";
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<SessionStatus, { label: string; color: string; dot: string }> = {
-  Draft:                { label: "Draft",               color: "text-white/35 border-white/10 bg-white/3",                dot: "bg-white/25" },
-  "In Progress":        { label: "In Progress",         color: "text-amber-400 border-amber-500/20 bg-amber-500/8",       dot: "bg-amber-400 animate-pulse" },
-  "Instrumental Ready": { label: "Beat Ready",          color: "text-sky-400 border-sky-500/20 bg-sky-500/8",             dot: "bg-sky-400" },
-  "Vocal Ready":        { label: "Vocal Ready",         color: "text-violet-400 border-violet-500/20 bg-violet-500/8",    dot: "bg-violet-400" },
-  "Export Ready":       { label: "Export Ready",        color: "text-green-400 border-green-500/20 bg-green-500/8",       dot: "bg-green-400" },
+  Draft:              { label: "Draft",            color: "text-white/35 border-white/10 bg-white/3",                dot: "bg-white/25" },
+  "In Progress":      { label: "In Progress",      color: "text-amber-400 border-amber-500/20 bg-amber-500/8",       dot: "bg-amber-400 animate-pulse" },
+  "Beat Ready":       { label: "Beat Ready",       color: "text-sky-400 border-sky-500/20 bg-sky-500/8",             dot: "bg-sky-400" },
+  "Live Audio Ready": { label: "Live Audio Ready", color: "text-primary border-primary/25 bg-primary/8",             dot: "bg-primary animate-pulse" },
+  "Vocal Ready":      { label: "Vocal Ready",      color: "text-violet-400 border-violet-500/20 bg-violet-500/8",    dot: "bg-violet-400" },
+  "Export Ready":     { label: "Export Ready",     color: "text-green-400 border-green-500/20 bg-green-500/8",       dot: "bg-green-400" },
 };
 
 const STATUS_ICON: Record<SessionStatus, typeof Music> = {
-  Draft:                FileText,
-  "In Progress":        Music,
-  "Instrumental Ready": Package,
-  "Vocal Ready":        Mic2,
-  "Export Ready":       Download,
+  Draft:              FileText,
+  "In Progress":      Music,
+  "Beat Ready":       Package,
+  "Live Audio Ready": Music,
+  "Vocal Ready":      Mic2,
+  "Export Ready":     Download,
 };
 
 function StatusBadge({ status }: { status: SessionStatus }) {
