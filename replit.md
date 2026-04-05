@@ -314,3 +314,13 @@ Real server-side authentication using JWT cookies.
   - `AdminRoute` — redirects to `/` if not admin (role !== 'admin')
 - **Admin visibility**: Admin link and panel only shown when `user.role === 'admin'`
 - **Create admin**: Run `pnpm --filter @workspace/scripts run create-admin` in Shell tab
+
+## AfroMuse V2 Final Polish Pass (Completed)
+
+The V2 Studio has gone through a final completion pass. Key fixes applied:
+
+- **`AudioStudioV2.tsx`**: "Blueprint Locked" status label → "Blueprint Ready"; removed dead-end "WAV Preparing" button in instrumental preview footer; changed per-stem "WAV Preparing" buttons to static non-interactive "WAV · Coming Soon" badges; removed dead-end "Export Session" button from session export bar; FinalExportCard export toasts are now honest (directing users to MP3 player or noting coming Pro features); ProToolsSection "Prepare My Session" button removed; "See What's Coming" is now a real `/pricing` link; Studio Export Notes section gets `id="studio-export-notes"` anchor for scroll-to navigation; FinalExportCard footer copy updated to be accurate.
+- **`SendToAudioCard.tsx`**: Removed duplicate "Instrumental Only" quick mode (was identical to the primary "Instrumental Quick Setup" button) — replaced with "Full Session" (default mode) so all three quick-mode grid items are distinct.
+- **`BringToLifeCard.tsx`**: `downloadProductionNotes` now handles V2 drafts that don't have V1 fields (`chordVibe`, `melodyDirection`, `arrangement`) by using optional spread — falls back to just writing the hook if available. No more undefined values in exported notes.
+
+These changes align with the V2 completion spec: no fake future UX, honest available-now vs coming-soon states, and a coherent premium studio feel.

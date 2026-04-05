@@ -683,9 +683,11 @@ function FinalExportCard({
                 type="button"
                 onClick={() => {
                   if (!isReady) {
-                    onToast("Export Not Ready", notReadyMsg);
+                    onToast("Build First", notReadyMsg);
+                  } else if (label === "Export MP3") {
+                    onToast("MP3 Available", "MP3 download is available via the Beat Preview player above. Extended formats are planned for the Pro audio layer.");
                   } else {
-                    onToast("Export Queued", `${label} queued — full audio export unlocks with the AfroMuse Pro audio layer.`);
+                    onToast(`${label} — Coming Soon`, "Extended export formats are planned for the AfroMuse Pro audio layer. MP3 is available via the Beat Preview player.");
                   }
                 }}
                 className={`h-10 rounded-xl border text-[9px] font-bold tracking-wide flex flex-col items-center justify-center gap-1 transition-all duration-300 ${cls}`}
@@ -726,7 +728,7 @@ function FinalExportCard({
 
         {/* Helper note */}
         <p className="text-[9px] text-white/18 leading-relaxed text-center italic border-t border-white/4 pt-3">
-          Final export unlocks when the render engine completes the full session.
+          MP3 preview is available via the Beat Preview player. Extended export formats are planned for the Pro audio layer.
         </p>
       </div>
     </motion.div>
@@ -1109,20 +1111,13 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-2.5 pt-0.5">
-            <button
-              onClick={() => onToast("AfroMuse Pro", "The full Pro engine is on the roadmap. Your session data is already shaping the upcoming features.")}
-              className="h-8 px-4 rounded-xl bg-amber-500/10 border border-amber-500/22 text-xs font-semibold text-amber-300/85 hover:bg-amber-500/16 hover:border-amber-500/32 transition-all flex items-center gap-1.5"
+            <a
+              href="/pricing"
+              className="h-8 px-4 rounded-xl bg-amber-500/10 border border-amber-500/22 text-xs font-semibold text-amber-300/85 hover:bg-amber-500/16 hover:border-amber-500/32 transition-all flex items-center gap-1.5 no-underline"
             >
               <Sparkles className="w-3 h-3" />
-              See What's Coming
-            </button>
-            <button
-              onClick={() => onToast("Session Prepared", "Your current session structure, vocal identity, and sonic direction are locked in and ready for the Pro layer.")}
-              className="h-8 px-4 rounded-xl bg-white/[0.03] border border-white/8 text-xs font-semibold text-white/38 hover:bg-white/[0.06] hover:text-white/55 hover:border-white/14 transition-all flex items-center gap-1.5"
-            >
-              <FileText className="w-3 h-3" />
-              Prepare My Session
-            </button>
+              See Plans &amp; Pricing
+            </a>
           </div>
         </div>
       </div>
@@ -2899,19 +2894,17 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
                     {/* Footer action row */}
                     <div className="pt-2 border-t border-sky-500/8 space-y-2">
-                      <p className="text-[9px] text-white/18 italic">Preview playback for session direction only.</p>
+                      <p className="text-[9px] text-white/18 italic">Beat preview for session direction. MP3 download available via the player above.</p>
                       <div className="flex gap-1.5">
                         <button
-                          onClick={() => toast({ title: "Session Notes", description: "Full notes available in the Studio Export Notes below." })}
+                          onClick={() => {
+                            const el = document.getElementById("studio-export-notes");
+                            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                            else toast({ title: "Export Notes", description: "Scroll down to view Studio Export Notes once a session is built." });
+                          }}
                           className="flex-1 h-7 rounded-lg bg-sky-500/8 border border-sky-500/14 text-[9px] font-semibold text-sky-400/60 hover:text-sky-400/90 hover:border-sky-500/28 transition-all flex items-center justify-center gap-1"
                         >
-                          <FileText className="w-2.5 h-2.5" /> Session Notes
-                        </button>
-                        <button
-                          onClick={() => toast({ title: "WAV Export Preparing", description: "WAV export is in development. MP3 preview is available via the player above." })}
-                          className="flex-1 h-7 rounded-lg bg-white/4 border border-white/8 text-[9px] font-semibold text-white/28 hover:text-white/50 hover:border-white/14 transition-all flex items-center justify-center gap-1"
-                        >
-                          <Clock className="w-2.5 h-2.5" /> WAV Preparing
+                          <FileText className="w-2.5 h-2.5" /> View Export Notes
                         </button>
                       </div>
                     </div>
@@ -3023,7 +3016,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
               icon={<Wand2 className="w-3.5 h-3.5" />}
               status={blueprintStatus}
               accent="amber"
-              statusLabel="Blueprint Locked"
+              statusLabel="Blueprint Ready"
               emptyLabel="Create an arrangement map for recording and production."
               emptySubLabel="Generate a beat preview first to unlock the full session plan."
               loadingLabel="Mapping session structure..."
@@ -3558,13 +3551,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                         <div key={stem.name} className={`rounded-xl border px-4 py-3.5 ${c.bg} ${c.border}`}>
                           <div className="flex items-center justify-between mb-2.5">
                             <div className={`text-[10px] font-bold tracking-[0.12em] uppercase ${c.text}`}>{stem.name}</div>
-                            <button
-                              type="button"
-                              onClick={() => toast({ title: `${stem.name} — In Development`, description: `${stem.name} WAV download is being prepared as part of the stems export engine.` })}
-                              className={`h-6 px-2.5 rounded-lg text-[9px] font-semibold flex items-center gap-1 border transition-all opacity-50 hover:opacity-70 ${c.bg} ${c.border} ${c.text}`}
-                            >
-                              <Clock className="w-2.5 h-2.5" /> WAV Preparing
-                            </button>
+                            <span className={`h-6 px-2.5 rounded-lg text-[9px] font-semibold flex items-center gap-1 border select-none opacity-40 ${c.bg} ${c.border} ${c.text}`}>
+                              <Clock className="w-2.5 h-2.5" /> WAV · Coming Soon
+                            </span>
                           </div>
                           <p className={`text-[10px] leading-relaxed mb-1.5 ${c.sub}`}>{stem.extractionNotes}</p>
                           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
@@ -3631,6 +3620,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         {/* ── Studio Export Notes ── */}
         <AnimatePresence>
           {intelligence?.exportNotes && instrumentalStatus === "success" && (
+            <div id="studio-export-notes">
             <StudioExportNotesCard
               exportNotes={intelligence.exportNotes}
               isProducer={isProducer}
@@ -3650,6 +3640,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                 );
               }}
             />
+            </div>
           )}
         </AnimatePresence>
 
@@ -3674,12 +3665,6 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   className="h-8 px-3 rounded-lg bg-white/4 border border-white/8 text-xs text-white/50 hover:text-white/80 hover:border-white/15 transition-all flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Copy className="w-3 h-3" /> Copy Blueprint
-                </button>
-                <button
-                  onClick={() => toast({ title: "Export Expanding", description: "Full session export is in development. Blueprint copy is available now." })}
-                  className="h-8 px-3 rounded-lg bg-amber-500/10 border border-amber-500/22 text-xs text-amber-400/60 hover:bg-amber-500/14 hover:text-amber-400/90 transition-all flex items-center gap-1.5"
-                >
-                  <Clock className="w-3 h-3" /> Export Session
                 </button>
               </div>
             </motion.div>

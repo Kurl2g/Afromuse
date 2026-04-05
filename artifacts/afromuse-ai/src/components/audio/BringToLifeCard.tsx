@@ -436,19 +436,17 @@ function ExportSection({
   };
 
   const downloadProductionNotes = () => {
+    const chordVibe = (draft as Record<string, unknown>).chordVibe as string | undefined;
+    const melodyDirection = (draft as Record<string, unknown>).melodyDirection as string | undefined;
+    const arrangement = (draft as Record<string, unknown>).arrangement as string | undefined;
     const lines = [
       `Song: ${draft.title}`,
       `Genre: ${genre} | Mood: ${mood}`,
       ``,
-      `CHORD / VIBE`,
-      draft.chordVibe,
-      ``,
-      `MELODY DIRECTION`,
-      draft.melodyDirection,
-      ``,
-      `ARRANGEMENT`,
-      draft.arrangement,
-      ``,
+      ...(chordVibe ? [`CHORD / VIBE`, chordVibe, ``] : []),
+      ...(melodyDirection ? [`MELODY DIRECTION`, melodyDirection, ``] : []),
+      ...(arrangement ? [`ARRANGEMENT`, arrangement, ``] : []),
+      ...(draft.hook ? [`HOOK`, draft.hook, ``] : []),
       `─ Created with AfroMuse AI ─`,
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });

@@ -30,9 +30,9 @@ const QUICK_MODES: QuickModeConfig[] = [
     hoverIconClass: "group-hover:text-primary",
   },
   {
-    mode: "instrumental",
-    label: "Instrumental Only",
-    description: "No vocals, beat-focused",
+    mode: "default",
+    label: "Full Session",
+    description: "Complete lyrics-to-audio build",
     icon: <Zap className="w-3 h-3" />,
     hoverClass: "hover:bg-sky-500/10 hover:border-sky-500/30 hover:text-sky-300",
     hoverIconClass: "group-hover:text-sky-400",
