@@ -280,7 +280,7 @@ async function runMock(jobId: string, p: InstrumentalPayload): Promise<Normalize
   const raw: RawInstrumentalResponse = {
     jobId,
     status: "completed",
-    audioUrl: null,        // slot: real beat audio URL
+    audioUrl: "/demo-beat.wav",  // demo beat — replaced by ElevenLabs when live
     wavUrl: null,          // slot: WAV download URL
     blueprintData,
     externalJobId: null,   // slot: provider's own track/job ID

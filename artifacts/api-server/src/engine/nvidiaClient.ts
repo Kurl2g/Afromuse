@@ -26,17 +26,17 @@ const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
 // ─── Default (confirmed-working) model fallbacks ───────────────────────────
 
 const MODEL_DEFAULTS: Record<string, string> = {
-  GENERATE_INSTRUMENTAL_MODEL: "qwen/qwen2.5-72b-instruct",
-  VOCAL_DEMO_MODEL:            "qwen/qwen2.5-72b-instruct",
-  VOCAL_DIRECTION_MODEL:       "qwen/qwen2.5-72b-instruct",
-  MASTERING_NOTES_MODEL:       "qwen/qwen2.5-72b-instruct",
-  STEM_EXTRACTION:             "qwen/qwen2.5-72b-instruct",
-  REASONING_MODEL:             "deepseek-ai/deepseek-r1",
-  SONGWRITINGMODEL:            "qwen/qwen2.5-72b-instruct",
-  GENERATE_MASTER_MIX:         "qwen/qwen2.5-72b-instruct",
-  LYRICS_MODEL:                "qwen/qwen2.5-72b-instruct",
-  ARRANGEMENT_MODEL:           "qwen/qwen2.5-72b-instruct",
-  SECTION_INTELEGENCE_MODEL:   "qwen/qwen2.5-72b-instruct",
+  GENERATE_INSTRUMENTAL_MODEL: "meta/llama-3.3-70b-instruct",
+  VOCAL_DEMO_MODEL:            "meta/llama-3.3-70b-instruct",
+  VOCAL_DIRECTION_MODEL:       "meta/llama-3.3-70b-instruct",
+  MASTERING_NOTES_MODEL:       "meta/llama-3.3-70b-instruct",
+  STEM_EXTRACTION:             "meta/llama-3.3-70b-instruct",
+  REASONING_MODEL:             "deepseek-ai/deepseek-r1-distill-qwen-32b",
+  SONGWRITINGMODEL:            "meta/llama-3.3-70b-instruct",
+  GENERATE_MASTER_MIX:         "meta/llama-3.3-70b-instruct",
+  LYRICS_MODEL:                "meta/llama-3.3-70b-instruct",
+  ARRANGEMENT_MODEL:           "meta/llama-3.3-70b-instruct",
+  SECTION_INTELEGENCE_MODEL:   "meta/llama-3.3-70b-instruct",
 };
 
 /**
