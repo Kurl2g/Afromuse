@@ -50957,6 +50957,279 @@ function resolveModelAndClient(envKey) {
   return { model, client };
 }
 
+// src/engine/lyricsSignal.ts
+var LANE_KEYWORDS = {
+  romantic: [
+    "love",
+    "heart",
+    "miss",
+    "feel",
+    "baby",
+    "darling",
+    "kiss",
+    "hold me",
+    "close to",
+    "tender",
+    "forever",
+    "together",
+    "need you",
+    "want you",
+    "your touch",
+    "your eyes",
+    "night with you",
+    "missing you",
+    "skin",
+    "warmth"
+  ],
+  street: [
+    "hustle",
+    "money",
+    "grind",
+    "flex",
+    "road",
+    "block",
+    "trap",
+    "shine",
+    "boss",
+    "loyalty",
+    "bread",
+    "survive",
+    "real",
+    "streets",
+    "gang",
+    "never fold",
+    "came from",
+    "started from",
+    "grind",
+    "no days off",
+    "paid",
+    "drip"
+  ],
+  spiritual: [
+    "pray",
+    "god",
+    "lord",
+    "faith",
+    "spirit",
+    "bless",
+    "heaven",
+    "holy",
+    "grace",
+    "worship",
+    "church",
+    "amen",
+    "zion",
+    "divine",
+    "jesus",
+    "jah",
+    "altar",
+    "kneel",
+    "miracle",
+    "hallelujah",
+    "savior",
+    "mercy"
+  ],
+  celebratory: [
+    "dance",
+    "night",
+    "vibe",
+    "move",
+    "club",
+    "lit",
+    "turn up",
+    "groove",
+    "fire",
+    "celebrate",
+    "energy",
+    "crowd",
+    "party",
+    "dj",
+    "sip",
+    "feel good",
+    "we out",
+    "tonight",
+    "let loose",
+    "vibes only"
+  ],
+  reflective: [
+    "remember",
+    "used to",
+    "yesterday",
+    "miss",
+    "gone",
+    "lost",
+    "alone",
+    "thinking",
+    "wondering",
+    "wish",
+    "if only",
+    "looking back",
+    "changed",
+    "still",
+    "what could have been",
+    "far away",
+    "without you"
+  ],
+  neutral: []
+};
+var ENERGY_HIGH_SIGNALS = [
+  "fire",
+  "turn up",
+  "let's go",
+  "run it",
+  "energy",
+  "lit",
+  "hustle",
+  "grind",
+  "fight",
+  "push",
+  "power",
+  "loud",
+  "never stop",
+  "go hard"
+];
+var ENERGY_SOFT_SIGNALS = [
+  "slow",
+  "gentle",
+  "soft",
+  "quiet",
+  "peace",
+  "still",
+  "calm",
+  "breathe",
+  "lay",
+  "whisper",
+  "light",
+  "easy",
+  "tender",
+  "hush",
+  "drift"
+];
+var HOOK_PHONETIC_SIGNALS = [
+  "oh oh",
+  "na na",
+  "la la",
+  "hey hey",
+  "yeah yeah",
+  "aye",
+  "eh eh",
+  "wo wo",
+  "no no",
+  "come on",
+  "feel it",
+  "say it",
+  "uh uh",
+  "hmm"
+];
+function analyzeLyricsSignal(lyricsText) {
+  if (!lyricsText || lyricsText.trim().length < 30) return null;
+  const lower = lyricsText.toLowerCase();
+  const lines = lyricsText.split(/\n/).filter((l) => l.trim().length > 0);
+  const totalWords = lower.split(/\s+/).length;
+  const scores = {
+    romantic: 0,
+    street: 0,
+    spiritual: 0,
+    celebratory: 0,
+    reflective: 0,
+    neutral: 0
+  };
+  for (const [lane, keywords] of Object.entries(LANE_KEYWORDS)) {
+    if (lane === "neutral") continue;
+    for (const kw of keywords) {
+      let pos = lower.indexOf(kw);
+      while (pos !== -1) {
+        scores[lane]++;
+        pos = lower.indexOf(kw, pos + kw.length);
+      }
+    }
+  }
+  let emotionalLane = "neutral";
+  let bestScore = 0;
+  for (const [lane, score] of Object.entries(scores)) {
+    if (lane !== "neutral" && score > bestScore) {
+      bestScore = score;
+      emotionalLane = lane;
+    }
+  }
+  let highCount = 0;
+  let softCount = 0;
+  for (const sig of ENERGY_HIGH_SIGNALS) {
+    if (lower.includes(sig)) highCount++;
+  }
+  for (const sig of ENERGY_SOFT_SIGNALS) {
+    if (lower.includes(sig)) softCount++;
+  }
+  const energyModifier = highCount > softCount + 1 ? "driven" : softCount > highCount + 1 ? "soft" : "mid";
+  const melodicWeight = (emotionalLane === "spiritual" || emotionalLane === "reflective") && energyModifier !== "driven" ? "gentle" : (emotionalLane === "street" || emotionalLane === "celebratory") && energyModifier === "driven" ? "intense" : "balanced";
+  let hookSignalCount = 0;
+  for (const sig of HOOK_PHONETIC_SIGNALS) {
+    if (lower.includes(sig)) hookSignalCount++;
+  }
+  const hookPotential = hookSignalCount >= 2 ? "high" : hookSignalCount === 1 ? "medium" : "low";
+  const lineSet = new Set(lines.map((l) => l.trim().toLowerCase()));
+  const uniqueRatio = lineSet.size / Math.max(1, lines.length);
+  const repetitionLevel = uniqueRatio < 0.5 ? "high" : uniqueRatio < 0.75 ? "medium" : "low";
+  const intimacyScale = emotionalLane === "romantic" || emotionalLane === "reflective" ? "intimate" : emotionalLane === "celebratory" || emotionalLane === "street" && energyModifier === "driven" ? "performance" : "mid-scale";
+  const storytellingWeight = hookSignalCount >= 2 && repetitionLevel === "high" ? "vibe-led" : uniqueRatio > 0.85 && totalWords > 80 ? "narrative" : "balanced";
+  const summary = [
+    emotionalLane !== "neutral" ? `${emotionalLane} lane` : "neutral lane",
+    `${energyModifier} energy`,
+    `${melodicWeight} melodic weight`,
+    hookPotential !== "low" ? `${hookPotential} hook potential` : null,
+    repetitionLevel === "high" ? "high repetition" : null,
+    storytellingWeight !== "balanced" ? storytellingWeight : null
+  ].filter(Boolean).join(", ");
+  return {
+    emotionalLane,
+    energyModifier,
+    melodicWeight,
+    hookPotential,
+    repetitionLevel,
+    intimacyScale,
+    storytellingWeight,
+    summary
+  };
+}
+function resolveLyricsInfluence(signal) {
+  const parts = [];
+  const laneInfluence = {
+    romantic: "softer melodic textures, warmer harmonic space, and consistent vocal breathing room throughout",
+    street: "stronger percussion attitude, firmer assertive low end, and confident swagger in the groove",
+    spiritual: "restraint and openness \u2014 ambient harmonic lift, emotional breathing space, and reverent warmth",
+    celebratory: "bright high-replay chorus energy, wide festive arrangement, and rhythmic momentum built for movement",
+    reflective: "smooth, understated arrangement support with emotional pacing and quiet melodic movement",
+    neutral: null
+  };
+  const laneStr = laneInfluence[signal.emotionalLane];
+  if (laneStr) parts.push(laneStr);
+  if (signal.hookPotential === "high" || signal.repetitionLevel === "high") {
+    parts.push("chorus payoff and replay energy engineered for maximum hook retention");
+  }
+  if (signal.storytellingWeight === "narrative") {
+    parts.push("smooth steady arrangement that serves lyrical storytelling without competing movement");
+  }
+  if (!parts.length) return null;
+  return `Lyrics-aware direction: ${parts.join(" \u2014 ")}.`;
+}
+function buildLyricsAiContext(signal) {
+  const lines = [
+    `LYRICS SIGNAL: ${signal.summary}`,
+    `LYRICAL LANE: ${signal.emotionalLane}`,
+    `LYRICAL ENERGY: ${signal.energyModifier}`,
+    `MELODIC WEIGHT: ${signal.melodicWeight}`,
+    `HOOK POTENTIAL: ${signal.hookPotential}`,
+    `STORYTELLING STYLE: ${signal.storytellingWeight}`,
+    `INTIMACY SCALE: ${signal.intimacyScale}`,
+    ``,
+    `Use this lyrical signal to shape the "arrangementMap", "producerNotes", "sessionBrief", and "sonicIdentity" fields.`,
+    `The beat should feel built around this song \u2014 not separate from it.`,
+    `If the lane is romantic: leave melodic breathing room. If street: strengthen the low end confidence. If spiritual: prioritize space over density.`,
+    `If hook potential is high: engineer maximum chorus replay architecture.`
+  ];
+  return lines.join("\n");
+}
+
 // src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -51040,6 +51313,8 @@ function buildAiPrompt(p) {
   const melodyDensity = (p.melodyDensity ?? "").trim() || "Balanced";
   const drumCharacter = (p.drumCharacter ?? "").trim() || "Punchy";
   const hookLift = (p.hookLift ?? "").trim() || "Balanced";
+  const lyricsSignal = p.lyricsText?.trim() ? analyzeLyricsSignal(p.lyricsText) : null;
+  const lyricsAiBlock = lyricsSignal ? buildLyricsAiContext(lyricsSignal) + "\n\n" : "";
   return `Generate an instrumental session brief for this configuration:
 
 GENRE: ${genre}
@@ -51059,7 +51334,7 @@ BEAT DNA:
   Drum Character: ${drumCharacter}
   Hook Lift: ${hookLift}
 
-Return ONLY this JSON object with no markdown, no code fences, no extra text:
+${lyricsAiBlock}Return ONLY this JSON object with no markdown, no code fences, no extra text:
 {
   "beatSummary": "One compelling line (max 20 words) describing this beat's groove character and feel \u2014 be specific to genre + BPM",
   "arrangementMap": "Full arrangement breakdown with specific producer notes for each section: Intro \u2192 Verse \u2192 Chorus/Hook \u2192 Bridge \u2192 Outro. 3-4 sentences total.",
@@ -51370,7 +51645,9 @@ function buildElevenLabsPrompt(p) {
   if (hitmakerLine) sentence5Parts.push(hitmakerLine);
   if (hookLiftDesc) sentence5Parts.push(hookLiftDesc);
   const sentence5 = sentence5Parts.length ? sentence5Parts.join(". ") + "." : null;
-  const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5].filter((s) => Boolean(s?.trim()));
+  const lyricsSignal = p.lyricsText?.trim() ? analyzeLyricsSignal(p.lyricsText) : null;
+  const sentence6 = lyricsSignal ? resolveLyricsInfluence(lyricsSignal) : null;
+  const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5, sentence6].filter((s) => Boolean(s?.trim()));
   const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
   const brief = [
     `Genre: ${genre} | BPM: ${bpm} | Key: ${key} | Energy: ${energy} | Mood: ${mood}`,
@@ -51381,7 +51658,8 @@ function buildElevenLabsPrompt(p) {
     bounceStyleRaw ? `Bounce: ${bounceStyleRaw}` : null,
     melodyDensRaw ? `Melody: ${melodyDensRaw}` : null,
     drumCharRaw ? `Drum char: ${drumCharRaw}` : null,
-    hookLiftRaw ? `Hook lift: ${hookLiftRaw}` : null
+    hookLiftRaw ? `Hook lift: ${hookLiftRaw}` : null,
+    lyricsSignal ? `Lyrics: ${lyricsSignal.summary}` : null
   ].filter(Boolean).join(" \xB7 ");
   return { prompt, brief };
 }
@@ -51437,7 +51715,11 @@ async function callLiveInstrumentalProvider(p, jobId) {
     { jobId, durationStr, audioBytes: audioBuffer.byteLength },
     "ElevenLabs Music API \u2014 audio received"
   );
-  const sonicNotes = `[AfroMuse Brief] ${brief} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "\u2026" : ""}`;
+  const lyricsNote = p.lyricsText?.trim() ? (() => {
+    const sig = analyzeLyricsSignal(p.lyricsText);
+    return sig ? ` | LyricsSignal: ${sig.summary}` : "";
+  })() : "";
+  const sonicNotes = `[AfroMuse Brief] ${brief}${lyricsNote} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "\u2026" : ""}`;
   return {
     previewUrl: dataUrl,
     wavUrl: null,
