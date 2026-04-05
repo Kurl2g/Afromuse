@@ -2,6 +2,15 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, Download, RefreshCw } from "lucide-react";
 
+interface SessionMeta {
+  genre?: string;
+  bpm?: number;
+  key?: string;
+  energy?: string;
+  buildMode?: string;
+  hitmakerMode?: boolean;
+}
+
 interface AudioPlayerProps {
   audioUrl: string | null;
   duration: string;
@@ -9,6 +18,8 @@ interface AudioPlayerProps {
   audioType: "Instrumental Preview" | "Vocal Demo";
   onRegenerate?: () => void;
   onDownload?: () => void;
+  isLive?: boolean;
+  sessionMeta?: SessionMeta;
 }
 
 function durationToSeconds(dur: string): number {
@@ -22,47 +33,99 @@ function secondsToDisplay(s: number): string {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-const BAR_COUNT = 32;
+const BAR_COUNT = 36;
 
 function useStableWaveformBars() {
   return useMemo(() => {
     return Array.from({ length: BAR_COUNT }, (_, i) => {
-      const base = 20 + Math.sin(i * 0.7) * 14 + Math.sin(i * 1.3) * 10;
+      const base = 18 + Math.sin(i * 0.6) * 16 + Math.sin(i * 1.4) * 10 + Math.sin(i * 2.1) * 5;
       const animated = [
-        Math.max(10, Math.min(80, base)),
-        Math.max(10, Math.min(80, base + (((i * 17 + 5) % 30) - 15))),
-        Math.max(10, Math.min(80, base + (((i * 11 + 3) % 20) - 10))),
-        Math.max(10, Math.min(80, base)),
+        Math.max(8, Math.min(88, base)),
+        Math.max(8, Math.min(88, base + (((i * 17 + 5) % 36) - 18))),
+        Math.max(8, Math.min(88, base + (((i * 11 + 3) % 24) - 12))),
+        Math.max(8, Math.min(88, base + (((i * 7 + 2) % 20) - 10))),
+        Math.max(8, Math.min(88, base)),
       ];
-      return { base: Math.max(10, Math.min(80, base)), animated };
+      return { base: Math.max(8, Math.min(88, base)), animated };
     });
   }, []);
 }
 
-function Waveform({ playing, accent }: { playing: boolean; accent: "amber" | "violet" }) {
+function Waveform({
+  playing,
+  accent,
+  progress,
+}: {
+  playing: boolean;
+  accent: "amber" | "violet";
+  progress: number;
+}) {
   const bars = useStableWaveformBars();
-  const barClass = accent === "violet" ? "bg-violet-400/70" : "bg-primary/70";
+  const activeClass = accent === "violet" ? "bg-violet-400" : "bg-primary";
+  const inactiveClass = "bg-white/15";
 
   return (
-    <div className="flex items-center gap-[2px] h-10">
-      {bars.map((bar, i) => (
-        <motion.div
+    <div className="flex items-center gap-[2.5px] h-12">
+      {bars.map((bar, i) => {
+        const isActive = i / BAR_COUNT <= progress;
+        return (
+          <motion.div
+            key={i}
+            className={`rounded-full flex-1 transition-colors duration-300 ${isActive ? activeClass : inactiveClass}`}
+            style={{ height: `${bar.base}%` }}
+            animate={
+              playing
+                ? { height: bar.animated.map((v) => `${v}%`) }
+                : { height: `${bar.base}%` }
+            }
+            transition={
+              playing
+                ? {
+                    duration: 0.55 + (i % 6) * 0.07,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    delay: i * 0.018,
+                    ease: "easeInOut",
+                  }
+                : { duration: 0.25 }
+            }
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function SessionMetaBar({
+  meta,
+  accent,
+}: {
+  meta: SessionMeta;
+  accent: "amber" | "violet";
+}) {
+  const items: string[] = [
+    meta.genre,
+    meta.bpm ? `${meta.bpm} BPM` : undefined,
+    meta.key,
+    meta.energy,
+    meta.buildMode,
+    meta.hitmakerMode ? "Hitmaker" : undefined,
+  ].filter((v): v is string => Boolean(v));
+
+  if (items.length === 0) return null;
+
+  const dotColor = accent === "violet" ? "bg-violet-400/50" : "bg-primary/50";
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
+      {items.map((item, i) => (
+        <span
           key={i}
-          className={`rounded-full flex-1 ${barClass}`}
-          style={{ height: `${bar.base}%` }}
-          animate={playing ? { height: bar.animated.map((v) => `${v}%`) } : { height: `${bar.base}%` }}
-          transition={
-            playing
-              ? {
-                  duration: 0.6 + (i % 5) * 0.08,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  delay: i * 0.02,
-                  ease: "easeInOut",
-                }
-              : { duration: 0.3 }
-          }
-        />
+          className="flex items-center gap-1.5 text-[10px] font-medium text-white/35"
+        >
+          {i > 0 && <span className={`w-1 h-1 rounded-full ${dotColor} opacity-60`} />}
+          {item}
+        </span>
       ))}
     </div>
   );
@@ -75,23 +138,29 @@ export default function AudioPlayer({
   audioType,
   onRegenerate,
   onDownload,
+  isLive = false,
+  sessionMeta,
 }: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
   const totalSeconds = durationToSeconds(duration);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
 
   const accent = audioType === "Vocal Demo" ? "violet" : "amber";
+
   const accentPlayBtn =
     accent === "violet"
       ? "bg-violet-600 hover:bg-violet-500 shadow-[0_4px_20px_rgba(139,92,246,0.25)] hover:shadow-[0_4px_28px_rgba(139,92,246,0.38)]"
-      : "bg-primary hover:bg-primary/90 shadow-[0_4px_20px_rgba(245,158,11,0.25)] hover:shadow-[0_4px_28px_rgba(245,158,11,0.38)]";
+      : "bg-primary hover:bg-primary/90 shadow-[0_4px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_4px_28px_rgba(245,158,11,0.35)]";
+
   const accentProgressBar =
     accent === "violet"
       ? "bg-gradient-to-r from-violet-500 to-violet-300"
       : "bg-gradient-to-r from-primary to-amber-400";
+
   const accentScrubber =
     accent === "violet"
       ? "bg-violet-400 shadow-[0_0_8px_rgba(139,92,246,0.6)]"
@@ -179,26 +248,50 @@ export default function AudioPlayer({
     const step = totalSeconds * 0.05;
     if (e.key === "ArrowRight") seekToRatio((currentTime + step) / totalSeconds);
     if (e.key === "ArrowLeft") seekToRatio((currentTime - step) / totalSeconds);
-    if (e.key === " ") { e.preventDefault(); togglePlay(); }
+    if (e.key === " ") {
+      e.preventDefault();
+      togglePlay();
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!onDownload || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      await Promise.resolve(onDownload());
+    } finally {
+      setTimeout(() => setIsDownloading(false), 1200);
+    }
   };
 
   const progress = totalSeconds > 0 ? Math.min(1, currentTime / totalSeconds) : 0;
+  const showWaveform = isLive && audioUrl;
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-gradient-to-b from-[#0b0b18] to-[#07070f] p-5 md:p-6">
+    <div className="rounded-2xl border border-white/8 bg-gradient-to-b from-[#0c0c1a] to-[#080810] p-5 md:p-6">
       {audioUrl && (
         <audio
           ref={audioRef}
           src={audioUrl}
           onTimeUpdate={(e) => setCurrentTime((e.target as HTMLAudioElement).currentTime)}
-          onEnded={() => { setPlaying(false); setCurrentTime(0); }}
+          onEnded={() => {
+            setPlaying(false);
+            setCurrentTime(0);
+          }}
         />
       )}
 
-      <div className="mb-4">
-        <Waveform playing={playing} accent={accent} />
-      </div>
+      {/* Session metadata bar */}
+      {sessionMeta && <SessionMetaBar meta={sessionMeta} accent={accent} />}
 
+      {/* Waveform — only for real live audio */}
+      {showWaveform && (
+        <div className="mb-4">
+          <Waveform playing={playing} accent={accent} progress={progress} />
+        </div>
+      )}
+
+      {/* Progress track */}
       <div
         ref={progressRef}
         role="slider"
@@ -207,7 +300,7 @@ export default function AudioPlayer({
         aria-valuemax={totalSeconds}
         aria-valuenow={Math.floor(currentTime)}
         tabIndex={0}
-        className="relative h-1.5 rounded-full bg-white/8 mb-3 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+        className={`relative h-1.5 rounded-full bg-white/8 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 ${showWaveform ? "mb-3" : "mb-3 mt-1"}`}
         onMouseDown={handleProgressMouseDown}
         onKeyDown={handleProgressKeyDown}
       >
@@ -222,11 +315,20 @@ export default function AudioPlayer({
         />
       </div>
 
+      {/* Time display */}
       <div className="flex items-center justify-between mb-5">
-        <span className="text-[11px] font-mono text-white/40">{secondsToDisplay(currentTime)}</span>
-        <span className="text-[11px] font-mono text-white/25">{duration}</span>
+        <span className="text-[11px] font-mono text-white/40 tabular-nums">
+          {secondsToDisplay(currentTime)}
+        </span>
+        <span className="text-[10px] text-white/20 font-medium tracking-wider">
+          {isLive ? "LIVE PREVIEW" : "PREVIEW"}
+        </span>
+        <span className="text-[11px] font-mono text-white/25 tabular-nums">
+          {duration}
+        </span>
       </div>
 
+      {/* Controls */}
       <div className="flex items-center gap-3">
         <button
           onClick={replay}
@@ -256,13 +358,27 @@ export default function AudioPlayer({
           </AnimatePresence>
         </button>
 
-        {onDownload && (
+        {onDownload && isLive && audioUrl && (
           <button
-            onClick={onDownload}
+            onClick={handleDownload}
+            disabled={isDownloading}
             aria-label="Download audio"
-            className="w-9 h-9 rounded-xl border border-white/8 flex items-center justify-center text-white/35 hover:text-white/70 hover:border-white/20 transition-all"
+            title="Save MP3"
+            className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all ${
+              isDownloading
+                ? "border-white/6 text-white/20 cursor-default"
+                : "border-white/8 text-white/35 hover:text-white/70 hover:border-white/20"
+            }`}
           >
-            <Download className="w-3.5 h-3.5" />
+            {isDownloading ? (
+              <motion.div
+                className="w-3.5 h-3.5 rounded-full border-2 border-white/15 border-t-white/50"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+              />
+            ) : (
+              <Download className="w-3.5 h-3.5" />
+            )}
           </button>
         )}
 
@@ -276,6 +392,13 @@ export default function AudioPlayer({
           </button>
         )}
       </div>
+
+      {/* Session context microcopy */}
+      {isLive && audioUrl && (
+        <p className="text-[10px] text-white/20 text-center mt-4 leading-relaxed">
+          Shaped from your Beat DNA · {title}
+        </p>
+      )}
 
       {!audioUrl && (
         <p className="text-[10px] text-white/20 text-center mt-4 leading-relaxed">

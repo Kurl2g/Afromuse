@@ -9,7 +9,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown, FolderOpen, Play, Copy, Trash2, Clock,
-  Music, Mic2, Package, Download, FileText,
+  Music, Mic2, Package, Download, FileText, Radio,
 } from "lucide-react";
 import { type SavedSession, type SessionStatus, formatRelativeTime } from "@/lib/projectLibrary";
 import { useProjectLibrary } from "@/context/ProjectLibraryContext";
@@ -29,7 +29,7 @@ const STATUS_ICON: Record<SessionStatus, typeof Music> = {
   Draft:              FileText,
   "In Progress":      Music,
   "Beat Ready":       Package,
-  "Live Audio Ready": Music,
+  "Live Audio Ready": Radio,
   "Vocal Ready":      Mic2,
   "Export Ready":     Download,
 };
@@ -67,6 +67,8 @@ function SessionRow({ session, onResume, onDuplicate, onDelete }: SessionRowProp
 
   const StatusIcon = STATUS_ICON[session.currentStage];
 
+  const isLiveAudio = session.currentStage === "Live Audio Ready";
+
   return (
     <motion.div
       layout
@@ -74,12 +76,20 @@ function SessionRow({ session, onResume, onDuplicate, onDelete }: SessionRowProp
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6, scale: 0.97 }}
       transition={{ duration: 0.18 }}
-      className="group relative rounded-2xl border border-white/6 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all p-3.5"
+      className={`group relative rounded-2xl border transition-all p-3.5 ${
+        isLiveAudio
+          ? "border-primary/18 bg-primary/[0.03] hover:bg-primary/[0.05] hover:border-primary/28"
+          : "border-white/6 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10"
+      }`}
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
-        <div className="shrink-0 w-8 h-8 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center mt-0.5">
-          <StatusIcon className="w-3.5 h-3.5 text-primary/60" />
+        <div className={`shrink-0 w-8 h-8 rounded-xl flex items-center justify-center mt-0.5 ${
+          isLiveAudio
+            ? "bg-primary/12 border border-primary/25"
+            : "bg-primary/8 border border-primary/15"
+        }`}>
+          <StatusIcon className={`w-3.5 h-3.5 ${isLiveAudio ? "text-primary/80" : "text-primary/60"}`} />
         </div>
 
         {/* Content */}
@@ -88,6 +98,12 @@ function SessionRow({ session, onResume, onDuplicate, onDelete }: SessionRowProp
             <p className="text-[13px] font-semibold text-white/80 leading-snug truncate pr-1">
               {session.sessionTitle}
             </p>
+            {isLiveAudio && (
+              <span className="shrink-0 inline-flex items-center gap-1 text-[8px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full border border-primary/25 bg-primary/8 text-primary/70">
+                <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                Live
+              </span>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5 mb-2">

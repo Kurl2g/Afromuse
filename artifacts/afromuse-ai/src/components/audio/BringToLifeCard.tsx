@@ -346,6 +346,16 @@ function AudioResultCard({
 }) {
   const successLabel = isLive ? "Generated Successfully" : label;
 
+  const isInstrumental = metadata.audioType === "Instrumental Preview";
+  const sessionMeta = {
+    genre: metadata.genre,
+    bpm: metadata.bpm,
+    key: metadata.key,
+    energy: isInstrumental ? (metadata as InstrumentalMetadata).energy : undefined,
+    buildMode: isLive ? "Live" : "Session",
+    hitmakerMode: metadata.hitmakerMode,
+  };
+
   return (
     <div className={`rounded-2xl border overflow-hidden ${borderColor} bg-gradient-to-b ${gradientFrom} to-transparent`}>
       <div className={`px-5 pt-4 pb-3 flex items-center justify-between border-b ${headerBorder}`}>
@@ -364,6 +374,16 @@ function AudioResultCard({
           </button>
         </div>
       </div>
+
+      {/* Session context strip */}
+      {isLive && (
+        <div className="px-5 pt-3 pb-0">
+          <p className="text-[10px] text-white/25 font-medium">
+            Generated from your AfroMuse session blueprint
+          </p>
+        </div>
+      )}
+
       <div className="p-4">
         <AudioPlayer
           audioUrl={audioUrl}
@@ -372,6 +392,8 @@ function AudioResultCard({
           audioType={metadata.audioType}
           onRegenerate={onRegenerate}
           onDownload={onDownload}
+          isLive={isLive}
+          sessionMeta={sessionMeta}
         />
         {isLive && <LiveSuccessNotice />}
         {isFallback && <FallbackNotice />}
@@ -399,6 +421,7 @@ function ExportSection({
   instrumentalIsLive: boolean;
 }) {
   const { toast } = useToast();
+  const [isDownloadingMp3, setIsDownloadingMp3] = useState(false);
 
   const downloadLyrics = () => {
     const text = formatDraftForClipboard(draft, genre, mood);
@@ -409,7 +432,7 @@ function ExportSection({
     a.download = `${draft.title.toLowerCase().replace(/\s+/g, "_")}_lyrics.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    toast({ title: "Lyrics downloaded", description: `${draft.title} · lyrics.txt` });
+    toast({ title: "Lyrics saved", description: `${draft.title} · lyrics.txt` });
   };
 
   const downloadProductionNotes = () => {
@@ -435,22 +458,24 @@ function ExportSection({
     a.download = `${draft.title.toLowerCase().replace(/\s+/g, "_")}_production_notes.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    toast({ title: "Production notes downloaded" });
+    toast({ title: "Production notes saved" });
   };
 
   const downloadInstrumentalMp3 = () => {
-    if (!instrumentalAudioUrl) return;
+    if (!instrumentalAudioUrl || isDownloadingMp3) return;
+    setIsDownloadingMp3(true);
     const a = document.createElement("a");
     a.href = instrumentalAudioUrl;
     a.download = `${draft.title.toLowerCase().replace(/\s+/g, "_")}_instrumental_preview.mp3`;
     a.click();
-    toast({ title: "Downloading Instrumental Preview", description: `${draft.title} · MP3` });
+    toast({ title: "Saving Instrumental Preview", description: `${draft.title} · MP3 · Rendered by ElevenLabs` });
+    setTimeout(() => setIsDownloadingMp3(false), 2000);
   };
 
   const notifyMp3Coming = (type: "instrumental" | "vocal") => {
     toast({
-      title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} MP3 — Coming Soon`,
-      description: "MP3 export will be available once the audio render engine is live.",
+      title: `${type === "instrumental" ? "Instrumental" : "Vocal Demo"} Export — Live Generation Required`,
+      description: "Generate a live audio preview first to unlock MP3 export.",
     });
   };
 
@@ -461,9 +486,16 @@ function ExportSection({
 
   return (
     <div className="rounded-2xl border border-white/6 bg-white/[0.018] p-5 mt-5">
-      <div className="flex items-center gap-2 mb-4">
-        <Download className="w-3.5 h-3.5 text-white/30" />
-        <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Export</span>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Download className="w-3.5 h-3.5 text-white/30" />
+          <span className="text-[11px] font-bold tracking-widest uppercase text-white/30">Save & Export</span>
+        </div>
+        {hasRealInstrumental && (
+          <span className="text-[9px] font-medium text-primary/50 bg-primary/8 border border-primary/15 px-2 py-0.5 rounded-full">
+            Live audio available
+          </span>
+        )}
       </div>
       <div className="flex flex-wrap gap-2">
         <button
@@ -471,43 +503,61 @@ function ExportSection({
           className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-white/10 text-xs text-white/50 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all"
         >
           <FileText className="w-3 h-3" />
-          Download Lyrics
+          Save Lyrics
         </button>
         <button
           onClick={downloadProductionNotes}
           className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-white/10 text-xs text-white/50 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all"
         >
           <FileText className="w-3 h-3" />
-          Download Production Notes
+          Save Production Notes
         </button>
         {instrumentalMeta && hasRealInstrumental && (
           <button
             onClick={downloadInstrumentalMp3}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-primary/25 text-xs text-primary/80 hover:text-primary hover:border-primary/50 hover:bg-primary/8 transition-all"
+            disabled={isDownloadingMp3}
+            className={`flex items-center gap-1.5 h-9 px-4 rounded-xl border text-xs font-semibold transition-all ${
+              isDownloadingMp3
+                ? "border-primary/15 bg-primary/4 text-primary/40 cursor-default"
+                : "border-primary/25 text-primary/80 hover:text-primary hover:border-primary/50 hover:bg-primary/8"
+            }`}
           >
-            <Download className="w-3 h-3" />
-            Download Preview
-            <span className="ml-1 text-[9px] text-primary/50 font-bold tracking-wider uppercase">MP3</span>
+            {isDownloadingMp3 ? (
+              <>
+                <motion.div
+                  className="w-3 h-3 rounded-full border-2 border-primary/20 border-t-primary/60"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                />
+                Saving…
+              </>
+            ) : (
+              <>
+                <Download className="w-3 h-3" />
+                Save Instrumental Preview
+                <span className="ml-1 text-[9px] text-primary/50 font-bold tracking-wider uppercase">MP3</span>
+              </>
+            )}
           </button>
         )}
         {instrumentalMeta && !hasRealInstrumental && (
           <button
             onClick={() => notifyMp3Coming("instrumental")}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-white/10 text-xs text-white/35 hover:text-white/50 hover:border-white/20 hover:bg-white/3 transition-all"
+            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-white/8 text-xs text-white/25 hover:text-white/40 hover:border-white/15 transition-all"
           >
             <Clock className="w-3 h-3" />
             Instrumental Preview
-            <span className="ml-1 text-[9px] text-white/25 font-bold tracking-wider uppercase">Soon</span>
+            <span className="ml-1 text-[9px] text-white/20 font-bold tracking-wider uppercase">Needs Live</span>
           </button>
         )}
         {vocalMeta && (
           <button
             onClick={() => notifyMp3Coming("vocal")}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-violet-500/20 text-xs text-violet-400/60 hover:text-violet-300 hover:border-violet-500/40 hover:bg-violet-500/5 transition-all"
+            className="flex items-center gap-1.5 h-9 px-4 rounded-xl border border-violet-500/15 text-xs text-violet-400/50 hover:text-violet-300/70 hover:border-violet-500/30 transition-all"
           >
             <Clock className="w-3 h-3" />
-            Vocal Demo MP3
-            <span className="ml-1 text-[9px] text-violet-400/40 font-bold tracking-wider uppercase">Soon</span>
+            Vocal Demo
+            <span className="ml-1 text-[9px] text-violet-400/35 font-bold tracking-wider uppercase">Coming</span>
           </button>
         )}
       </div>
