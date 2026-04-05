@@ -50382,7 +50382,7 @@ router2.post("/generate-song", async (req, res) => {
   });
   try {
     const response = await ai.chat.completions.create({
-      model: "qwen/qwen3.5-122b",
+      model: "qwen/qwen3.5-122b-a10b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt }
@@ -51289,7 +51289,7 @@ async function fetchLeadVocalBrief(p) {
   }
   const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
   const res = await ai.chat.completions.create({
-    model: "qwen/qwen3.5-122b",
+    model: "qwen/qwen3.5-122b-a10b",
     messages: [
       { role: "system", content: LEAD_VOCAL_SYSTEM_PROMPT },
       { role: "user", content: buildLeadVocalPrompt(p) }
@@ -51413,7 +51413,7 @@ async function fetchMixMasterBrief(p) {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "qwen/qwen3.5-122b",
+      model: "qwen/qwen3.5-122b-a10b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT2 },
         { role: "user", content: buildPrompt(p) }
@@ -51508,7 +51508,7 @@ async function fetchStemBrief(p) {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: "qwen/qwen3.5-122b",
+      model: "qwen/qwen3.5-122b-a10b",
       messages: [
         { role: "system", content: SYSTEM_PROMPT3 },
         { role: "user", content: buildPrompt2(p) }
