@@ -231,6 +231,22 @@ Local-first session persistence layer added to the Studio page. Architecture is 
 
 `sessionId`, `sessionTitle`, `topic`, `genre`, `mood`, `songLength`, `lyricsSource`, `lyricsText`, `languageFlavor`, `customFlavor`, `style`, `notes`, `commercialMode`, `lyricalDepth`, `hookRepeat`, `genderVoiceModel`, `performanceFeel`, `bpm`, `key`, `energy`, `atmosphere`, `leadVoice`, `mixFeel`, `buildMode`, `currentStage`, `exportStatus`, `draft`, `outputRegistry`, `createdAt`, `updatedAt`.
 
+## Beat DNA Feature (V2 Completion)
+
+A premium musical control layer inside the Audio Studio that makes AfroMuse producer-aware and beat-intentional.
+
+**Four controls added to the Audio Studio UI:**
+- **Bounce Style** — groove motion feel (Smooth Glide, Club Bounce, Street Bounce, Late Night Swing, Festival Lift, Slow Wine, Log Drum Drive)
+- **Melody Density** — melodic layer weight (Minimal, Balanced, Rich, Lush, Cinematic)
+- **Drum Character** — percussion texture feel (Clean, Punchy, Raw, Dusty, Percussive, Heavy Groove)
+- **Hook Lift** — chorus/drop energy level (Subtle, Balanced, Big, Anthemic, Explosive)
+
+**Intelligence integration:** All four Beat DNA values are passed into `buildFullIntelligence()` and flow through to `buildProducerNotes`, `buildHookFocus`, `buildBeatSummary`, `buildStudioExportNotes` — each one generating specific, meaningful language about groove, melody, drums, and hook payoff.
+
+**Session persistence:** Beat DNA fields are saved to the project library (`SavedSession` + `SaveSessionParams`) and restored on resume via `AudioStudioV2Handle.getBeatDNAState()` / `setBeatDNAState()`. They survive session duplication (spread on clone in `duplicateSessionById`).
+
+**Key files:** `lib/audioIntelligence.ts`, `components/studio/AudioStudioV2.tsx`, `lib/projectLibrary.ts`, `context/ProjectLibraryContext.tsx`, `pages/Studio.tsx`
+
 ## Lead Vocal Generation Feature
 
 Added `POST /api/generate-lead-vocals` endpoint in `artifacts/api-server/src/routes/generate-audio.ts`.

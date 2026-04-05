@@ -581,6 +581,14 @@ export function buildArrangementStyle(opts: {
   return `${profile.arrangement}. ${profile.transitionFeel}.${lyricsArrangementSuffix}`;
 }
 
+const HOOK_LIFT_LANGUAGE: Record<string, string> = {
+  "Subtle":    "understated lift — the payoff is felt not forced, arrangement restraint is intentional",
+  "Balanced":  "measured chorus payoff — clear lift without overbuilding the arrangement",
+  "Big":       "strong drop energy — clear arrangement contrast, hook section commands the room",
+  "Anthemic":  "anthemic payoff — crowd-sing-along ready, hook section built for replay and stadiums",
+  "Explosive": "maximum drop energy — full arrangement detonation at the chorus, festival-level impact coded in",
+};
+
 export function buildHookFocus(opts: {
   genre: string;
   useHitmakerHookPriority: boolean;
@@ -589,28 +597,57 @@ export function buildHookFocus(opts: {
   styleInfluence: StyleInfluence;
   section: string;
   energy: string;
+  hookLift?: string;
 }): string {
-  const { genre, useHitmakerHookPriority, isProducer, lyricsTone, styleInfluence, section, energy } = opts;
+  const { genre, useHitmakerHookPriority, isProducer, lyricsTone, styleInfluence, section, energy, hookLift } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
 
   const base = profile.hookStyle;
   const tone = toneTag(lyricsTone);
   const energyMod = energy === "High" ? "maximum replay energy" : energy === "Low" ? "intimate replay gravity" : "balanced replay pull";
+  const liftDesc = hookLift && HOOK_LIFT_LANGUAGE[hookLift] ? ` Hook lift: ${HOOK_LIFT_LANGUAGE[hookLift]}.` : "";
 
   if (useHitmakerHookPriority) {
     return isProducer
-      ? `Hitmaker-engineered: ${base}. Layer stack coded, hard-contrast verse energy. ${energyMod}. Hook tone: ${tone}.`
-      : `Hitmaker priority: ${base}. First-listen memorability, ${energyMod}, crowd-chant ready.`;
+      ? `Hitmaker-engineered: ${base}. Layer stack coded, hard-contrast verse energy. ${energyMod}. Hook tone: ${tone}.${liftDesc}`
+      : `Hitmaker priority: ${base}. First-listen memorability, ${energyMod}, crowd-chant ready.${liftDesc}`;
   }
 
   if (section === "hook" || section === "chorus") {
-    return `Section-focused lift: ${base}. ${energyMod}. Tone reads ${tone}${styleInfluence !== "neutral" ? " — production feel adapted" : ""}.`;
+    return `Section-focused lift: ${base}. ${energyMod}. Tone reads ${tone}${styleInfluence !== "neutral" ? " — production feel adapted" : ""}.${liftDesc}`;
   }
 
   return isProducer
-    ? `Arrangement-first: timed lift engineered at bar 8. ${base}. Hook tone: ${tone}, ${energyMod}.`
-    : `Balanced: ${base}. ${energyMod}${styleInfluence !== "neutral" ? ", production feel adapted" : ""}.`;
+    ? `Arrangement-first: timed lift engineered at bar 8. ${base}. Hook tone: ${tone}, ${energyMod}.${liftDesc}`
+    : `Balanced: ${base}. ${energyMod}${styleInfluence !== "neutral" ? ", production feel adapted" : ""}.${liftDesc}`;
 }
+
+const BOUNCE_STYLE_LANGUAGE: Record<string, string> = {
+  "Smooth Glide":      "effortless groove pocket — melodic ease, no aggression, movement flows naturally with the bass",
+  "Club Bounce":       "kinetic dancefloor movement, stronger syncopated groove energy, designed for floor response",
+  "Street Bounce":     "raw rhythmic tension, aggressive pocket feel, street-coded percussive energy in every bar",
+  "Late Night Swing":  "relaxed pocket, sensual timing, late-to-the-beat feel — groove is seductive not urgent",
+  "Festival Lift":     "arena-coded rhythm, wide dynamic range, groove engineered for maximum crowd response",
+  "Slow Wine":         "Caribbean-influenced rhythmic sway, body-movement priority, slow deliberate cadence",
+  "Log Drum Drive":    "Amapiano-influenced log drum pulse as rhythmic backbone, deep percussive centre of gravity",
+};
+
+const MELODY_DENSITY_LANGUAGE: Record<string, string> = {
+  "Minimal":    "restrained melodic layer — space and silence are intentional, less is more, breathe between phrases",
+  "Balanced":   "moderate melodic presence — hooks supported without overcrowding the harmonic space",
+  "Rich":       "full melodic layering — additional instruments and counter-melodies fill the arrangement",
+  "Lush":       "dense melodic environment — every frequency band has melodic content, immersive and full",
+  "Cinematic":  "wide emotional sweep, film-score-influenced melodic language, orchestral texture and dynamics",
+};
+
+const DRUM_CHARACTER_LANGUAGE: Record<string, string> = {
+  "Clean":        "tighter transient control, pristine mix-ready percussion, surgical and polished",
+  "Punchy":       "impact-first drum sound, forward kick and snare, sits upfront and centre in the mix",
+  "Raw":          "unprocessed feel, less polish more authenticity, gritty rougher rhythm texture",
+  "Dusty":        "lo-fi texture in the percussion, warm tape-influenced drum character, vintage feel",
+  "Percussive":   "rhythm section leads the session — drums are the most prominent mix element, perc-forward",
+  "Heavy Groove": "maximum low-end weight in the rhythm section, deep kick, wide snare, dense groove",
+};
 
 export function buildProducerNotes(opts: {
   genre: string;
@@ -632,12 +669,17 @@ export function buildProducerNotes(opts: {
   lyricsTone: LyricsTone;
   styleInfluence: StyleInfluence;
   styleDesc: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }): string {
   const {
     genre, bpm, key, energy, section, vocalLabel, isInstrumentalMode, isProducer,
     includeArrangementNotes, includeStemsBreakdown,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
     lyricsTone, styleInfluence, styleDesc,
+    bounceStyle, melodyDensity, drumCharacter, hookLift,
   } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
   const e = energy as "Low" | "Medium" | "High";
@@ -647,8 +689,22 @@ export function buildProducerNotes(opts: {
   // Core session info
   parts.push(`Session: ${bpm} BPM | ${key} | ${genre}.`);
 
-  // Genre-specific drum and bass note
-  parts.push(`Drums: ${profile.kick[e]}. Bass: ${profile.bass[e]}.`);
+  // Genre-specific drum and bass note — optionally layered with Beat DNA character
+  const drumCharDesc = drumCharacter && DRUM_CHARACTER_LANGUAGE[drumCharacter]
+    ? ` Beat DNA drum character: ${DRUM_CHARACTER_LANGUAGE[drumCharacter]}.`
+    : "";
+  parts.push(`Drums: ${profile.kick[e]}. Bass: ${profile.bass[e]}.${drumCharDesc}`);
+
+  // Beat DNA groove layer
+  if (bounceStyle && BOUNCE_STYLE_LANGUAGE[bounceStyle]) {
+    parts.push(`Groove motion (Beat DNA): ${BOUNCE_STYLE_LANGUAGE[bounceStyle]}.`);
+  }
+  if (melodyDensity && MELODY_DENSITY_LANGUAGE[melodyDensity]) {
+    parts.push(`Melody layer (Beat DNA): ${MELODY_DENSITY_LANGUAGE[melodyDensity]}.`);
+  }
+  if (hookLift && HOOK_LIFT_LANGUAGE[hookLift]) {
+    parts.push(`Hook energy (Beat DNA): ${HOOK_LIFT_LANGUAGE[hookLift]}.`);
+  }
 
   // Producer-specific arrangement detail
   if (isProducer && introBehavior) {
@@ -706,8 +762,12 @@ export function buildBeatSummary(opts: {
   section: string;
   styleInfluence: StyleInfluence;
   lyricsTone: LyricsTone;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }): string {
-  const { genre, bpm, key, energy, section, styleInfluence, lyricsTone } = opts;
+  const { genre, bpm, key, energy, section, styleInfluence, lyricsTone, bounceStyle, melodyDensity, drumCharacter, hookLift } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
 
   const sectionFeel = section === "hook"   ? `hook-only pocket — ${profile.hookStyle.split(" — ")[0]}`
@@ -719,7 +779,14 @@ export function buildBeatSummary(opts: {
   const styleHint  = styleInfluence !== "neutral" ? ` Production adapted for ${styleInfluence.replace("-", " ")}.` : "";
   const toneHint   = lyricsTone !== "neutral" ? ` Lyrics tone: ${toneTag(lyricsTone)}.` : "";
 
-  return `${genre} | ${bpm} BPM | ${key} — ${energyWord} ${sectionFeel}.${styleHint}${toneHint}`;
+  const dnaHints: string[] = [];
+  if (bounceStyle)   dnaHints.push(`Bounce: ${bounceStyle}`);
+  if (melodyDensity) dnaHints.push(`Melody: ${melodyDensity}`);
+  if (drumCharacter) dnaHints.push(`Drums: ${drumCharacter}`);
+  if (hookLift)      dnaHints.push(`Hook Lift: ${hookLift}`);
+  const dnaHint = dnaHints.length ? ` Beat DNA — ${dnaHints.join(" · ")}.` : "";
+
+  return `${genre} | ${bpm} BPM | ${key} — ${energyWord} ${sectionFeel}.${styleHint}${toneHint}${dnaHint}`;
 }
 
 export function buildArrangementMap(opts: {
@@ -871,11 +938,16 @@ export function buildStudioExportNotes(opts: {
   bassWeight?: string;
   transitionStyle?: string;
   outroStyle?: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }): StudioExportNotes {
   const {
     genre, bpm, key, energy, section, vocalLabel, isInstrumentalMode, isProducer,
     lyricsTone, styleInfluence, styleDesc, hookFocus, arrangementStyle,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
+    bounceStyle, melodyDensity, drumCharacter, hookLift,
   } = opts;
 
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
@@ -916,6 +988,20 @@ export function buildStudioExportNotes(opts: {
     ],
   };
 
+  const beatDNAItems: { label: string; value: string }[] = [];
+  if (bounceStyle && BOUNCE_STYLE_LANGUAGE[bounceStyle]) {
+    beatDNAItems.push({ label: "Bounce Style",    value: BOUNCE_STYLE_LANGUAGE[bounceStyle] });
+  }
+  if (melodyDensity && MELODY_DENSITY_LANGUAGE[melodyDensity]) {
+    beatDNAItems.push({ label: "Melody Density",  value: MELODY_DENSITY_LANGUAGE[melodyDensity] });
+  }
+  if (drumCharacter && DRUM_CHARACTER_LANGUAGE[drumCharacter]) {
+    beatDNAItems.push({ label: "Drum Character",  value: DRUM_CHARACTER_LANGUAGE[drumCharacter] });
+  }
+  if (hookLift && HOOK_LIFT_LANGUAGE[hookLift]) {
+    beatDNAItems.push({ label: "Hook Lift",       value: HOOK_LIFT_LANGUAGE[hookLift] });
+  }
+
   const producerBlock: ExportNoteBlock = {
     title: "Producer Notes",
     items: [
@@ -925,6 +1011,7 @@ export function buildStudioExportNotes(opts: {
       { label: "Texture Suggestions",   value: profile.pads },
       { label: "Arrangement Build",     value: arrangementStyle },
       { label: "Percussion Layer",      value: profile.perc },
+      ...beatDNAItems,
       ...(styleInfluence !== "neutral" ? [{ label: "Style Reference Signal", value: styleDesc }] : []),
     ],
   };
@@ -1023,6 +1110,7 @@ export function buildFullIntelligence(opts: {
     includeArrangementNotes, includeStemsBreakdown,
     lyrics, styleReference,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
+    bounceStyle, melodyDensity, drumCharacter, hookLift,
   } = opts;
 
   const lyricsTone = analyzeLyricsTone(lyrics);
@@ -1042,7 +1130,7 @@ export function buildFullIntelligence(opts: {
   });
 
   const hookFocus = buildHookFocus({
-    genre, useHitmakerHookPriority, isProducer, lyricsTone, styleInfluence, section, energy,
+    genre, useHitmakerHookPriority, isProducer, lyricsTone, styleInfluence, section, energy, hookLift,
   });
 
   const producerNotes = buildProducerNotes({
@@ -1050,9 +1138,10 @@ export function buildFullIntelligence(opts: {
     includeArrangementNotes, includeStemsBreakdown,
     introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle,
     lyricsTone, styleInfluence, styleDesc,
+    bounceStyle, melodyDensity, drumCharacter, hookLift,
   });
 
-  const beatSummary = buildBeatSummary({ genre, bpm, key, energy, section, styleInfluence, lyricsTone });
+  const beatSummary = buildBeatSummary({ genre, bpm, key, energy, section, styleInfluence, lyricsTone, bounceStyle, melodyDensity, drumCharacter, hookLift });
 
   const arrangementMap = buildArrangementMap({
     genre,
@@ -1069,6 +1158,7 @@ export function buildFullIntelligence(opts: {
     ...(isProducer
       ? { introBehavior, chorusLift, drumDensity, bassWeight, transitionStyle, outroStyle }
       : {}),
+    bounceStyle, melodyDensity, drumCharacter, hookLift,
   });
 
   return {

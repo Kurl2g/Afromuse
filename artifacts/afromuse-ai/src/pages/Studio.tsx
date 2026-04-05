@@ -238,6 +238,7 @@ export default function Studio() {
 
   const saveProject = () => {
     if (!draft) return;
+    const beatDNA = audioStudioRef.current?.getBeatDNAState();
     const persistedSession = saveCurrentSession({
       sessionId: activeSessionId ?? undefined,
       topic,
@@ -254,6 +255,10 @@ export default function Studio() {
       hookRepeat,
       genderVoiceModel,
       performanceFeel,
+      bounceStyle: beatDNA?.bounceStyle,
+      melodyDensity: beatDNA?.melodyDensity,
+      drumCharacter: beatDNA?.drumCharacter,
+      hookLift: beatDNA?.hookLift,
       draft,
     });
     setActiveSessionId(persistedSession.sessionId);
@@ -284,6 +289,14 @@ export default function Studio() {
     setActiveSessionId(state.sessionId);
     setSaved(false);
     setStatus(state.draft ? "done" : "idle");
+    if (state.bounceStyle || state.melodyDensity || state.drumCharacter || state.hookLift) {
+      audioStudioRef.current?.setBeatDNAState({
+        bounceStyle: state.bounceStyle,
+        melodyDensity: state.melodyDensity,
+        drumCharacter: state.drumCharacter,
+        hookLift: state.hookLift,
+      });
+    }
     toast({
       title: "Session resumed",
       description: `"${state.sessionTitle}" loaded into the studio.`,

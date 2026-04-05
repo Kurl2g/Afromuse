@@ -50,6 +50,12 @@ export interface SavedSession {
   leadVoice: string | null;
   mixFeel: string | null;
 
+  // Beat DNA
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
+
   // Stage tracking
   buildMode: "artist" | "producer" | null;
   currentStage: SessionStatus;
@@ -154,6 +160,10 @@ export interface SaveSessionParams {
   performanceFeel?: string;
   buildMode?: "artist" | "producer" | null;
   mixFeel?: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
   draft: SongDraft | null;
   outputRegistry?: Partial<OutputRegistryEntry> | null;
 }
@@ -199,6 +209,11 @@ export function saveSession(params: SaveSessionParams): SavedSession {
     atmosphere: draft?.sonicIdentity?.atmosphere ?? null,
     leadVoice: draft?.vocalIdentity?.leadType ?? null,
     mixFeel: params.mixFeel ?? null,
+
+    bounceStyle: params.bounceStyle,
+    melodyDensity: params.melodyDensity,
+    drumCharacter: params.drumCharacter,
+    hookLift: params.hookLift,
 
     buildMode: params.buildMode ?? null,
     currentStage: deriveSessionStatus(draft, outputRegistry),

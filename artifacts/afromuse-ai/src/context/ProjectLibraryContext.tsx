@@ -105,6 +105,10 @@ export interface ResumedSessionState {
   outputRegistry: Partial<OutputRegistryEntry> | null;
   sessionId: string;
   sessionTitle: string;
+  bounceStyle?: string;
+  melodyDensity?: string;
+  drumCharacter?: string;
+  hookLift?: string;
 }
 
 export function extractResumeState(session: SavedSession): ResumedSessionState {
@@ -127,5 +131,9 @@ export function extractResumeState(session: SavedSession): ResumedSessionState {
     outputRegistry: session.outputRegistry,
     sessionId: session.sessionId,
     sessionTitle: session.sessionTitle,
+    bounceStyle: session.bounceStyle,
+    melodyDensity: session.melodyDensity,
+    drumCharacter: session.drumCharacter,
+    hookLift: session.hookLift,
   };
 }

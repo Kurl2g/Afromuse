@@ -22,8 +22,17 @@ interface Props {
 
 export type QuickMode = "default" | "instrumental" | "hook-only" | "afrobeats-demo";
 
+export interface BeatDNAState {
+  bounceStyle: string;
+  melodyDensity: string;
+  drumCharacter: string;
+  hookLift: string;
+}
+
 export interface AudioStudioV2Handle {
   sendLyrics: (text: string, mode?: QuickMode) => void;
+  getBeatDNAState: () => BeatDNAState;
+  setBeatDNAState: (state: Partial<BeatDNAState>) => void;
 }
 
 type CardStatus = "idle" | "loading" | "success" | "error";
@@ -1225,7 +1234,16 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
       setTimeout(() => setHighlighted(false), 2000);
       setTimeout(() => { textareaRef.current?.focus(); }, 400);
     },
-  }), []);
+    getBeatDNAState(): BeatDNAState {
+      return { bounceStyle, melodyDensity, drumCharacter, hookLift };
+    },
+    setBeatDNAState(state: Partial<BeatDNAState>) {
+      if (state.bounceStyle)   setBounceStyle(state.bounceStyle);
+      if (state.melodyDensity) setMelodyDensity(state.melodyDensity);
+      if (state.drumCharacter) setDrumCharacter(state.drumCharacter);
+      if (state.hookLift)      setHookLift(state.hookLift);
+    },
+  }), [bounceStyle, melodyDensity, drumCharacter, hookLift]);
 
   const handleToggleAutoLyrics = (next: boolean) => {
     setUseGeneratedLyrics(next);
