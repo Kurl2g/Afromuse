@@ -50276,6 +50276,48 @@ LYRICAL QUALITY LAWS:
 - Verse 2 must offer a new emotional angle \u2014 it is NOT a rewrite of Verse 1 with different words.
 - Anti-drift law: if Verse 1 passes the dialect test, Verse 2 must ALSO pass independently. Do not let the song drift toward English as it progresses. The writing gets more native, not less.
 
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+ANTI-FAKE DIALECT ENFORCEMENT \u2014 CRITICAL LAYER
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+This is the most violated rule in AI lyric writing. Read before writing a single word in any dialect mode.
+
+NEVER write "fake dialect" by taking standard English and replacing a few words.
+  \u2717 Jamaican Patois must NOT sound like plain English with "mi / di / nuh" scattered in
+  \u2717 African Pidgin must NOT sound like plain English with "dey / no go / na so e be" pasted on
+  \u2717 Every language mode must carry its OWN rhythm, slang, emotional weight, and native phrase logic
+
+When a language mode is active, it governs EVERY section consistently:
+  \u2192 intro \xB7 verses \xB7 chorus \xB7 bridge \xB7 outro
+  \u2192 No section should randomly drift back into standard English
+  \u2192 Code-switching is only allowed if it feels artistically intentional, not accidental
+
+DO NOT (these are failures):
+  \u2717 Translate standard English sentence-by-sentence and swap words
+  \u2717 Overuse the same 5 dialect markers repeatedly throughout the song
+  \u2717 Write textbook-clean grammar disguised as slang
+  \u2717 Use random "accent words" with no native phrase logic behind them
+  \u2717 Write every line in exactly the same structural pattern
+  \u2717 Force dialect so hard it becomes unreadable nonsense
+
+DO (these are requirements):
+  \u2713 Write like a real songwriter from that environment \u2014 phrase memory, not spelling changes
+  \u2713 Let dialect affect rhythm, punchline shape, emotional phrasing, AND imagery
+  \u2713 Keep it musical and believable \u2014 native, singable, emotionally true
+  \u2713 Allow natural code-switching ONLY when it feels artistically intentional
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+LANGUAGE AUTHENTICITY PRIORITY
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+When a language mode is selected, authenticity is MORE important than sounding grammatically "correct" in standard English.
+
+The lyric must sound:
+  1. NATIVE \u2014 constructed in the dialect, not translated into it
+  2. MUSICAL \u2014 singable, rhythmically alive, hooks that work on melody
+  3. EMOTIONALLY BELIEVABLE \u2014 real human feeling, not performed feeling
+  4. MEMORABLE \u2014 sticky, quotable, replay-worthy
+
+Only after meeting all four should it concern itself with sounding "clean" by English grammar standards.
+
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 CORE LAW 3 \u2014 IMMEDIATELY RECORDABLE & PRODUCER-READY
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
@@ -50475,76 +50517,216 @@ function getDialectSubStyleBlock(dialectStyle) {
   if (style === "jamaican street") {
     return [
       "",
-      "\u2500\u2500 ACTIVE SUB-STYLE: JAMAICAN STREET \u2500\u2500",
-      "This is raw, unfiltered street realism \u2014 not inspirational Patois, not dancehall pop. The voice comes from the concrete.",
-      "BIAS TOWARD: pressure language, survival phrasing, badmind awareness, hustle pride, grit.",
-      "  \u2192 'dem nuh want mi rise but watch mi still rise' \u2014 hard-earned, specific, street-rooted",
-      "  \u2192 'mi nuh get dem chance, mi tek mi chance' \u2014 no victim energy, pure agency",
-      "  \u2192 'dem talk behind mi back \u2014 mi nuh hear dem, mi moving' \u2014 dismissal without aggression",
-      "  \u2192 'di road rough rough rough, but mi born pon it' \u2014 toughness framed in belonging",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: JAMAICAN STREET",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: dancehall, ghetto reality, hustler pain, rude-boy energy, war stories, survival, badmind confidence, trenches.",
+      "",
+      "TONE: raw \xB7 sharp \xB7 street-coded \xB7 aggressive or emotionally scarred \xB7 authentic Kingston / inner-city energy.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  gyal, bwoy, yute, bredrin, dawg, mandem",
+      "  fi, pon, wid, ina/inna, cyaa, cyaan, affi, haffi",
+      "  guh, deh, seh, weh, dem, ting, waan, nuff",
+      "  badmind, dutty, sufferah, shell dung, run een, real top striker",
+      "  hunger, belly empty, concrete, lane, zinc fence, scheme, ends, war zone",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 Avoid polished school-English phrasing at all costs",
+      "  \u2192 Avoid sounding touristy or cartoonish \u2014 this is REAL inner-city voice",
+      "  \u2192 Do NOT overuse 'Jah' unless the theme is spiritual \u2014 this is street, not church",
+      "  \u2192 Prefer hard, vivid street imagery over generic inspiration",
+      "  \u2192 Allow short punchy lines and natural repetition",
+      "  \u2192 Use phrase logic Jamaicans would actually say \u2014 not translated English",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'Belly buss but mi still a pree tomorrow'",
+      "  \u2713 'Dem switch fast when di blessings start show'",
+      "  \u2713 'Mi know wah hungry feel like pon cold floor'",
+      "  \u2713 'Road rough, but mi foot still know di way'",
+      "  \u2713 'Dem nuh want mi rise but watch mi still rise'",
+      "  \u2713 'Mi nuh get dem chance, mi tek mi chance'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 'Mi am walking through the darkness every day' \u2014 English underneath",
+      "  \u2717 'Mi know that life is hard but I keep climbing' \u2014 motivational English with Patois tag",
+      "  \u2717 'Mi heart is full of pain and strife' \u2014 Victorian English phrasing, zero Patois DNA",
+      "  \u2717 Anything that sounds like English with random Patois spelling",
+      "",
       "AVOID: faith-centered phrasing, Jah references, spiritual metaphors \u2014 keep it street and real.",
-      "Emotional register: hard on the surface, quietly proud underneath. Survival told with dignity.",
-      "Hooks should feel like soundsystem declarations \u2014 confrontational, chantable, bulletproof."
+      "EMOTIONAL REGISTER: hard on the surface, quietly proud underneath. Survival told with dignity.",
+      "HOOK ENERGY: soundsystem declarations \u2014 confrontational, chantable, bulletproof. Every hook must feel like a crowd will scream it back."
     ];
   }
   if (style === "jamaican spiritual") {
     return [
       "",
-      "\u2500\u2500 ACTIVE SUB-STYLE: JAMAICAN SPIRITUAL \u2500\u2500",
-      "This is Jah-rooted, faith-centered Patois writing \u2014 endurance, testimony, and spiritual resilience.",
-      "BIAS TOWARD: Jah references, Most High testimony, quiet strength, faith in the face of pressure.",
-      "  \u2192 'Most High, mi nuh question \u2014 mi trust di plan' \u2014 complete faith, no wavering",
-      "  \u2192 'di storm nuh break mi cause di Most High hold mi' \u2014 spiritual protection framed concretely",
-      "  \u2192 'through di valley mi still deh \u2014 Jah carry mi' \u2014 testimony without drama",
-      "  \u2192 'dem nuh know say Jah already order mi steps' \u2014 quiet confidence from faith",
-      "AVOID: street aggression, badmind language, flex/boast energy \u2014 this is rooted and clean.",
-      "Emotional register: reflective, grateful, quietly powerful. Faith is lived-in, not performed.",
-      "Hooks should feel like affirmations you'd hear at a roots session \u2014 deeply singable, spiritually grounding."
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: JAMAICAN SPIRITUAL",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: faith, prayer, hardship, testimony, redemption, suffering with grace, conscious roots, spiritual uplift.",
+      "",
+      "TONE: prayerful \xB7 humble \xB7 resilient \xB7 soulful \xB7 deeply reflective.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  Most High, Father God, Jah, grace, mercy, calling, prayer",
+      "  burden, trial, valley, lion heart, purpose, faith, healing",
+      "  guide mi, carry mi, cover mi, keep mi, know mi heart",
+      "  tears, fasting, psalm-like phrasing, testimony language",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 Must feel like LIVED spiritual struggle \u2014 not church clich\xE9 or Sunday school language",
+      "  \u2192 Avoid fake 'religious Hallmark card' lines \u2014 no empty platitudes",
+      "  \u2192 Keep humility and emotional sincerity throughout",
+      "  \u2192 Can be simple, but must feel DEEPLY BELIEVED \u2014 the weight of real faith",
+      "  \u2192 Pain and faith should coexist in the same lyric world \u2014 this is not triumphalist",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'Father God, hold mi head when mi spirit feel weak'",
+      "  \u2713 'Mi cry ina silence but You still hear mi'",
+      "  \u2713 'Mercy reach mi before morning light'",
+      "  \u2713 'Dem only see di smile, You know di burden'",
+      "  \u2713 'Most High, mi nuh question \u2014 mi trust di plan'",
+      "  \u2713 'Di storm nuh break mi cause di Most High hold mi'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 'Jah is with me through all of my pain and strife' \u2014 generic English with Jah inserted",
+      "  \u2717 'I walk by faith and not by sight' \u2014 Bible quote, not original songwriting",
+      "  \u2717 Over-preachy sermon language with no human detail \u2014 must feel like a person, not a pastor",
+      "",
+      "AVOID: street aggression, badmind language, flex/boast energy \u2014 this is rooted and spiritually clean.",
+      "EMOTIONAL REGISTER: reflective, grateful, quietly powerful. Faith is lived-in, not performed.",
+      "HOOK ENERGY: affirmations you'd hear at a roots session \u2014 deeply singable, spiritually grounding."
     ];
   }
   if (style === "naija melodic pidgin") {
     return [
       "",
-      "\u2500\u2500 ACTIVE SUB-STYLE: NAIJA MELODIC PIDGIN \u2500\u2500",
-      "This is smooth, singable Afrobeats Pidgin \u2014 built for melody, emotion, and hook replay value.",
-      "BIAS TOWARD: flowing phrasing, emotionally musical hooks, sweet delivery, maximum singability.",
-      "  \u2192 'you dey sweet me die \u2014 I no fit hide am' \u2014 melodic, emotionally direct, Pidgin-first",
-      "  \u2192 'since I see you, everything just change' \u2014 simple truth that sits perfectly on a melody",
-      "  \u2192 'na you I carry for my heart \u2014 no be joke' \u2014 warmth, no aggression, hook-ready",
-      "  \u2192 'e dey sweet me anytime you dey near' \u2014 physical sensation turned into lyric",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: NAIJA MELODIC PIDGIN",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: Afrobeats romance, pain, prayer, hustle, emotional confession, melodic hooks, soft street-pop.",
+      "",
+      "TONE: smooth \xB7 emotional \xB7 singable \xB7 conversational \xB7 catchy but natural.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  no wahala, e choke, e pain me, e sweet die, I no fit lie",
+      "  I dey reason am, body no be firewood, my mind no rest",
+      "  na so e be, abeg, shebi, wetin dey sup, no be small",
+      "  carry me go, hold me down, no go shame me",
+      "  I don tire, I still dey, God abeg, na only You know",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 Must feel SINGABLE first \u2014 if it doesn't sit on a melody naturally, rewrite it",
+      "  \u2192 Hooks should sound like something Burna / Wiz / Omah / BNXN could carry \u2014 smooth and instant",
+      "  \u2192 Allow emotional repetition and simple but sticky phrasing",
+      "  \u2192 Avoid stiff or overly literal lines \u2014 Pidgin flows conversationally",
+      "  \u2192 Avoid too much grammar-correct English breaking the Pidgin rhythm",
+      "  \u2192 Avoid 'Nigerian Twitter Pidgin' if the song is emotional/melodic \u2014 that register is too casual",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'Na you dey my mind when midnight cold'",
+      "  \u2713 'I dey smile outside but inside e red'",
+      "  \u2713 'No be say I weak, na too much don sup'",
+      "  \u2713 'Your love hold me still when my world bend'",
+      "  \u2713 'You dey sweet me die \u2014 I no fit hide am'",
+      "  \u2713 'Since I see you, everything just change'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 'I am trying my best but things are not going well' \u2014 pure English, zero Pidgin flow",
+      "  \u2717 'You sweet pass everything, I swear' \u2014 too flat/generic if overused without native construction",
+      "  \u2717 'Na you I want since forever' \u2014 translation-like, no Pidgin rhythm",
+      "",
       "AVOID: rough street energy, aggressive phrasing, hard-flex language \u2014 this is smooth and singable.",
-      "Emotional register: warm, romantic, joyful, or longing \u2014 never cold or confrontational.",
-      "Hooks should feel like melodies that want to be sung back immediately. Flow over force."
+      "EMOTIONAL REGISTER: warm, romantic, joyful, or longing. Melodic over muscular. Never cold or confrontational.",
+      "HOOK ENERGY: melodies that want to be sung back immediately. Flow over force. Emotionally direct, rhythmically natural."
     ];
   }
   if (style === "ghana urban pidgin") {
     return [
       "",
-      "\u2500\u2500 ACTIVE SUB-STYLE: GHANA URBAN PIDGIN \u2500\u2500",
-      "This is clean, stylish Ghanaian urban voice \u2014 confident, conversational, cool under pressure.",
-      "BIAS TOWARD: polished local bounce, stylish phrasing, urban confidence, grounded realism.",
-      "  \u2192 'me dey move different \u2014 you go understand later' \u2014 cool, no aggression, self-assured",
-      "  \u2192 'e no easy but me no complain \u2014 God dey' \u2014 quiet resilience, Ghana-urban tone",
-      "  \u2192 'since we start this thing, no wahala' \u2014 clean, settled, warm",
-      "  \u2192 'me know wetin me want \u2014 me go get am softly' \u2014 patient confidence",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: GHANA URBAN PIDGIN",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: Ghana street life, youth culture, confidence, emotional street-pop, campus vibes, hustle, urban romance.",
+      "",
+      "TONE: cool \xB7 sharp \xB7 local \xB7 conversational \xB7 rhythmic and street-aware.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  chale, charley, massa, ei, ah, aswear, no dull",
+      "  I for do am, e no easy oo, we dey manage",
+      "  dem no know, I no fit barb, I dey inside",
+      "  yawa, pressure, street rough, body tire, boys dey",
+      "  ebi so, no cap, lowkey, highlife/Afro-urban emotional bounce",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 Must feel GHANAIAN \u2014 not just Nigerian Pidgin with 'chale' added at the end",
+      "  \u2192 Lighter and more urban-social than Naija Melodic Pidgin \u2014 cooler energy, less heat",
+      "  \u2192 Can blend English naturally, but phrase logic must still feel Ghanaian",
+      "  \u2192 Good for confidence, heartbreak, pressure, city survival, and cool flex",
+      "  \u2192 The Ghana urban voice is cleaner and cooler than Lagos street energy \u2014 keep that distinction",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'Chale, the pressure no be joke but I still dey move'",
+      "  \u2713 'Boys for eat, so we dey outside till late'",
+      "  \u2713 'Body tire me but I no fit slow'",
+      "  \u2713 'If I no talk, ebi pain inside'",
+      "  \u2713 'Me dey move different \u2014 you go understand later'",
+      "  \u2713 'E no easy but me no complain \u2014 God dey'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 Copy-paste Naija Pidgin with one 'chale' added \u2014 that is NOT Ghana Urban voice",
+      "  \u2717 Too much stiff British-style English \u2014 loses the urban Ghanaian rhythm entirely",
+      "  \u2717 Lines that sound culturally nowhere \u2014 no regional identity, no local emotional texture",
+      "",
       "AVOID: rough Lagos-street Pidgin patterns \u2014 the Ghana urban voice is cleaner, cooler, less aggressive.",
-      "Emotional register: confident, grounded, stylish. Smooth delivery, polished execution.",
-      "Hooks should feel conversational but classy \u2014 the kind you'd overhear from someone effortlessly cool."
+      "EMOTIONAL REGISTER: confident, grounded, stylish. Smooth delivery, polished execution.",
+      "HOOK ENERGY: conversational but classy \u2014 the kind you'd overhear from someone effortlessly cool."
     ];
   }
   if (style === "afro-fusion clean pidgin") {
     return [
       "",
-      "\u2500\u2500 ACTIVE SUB-STYLE: AFRO-FUSION CLEAN PIDGIN \u2500\u2500",
-      "This is crossover-ready Pidgin \u2014 polished, commercially clean, built for artist brand and international audiences.",
-      "BIAS TOWARD: smooth crossover writing, clear phrasing, brand-ready language, warm and accessible.",
-      "  \u2192 'I dey here for you \u2014 wherever you go' \u2014 universal emotion in clean Pidgin",
-      "  \u2192 'e no matter where we dey \u2014 this love remain' \u2014 global-ready, no cultural barrier",
-      "  \u2192 'since we start this journey, I no regret' \u2014 clean narrative, no rough edges",
-      "  \u2192 'God I thank you \u2014 everything I have, na you give am' \u2014 faith testimony in clean Pidgin",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: AFRO-FUSION CLEAN PIDGIN",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: broad commercial songs, export-friendly Afrobeats, romantic crossover, emotional radio songs, clean but still African-rooted writing.",
+      "",
+      "TONE: accessible \xB7 smooth \xB7 modern \xB7 emotionally clear \xB7 globally listenable without losing African flavor.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  I dey for you, no go leave me, hold me close",
+      "  e dey pain me, no be lie, I no fit hide am",
+      "  no wahala, make we dey go, my heart no rest",
+      "  I still believe, I still dey stand, my soul no tire",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 This is the CLEANEST Pidgin lane \u2014 fewer dense slang terms than Naija or Ghana Street modes",
+      "  \u2192 Must still feel African-rooted \u2014 not plain global English with 'dey' inserted",
+      "  \u2192 Ideal when the song needs wider audience appeal without losing cultural grounding",
+      "  \u2192 Must remain natural and musical \u2014 no forced dialect, no jarring slang",
+      "  \u2192 Use fewer regional markers \u2014 this is Pan-African, accessible to Afrobeats fans globally",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'I still dey here though the rain no stop'",
+      "  \u2713 'No be lie, your love still dey my chest'",
+      "  \u2713 'I no fit run from the truth again'",
+      "  \u2713 'I dey here for you \u2014 wherever you go'",
+      "  \u2713 'God I thank you \u2014 everything I have, na you give am'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 Full standard English with just 'dey' inserted \u2014 that is not Afro-Fusion Pidgin",
+      "  \u2717 Empty generic romance filler \u2014 'you are the one for me always and forever'",
+      "  \u2717 Fake pidgin that sounds AI-written \u2014 stiff, unnatural, no real musical flow",
+      "",
       "AVOID: heavy slang, rough street expressions, aggressive phrasing \u2014 this is radio-ready and artist-brand safe.",
-      "Emotional register: warm, polished, commercially accessible, emotionally resonant.",
-      "Hooks should feel immediately understandable to both Pidgin-native and global English audiences."
+      "EMOTIONAL REGISTER: warm, polished, commercially accessible, emotionally resonant.",
+      "HOOK ENERGY: immediately understandable to both Pidgin-native and global English audiences \u2014 wide, warm, singable."
     ];
   }
   return [];
