@@ -438,6 +438,17 @@ function validateStructure(draft: SongDraft): ValidationResult {
   return { valid: failures.length === 0, failures };
 }
 
+// ─── Model Ensemble ──────────────────────────────────────────────────────────
+
+const MODELS: { id: string; name: string; temperature: number }[] = [
+  { id: "qwen/qwen3.5-122b-a10b",                    name: "Qwen3.5-122B",          temperature: 0.93 },
+  { id: "meta/llama-3.3-70b-instruct",               name: "LLaMA-3.3-70B",         temperature: 0.88 },
+  { id: "meta/llama-4-maverick-17b-128e-instruct",   name: "LLaMA-4-Maverick-17B",  temperature: 0.90 },
+];
+
+// Priority order for selection when multiple models pass validation: index 0 = highest priority
+const MODEL_PRIORITY = MODELS.map((m) => m.id);
+
 // ─── Route ───────────────────────────────────────────────────────────────────
 
 router.post("/generate-song", async (req, res) => {
@@ -510,73 +521,106 @@ router.post("/generate-song", async (req, res) => {
     }
   };
 
-  const callModel = async (userPrompt: string): Promise<string> => {
-    const response = await ai.chat.completions.create({
-      model: "qwen/qwen3.5-122b-a10b",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.93,
-      top_p: 0.95,
-      max_tokens: 3500,
-    });
-    return response.choices[0]?.message?.content ?? "";
+  const callModel = async (
+    model: { id: string; name: string; temperature: number },
+    userPrompt: string,
+  ): Promise<{ model: string; draft: SongDraft | null; validation: ValidationResult }> => {
+    try {
+      const response = await ai.chat.completions.create({
+        model: model.id,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: model.temperature,
+        top_p: 0.95,
+        max_tokens: 3500,
+      });
+      const raw = response.choices[0]?.message?.content ?? "";
+      const draft = parseResponse(raw);
+      const validation = draft ? validateStructure(draft) : { valid: false, failures: ["parse error"] };
+      return { model: model.name, draft, validation };
+    } catch (err) {
+      logger.warn({ model: model.name, err }, "Model call failed");
+      return { model: model.name, draft: null, validation: { valid: false, failures: ["api error"] } };
+    }
+  };
+
+  // Select the best result from a set of model outputs.
+  // Prefers a passing result in MODEL_PRIORITY order; falls back to fewest failures.
+  const selectBest = (
+    results: { model: string; draft: SongDraft | null; validation: ValidationResult }[],
+  ): { model: string; draft: SongDraft | null; validation: ValidationResult } | null => {
+    const passing = results.filter((r) => r.validation.valid && r.draft !== null);
+    if (passing.length > 0) {
+      // Return the highest-priority passing model
+      for (const modelId of MODEL_PRIORITY) {
+        const match = passing.find((r) => r.model === MODELS.find((m) => m.id === modelId)?.name);
+        if (match) return match;
+      }
+      return passing[0];
+    }
+    // No passing results — return whichever has the fewest failures
+    const withDraft = results.filter((r) => r.draft !== null);
+    if (withDraft.length === 0) return null;
+    return withDraft.reduce((best, cur) =>
+      cur.validation.failures.length < best.validation.failures.length ? cur : best,
+    );
   };
 
   try {
-    // ── First attempt ──────────────────────────────────────────────────────
-    const firstPrompt = buildUserPrompt(promptParams, false);
-    const firstRaw = await callModel(firstPrompt);
-    const firstDraft = parseResponse(firstRaw);
+    const userPrompt = buildUserPrompt(promptParams, false);
 
-    if (!firstDraft) {
-      logger.error({ raw: firstRaw }, "Failed to parse AI response as JSON (attempt 1)");
-      res.status(500).json({ error: "Failed to parse AI response" });
+    // ── Round 1 — all three models in parallel ─────────────────────────────
+    logger.info("Starting parallel ensemble generation (3 models)");
+    const round1 = await Promise.all(MODELS.map((m) => callModel(m, userPrompt)));
+
+    round1.forEach((r) => {
+      if (r.validation.valid) {
+        logger.info({ model: r.model }, "Model passed structure validation (round 1)");
+      } else {
+        logger.warn({ model: r.model, failures: r.validation.failures }, "Model failed structure validation (round 1)");
+      }
+    });
+
+    const best1 = selectBest(round1);
+
+    if (best1?.validation.valid) {
+      logger.info({ model: best1.model }, "Returning validated draft from round 1");
+      res.json({ draft: best1.draft });
       return;
     }
 
-    const firstValidation = validateStructure(firstDraft);
+    // ── Round 2 — strict retry, all three models in parallel ───────────────
+    logger.warn("All models failed round 1 — triggering strict-mode parallel retry");
+    const strictPrompt = buildUserPrompt(promptParams, true);
+    const round2 = await Promise.all(MODELS.map((m) => callModel(m, strictPrompt)));
 
-    if (firstValidation.valid) {
-      logger.info("Song structure validated successfully on first attempt");
-      res.json({ draft: firstDraft });
+    round2.forEach((r) => {
+      if (r.validation.valid) {
+        logger.info({ model: r.model }, "Model passed structure validation (round 2)");
+      } else {
+        logger.warn({ model: r.model, failures: r.validation.failures }, "Model failed structure validation (round 2)");
+      }
+    });
+
+    const best2 = selectBest(round2);
+    const allResults = [...round1, ...round2];
+    const overallBest = selectBest(allResults);
+
+    if (best2?.validation.valid) {
+      logger.info({ model: best2.model }, "Returning validated draft from round 2");
+      res.json({ draft: best2.draft });
       return;
     }
 
-    // ── Structure validation failed — controlled retry with strict mode ──
-    logger.warn(
-      { failures: firstValidation.failures },
-      "Song structure validation failed — triggering strict-mode retry",
-    );
-
-    const retryPrompt = buildUserPrompt(promptParams, true);
-    const retryRaw = await callModel(retryPrompt);
-    const retryDraft = parseResponse(retryRaw);
-
-    if (!retryDraft) {
-      logger.error({ raw: retryRaw }, "Failed to parse AI response as JSON (retry)");
-      // Fall back to returning the first draft rather than failing completely
-      res.json({ draft: firstDraft });
+    // ── Fallback — return best available across both rounds ────────────────
+    logger.warn("All models failed both rounds — returning best available draft");
+    if (!overallBest?.draft) {
+      res.status(500).json({ error: "Failed to generate a song. Please try again." });
       return;
     }
-
-    const retryValidation = validateStructure(retryDraft);
-
-    if (!retryValidation.valid) {
-      logger.warn(
-        { failures: retryValidation.failures },
-        "Retry still failed structure validation — returning best available draft",
-      );
-      // Return whichever draft has fewer structural failures
-      const firstFailCount = firstValidation.failures.length;
-      const retryFailCount = retryValidation.failures.length;
-      res.json({ draft: retryFailCount <= firstFailCount ? retryDraft : firstDraft });
-      return;
-    }
-
-    logger.info("Song structure validated successfully on retry");
-    res.json({ draft: retryDraft });
+    res.json({ draft: overallBest.draft });
   } catch (err) {
     logger.error({ err }, "NVIDIA API error");
     const status = (err as { status?: number }).status;
