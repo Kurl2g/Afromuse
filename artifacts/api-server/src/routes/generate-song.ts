@@ -1803,3 +1803,481 @@ router.post("/generate-song", async (req, res) => {
 });
 
 export default router;
+
+function getSongwritingCompressionBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎵 SONGWRITING COMPRESSION LAW",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Do NOT over-explain emotions.",
+    "Do NOT turn verses into essays.",
+    "Shorter lines are usually stronger.",
+    "If a line can be said in 5 words instead of 11, choose 5.",
+    "",
+    "Prioritize:",
+    "  - singable phrases",
+    "  - emotional clarity",
+    "  - repeatable melodic lines",
+    "  - memorable bar endings",
+    "  - natural pause points",
+    "",
+    "A strong line should feel performable immediately.",
+    "If it sounds like a paragraph, rewrite it.",
+    "",
+    "Hooks should feel:",
+    "  - simple",
+    "  - chantable",
+    "  - emotionally obvious",
+    "  - easy to remember after one listen",
+    "",
+    "If the listener cannot sing it back quickly, simplify it.",
+  ];
+}
+
+function getCommercialModeBlock(commercialMode?: boolean): string[] {
+  if (!commercialMode) return [];
+
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  💿 COMMERCIAL MODE — HIT-FRIENDLY WRITING",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "This song must feel commercially strong and replayable.",
+    "Write with mainstream music appeal while keeping emotional authenticity.",
+    "",
+    "PRIORITIZE:",
+    "  - catchy hooks",
+    "  - short memorable phrases",
+    "  - repeatable chorus lines",
+    "  - melodic simplicity",
+    "  - emotionally direct writing",
+    "  - easy sing-back moments",
+    "",
+    "AVOID:",
+    "  - over-writing",
+    "  - too many complicated metaphors",
+    "  - dense bars that block melody",
+    "  - long explanations",
+    "  - abstract poetry that weakens replay value",
+    "",
+    "COMMERCIAL HOOK LAW:",
+    "The chorus must sound like something listeners can remember after one listen.",
+    "If the hook is smart but not sticky, simplify it.",
+    "",
+    "STREAMING TEST:",
+    "Would this song still hit after 10 replays?",
+    "Would people want to quote the hook in captions or sing it out loud?",
+    "If not, rewrite for stronger replay value.",
+  ];
+}
+
+function getHookEngineBlock(hookRepeat: string = "Medium"): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎯 HOOK ENGINE — CHORUS PRIORITY MODE",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "The hook is the MOST IMPORTANT part of the song.",
+    "It must feel natural, memorable, emotionally obvious, and instantly singable.",
+    "",
+    "HOOK REQUIREMENTS:",
+    "  - easy to remember",
+    "  - emotionally clear",
+    "  - native to the chosen language style",
+    "  - performable live",
+    "  - strong enough to carry the whole song",
+    "",
+    "A weak verse can survive.",
+    "A weak hook kills the song.",
+    "",
+    "GOOD HOOKS FEEL LIKE:",
+    "  - something a real artist would repeat naturally",
+    "  - something fans can shout back",
+    "  - something simple enough to stick fast",
+    "",
+    "AVOID:",
+    "  - over-explaining in the chorus",
+    "  - too many changing ideas in one hook",
+    "  - long poetic sentences",
+    "  - fake-deep lines that are not chantable",
+  ].concat(
+    hookRepeat === "Low"
+      ? [
+          "",
+          "HOOK REPETITION MODE: LOW",
+          "Use lighter repetition. Keep the chorus memorable without repeating too aggressively.",
+        ]
+      : hookRepeat === "High"
+      ? [
+          "",
+          "HOOK REPETITION MODE: HIGH",
+          "Use stronger repetition for maximum catchiness and chantability.",
+          "Lean into key emotional phrases repeating naturally.",
+        ]
+      : [
+          "",
+          "HOOK REPETITION MODE: MEDIUM",
+          "Balance repetition and variation for strong replay value.",
+        ]
+  );
+}
+
+function getVerseVariationBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🧠 VERSE VARIATION ENGINE",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Each verse must feel like it has a DIFFERENT job.",
+    "Do NOT let every verse repeat the same emotional angle.",
+    "",
+    "VERSE DESIGN RULES:",
+    "  - Verse 1 should introduce the world, emotion, or problem.",
+    "  - Verse 2 should deepen the story, pressure, desire, or conflict.",
+    "  - If there is Verse 3 or a bridge, it should reveal truth, reflection, or climax.",
+    "",
+    "Each section must add NEW emotional value.",
+    "Do NOT keep saying the same thing in slightly different words.",
+    "",
+    "AVOID:",
+    "  - repeated emotional summaries",
+    "  - multiple verses with identical message",
+    "  - saying the hook idea again without new detail",
+    "",
+    "Every verse must earn its place.",
+    "If a section adds nothing new, rewrite it.",
+  ];
+}
+
+function getAdlibGeneratorBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎤 ADLIB GENERATOR MODE",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Where appropriate, lightly include natural adlib moments.",
+    "Adlibs must feel artist-real, not excessive or cartoonish.",
+    "",
+    "ADLIB STYLE RULES:",
+    "  - keep them short",
+    "  - place them where emotion or rhythm naturally opens space",
+    "  - use them more in hooks, intros, outros, and transitions",
+    "  - do NOT overload every line",
+    "",
+    "GOOD ADLIB TYPES:",
+    "  - emotional echoes",
+    "  - quiet emphasis",
+    "  - melodic call-backs",
+    "  - reaction sounds",
+    "  - spiritual exclamations (if theme fits)",
+    "  - street emphasis (if theme fits)",
+    "",
+    "BAD ADLIB BEHAVIOR:",
+    "  - too many after every line",
+    "  - random generic 'yeah yeah' spam",
+    "  - adlibs that break emotional tone",
+    "",
+    "Adlibs should support performance feel — not distract from the writing.",
+  ];
+}
+
+function getMelodyFriendlyBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎶 MELODY-FIRST WRITING MODE",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Write every section so it sits naturally on melody.",
+    "The lyrics must feel SINGABLE before they feel clever.",
+    "",
+    "MELODY RULES:",
+    "  - prefer shorter lines over overloaded lines",
+    "  - allow breathing space",
+    "  - leave room for rhythm and vocal bounce",
+    "  - avoid too many hard-to-sing word clusters",
+    "  - keep vowel flow smooth where possible",
+    "",
+    "TEST EVERY LINE:",
+    "Can a real artist sing this without rewriting it in studio?",
+    "If not, simplify or reshape the line.",
+    "",
+    "A strong line should:",
+    "  - bounce naturally",
+    "  - land emotionally fast",
+    "  - leave room for delivery style",
+    "",
+    "Do NOT write like an essay.",
+    "Do NOT write like spoken explanation.",
+    "Write like music.",
+  ];
+}
+
+function getArtistInspirationBlock(artistInspiration?: string): string[] {
+  const artist = artistInspiration?.toLowerCase().trim();
+  if (!artist || artist === "random" || artist === "none") return [];
+
+  if (artist.includes("burna")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🧬 ARTIST ENERGY MODE: BURNA-TYPE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Use the emotional and songwriting energy of a Burna-type performance:",
+      "  - confident but wounded depth",
+      "  - reflective authority",
+      "  - Afro-fusion realism",
+      "  - lived experience over fake flex",
+      "  - emotionally heavy but cool delivery",
+      "",
+      "Do NOT copy any artist directly.",
+      "Only borrow the emotional weight, confidence, and songwriting energy.",
+    ];
+  }
+
+  if (artist.includes("asake")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🧬 ARTIST ENERGY MODE: ASAKE-TYPE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Use the songwriting energy of an Asake-type record:",
+      "  - rhythm-first writing",
+      "  - chantable repeated phrases",
+      "  - coded street confidence",
+      "  - spiritual/street duality",
+      "  - highly performable hook energy",
+      "",
+      "Keep it catchy, rhythmic, and instinctive.",
+      "Do NOT copy any artist directly.",
+    ];
+  }
+
+  if (artist.includes("black sherif") || artist.includes("blacko")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🧬 ARTIST ENERGY MODE: BLACK SHERIF-TYPE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Use the songwriting energy of a Black Sherif-type record:",
+      "  - pain and pressure",
+      "  - spiritual grit",
+      "  - street survival with reflection",
+      "  - emotional realism over polish",
+      "  - raw honesty with chantable phrases",
+      "",
+      "The writing should feel lived, heavy, and deeply human.",
+      "Do NOT copy any artist directly.",
+    ];
+  }
+
+  if (artist.includes("omah lay")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🧬 ARTIST ENERGY MODE: OMAH LAY-TYPE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Use the songwriting energy of an Omah Lay-type record:",
+      "  - lonely vulnerability",
+      "  - soft emotional honesty",
+      "  - intimate melodic writing",
+      "  - heartbreak and internal tension",
+      "  - subtle but memorable hooks",
+      "",
+      "Keep the emotion personal, melodic, and quiet-heavy.",
+      "Do NOT copy any artist directly.",
+    ];
+  }
+
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🧬 ARTIST ENERGY MODE",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    `Use the emotional and songwriting energy inspired by: ${artistInspiration}.`,
+    "Do NOT copy any artist directly.",
+    "Only borrow performance feel, emotional structure, and writing energy.",
+  ];
+}
+
+function getLyricalDepthBlock(lyricalDepth: string = "Balanced"): string[] {
+  const depth = lyricalDepth.toLowerCase();
+
+  if (depth.includes("simple")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  ✍️ LYRICAL DEPTH MODE: SIMPLE & DIRECT",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Keep the writing emotionally direct and easy to understand.",
+      "Prioritize clarity, repetition, and memorable phrasing over layered complexity.",
+      "",
+      "Write like a real artist trying to connect fast — not trying to impress with too many ideas.",
+    ];
+  }
+
+  if (depth.includes("deep")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  ✍️ LYRICAL DEPTH MODE: DEEPER EMOTIONAL WRITING",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Allow deeper emotional nuance, stronger reflection, and more layered meaning.",
+      "Still keep it singable and natural.",
+      "",
+      "Do NOT become abstract, fake-poetic, or over-written.",
+      "Depth must still feel performable and human.",
+    ];
+  }
+
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  ✍️ LYRICAL DEPTH MODE: BALANCED",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Balance emotional clarity with lyrical richness.",
+    "Keep the writing meaningful, singable, and accessible.",
+  ];
+}
+
+function getPerformanceFeelBlock(performanceFeel: string = "Smooth"): string[] {
+  const feel = performanceFeel.toLowerCase();
+
+  if (feel.includes("raw")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🎙 PERFORMANCE FEEL: RAW",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write like the artist is emotionally exposed and not hiding behind polish.",
+      "Allow rough honesty, tension, pressure, and vulnerable delivery energy.",
+    ];
+  }
+
+  if (feel.includes("aggressive")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🎙 PERFORMANCE FEEL: AGGRESSIVE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write with stronger attack, sharper confidence, and more forceful delivery energy.",
+      "Keep it chantable and rhythmic, not just loud.",
+    ];
+  }
+
+  if (feel.includes("intimate")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🎙 PERFORMANCE FEEL: INTIMATE",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write like the artist is speaking directly into one person's ear.",
+      "Keep the delivery close, emotional, and personal.",
+    ];
+  }
+
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎙 PERFORMANCE FEEL: SMOOTH",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Write with natural melodic flow, emotional control, and clean performance energy.",
+    "Keep the song fluid, musical, and polished.",
+  ];
+}
+
+function getVoiceTextureBlock(voiceTexture: string = "Balanced"): string[] {
+  const voice = voiceTexture.toLowerCase();
+
+  if (voice.includes("gritty")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🗣 VOICE TEXTURE: GRITTY",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write for a voice that feels rough-edged, scarred, street-tested, and emotionally weathered.",
+      "Prioritize lines that sound strong, grounded, and lived-in.",
+    ];
+  }
+
+  if (voice.includes("soft")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🗣 VOICE TEXTURE: SOFT",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write for a softer, more melodic, emotionally open vocal delivery.",
+      "Prioritize warmth, intimacy, and melodic smoothness.",
+    ];
+  }
+
+  if (voice.includes("bold")) {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  🗣 VOICE TEXTURE: BOLD",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "Write for a confident, commanding, unmistakable vocal presence.",
+      "Lines should feel strong, memorable, and performance-ready.",
+    ];
+  }
+
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🗣 VOICE TEXTURE: BALANCED",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Write for a naturally expressive voice with both emotional warmth and confident delivery.",
+  ];
+}
+
+function getStudioOutputBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════╗",
+    "  🎼 STUDIO OUTPUT FORMAT",
+    "╚══════════════════════════════════════════════╝",
+    "",
+    "Format the final lyrics like a real studio writing draft.",
+    "",
+    "USE CLEAR SECTION LABELS:",
+    "  [Intro]",
+    "  [Chorus]",
+    "  [Verse 1]",
+    "  [Pre-Chorus]",
+    "  [Chorus]",
+    "  [Verse 2]",
+    "  [Bridge]",
+    "  [Outro]",
+    "",
+    "OPTIONAL:",
+    "  - (Adlibs) where natural",
+    "  - repeated hook lines where musically useful",
+    "",
+    "DO NOT add explanations, analysis, or commentary.",
+    "Output ONLY the final lyrics draft.",
+  ];
+}
+
