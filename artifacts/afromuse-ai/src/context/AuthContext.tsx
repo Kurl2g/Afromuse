@@ -32,15 +32,33 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
 });
 
+const TOKEN_KEY = "afromuse_auth_token";
+
+export function getStoredToken(): string | null {
+  try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
+}
+
+function storeToken(token: string) {
+  try { localStorage.setItem(TOKEN_KEY, token); } catch {}
+}
+
+function clearToken() {
+  try { localStorage.removeItem(TOKEN_KEY); } catch {}
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/auth/me", { credentials: "include" })
+    const token = getStoredToken();
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    fetch("/api/auth/me", { credentials: "include", headers })
       .then((res) => (res.ok ? res.json() : null))
       .then((data: AuthUser | null) => {
         if (data && data.id) setUser(data);
+        else clearToken();
       })
       .catch(() => {})
       .finally(() => setIsLoading(false));
@@ -56,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error ?? "Login failed." };
+      if (data.token) storeToken(data.token);
       setUser(data as AuthUser);
       return { success: true };
     } catch {
@@ -73,6 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error ?? "Registration failed." };
+      if (data.token) storeToken(data.token);
       setUser(data as AuthUser);
       return { success: true };
     } catch {
@@ -84,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     } catch {}
+    clearToken();
     setUser(null);
   };
 

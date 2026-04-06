@@ -11,9 +11,17 @@ function getJwtSecret(): string {
   return secret;
 }
 
+function extractToken(req: any): string | null {
+  const cookie = req.cookies?.auth_token;
+  if (cookie) return cookie;
+  const auth = req.headers?.authorization as string | undefined;
+  if (auth?.startsWith("Bearer ")) return auth.slice(7);
+  return null;
+}
+
 function getUserId(req: any): number | null {
   try {
-    const token = req.cookies?.auth_token;
+    const token = extractToken(req);
     if (!token) return null;
     const payload = jwt.verify(token, getJwtSecret()) as { userId: number };
     return payload.userId;

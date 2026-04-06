@@ -136,9 +136,14 @@ export interface SaveSessionParams {
 const API_BASE = "/api";
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  try {
+    const token = localStorage.getItem("afromuse_auth_token");
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+  } catch {}
   const res = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers,
     ...options,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);

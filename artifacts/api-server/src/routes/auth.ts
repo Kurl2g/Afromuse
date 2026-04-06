@@ -65,7 +65,7 @@ router.post("/auth/register", async (req, res) => {
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
 
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
   } catch (err) {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
@@ -96,7 +96,7 @@ router.post("/auth/login", async (req, res) => {
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
 
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
   } catch (err) {
     res.status(500).json({ error: "Login failed. Please try again." });
   }
@@ -108,7 +108,11 @@ router.post("/auth/logout", (_req, res) => {
 });
 
 router.get("/auth/me", async (req, res) => {
-  const token = req.cookies?.[COOKIE_NAME];
+  let token = req.cookies?.[COOKIE_NAME];
+  if (!token) {
+    const auth = req.headers?.authorization as string | undefined;
+    if (auth?.startsWith("Bearer ")) token = auth.slice(7);
+  }
   if (!token) {
     res.status(401).json({ error: "Not authenticated." });
     return;

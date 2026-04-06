@@ -71069,7 +71069,7 @@ router4.post("/auth/register", async (req, res) => {
     const [user] = await db.insert(usersTable).values({ name, email: email3.toLowerCase(), passwordHash, role: "user" }).returning();
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
   } catch (err) {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
@@ -71093,7 +71093,7 @@ router4.post("/auth/login", async (req, res) => {
     }
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
   } catch (err) {
     res.status(500).json({ error: "Login failed. Please try again." });
   }
@@ -71103,7 +71103,11 @@ router4.post("/auth/logout", (_req, res) => {
   res.json({ success: true });
 });
 router4.get("/auth/me", async (req, res) => {
-  const token = req.cookies?.[COOKIE_NAME];
+  let token = req.cookies?.[COOKIE_NAME];
+  if (!token) {
+    const auth = req.headers?.authorization;
+    if (auth?.startsWith("Bearer ")) token = auth.slice(7);
+  }
   if (!token) {
     res.status(401).json({ error: "Not authenticated." });
     return;
@@ -71197,9 +71201,16 @@ function getJwtSecret2() {
   if (!secret) throw new Error("SESSION_SECRET is not set");
   return secret;
 }
+function extractToken(req) {
+  const cookie = req.cookies?.auth_token;
+  if (cookie) return cookie;
+  const auth = req.headers?.authorization;
+  if (auth?.startsWith("Bearer ")) return auth.slice(7);
+  return null;
+}
 function getUserId(req) {
   try {
-    const token = req.cookies?.auth_token;
+    const token = extractToken(req);
     if (!token) return null;
     const payload = import_jsonwebtoken3.default.verify(token, getJwtSecret2());
     return payload.userId;
