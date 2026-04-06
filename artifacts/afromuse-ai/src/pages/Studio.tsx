@@ -61,32 +61,32 @@ const SONG_LENGTHS = [
 type SongLength = "Short" | "Standard" | "Full";
 
 const LANGUAGE_FLAVORS = [
-  { value: "Global English", label: "Global English" },
-  { value: "English + Pidgin", label: "English + Pidgin" },
-  { value: "English + Twi Flavor", label: "English + Twi Flavor" },
-  { value: "Jamaican Patois", label: "Jamaican Patois" },
-  { value: "Street Urban", label: "Street Urban" },
-  { value: "Clean International", label: "Clean International" },
-  { value: "Custom", label: "Custom..." },
-] as const;
-
-const PATOIS_DIALECT_STYLES = [
-  { value: "Auto", label: "Auto" },
-  { value: "Jamaican Street", label: "Jamaican Street" },
-  { value: "Jamaican Spiritual", label: "Jamaican Spiritual" },
-] as const;
-
-const PIDGIN_DIALECT_STYLES = [
-  { value: "Auto", label: "Auto" },
+  { value: "English", label: "English" },
   { value: "Naija Melodic Pidgin", label: "Naija Melodic Pidgin" },
+  { value: "Naija Street Pidgin", label: "Naija Street Pidgin" },
   { value: "Ghana Urban Pidgin", label: "Ghana Urban Pidgin" },
   { value: "Afro-fusion Clean Pidgin", label: "Afro-fusion Clean Pidgin" },
+  { value: "Jamaican Street Patois", label: "Jamaican Street Patois" },
+  { value: "Jamaican Spiritual Patois", label: "Jamaican Spiritual Patois" },
 ] as const;
 
-function getDialectStyles(flavor: string) {
-  if (flavor === "Jamaican Patois") return PATOIS_DIALECT_STYLES;
-  if (flavor === "English + Pidgin") return PIDGIN_DIALECT_STYLES;
-  return null;
+function getApiLanguageParams(flavor: string): { languageFlavor: string; dialectStyle: string | undefined } {
+  switch (flavor) {
+    case "Naija Melodic Pidgin":
+      return { languageFlavor: "Naija Melodic Pidgin", dialectStyle: "Naija Melodic Pidgin" };
+    case "Naija Street Pidgin":
+      return { languageFlavor: "Naija Street Pidgin", dialectStyle: "Naija Street Pidgin" };
+    case "Ghana Urban Pidgin":
+      return { languageFlavor: "Ghana Urban Pidgin", dialectStyle: "Ghana Urban Pidgin" };
+    case "Afro-fusion Clean Pidgin":
+      return { languageFlavor: "Afro-fusion Clean Pidgin", dialectStyle: "Afro-fusion Clean Pidgin" };
+    case "Jamaican Street Patois":
+      return { languageFlavor: "Jamaican Patois", dialectStyle: "Jamaican Street" };
+    case "Jamaican Spiritual Patois":
+      return { languageFlavor: "Jamaican Patois", dialectStyle: "Jamaican Spiritual" };
+    default:
+      return { languageFlavor: "Global English", dialectStyle: undefined };
+  }
 }
 
 export default function Studio() {
@@ -110,7 +110,7 @@ export default function Studio() {
   const [genre, setGenre] = useState("Afrobeats");
   const [mood, setMood] = useState("Uplifting");
   const [songLength, setSongLength] = useState<SongLength>("Standard");
-  const [languageFlavor, setLanguageFlavor] = useState("Global English");
+  const [languageFlavor, setLanguageFlavor] = useState("English");
   const [dialectStyle, setDialectStyle] = useState("Auto");
   const [customFlavor, setCustomFlavor] = useState("");
   const [style, setStyle] = useState("");
@@ -159,22 +159,17 @@ export default function Studio() {
     }
   }, [status]);
 
-  useEffect(() => {
-    if (!getDialectStyles(languageFlavor)) {
-      setDialectStyle("Auto");
-    }
-  }, [languageFlavor]);
-
   const runGeneration = async () => {
     setStatus("generating");
     setGeneratingStep(0);
     setSaved(false);
     incrementGeneration();
+    const { languageFlavor: apiLanguageFlavor, dialectStyle: apiDialectStyle } = getApiLanguageParams(languageFlavor);
     try {
       const res = await fetch("/api/generate-song", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor, dialectStyle, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel }),
+        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor: apiLanguageFlavor, dialectStyle: apiDialectStyle, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel }),
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -235,7 +230,7 @@ export default function Studio() {
     setGenre("Afrobeats");
     setMood("Uplifting");
     setSongLength("Standard");
-    setLanguageFlavor("Global English");
+    setLanguageFlavor("English");
     setDialectStyle("Auto");
     setCustomFlavor("");
     setStyle("");
@@ -641,60 +636,9 @@ export default function Studio() {
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
                   </div>
-                  {languageFlavor === "Custom" && (
-                    <input
-                      type="text"
-                      placeholder="Describe your language / flavor preference..."
-                      value={customFlavor}
-                      onChange={(e) => setCustomFlavor(e.target.value)}
-                      className="w-full h-11 rounded-xl bg-white/4 border border-white/10 px-4 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all mt-2"
-                    />
-                  )}
                   <p className="text-[11px] text-white/25 mt-1.5">Shapes dialect, slang level, and cultural tone</p>
                 </div>
 
-                {/* Dialect Style — context-aware, shown only for Patois / Pidgin */}
-                {getDialectStyles(languageFlavor) && (
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-xs font-semibold text-white/70 uppercase tracking-wider">
-                        Writing Style
-                      </label>
-                      <span className="text-[10px] text-white/25">
-                        {dialectStyle === "Auto" ? "AI selects best fit" : "Active"}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {getDialectStyles(languageFlavor)!.map((s) => (
-                        <button
-                          key={s.value}
-                          type="button"
-                          onClick={() => setDialectStyle(s.value)}
-                          className={`h-8 px-3 rounded-xl text-[11px] font-bold tracking-wide transition-all border ${
-                            dialectStyle === s.value
-                              ? "bg-secondary/15 border-secondary/45 text-secondary shadow-[0_0_10px_rgba(139,92,246,0.12)]"
-                              : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
-                          }`}
-                        >
-                          {s.label}
-                        </button>
-                      ))}
-                    </div>
-                    <p className="text-[11px] text-white/20 mt-1.5">
-                      {dialectStyle === "Auto"
-                        ? "AfroMuse picks the most fitting dialect voice automatically"
-                        : dialectStyle === "Jamaican Street"
-                          ? "Raw street realism — harder phrasing, survival pressure, gritty confidence"
-                          : dialectStyle === "Jamaican Spiritual"
-                            ? "Faith-centered Patois — Jah-rooted language, reflective and spiritually grounded"
-                            : dialectStyle === "Naija Melodic Pidgin"
-                              ? "Smooth, singable Afrobeats Pidgin — emotional hooks, sweet melodic flow"
-                              : dialectStyle === "Ghana Urban Pidgin"
-                                ? "Clean Ghana-urban confidence — stylish, cool, conversational phrasing"
-                                : "Polished crossover Pidgin — commercially clean, brand-ready and radio-safe"}
-                    </p>
-                  </div>
-                )}
 
                 {/* Style / Sound Reference */}
                 <div>
