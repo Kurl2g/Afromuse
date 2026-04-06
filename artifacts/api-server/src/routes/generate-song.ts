@@ -397,11 +397,103 @@ Return ONLY this JSON object — no markdown, no code fences, no explanation:
 }`;
 }
 
-function getDialectBlock(effectiveFlavor: string): string[] {
+// ─── Sub-style intelligence blocks ───────────────────────────────────────────
+
+function getDialectSubStyleBlock(dialectStyle: string): string[] {
+  const style = dialectStyle?.toLowerCase().trim() ?? "";
+
+  if (style === "jamaican street") {
+    return [
+      "",
+      "── ACTIVE SUB-STYLE: JAMAICAN STREET ──",
+      "This is raw, unfiltered street realism — not inspirational Patois, not dancehall pop. The voice comes from the concrete.",
+      "BIAS TOWARD: pressure language, survival phrasing, badmind awareness, hustle pride, grit.",
+      "  → 'dem nuh want mi rise but watch mi still rise' — hard-earned, specific, street-rooted",
+      "  → 'mi nuh get dem chance, mi tek mi chance' — no victim energy, pure agency",
+      "  → 'dem talk behind mi back — mi nuh hear dem, mi moving' — dismissal without aggression",
+      "  → 'di road rough rough rough, but mi born pon it' — toughness framed in belonging",
+      "AVOID: faith-centered phrasing, Jah references, spiritual metaphors — keep it street and real.",
+      "Emotional register: hard on the surface, quietly proud underneath. Survival told with dignity.",
+      "Hooks should feel like soundsystem declarations — confrontational, chantable, bulletproof.",
+    ];
+  }
+
+  if (style === "jamaican spiritual") {
+    return [
+      "",
+      "── ACTIVE SUB-STYLE: JAMAICAN SPIRITUAL ──",
+      "This is Jah-rooted, faith-centered Patois writing — endurance, testimony, and spiritual resilience.",
+      "BIAS TOWARD: Jah references, Most High testimony, quiet strength, faith in the face of pressure.",
+      "  → 'Most High, mi nuh question — mi trust di plan' — complete faith, no wavering",
+      "  → 'di storm nuh break mi cause di Most High hold mi' — spiritual protection framed concretely",
+      "  → 'through di valley mi still deh — Jah carry mi' — testimony without drama",
+      "  → 'dem nuh know say Jah already order mi steps' — quiet confidence from faith",
+      "AVOID: street aggression, badmind language, flex/boast energy — this is rooted and clean.",
+      "Emotional register: reflective, grateful, quietly powerful. Faith is lived-in, not performed.",
+      "Hooks should feel like affirmations you'd hear at a roots session — deeply singable, spiritually grounding.",
+    ];
+  }
+
+  if (style === "naija melodic pidgin") {
+    return [
+      "",
+      "── ACTIVE SUB-STYLE: NAIJA MELODIC PIDGIN ──",
+      "This is smooth, singable Afrobeats Pidgin — built for melody, emotion, and hook replay value.",
+      "BIAS TOWARD: flowing phrasing, emotionally musical hooks, sweet delivery, maximum singability.",
+      "  → 'you dey sweet me die — I no fit hide am' — melodic, emotionally direct, Pidgin-first",
+      "  → 'since I see you, everything just change' — simple truth that sits perfectly on a melody",
+      "  → 'na you I carry for my heart — no be joke' — warmth, no aggression, hook-ready",
+      "  → 'e dey sweet me anytime you dey near' — physical sensation turned into lyric",
+      "AVOID: rough street energy, aggressive phrasing, hard-flex language — this is smooth and singable.",
+      "Emotional register: warm, romantic, joyful, or longing — never cold or confrontational.",
+      "Hooks should feel like melodies that want to be sung back immediately. Flow over force.",
+    ];
+  }
+
+  if (style === "ghana urban pidgin") {
+    return [
+      "",
+      "── ACTIVE SUB-STYLE: GHANA URBAN PIDGIN ──",
+      "This is clean, stylish Ghanaian urban voice — confident, conversational, cool under pressure.",
+      "BIAS TOWARD: polished local bounce, stylish phrasing, urban confidence, grounded realism.",
+      "  → 'me dey move different — you go understand later' — cool, no aggression, self-assured",
+      "  → 'e no easy but me no complain — God dey' — quiet resilience, Ghana-urban tone",
+      "  → 'since we start this thing, no wahala' — clean, settled, warm",
+      "  → 'me know wetin me want — me go get am softly' — patient confidence",
+      "AVOID: rough Lagos-street Pidgin patterns — the Ghana urban voice is cleaner, cooler, less aggressive.",
+      "Emotional register: confident, grounded, stylish. Smooth delivery, polished execution.",
+      "Hooks should feel conversational but classy — the kind you'd overhear from someone effortlessly cool.",
+    ];
+  }
+
+  if (style === "afro-fusion clean pidgin") {
+    return [
+      "",
+      "── ACTIVE SUB-STYLE: AFRO-FUSION CLEAN PIDGIN ──",
+      "This is crossover-ready Pidgin — polished, commercially clean, built for artist brand and international audiences.",
+      "BIAS TOWARD: smooth crossover writing, clear phrasing, brand-ready language, warm and accessible.",
+      "  → 'I dey here for you — wherever you go' — universal emotion in clean Pidgin",
+      "  → 'e no matter where we dey — this love remain' — global-ready, no cultural barrier",
+      "  → 'since we start this journey, I no regret' — clean narrative, no rough edges",
+      "  → 'God I thank you — everything I have, na you give am' — faith testimony in clean Pidgin",
+      "AVOID: heavy slang, rough street expressions, aggressive phrasing — this is radio-ready and artist-brand safe.",
+      "Emotional register: warm, polished, commercially accessible, emotionally resonant.",
+      "Hooks should feel immediately understandable to both Pidgin-native and global English audiences.",
+    ];
+  }
+
+  return [];
+}
+
+function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string[] {
   const flavor = effectiveFlavor.toLowerCase();
 
   const isPatois = flavor.includes("patois") || flavor.includes("jamaican");
   const isPidgin = flavor.includes("pidgin") || (flavor.includes("english") && flavor.includes("pidgin"));
+
+  const subStyleBlock = (dialectStyle && dialectStyle !== "Auto")
+    ? getDialectSubStyleBlock(dialectStyle)
+    : [];
 
   if (isPatois) {
     return [

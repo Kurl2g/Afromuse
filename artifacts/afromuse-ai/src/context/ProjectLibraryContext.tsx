@@ -137,6 +137,7 @@ export interface ResumedSessionState {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  dialectStyle?: string;
 }
 
 export function extractResumeState(session: SavedSession): ResumedSessionState {
@@ -163,5 +164,6 @@ export function extractResumeState(session: SavedSession): ResumedSessionState {
     melodyDensity: session.melodyDensity,
     drumCharacter: session.drumCharacter,
     hookLift: session.hookLift,
+    dialectStyle: session.dialectStyle,
   };
 }

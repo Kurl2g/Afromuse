@@ -51,6 +51,7 @@ export interface SavedSession {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  dialectStyle?: string;
 
   buildMode: "artist" | "producer" | null;
   currentStage: SessionStatus;
@@ -127,6 +128,7 @@ export interface SaveSessionParams {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  dialectStyle?: string;
   draft: SongDraft | null;
   outputRegistry?: Partial<OutputRegistryEntry> | null;
 }
@@ -199,6 +201,7 @@ export async function saveSessionToDB(params: SaveSessionParams): Promise<SavedS
     melodyDensity: params.melodyDensity,
     drumCharacter: params.drumCharacter,
     hookLift: params.hookLift,
+    dialectStyle: params.dialectStyle,
     buildMode: params.buildMode ?? null,
     currentStage: deriveSessionStatus(draft, outputRegistry),
     exportStatus: deriveExportStatus(outputRegistry),
@@ -299,6 +302,7 @@ export function saveSession(params: SaveSessionParams): SavedSession {
     atmosphere: draft?.sonicIdentity?.atmosphere ?? null,
     leadVoice: draft?.vocalIdentity?.leadType ?? null,
     mixFeel: params.mixFeel ?? null,
+    dialectStyle: params.dialectStyle,
     buildMode: params.buildMode ?? null,
     currentStage: deriveSessionStatus(draft, outputRegistry),
     exportStatus: deriveExportStatus(outputRegistry),
