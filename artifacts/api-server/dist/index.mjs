@@ -51160,7 +51160,15 @@ function buildUserPrompt(params, strictMode = false) {
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
-    ...dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} \u2014 apply the corresponding sub-style intelligence block fully`] : []
+    ...dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} \u2014 apply the corresponding sub-style intelligence block fully`] : [],
+    "",
+    "\u2500\u2500 LANGUAGE TARGET \u2500\u2500",
+    `Write the lyrics in ${effectiveFlavor} with believable native phrasing, emotional realism, and artist-natural wording.`,
+    "Do not write fake dialect.",
+    "Do not rely on English sentence structure with surface spelling changes.",
+    "Do not overuse generic fallback phrases.",
+    "The lyrics must sound culturally lived-in and musically natural.",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
   ];
   if (style?.trim()) {
     lines.push(`STYLE / ARTIST REFERENCE: ${style.trim()} \u2014 capture the feel and writing DNA only \u2014 do NOT copy lyrics`);

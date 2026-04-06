@@ -1130,6 +1130,14 @@ function buildUserPrompt(
     `MOOD: ${mood}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
     ...(dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} — apply the corresponding sub-style intelligence block fully`] : []),
+    "",
+    "── LANGUAGE TARGET ──",
+    `Write the lyrics in ${effectiveFlavor} with believable native phrasing, emotional realism, and artist-natural wording.`,
+    "Do not write fake dialect.",
+    "Do not rely on English sentence structure with surface spelling changes.",
+    "Do not overuse generic fallback phrases.",
+    "The lyrics must sound culturally lived-in and musically natural.",
+    "──────────────────────",
   ];
 
   if (style?.trim()) {
