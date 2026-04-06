@@ -832,11 +832,13 @@ function validateStructure(draft: SongDraft): ValidationResult {
 }
 
 // ─── Models ───────────────────────────────────────────────────────────────────
-// Llama-4-Maverick: primary lyrics author (creative writing, dialect authenticity)
-// Qwen3.5-122B:     flow / production details (metadata, stems, guidance, notes)
+// Llama-4-Maverick:  primary lyrics author (creative writing, dialect authenticity)
+// Llama-3.3-70B:     primary flow / production details (metadata, stems, guidance, notes)
+// Llama-4-Maverick:  flow backup (used if Llama-3.3-70B fails)
 
-const LLAMA_MAVERICK_MODEL = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick", temperature: 0.92 };
-const QWEN_FLOW_MODEL      = { id: "qwen/qwen3.5-122b-a10b",                  name: "Qwen3.5-122B",    temperature: 0.80 };
+const LLAMA_MAVERICK_MODEL   = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick",  temperature: 0.92 };
+const LLAMA_70B_FLOW_MODEL   = { id: "meta/llama-3.3-70b-instruct",             name: "Llama-3.3-70B",    temperature: 0.80 };
+const MAVERICK_FLOW_BACKUP   = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick", temperature: 0.78 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -953,44 +955,56 @@ router.post("/generate-song", async (req, res) => {
     }
   };
 
-  // ── Call flow/production model (Qwen) ───────────────────────────────────
+  // ── Call flow/production model (Llama-3.3-70B primary, Llama-4-Maverick backup) ──
   const callFlowModel = async (lyricsDraft: SongDraft): Promise<Record<string, unknown> | null> => {
-    try {
-      const effectiveFlavor = promptParams.languageFlavor === "Custom" && promptParams.customFlavor?.trim()
-        ? `Custom: ${promptParams.customFlavor.trim()}`
-        : promptParams.languageFlavor;
+    const effectiveFlavor = promptParams.languageFlavor === "Custom" && promptParams.customFlavor?.trim()
+      ? `Custom: ${promptParams.customFlavor.trim()}`
+      : promptParams.languageFlavor;
 
-      const flowPrompt = buildFlowPrompt({
-        topic,
-        genre: selectedGenre,
-        mood: selectedMood,
-        languageFlavor: effectiveFlavor,
-        lyricalDepth: selectedDepth,
-        performanceFeel: selectedFeel,
-        genderVoiceModel: selectedGender,
-        hookRepeat: selectedRepeat,
-        title: (lyricsDraft.title as string) ?? topic,
-        keeperLine: (lyricsDraft.keeperLine as string) ?? "",
-        lyricsText: draftToLyricsText(lyricsDraft),
-      });
+    const flowPrompt = buildFlowPrompt({
+      topic,
+      genre: selectedGenre,
+      mood: selectedMood,
+      languageFlavor: effectiveFlavor,
+      lyricalDepth: selectedDepth,
+      performanceFeel: selectedFeel,
+      genderVoiceModel: selectedGender,
+      hookRepeat: selectedRepeat,
+      title: (lyricsDraft.title as string) ?? topic,
+      keeperLine: (lyricsDraft.keeperLine as string) ?? "",
+      lyricsText: draftToLyricsText(lyricsDraft),
+    });
 
-      const response = await ai.chat.completions.create({
-        model: QWEN_FLOW_MODEL.id,
-        messages: [
-          { role: "system", content: FLOW_SYSTEM_PROMPT },
-          { role: "user", content: flowPrompt },
-        ],
-        temperature: QWEN_FLOW_MODEL.temperature,
-        top_p: 0.9,
-        max_tokens: 2800,
-      });
+    const tryFlow = async (model: { id: string; name: string; temperature: number }): Promise<Record<string, unknown> | null> => {
+      try {
+        const response = await ai.chat.completions.create({
+          model: model.id,
+          messages: [
+            { role: "system", content: FLOW_SYSTEM_PROMPT },
+            { role: "user", content: flowPrompt },
+          ],
+          temperature: model.temperature,
+          top_p: 0.9,
+          max_tokens: 2800,
+        });
+        const raw = response.choices[0]?.message?.content ?? "";
+        const result = parseJson(raw);
+        if (result) logger.info({ model: model.name }, "Flow model succeeded");
+        return result;
+      } catch (err) {
+        logger.warn({ model: model.name, err }, "Flow model call failed");
+        return null;
+      }
+    };
 
-      const raw = response.choices[0]?.message?.content ?? "";
-      return parseJson(raw);
-    } catch (err) {
-      logger.warn({ err }, "Flow model (Qwen) call failed — production details will be omitted");
-      return null;
-    }
+    // Primary: Llama-3.3-70B
+    logger.info({ model: LLAMA_70B_FLOW_MODEL.name }, "Starting flow/production details generation");
+    const primary = await tryFlow(LLAMA_70B_FLOW_MODEL);
+    if (primary) return primary;
+
+    // Backup: Llama-4-Maverick
+    logger.warn("Llama-3.3-70B flow failed — falling back to Llama-4-Maverick backup");
+    return await tryFlow(MAVERICK_FLOW_BACKUP);
   };
 
   try {
