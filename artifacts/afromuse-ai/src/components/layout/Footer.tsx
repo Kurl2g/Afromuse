@@ -40,7 +40,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
+              <li><a href="mailto:afromuseai@gmail.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
             </ul>
           </div>
         </div>
