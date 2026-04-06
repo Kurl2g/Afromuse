@@ -110,7 +110,6 @@ externalPort = 6800
 PORT = "5000"
 BASE_PATH = "/"
 ELEVENLABS_MUSIC_ENABLED = "true"
-NVIDIA_API_KEY = "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"
 
 [deployment]
 deploymentTarget = "cloudrun"
