@@ -51480,6 +51480,22 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place \u2014 simpler and more direct always beats longer and more elaborate",
     "\u2713 OUTPUT: ONLY the lyrics JSON object (title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro) \u2014 no production fields, no text, no commentary",
     "",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "FINAL LANGUAGE ENFORCEMENT",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "If the requested language flavor is Jamaican Patois or any Pidgin mode, you must aggressively reduce standard English sentence construction.",
+    "",
+    "At least 70\u201385% of the lyric body should feel naturally shaped by the chosen language flavor, not merely decorated by it.",
+    "",
+    "The lyrics must sound:",
+    "  - artist-ready",
+    "  - session-ready",
+    "  - believable enough that a native speaker would not instantly laugh at it",
+    "",
+    "If the writing feels fake, too formal, too translated, too textbook, too generic, or too English-shaped:",
+    "REWRITE IT before output.",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "",
     "Generate the full AfroMuse V5 HITMAKER V2 song draft now."
   );
   if (strictMode) {
