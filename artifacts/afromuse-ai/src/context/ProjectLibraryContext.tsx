@@ -1,39 +1,45 @@
 /**
  * AfroMuse V2 Project Library Context
  *
- * Provides CRUD operations and state for the local session library.
- * All operations are kept behind this context so swapping to a real
- * backend later requires changes only here.
+ * Provides CRUD operations and state for the session library backed by the database.
  */
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react";
 import type { SongDraft } from "@/lib/songGenerator";
 import type { OutputRegistryEntry } from "@/lib/engine/outputRegistry";
 import {
   type SavedSession,
   type SaveSessionParams,
-  loadSessions,
-  saveSession,
-  deleteSessionById,
-  duplicateSessionById,
+  loadSessionsFromDB,
+  saveSessionToDB,
+  deleteSessionFromDB,
+  duplicateSessionInDB,
 } from "@/lib/projectLibrary";
 
 // ─── Context Shape ────────────────────────────────────────────────────────────
 
 interface ProjectLibraryContextValue {
   sessions: SavedSession[];
+  isLoading: boolean;
 
   /** Save (or update) the current session. Returns the persisted session. */
-  saveCurrentSession: (params: SaveSessionParams) => SavedSession;
+  saveCurrentSession: (params: SaveSessionParams) => Promise<SavedSession>;
 
   /** Remove a session by ID. */
-  deleteSession: (sessionId: string) => void;
+  deleteSession: (sessionId: string) => Promise<void>;
 
   /** Clone a session with a new ID. Returns the clone. */
-  duplicateSession: (sessionId: string) => SavedSession | null;
+  duplicateSession: (sessionId: string) => Promise<SavedSession | null>;
 
-  /** Refresh sessions from storage (call after external mutations). */
-  refresh: () => void;
+  /** Refresh sessions from the server. */
+  refresh: () => Promise<void>;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -43,32 +49,54 @@ const ProjectLibraryContext = createContext<ProjectLibraryContextValue | null>(n
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ProjectLibraryProvider({ children }: { children: ReactNode }) {
-  const [sessions, setSessions] = useState<SavedSession[]>(() => loadSessions());
+  const [sessions, setSessions] = useState<SavedSession[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setSessions(loadSessions());
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await loadSessionsFromDB();
+      setSessions(data);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const saveCurrentSession = useCallback((params: SaveSessionParams): SavedSession => {
-    const saved = saveSession(params);
-    setSessions(loadSessions());
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const saveCurrentSession = useCallback(async (params: SaveSessionParams): Promise<SavedSession> => {
+    const saved = await saveSessionToDB(params);
+    setSessions((prev) => {
+      const idx = prev.findIndex((s) => s.sessionId === saved.sessionId);
+      if (idx !== -1) {
+        const next = [...prev];
+        next[idx] = saved;
+        return next;
+      }
+      return [saved, ...prev];
+    });
     return saved;
   }, []);
 
-  const deleteSession = useCallback((sessionId: string) => {
-    const updated = deleteSessionById(sessionId);
-    setSessions(updated);
+  const deleteSession = useCallback(async (sessionId: string) => {
+    await deleteSessionFromDB(sessionId);
+    setSessions((prev) => prev.filter((s) => s.sessionId !== sessionId));
   }, []);
 
-  const duplicateSession = useCallback((sessionId: string): SavedSession | null => {
-    const clone = duplicateSessionById(sessionId);
-    if (clone) setSessions(loadSessions());
-    return clone;
-  }, []);
+  const duplicateSession = useCallback(
+    async (sessionId: string): Promise<SavedSession | null> => {
+      const clone = await duplicateSessionInDB(sessions, sessionId);
+      if (clone) setSessions((prev) => [clone, ...prev]);
+      return clone;
+    },
+    [sessions],
+  );
 
   return (
     <ProjectLibraryContext.Provider
-      value={{ sessions, saveCurrentSession, deleteSession, duplicateSession, refresh }}
+      value={{ sessions, isLoading, saveCurrentSession, deleteSession, duplicateSession, refresh }}
     >
       {children}
     </ProjectLibraryContext.Provider>

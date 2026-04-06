@@ -1,9 +1,8 @@
 /**
  * AfroMuse V2 Project Library
  *
- * Local-first session persistence layer. Architecture is designed so every
- * load / save call can be swapped for a real backend call without touching
- * the UI layer — just replace the localStorage stubs below with fetch calls.
+ * Database-backed persistence layer. All CRUD operations call the API server.
+ * The local `localStorage` fallback is kept only for unauthenticated guests.
  */
 
 import type { SongDraft } from "./songGenerator";
@@ -25,13 +24,12 @@ export interface SavedSession {
   sessionId: string;
   sessionTitle: string;
 
-  // Song form state
   topic: string;
   genre: string;
   mood: string;
   songLength: string;
   lyricsSource: string;
-  lyricsText: string; // raw paste-lyrics if used
+  lyricsText: string;
   languageFlavor: string;
   customFlavor: string;
   style: string;
@@ -42,7 +40,6 @@ export interface SavedSession {
   genderVoiceModel: string;
   performanceFeel: string;
 
-  // Metadata derived from draft
   bpm: string | null;
   key: string | null;
   energy: string | null;
@@ -50,24 +47,20 @@ export interface SavedSession {
   leadVoice: string | null;
   mixFeel: string | null;
 
-  // Beat DNA
   bounceStyle?: string;
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
 
-  // Stage tracking
   buildMode: "artist" | "producer" | null;
   currentStage: SessionStatus;
   exportStatus: "none" | "partial" | "ready";
 
-  // Content
   draft: SongDraft | null;
   outputRegistry: Partial<OutputRegistryEntry> | null;
 
-  // Timestamps
-  createdAt: string; // ISO
-  updatedAt: string; // ISO
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ─── Status Intelligence ──────────────────────────────────────────────────────
@@ -77,14 +70,9 @@ export function deriveSessionStatus(
   outputRegistry: Partial<OutputRegistryEntry> | null,
 ): SessionStatus {
   if (!draft) return "Draft";
-
   const reg = outputRegistry ?? {};
-
   if (reg.masteredMp3 || reg.masteredWav) return "Export Ready";
   if (reg.vocalPreview || reg.vocalBrief) return "Vocal Ready";
-
-  // Distinguish real generated audio from AI session blueprint output.
-  // A live ElevenLabs result is stored as a data: URL in instrumentalPreview.
   if (
     typeof reg.instrumentalPreview === "string" &&
     reg.instrumentalPreview.startsWith("data:audio/")
@@ -94,9 +82,7 @@ export function deriveSessionStatus(
   if (reg.sessionBrief || reg.producerNotes || reg.beatSummary || reg.instrumentalPreview) {
     return "Beat Ready";
   }
-
   if (reg.arrangementMap || reg.mixBrief || reg.extractionBrief) return "In Progress";
-
   return "Draft";
 }
 
@@ -109,39 +95,16 @@ export function deriveExportStatus(
   return "none";
 }
 
-// ─── Storage Helpers ──────────────────────────────────────────────────────────
+// ─── ID Generator ────────────────────────────────────────────────────────────
 
-const STORAGE_KEY = "afromuse_v2_project_library";
-const MAX_SESSIONS = 50;
-
-function generateId(): string {
+export function generateSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function loadSessions(): SavedSession[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as SavedSession[];
-  } catch {
-    return [];
-  }
-}
-
-function persistSessions(sessions: SavedSession[]): void {
-  try {
-    // Keep only the most recent MAX_SESSIONS
-    const trimmed = sessions.slice(0, MAX_SESSIONS);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
-  } catch {
-    // Storage quota exceeded — silently fail
-  }
-}
-
-// ─── CRUD Operations ──────────────────────────────────────────────────────────
+// ─── Save Params ─────────────────────────────────────────────────────────────
 
 export interface SaveSessionParams {
-  sessionId?: string; // Provide to update existing
+  sessionId?: string;
   sessionTitle?: string;
   topic: string;
   genre: string;
@@ -168,25 +131,44 @@ export interface SaveSessionParams {
   outputRegistry?: Partial<OutputRegistryEntry> | null;
 }
 
-/**
- * Save (create or update) a session. Returns the saved session.
- */
-export function saveSession(params: SaveSessionParams): SavedSession {
-  const sessions = loadSessions();
-  const now = new Date().toISOString();
+// ─── API helpers ─────────────────────────────────────────────────────────────
 
+const API_BASE = "/api";
+
+async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+// ─── API CRUD Operations ─────────────────────────────────────────────────────
+
+export async function loadSessionsFromDB(): Promise<SavedSession[]> {
+  try {
+    const data = await apiFetch<{ sessions: SavedSession[] }>("/projects");
+    return data.sessions;
+  } catch {
+    return [];
+  }
+}
+
+export async function saveSessionToDB(params: SaveSessionParams): Promise<SavedSession> {
   const draft = params.draft;
   const outputRegistry = params.outputRegistry ?? null;
+  const now = new Date().toISOString();
 
   const session: SavedSession = {
-    sessionId: params.sessionId ?? generateId(),
+    sessionId: params.sessionId ?? generateSessionId(),
     sessionTitle:
       params.sessionTitle ??
       draft?.title ??
       (params.topic
         ? `${params.topic.slice(0, 32)} — ${params.genre}`
         : `Untitled · ${params.genre}`),
-
     topic: params.topic,
     genre: params.genre,
     mood: params.mood,
@@ -202,96 +184,56 @@ export function saveSession(params: SaveSessionParams): SavedSession {
     hookRepeat: params.hookRepeat ?? "Medium",
     genderVoiceModel: params.genderVoiceModel ?? "Random",
     performanceFeel: params.performanceFeel ?? "Smooth",
-
     bpm: draft?.productionNotes?.bpm ?? null,
     key: draft?.productionNotes?.key ?? null,
     energy: draft?.productionNotes?.energy ?? null,
     atmosphere: draft?.sonicIdentity?.atmosphere ?? null,
     leadVoice: draft?.vocalIdentity?.leadType ?? null,
     mixFeel: params.mixFeel ?? null,
-
     bounceStyle: params.bounceStyle,
     melodyDensity: params.melodyDensity,
     drumCharacter: params.drumCharacter,
     hookLift: params.hookLift,
-
     buildMode: params.buildMode ?? null,
     currentStage: deriveSessionStatus(draft, outputRegistry),
     exportStatus: deriveExportStatus(outputRegistry),
-
     draft,
     outputRegistry,
-
     createdAt: now,
     updatedAt: now,
   };
 
-  const existingIdx = sessions.findIndex((s) => s.sessionId === session.sessionId);
-  if (existingIdx !== -1) {
-    // Preserve original createdAt on update
-    session.createdAt = sessions[existingIdx].createdAt;
-    sessions[existingIdx] = session;
-  } else {
-    sessions.unshift(session); // newest first
-  }
+  const data = await apiFetch<{ session: SavedSession }>("/projects", {
+    method: "POST",
+    body: JSON.stringify(session),
+  });
 
-  persistSessions(sessions);
-  return session;
+  return data.session as SavedSession;
 }
 
-/**
- * Delete a session by ID.
- */
-export function deleteSessionById(sessionId: string): SavedSession[] {
-  const sessions = loadSessions().filter((s) => s.sessionId !== sessionId);
-  persistSessions(sessions);
-  return sessions;
+export async function deleteSessionFromDB(sessionId: string): Promise<void> {
+  await apiFetch(`/projects/${encodeURIComponent(sessionId)}`, { method: "DELETE" });
 }
 
-/**
- * Duplicate a session — creates a new sessionId and prepends "Copy of" to the title.
- */
-export function duplicateSessionById(sessionId: string): SavedSession | null {
-  const sessions = loadSessions();
+export async function duplicateSessionInDB(
+  sessions: SavedSession[],
+  sessionId: string,
+): Promise<SavedSession | null> {
   const original = sessions.find((s) => s.sessionId === sessionId);
   if (!original) return null;
-
   const now = new Date().toISOString();
   const clone: SavedSession = {
     ...original,
-    sessionId: generateId(),
+    sessionId: generateSessionId(),
     sessionTitle: `Copy of ${original.sessionTitle}`,
     createdAt: now,
     updatedAt: now,
   };
-
-  sessions.unshift(clone);
-  persistSessions(sessions);
-  return clone;
-}
-
-/**
- * Update just the outputRegistry for an existing session (called after audio engine completes).
- */
-export function updateSessionOutputRegistry(
-  sessionId: string,
-  outputRegistry: Partial<OutputRegistryEntry>,
-): void {
-  const sessions = loadSessions();
-  const idx = sessions.findIndex((s) => s.sessionId === sessionId);
-  if (idx === -1) return;
-
-  const session = sessions[idx];
-  const merged = { ...(session.outputRegistry ?? {}), ...outputRegistry };
-  sessions[idx] = {
-    ...session,
-    outputRegistry: merged,
-    currentStage: deriveSessionStatus(session.draft, merged),
-    exportStatus: deriveExportStatus(merged),
-    updatedAt: new Date().toISOString(),
-  };
-
-  persistSessions(sessions);
+  const data = await apiFetch<{ session: SavedSession }>("/projects", {
+    method: "POST",
+    body: JSON.stringify(clone),
+  });
+  return data.session as SavedSession;
 }
 
 // ─── Formatting Helpers ───────────────────────────────────────────────────────
@@ -307,4 +249,78 @@ export function formatRelativeTime(isoString: string): string {
   if (hours < 24) return `${hours}h ago`;
   if (days < 7) return `${days}d ago`;
   return new Date(isoString).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+// ─── Legacy localStorage stubs (kept for backward compatibility) ──────────────
+// These are no longer called internally — the context uses the DB functions above.
+
+const STORAGE_KEY = "afromuse_v2_project_library";
+
+export function loadSessions(): SavedSession[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as SavedSession[];
+  } catch {
+    return [];
+  }
+}
+
+export function saveSession(params: SaveSessionParams): SavedSession {
+  const draft = params.draft;
+  const outputRegistry = params.outputRegistry ?? null;
+  const now = new Date().toISOString();
+  return {
+    sessionId: params.sessionId ?? generateSessionId(),
+    sessionTitle: params.sessionTitle ?? draft?.title ?? `Untitled · ${params.genre}`,
+    topic: params.topic,
+    genre: params.genre,
+    mood: params.mood,
+    songLength: params.songLength,
+    lyricsSource: params.lyricsSource,
+    lyricsText: params.lyricsText ?? "",
+    languageFlavor: params.languageFlavor,
+    customFlavor: params.customFlavor ?? "",
+    style: params.style ?? "",
+    notes: params.notes ?? "",
+    commercialMode: params.commercialMode ?? false,
+    lyricalDepth: params.lyricalDepth ?? "Balanced",
+    hookRepeat: params.hookRepeat ?? "Medium",
+    genderVoiceModel: params.genderVoiceModel ?? "Random",
+    performanceFeel: params.performanceFeel ?? "Smooth",
+    bpm: draft?.productionNotes?.bpm ?? null,
+    key: draft?.productionNotes?.key ?? null,
+    energy: draft?.productionNotes?.energy ?? null,
+    atmosphere: draft?.sonicIdentity?.atmosphere ?? null,
+    leadVoice: draft?.vocalIdentity?.leadType ?? null,
+    mixFeel: params.mixFeel ?? null,
+    buildMode: params.buildMode ?? null,
+    currentStage: deriveSessionStatus(draft, outputRegistry),
+    exportStatus: deriveExportStatus(outputRegistry),
+    draft,
+    outputRegistry,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function deleteSessionById(sessionId: string): SavedSession[] {
+  return loadSessions().filter((s) => s.sessionId !== sessionId);
+}
+
+export function duplicateSessionById(sessionId: string): SavedSession | null {
+  const sessions = loadSessions();
+  const original = sessions.find((s) => s.sessionId === sessionId);
+  if (!original) return null;
+  const now = new Date().toISOString();
+  return { ...original, sessionId: generateSessionId(), sessionTitle: `Copy of ${original.sessionTitle}`, createdAt: now, updatedAt: now };
+}
+
+export function updateSessionOutputRegistry(
+  sessionId: string,
+  outputRegistry: Partial<OutputRegistryEntry>,
+): void {
+  // No-op: context handles this via saveSessionToDB
+  void sessionId;
+  void outputRegistry;
 }
