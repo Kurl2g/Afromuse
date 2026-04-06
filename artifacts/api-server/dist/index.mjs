@@ -50145,10 +50145,44 @@ CORE PRINCIPLE \u2014 DIALECT-FIRST WRITING:
 Before writing a single lyric line, answer this internally: "How would a real speaker of this dialect naturally think and feel this thought in their own language?"
 Write THAT version. Do not write English first and translate. Conceive in the dialect.
 
-MANDATORY SELF-TEST \u2014 apply to every line before keeping it:
+MANDATORY SELF-TEST \u2014 apply to EVERY SINGLE LINE before keeping it:
 \u2192 "If I removed the dialect words from this line, would it still be standard English?" \u2014 If YES, the line has failed. Rewrite it from scratch.
 \u2192 "Does this line have the natural rhythm of how this dialect is actually spoken or sung?" \u2014 If NO, rewrite it.
 \u2192 "Would a real artist from this culture sing this without changing a word?" \u2014 If NO, rewrite it.
+\u2192 "Does this line sound like something a poet wrote, or something a person actually felt?" \u2014 If it sounds like a poem, it may be too abstract. Make it human.
+
+CONSISTENCY LAW \u2014 applies to the entire song:
+The dialect standard must be CONSISTENT from the first intro line to the last outro line.
+A song where 4 lines feel native and then 2 lines drift back to English has FAILED \u2014 not partially failed. It has failed.
+Every section must pass the same test. The outro must be as native as the chorus. Every verse line must be as authentic as the best line in the verse.
+Do not let sections drift. Do not finish strong and then slip.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+AI-POETRY PROHIBITION \u2014 READ BEFORE WRITING A SINGLE LINE
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+This is a critical enforcement layer. AI models naturally produce vague, abstract, "deep-sounding" poetry. This must be actively rejected.
+
+PROHIBITED PATTERNS \u2014 if ANY of these appear in a line, that line FAILS and must be rewritten:
+  \u2717 Vague spiritual abstraction: "the universe whispers my name" / "I am light finding its way through darkness" / "my soul transcends the pain" \u2014 sounds "deep" but says nothing real
+  \u2717 Generic motivational uplift: "rise above the storm" / "you are stronger than you know" / "keep pushing, never stop" \u2014 greeting card language
+  \u2717 Unanchored metaphor: metaphors that float without cultural or emotional specificity \u2014 "like rivers flowing to the sea" as filler
+  \u2717 English thought structure + dialect decoration: the English sentence is there, dialect words are sprinkled on top
+  \u2717 Emotionally broad but locally weak: the feeling is stated but not grounded in real human experience
+  \u2717 Lines that sound "poetic" but could not be sung naturally by a real artist in one take
+  \u2717 AI-ish abstraction: "in this moment I find myself" / "searching for the truth within" / "time heals all wounds they say" \u2014 hollow phrases
+
+REQUIRED PATTERNS \u2014 every line should lean toward at least one of these:
+  \u2713 Grounded emotional specificity: name the feeling with concrete detail \u2014 what happened, what was felt, what was seen
+  \u2713 Direct human expression: say the thing plainly \u2014 the most honest, most human way to say it
+  \u2713 Culturally anchored imagery: reference the actual world the singer lives in \u2014 not abstract universal symbols
+  \u2713 Chant-ready simplicity: especially for hooks \u2014 simpler is stronger; the line that hits hardest is often the most obvious truth said naturally
+  \u2713 Lived-in local phrasing: the line should feel like it came from a real person in that culture, not a poet observing that culture from outside
+
+HOOK SIMPLICITY LAW:
+The best hooks are NOT the most complex or poetic lines. They are the most natural, most honest, most direct lines \u2014 elevated by melody.
+  WRONG approach: "try to write a deep, memorable, poetic hook line that captures the whole theme"
+  RIGHT approach: "what is the simplest, most honest thing someone in this situation would say \u2014 say that"
+Over-written hooks always underperform. Simple, sticky, emotionally direct hooks always win.
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 JAMAICAN PATOIS \u2014 DEEP LANGUAGE INTELLIGENCE
@@ -50164,23 +50198,33 @@ GRAMMAR CORE:
 - "ya" = here, now: "right ya so" (right here)
 - "ting" = thing, situation, person of note
 - "link" = connect, meet up; "rate" = respect, value; "bredren" / "sistren" = close community
+- "dutty" = dirty/bad; "wicked" = excellent; "likkle" = little; "pickney" = child
+- "buck up" = meet unexpectedly; "big up" = respect/shout out; "bless" = goodbye/thank you
+- "rough" = hard/difficult; "forward" = come through/arrive; "run di ting" = take charge
 
 AUTHENTIC PHRASING \u2014 WHAT REAL PATOIS SOUNDS LIKE IN SONG:
-  PAIN:       "mi never know seh di road so cold" / "dem lef mi inna di dark, alone" / "tears run but mi nuh mek dem see"
-  LOVE:       "from mi look inna yuh eyes, done" / "yuh name deh pon mi tongue from morning" / "mi never love like dis before, Jah know"
-  PRAYER:     "Most High, carry mi through" / "Jah see mi heart, Him know mi intentions" / "di light inna di darkness, a Him send it"
-  FLEX:       "dem nuh ready fi wi level yet" / "born wid di ting \u2014 cyaan learn dat" / "mi rise and dem never expect it"
-  HEARTBREAK: "how yuh leave mi like mi never matter?" / "di memory still deh pon mi skin" / "mi search fi you inna every crowd"
-  SURVIVAL:   "mi eat off di struggle, make it sweet" / "di same road weh break dem, build mi" / "poverty try mi \u2014 mi stronger"
+  PAIN:       "mi never know seh di road so cold" / "dem lef mi inna di dark, alone" / "tears run but mi nuh mek dem see" / "di burden heavy but mi back nuh break yet"
+  LOVE:       "from mi look inna yuh eyes, done" / "yuh name deh pon mi tongue from morning" / "mi never love like dis before, Jah know" / "di way yuh move, mi lose miself"
+  PRAYER:     "Most High, carry mi through" / "Jah see mi heart, Him know mi intentions" / "di light inna di darkness, a Him send it" / "mi call Him name when nobody else deh ya"
+  FLEX:       "dem nuh ready fi wi level yet" / "born wid di ting \u2014 cyaan learn dat" / "mi rise and dem never expect it" / "watch how mi move \u2014 silent but deadly"
+  HEARTBREAK: "how yuh leave mi like mi never matter?" / "di memory still deh pon mi skin" / "mi search fi you inna every crowd" / "di bed cold where yuh used to be"
+  SURVIVAL:   "mi eat off di struggle, make it sweet" / "di same road weh break dem, build mi" / "poverty try mi \u2014 mi stronger" / "from dem count mi out \u2014 mi win"
+  STREET/CONFIDENCE: "dem see mi quiet \u2014 dem never see mi move" / "every step mi take, a purpose" / "nuh badman frighten mi \u2014 mi know fi mi God" / "di street know mi name fi di right reason"
+  FAITH SONGS: "Him never leave mi, even when mi lose di way" / "Jah walk wid mi through di valley" / "di storm nuh break mi 'cause di Most High hold mi" / "mi give it all to Jah \u2014 Him handle it"
 
 HOOK CONSTRUCTION \u2014 PATOIS STANDARD:
-Strong Patois hooks are SHORT, rhythmically punchy, and emotionally final. They feel like something you'd hear on a soundsystem and immediately repeat.
-  \u2713 "Mi deh ya \u2014 nuh nowhere else mi waan be" 
+Strong Patois hooks are SHORT, rhythmically punchy, and emotionally final. They feel like something you'd hear on a soundsystem and immediately repeat. The hook should be so natural it feels like it was always going to exist.
+  \u2713 "Mi deh ya \u2014 nuh nowhere else mi waan be"
   \u2713 "Love mi, nuh leave mi \u2014 dat a all mi ask"
   \u2713 "Jah know mi heart, so mi nuh fraid"
   \u2713 "From di start, a you \u2014 always you"
+  \u2713 "Di road rough but mi nuh stop, nuh stop"
+  \u2713 "Dem never want see mi rise \u2014 but look how mi rise"
+  \u2713 "Yuh sweet like morning \u2014 mi cyaan let go"
   \u2717 REJECTED: "I can't stop thinking about you" (English underneath)
   \u2717 REJECTED: "You mean everything to me, I swear" (English feeling, dialect decoration)
+  \u2717 REJECTED: "In the depths of my heart I find your love" (abstract AI poetry)
+  \u2717 REJECTED: "Together we rise above the storm forever" (generic motivational, no Patois DNA)
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 WEST AFRICAN PIDGIN \u2014 DEEP LANGUAGE INTELLIGENCE
@@ -50188,7 +50232,7 @@ WEST AFRICAN PIDGIN \u2014 DEEP LANGUAGE INTELLIGENCE
 Pidgin is not broken English. It is a complete expressive system with its own emotional directness, spoken rhythm, and conversational warmth. It sounds VERY different from Patois \u2014 do not blend them.
 
 GRAMMAR CORE:
-- "Na" = is/am/are/it is/that is \u2014 the most powerful word in Pidgin: "Na God I thank", "Na so e be", "Na you do am"
+- "Na" = is/are/it is/emphasis: "Na God I thank", "Na so e be", "Na you do am", "Na me be that"
 - "Dey" = continuous state, location, existence: "I dey feel you", "wahala dey", "e dey sweet me"
 - "Don" = completed action: "I don see am", "e don happen", "we don try our best"
 - "Wey" = who/which/that (relative): "the person wey I love", "the thing wey dey pain me"
@@ -50196,29 +50240,41 @@ GRAMMAR CORE:
 - "Sha" / "sha sha" = softener / emphasis: "just calm down sha", "I try sha"
 - "Ginger" = inspire/excite: "you ginger me anytime", "your love dey ginger my soul"
 - "Choke" / "die" at end = extreme intensity: "e sweet die", "I love you die", "e dey pain me choke"
+- "Wahala" = trouble/problem: "no wahala" (no problem), "wahala dey" (there is trouble)
+- "Carry" = to bring/take along emotionally: "God carry me come here", "e carry the pain alone"
+- "Sabi" = know/understand: "I sabi wetin you do", "nobody sabi my struggle like God"
+- "Comot" = leave/get out: "e don comot my life", "I comot from that place"
 
 AUTHENTIC PHRASING \u2014 WHAT REAL PIDGIN SOUNDS LIKE IN SONG:
-  PAIN:       "e dey pain me but I no go show dem" / "I carry the load wey nobody see" / "tears I cry, na inside I cry am"
-  LOVE:       "since I see you, my heart no rest" / "na you I think of when day break" / "you dey sweet me die, I swear"
-  PRAYER:     "God I thank you \u2014 you too much" / "na your hand wey carry me reach here" / "without you I no fit breathe"
-  FLEX:       "I don arrive \u2014 make dem observe" / "dem sleep on me, God woke me up instead" / "from nothing I build everything"
-  HEARTBREAK: "you leave me like I never matter" / "I give you all \u2014 you take and go" / "the love wey I give you, e no deserve waste"
-  SURVIVAL:   "I no come from anywhere but I reach everywhere" / "the road dey rough \u2014 I still move" / "poverty no break me \u2014 e sharpen me"
+  PAIN:       "e dey pain me but I no go show dem" / "I carry the load wey nobody see" / "tears I cry, na inside I cry am" / "e cut me deep but I still dey smile"
+  LOVE:       "since I see you, my heart no rest" / "na you I think of when day break" / "you dey sweet me die, I swear" / "wetin you do me \u2014 I no sabi explain"
+  PRAYER:     "God I thank you \u2014 you too much" / "na your hand wey carry me reach here" / "without you I no fit breathe" / "I don try my best \u2014 e reach your hand now"
+  FLEX:       "I don arrive \u2014 make dem observe" / "dem sleep on me, God woke me up instead" / "from nothing I build everything" / "I no come from nowhere \u2014 but I reach everywhere"
+  HEARTBREAK: "you leave me like I never matter" / "I give you all \u2014 you take and go" / "the love wey I give you, e no deserve waste" / "how you just comot like dat, like I be nothing"
+  SURVIVAL:   "the road dey rough \u2014 I still move" / "poverty no break me \u2014 e sharpen me" / "every day I wake, na grace" / "I carry the struggle \u2014 e don make me"
+  HUSTLE SONGS: "dem say I no go make am \u2014 I don make am" / "I hustle quiet \u2014 I no need noise" / "God dey with the person wey try" / "I don pay the price \u2014 time to collect"
+  PRAYER/TESTIMONY: "na God do am \u2014 I no go forget" / "when I no fit, Him fit for me" / "I go testify \u2014 see wetin Him do for my life" / "from where I come, na only God sabi"
 
 HOOK CONSTRUCTION \u2014 PIDGIN STANDARD:
-Strong Pidgin hooks feel conversational but hit hard emotionally. They sound like the most honest thing someone could say, turned into music.
+Strong Pidgin hooks feel conversational but hit hard emotionally. They sound like the most honest thing someone could say \u2014 then turned into music. They feel like real speech that discovered it was also a song.
   \u2713 "Na you I want \u2014 no be lie"
   \u2713 "God you too much \u2014 I no fit repay"
   \u2713 "Since I see you, my life change"
   \u2713 "I don try \u2014 e reach God hand now"
+  \u2713 "E dey pain me \u2014 but I no go stop"
+  \u2713 "Na so love be \u2014 e sweet and e burn"
+  \u2713 "I hustle hard \u2014 God see am, e know"
   \u2717 REJECTED: "You are the only one I want in my life" (pure English \u2014 no Pidgin DNA)
   \u2717 REJECTED: "I have been waiting for someone like you" (textbook English with no Pidgin rhythm)
+  \u2717 REJECTED: "In this moment I find all that I need in you" (AI abstraction, no Pidgin flow)
+  \u2717 REJECTED: "Together we shine like the stars above us" (generic, floaty, zero Pidgin construction)
 
 LYRICAL QUALITY LAWS:
 - Song Tightness: every line earns its place or it's cut. Fewer, stronger lines always win.
 - Naturalness: no robotic, formal, or AI-sounding lines. Every line must be singable by a real artist in one take.
 - No filler endings: "yeah yeah yeah," "oh oh oh," "baby baby" as standalone lines are forbidden unless they serve a real melodic/chant purpose.
 - Verse 2 must offer a new emotional angle \u2014 it is NOT a rewrite of Verse 1 with different words.
+- Anti-drift law: if Verse 1 passes the dialect test, Verse 2 must ALSO pass independently. Do not let the song drift toward English as it progresses. The writing gets more native, not less.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 CORE LAW 3 \u2014 IMMEDIATELY RECORDABLE & PRODUCER-READY
@@ -50398,21 +50454,37 @@ function getDialectBlock(effectiveFlavor) {
       "",
       "FUNDAMENTAL RULE: This song is CONCEIVED in Patois, not translated into it.",
       "Do not write English thoughts and convert them. Think in Patois from the very first word.",
+      "CONSISTENCY RULE: Every single line \u2014 intro through outro \u2014 must pass the dialect test. One English-skeleton line anywhere is a failure.",
       "",
       "\u2500\u2500 PRE-WRITING INTERNAL STEP (do this before every section) \u2500\u2500",
       "Ask yourself: 'How would a Jamaican artist naturally feel and say this in their own language?'",
       "Write THAT. Not the English version with dialect words swapped in.",
+      "Ask a second question: 'Is this line something a real person would say \u2014 or is it something a poet invented to sound deep?'",
+      "If it sounds like poetry rather than real speech elevated to song, it is probably too abstract. Ground it.",
       "",
       "\u2500\u2500 ANTI-PATTERN ENFORCEMENT \u2500\u2500",
       "Before keeping any line, run this test: 'If I removed the Patois words, is this still normal English?'",
       "  \u2192 YES = FAILED LINE. The English skeleton is showing. Rebuild the thought natively.",
       "  \u2192 NO = the line was constructed in Patois. Keep it.",
       "",
+      "\u2500\u2500 AI ABSTRACTION REJECTION (Patois-specific) \u2500\u2500",
+      "Reject these patterns regardless of dialect words present:",
+      "  \u2717 Vague spiritual abstraction: 'di light of di universe guide mi soul' \u2014 sounds deep, means nothing real",
+      "  \u2717 Generic uplift: 'rise above di storm, never give in' \u2014 greeting card energy, no Patois thought",
+      "  \u2717 Floating metaphor: imagery that has no cultural anchor in Jamaican life or feeling",
+      "  \u2717 AI-ish introspection: 'searching di depths of mi heart' / 'finding miself in di darkness' \u2014 too poetic",
+      "Replace with:",
+      "  \u2713 Specific human feeling: 'di bed cold where yuh used to be' \u2014 concrete, real, singable",
+      "  \u2713 Direct Patois expression: 'mi nuh have much but mi nuh lack nutten' \u2014 simple, grounded, true",
+      "  \u2713 Culturally anchored line: references to actual Jamaican emotional reality \u2014 the yard, the road, Jah, the hustle",
+      "",
       "FAILED PATOIS LINES (examples of what to reject):",
       "  \u2717 'I cannot stop thinking about you, mi love' \u2014 English underneath, Patois sprinkled on",
       "  \u2717 'We are stronger than anything they throw at us, bredren' \u2014 textbook English flow",
       "  \u2717 'Every time I see your face, mi heart skips' \u2014 English construction, one Patois word",
       "  \u2717 'I will never give up on this feeling' \u2014 zero Patois DNA, just English",
+      "  \u2717 'My soul rises with the light of a new day, Jah' \u2014 abstract poetry with a Patois word appended",
+      "  \u2717 'Through all the darkness I have found my way to you' \u2014 standard English arc, no Patois thought",
       "",
       "STRONG PATOIS LINES (examples of what to write):",
       "  \u2713 'From mi look inna yuh eyes \u2014 done. Mi done.' \u2014 Patois compression, native thought",
@@ -50420,6 +50492,8 @@ function getDialectBlock(effectiveFlavor) {
       "  \u2713 'Jah know mi heart \u2014 Him carry mi through' \u2014 native faith expression",
       "  \u2713 'Dem never rate mi, but di Most High elevate mi' \u2014 real Patois testimony",
       "  \u2713 'Mi rise from nothin, mek di world see' \u2014 natural compression, no English skeleton",
+      "  \u2713 'Di same road weh break dem \u2014 build mi strong' \u2014 survival expressed in Patois logic",
+      "  \u2713 'Yuh nuh know weh mi come from \u2014 but yuh see weh mi reach' \u2014 street confidence in pure Patois",
       "",
       "\u2500\u2500 PATOIS GRAMMAR REFERENCE \u2500\u2500",
       "  mi / mi a / mi did / mi wi = I / I am / I was / I will",
@@ -50427,36 +50501,44 @@ function getDialectBlock(effectiveFlavor) {
       "  nuh / nah / cyaan = no / won't / cannot (all final, not soft)",
       "  fi = to/for | weh = that/where/which | deh = there/here",
       "  seh = say/that | pon = on | ya = here | ting = thing/situation",
+      "  likkle = little | pickney = child | dutty = dirty/bad | wicked = great",
       "",
-      "\u2500\u2500 EMOTIONAL PHRASE ANCHORS (use these, not English equivalents) \u2500\u2500",
-      "  PAIN:       'mi never know seh di road so cold' | 'tears run but mi nuh mek dem see'",
-      "  LOVE:       'yuh name deh pon mi tongue from morning' | 'mi heart full up when mi near yuh'",
-      "  FAITH:      'Most High, carry mi through' | 'Jah see mi heart, Him know'",
-      "  FLEX:       'dem nuh ready fi wi level yet' | 'born wid di ting \u2014 cyaan teach dat'",
-      "  HEARTBREAK: 'how yuh leave mi like mi never matter?' | 'di memory still deh pon mi skin'",
-      "  SURVIVAL:   'di same road weh break dem, build mi' | 'poverty try mi \u2014 mi stronger'",
+      "\u2500\u2500 EMOTIONAL PHRASE ANCHORS BY SONG TYPE \u2500\u2500",
+      "  STRUGGLE SONGS:   'di road nuh easy but mi nuh stop moving' | 'poverty try mi \u2014 mi stronger now' | 'mi eat off di struggle, make it sweet'",
+      "  FAITH SONGS:      'Most High, carry mi through' | 'Jah see mi heart, Him know' | 'di storm nuh break mi cause di Most High hold mi'",
+      "  LOVE SONGS:       'yuh name deh pon mi tongue from morning' | 'from mi look inna yuh eyes \u2014 done' | 'mi heart full up when mi near yuh'",
+      "  CONFIDENCE/STREET:'dem nuh ready fi wi level yet' | 'born wid di ting \u2014 cyaan teach dat' | 'watch how mi move \u2014 silent but deadly'",
+      "  HEARTBREAK:       'how yuh leave mi like mi never matter?' | 'di memory still deh pon mi skin' | 'di bed cold where yuh used to be'",
       "",
       "\u2500\u2500 HOOK / CHORUS CONSTRUCTION \u2500\u2500",
-      "The Patois hook must feel like a soundsystem chant \u2014 short, punchy, emotionally final, instantly repeatable.",
+      "The Patois hook must feel like a soundsystem chant \u2014 SHORT, punchy, emotionally final, instantly repeatable.",
+      "The best hooks feel so natural and obvious that they seem like they always existed. Do not over-write them.",
+      "SIMPLER IS STRONGER. A hook that a crowd can chant on the first listen always beats a complex poetic hook.",
       "  \u2713 'Mi deh ya \u2014 nuh nowhere else mi waan be'",
       "  \u2713 'Love mi, nuh leave mi \u2014 dat a all mi ask'",
       "  \u2713 'From di start, a you \u2014 always you'",
       "  \u2713 'Jah know mi heart, so mi nuh fraid'",
+      "  \u2713 'Di road rough but mi nuh stop, nuh stop'",
+      "  \u2713 'Dem never want see mi rise \u2014 but look how mi rise'",
       "  \u2717 REJECTED: 'I can't stop the way I feel for you' (English beneath, no Patois rhythm)",
       "  \u2717 REJECTED: 'You are everything I need and more, baby' (zero Patois construction)",
+      "  \u2717 REJECTED: 'Through darkness mi soul find di light of love' (AI poetry, too abstract)",
+      "  \u2717 REJECTED: 'Rise above it all and never let them bring you down' (generic motivational, no Patois)",
       "",
       "\u2500\u2500 SECTION-BY-SECTION DIALECT STANDARD \u2500\u2500",
-      "  INTRO:  atmospheric Patois opener \u2014 feel, not explanation \u2014 no English filler",
-      "  VERSES: every 4-bar group must be Patois-first \u2014 no English skeleton carrying the thought",
-      "  CHORUS: most chantable, most native \u2014 the hook MUST be Patois-constructed, not translated",
-      "  BRIDGE: raw confessional Patois \u2014 the most honest, stripped-down dialect moment",
-      "  OUTRO:  Patois close \u2014 land it, don't drift back into English phrasing",
+      "  INTRO:  atmospheric Patois opener \u2014 feel, not explanation \u2014 no English filler \u2014 set the world in 2\u20134 lines",
+      "  VERSES: every 4-bar group must be Patois-first \u2014 no English skeleton carrying the thought \u2014 each group advances the story",
+      "  CHORUS: most chantable, most native \u2014 the hook MUST be Patois-constructed, not translated \u2014 simplest and most honest",
+      "  BRIDGE: raw confessional Patois \u2014 the most honest, stripped-down dialect moment \u2014 no performance here, just truth",
+      "  OUTRO:  Patois close \u2014 land it, don't drift back into English phrasing \u2014 must be as native as the first intro line",
       "",
       "\u2500\u2500 AUTHENTICITY TARGET \u2500\u2500",
       "65\u201375% native Patois phrasing. Musical, singable, emotionally clear.",
       "Not parody. Not caricature. Real artist voice. Real cultural expression.",
+      "EVERY section from intro to outro must maintain the same dialect standard \u2014 no late-song drift toward English.",
       "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
       "  Every line you write must pass the dialect-first test before it stays.",
+      "  If even one line fails \u2014 rewrite it. The whole song must be consistent.",
       "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D"
     ];
   }
@@ -50470,21 +50552,38 @@ function getDialectBlock(effectiveFlavor) {
       "FUNDAMENTAL RULE: This song is CONCEIVED in Pidgin, not translated into it.",
       "Do not write English thoughts and convert them. Think in Pidgin from the very first word.",
       "This is Nigerian / Ghanaian Afro-urban voice. It is NOT Jamaican Patois. They are completely different.",
+      "CONSISTENCY RULE: Every single line \u2014 intro through outro \u2014 must pass the dialect test. One English-skeleton line anywhere is a failure.",
       "",
       "\u2500\u2500 PRE-WRITING INTERNAL STEP (do this before every section) \u2500\u2500",
       "Ask yourself: 'How would a real Lagos or Accra artist naturally say and feel this in Pidgin?'",
       "Write THAT. Not the textbook English version with Pidgin words inserted.",
+      "Ask a second question: 'Is this line something a real person would say \u2014 or is it abstract poetry trying to sound meaningful?'",
+      "Pidgin is emotionally direct. If the line is vague or abstract, it is probably English AI thinking dressed in Pidgin. Ground it.",
       "",
       "\u2500\u2500 ANTI-PATTERN ENFORCEMENT \u2500\u2500",
       "Before keeping any line, run this test: 'Is this still standard English if I remove the Pidgin words?'",
       "  \u2192 YES = FAILED LINE. English skeleton is showing. Rebuild the thought in Pidgin.",
       "  \u2192 NO = Pidgin was the base construction. Keep it.",
       "",
+      "\u2500\u2500 AI ABSTRACTION REJECTION (Pidgin-specific) \u2500\u2500",
+      "Reject these patterns regardless of Pidgin words present:",
+      "  \u2717 Vague spiritual abstraction: 'the universe dey align for my destiny' \u2014 abstract, not Pidgin-native",
+      "  \u2717 Generic motivational: 'keep pushing, never stop, the dream dey wait' \u2014 feels like English poster with Pidgin tag",
+      "  \u2717 Unanchored metaphor: floating imagery without grounding in real West African emotional experience",
+      "  \u2717 Hybrid construction awkwardness: 'dey / na / no go' pasted onto English sentence structure \u2014 the bones are English",
+      "  \u2717 AI-ish introspective poetry: 'searching for my truth within the depths of my soul, na' \u2014 deeply unnatural",
+      "Replace with:",
+      "  \u2713 Direct human Pidgin expression: 'e dey pain me but I no go show dem' \u2014 real, concrete, singable",
+      "  \u2713 Emotionally sharp and plain: 'you leave me like I never matter' \u2014 simple truth, maximum impact",
+      "  \u2713 Culturally anchored: references to real West African emotional reality \u2014 the hustle, God, the street, relationships",
+      "",
       "FAILED PIDGIN LINES (examples of what to reject):",
       "  \u2717 'I cannot stop thinking about you, my love, abi?' \u2014 English sentence, Pidgin tag tacked on",
       "  \u2717 'You are everything I have ever wanted in this life' \u2014 pure English, zero Pidgin flow",
       "  \u2717 'I have been working hard for so long to get here' \u2014 textbook English sentence",
       "  \u2717 'We will never give up no matter what happens' \u2014 English backbone, no Pidgin thought",
+      "  \u2717 'My heart dey search for the meaning of this love' \u2014 AI poetry with Pidgin word inserted",
+      "  \u2717 'Through every storm I rise, na so e be for me' \u2014 mostly English with Pidgin ending",
       "",
       "STRONG PIDGIN LINES (examples of what to write):",
       "  \u2713 'Na you I want \u2014 no be lie, I swear' \u2014 Pidgin-first construction with emotional hit",
@@ -50492,6 +50591,8 @@ function getDialectBlock(effectiveFlavor) {
       "  \u2713 'Wetin I pass through, na only God sabi' \u2014 full Pidgin sentence with weight",
       "  \u2713 'I don arrive \u2014 make dem observe now' \u2014 completion + flex in Pidgin",
       "  \u2713 'Since I see you, my heart no rest again' \u2014 Pidgin thought structure naturally",
+      "  \u2713 'How you just comot like dat \u2014 like I be nothing?' \u2014 raw heartbreak in pure Pidgin",
+      "  \u2713 'I hustle quiet \u2014 God dey see am for me' \u2014 hustle and faith in natural Pidgin voice",
       "",
       "\u2500\u2500 PIDGIN GRAMMAR REFERENCE \u2500\u2500",
       "  Na = is/are/it is/emphasis: 'Na you I need', 'Na so e be', 'Na God I thank'",
@@ -50502,37 +50603,47 @@ function getDialectBlock(effectiveFlavor) {
       "  E = it/he/she: 'e sweet', 'e hard', 'e dey pain me choke'",
       "  Choke/die at end = extreme intensity: 'e sweet die', 'I love you die'",
       "  Abi = tag question/confirmation: 'na so e be, abi?' | Sha = softener/emphasis",
+      "  Wahala = trouble: 'no wahala' / 'wahala dey' | Sabi = know: 'I sabi', 'nobody sabi'",
+      "  Carry = bring/take emotionally: 'God carry me come here' | Comot = leave: 'e comot my life'",
       "",
-      "\u2500\u2500 EMOTIONAL PHRASE ANCHORS (use these, not English equivalents) \u2500\u2500",
-      "  PAIN:       'e dey pain me but I no go show dem' | 'tears I cry, na inside I cry am'",
-      "  LOVE:       'since I see you, my heart no rest' | 'you dey sweet me die, I no go lie'",
-      "  FAITH:      'God I thank you \u2014 you too much' | 'na your hand wey carry me reach here'",
-      "  FLEX:       'I don arrive \u2014 make dem observe' | 'from nothing I build everything, watch me'",
-      "  HEARTBREAK: 'you leave me like I never matter' | 'the love wey I give you, e no deserve waste'",
-      "  SURVIVAL:   'the road dey rough \u2014 I still move' | 'poverty no break me \u2014 e sharpen me'",
+      "\u2500\u2500 EMOTIONAL PHRASE ANCHORS BY SONG TYPE \u2500\u2500",
+      "  AFROBEATS/STREET:    'I don arrive \u2014 make dem observe' | 'e dey sweet me anytime I see you' | 'na you ginger me, nobody else fit'",
+      "  HEARTBREAK:          'you leave me like I never matter' | 'how you just comot like dat?' | 'the love wey I give you, e no deserve waste'",
+      "  HUSTLE SONGS:        'I hustle quiet \u2014 God dey see am' | 'dem say I no go make am \u2014 I don make am' | 'from nothing I build everything'",
+      "  PRAYER/TESTIMONY:    'God I thank you \u2014 you too much' | 'na your hand wey carry me reach here' | 'I go testify, see wetin Him do'",
+      "  PAIN:                'e dey pain me but I no go show dem' | 'tears I cry, na inside I cry am' | 'I carry the load wey nobody see'",
+      "  LOVE:                'since I see you, my heart no rest' | 'you dey sweet me die, I no go lie' | 'wetin you do me \u2014 I no sabi explain'",
       "",
       "\u2500\u2500 HOOK / CHORUS CONSTRUCTION \u2500\u2500",
       "The Pidgin hook feels like the most honest thing someone could say \u2014 then turned into music.",
-      "It should sound like real speech elevated into song, not a slogan or an English idea in disguise.",
+      "It should sound like real speech elevated into song, not a slogan or an English idea in Pidgin disguise.",
+      "SIMPLER IS STRONGER. The hook that hits hardest is often the one that says the most obvious truth in the most natural way.",
+      "Do not over-write the chorus. A short, chantable, honest hook ALWAYS outperforms a complex poetic one.",
       "  \u2713 'Na you I want \u2014 no be lie'",
       "  \u2713 'God you too much \u2014 I no fit repay'",
       "  \u2713 'Since I see you, my life change'",
       "  \u2713 'I don try \u2014 e reach God hand now'",
+      "  \u2713 'E dey pain me \u2014 but I no go stop'",
+      "  \u2713 'I hustle hard \u2014 God see am, e know'",
       "  \u2717 REJECTED: 'You are the only one I want in my life' (pure English \u2014 no Pidgin DNA)",
       "  \u2717 REJECTED: 'I have been waiting for someone like you forever' (textbook English flow)",
+      "  \u2717 REJECTED: 'Through every struggle my soul dey rise to the top' (AI abstraction with Pidgin word)",
+      "  \u2717 REJECTED: 'Together we shine like the stars, na so e be' (generic motivational, English-first)",
       "",
       "\u2500\u2500 SECTION-BY-SECTION DIALECT STANDARD \u2500\u2500",
-      "  INTRO:  Pidgin conversational opener \u2014 pull them in with spoken-word authenticity",
-      "  VERSES: Pidgin-first storytelling \u2014 how real people speak, elevated to song",
-      "  CHORUS: most singable, most emotionally direct \u2014 Pidgin construction, not English idea",
-      "  BRIDGE: raw Pidgin confession \u2014 most honest moment, drop the performance",
-      "  OUTRO:  close with Pidgin weight \u2014 heavier and more real than any English ending",
+      "  INTRO:  Pidgin conversational opener \u2014 pull them in with real spoken-word authenticity \u2014 set the world simply",
+      "  VERSES: Pidgin-first storytelling \u2014 how real people speak, elevated to song \u2014 every 4-bar group must advance the story",
+      "  CHORUS: most singable, most emotionally direct \u2014 Pidgin construction, not English idea \u2014 simplest and most honest",
+      "  BRIDGE: raw Pidgin confession \u2014 most honest moment, drop the performance \u2014 truth over craft here",
+      "  OUTRO:  close with Pidgin weight \u2014 must be as native as the intro \u2014 do not drift toward English at the end",
       "",
       "\u2500\u2500 AUTHENTICITY TARGET \u2500\u2500",
       "55\u201370% Pidgin flavor with natural code-switching. Commercial, singable, emotionally real.",
       "Not mockery. Not caricature. Real Nigerian / Ghanaian artist voice.",
+      "EVERY section from intro to outro must maintain the same dialect standard \u2014 no late-song drift toward English.",
       "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
       "  Every line you write must pass the dialect-first test before it stays.",
+      "  If even one line fails \u2014 rewrite it. The whole song must be consistent.",
       "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D"
     ];
   }
@@ -50640,8 +50751,11 @@ function buildUserPrompt(params, strictMode = false) {
     `\u2713 GENRE: ${genre} \u2014 write from inside the culture, feel the rhythm and texture authentically`,
     `\u2713 MOOD: ${mood} \u2014 every line must EMBODY this mood, not just reference it`,
     `\u2713 LANGUAGE: ${effectiveFlavor} \u2014 DIALECT-FIRST, not English-first. Conceive every line in the dialect. Do NOT write in English then translate.`,
-    `\u2713 DIALECT SELF-TEST: before keeping any line, ask \u2014 'If I removed the dialect words, is this still standard English?' \u2014 If YES, the line fails. Rebuild it natively.`,
+    `\u2713 DIALECT SELF-TEST: before keeping ANY line, ask \u2014 'If I removed the dialect words, is this still standard English?' \u2014 If YES, the line fails. Rebuild it natively.`,
     `\u2713 ANTI-PATTERN: reject any line that feels like 'English with slang decoration'. Every line must have native dialect construction at its core.`,
+    `\u2713 AI-ABSTRACTION CHECK: before keeping any line, ask \u2014 'Is this concrete and human, or vague and poetic?' \u2014 reject vague spiritual abstraction, generic motivational uplift, and floating metaphors with no cultural anchor.`,
+    `\u2713 CONSISTENCY ENFORCEMENT: the dialect standard must hold from the first intro line to the last outro line. If ANY section drifts toward English-first construction, rewrite it before returning the output.`,
+    `\u2713 HOOK SIMPLICITY: the best hook is the simplest, most honest, most natural version of what this song is feeling \u2014 not the most poetic or complex. If the hook sounds over-written, simplify it.`,
     "\u2713 KEEPER LINE: silently generate 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing",
     "\u2713 MAIN KEEPER LINE: must appear in BOTH the Chorus (hook) AND the Outro \u2014 this is non-negotiable",
     "\u2713 INTRO DISCIPLINE: intro is atmospheric only \u2014 it must NOT deliver the hook \u2014 if the intro could be mistaken for a chorus, rewrite it",
@@ -50650,8 +50764,8 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2713 VERSE QUALITY: every 4-bar group must advance the story \u2014 no filler, no repeated imagery from Verse 1 to Verse 2",
     "\u2713 BRIDGE LAW: exactly 4 lines, no exceptions \u2014 reflective or intensifying \u2014 turns the emotional direction of the record",
     "\u2713 OUTRO LABEL: label as 'Outro' only \u2014 never 'Outro / Final Chorus' \u2014 write as a closer, not a launcher",
-    "\u2713 NATURALNESS: reject any line that sounds robotic, formal, or AI-generated \u2014 every line must be singable",
-    "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place",
+    "\u2713 NATURALNESS: reject any line that sounds robotic, formal, or AI-generated \u2014 every line must be singable by a real artist in one take",
+    "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place \u2014 simpler and more direct always beats longer and more elaborate",
     "\u2713 PRODUCTION: include complete productionNotes, instrumentalGuidance, and vocalDemoGuidance in output",
     "\u2713 STEMS BREAKDOWN: include stemsBreakdown with kick, snare, bass, pads, leadSynth, guitarOther, and effects \u2014 be specific about patterns, panning, and processing",
     "\u2713 EXPORT NOTES: include exportNotes with producer-friendly session setup \u2014 BPM, key, DAW tips, vocal booth prep, reference energy, and arrangement reminders",
