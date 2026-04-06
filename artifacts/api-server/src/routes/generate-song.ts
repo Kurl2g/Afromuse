@@ -711,6 +711,7 @@ function buildUserPrompt(
     notes?: string;
     songLength?: string;
     languageFlavor?: string;
+    dialectStyle?: string;
     customFlavor?: string;
     commercialMode?: boolean;
     lyricalDepth?: string;
@@ -725,6 +726,7 @@ function buildUserPrompt(
     topic, genre, mood, style, notes,
     songLength = "Standard",
     languageFlavor = "Global English",
+    dialectStyle,
     customFlavor,
     commercialMode = false,
     lyricalDepth = "Balanced",
@@ -778,6 +780,7 @@ function buildUserPrompt(
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
+    ...(dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} — apply the corresponding sub-style intelligence block fully`] : []),
   ];
 
   if (style?.trim()) {
@@ -823,7 +826,7 @@ function buildUserPrompt(
 
   lines.push(`PERFORMANCE FEEL: ${performanceFeel.toUpperCase()} — every vocal direction, delivery cue, and ad-lib must match this performance register`);
 
-  const dialectBlock = getDialectBlock(effectiveFlavor);
+  const dialectBlock = getDialectBlock(effectiveFlavor, dialectStyle);
 
   lines.push(
     "",
@@ -949,7 +952,7 @@ function draftToLyricsText(draft: SongDraft): string {
 
 router.post("/generate-song", async (req, res) => {
   const {
-    topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor,
+    topic, genre, mood, style, notes, songLength, languageFlavor, dialectStyle, customFlavor,
     commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
   } = req.body as {
     topic?: string;
@@ -959,6 +962,7 @@ router.post("/generate-song", async (req, res) => {
     notes?: string;
     songLength?: string;
     languageFlavor?: string;
+    dialectStyle?: string;
     customFlavor?: string;
     commercialMode?: boolean;
     lyricalDepth?: string;
@@ -997,6 +1001,7 @@ router.post("/generate-song", async (req, res) => {
     notes,
     songLength: selectedLength,
     languageFlavor: selectedFlavor,
+    dialectStyle: dialectStyle && dialectStyle !== "Auto" ? dialectStyle : undefined,
     customFlavor,
     commercialMode: commercialMode === true,
     lyricalDepth: selectedDepth,

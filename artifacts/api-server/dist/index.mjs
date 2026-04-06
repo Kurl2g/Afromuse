@@ -50767,6 +50767,7 @@ function buildUserPrompt(params, strictMode = false) {
     notes,
     songLength = "Standard",
     languageFlavor = "Global English",
+    dialectStyle,
     customFlavor,
     commercialMode = false,
     lyricalDepth = "Balanced",
@@ -50813,7 +50814,8 @@ function buildUserPrompt(params, strictMode = false) {
     `TOPIC: ${topic}`,
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
-    `LANGUAGE / FLAVOR: ${effectiveFlavor}`
+    `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
+    ...dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} \u2014 apply the corresponding sub-style intelligence block fully`] : []
   ];
   if (style?.trim()) {
     lines.push(`STYLE / ARTIST REFERENCE: ${style.trim()} \u2014 capture the feel and writing DNA only \u2014 do NOT copy lyrics`);
@@ -50850,7 +50852,7 @@ function buildUserPrompt(params, strictMode = false) {
   };
   lines.push(genderMap[genderVoiceModel] ?? genderMap["Random"]);
   lines.push(`PERFORMANCE FEEL: ${performanceFeel.toUpperCase()} \u2014 every vocal direction, delivery cue, and ad-lib must match this performance register`);
-  const dialectBlock = getDialectBlock(effectiveFlavor);
+  const dialectBlock = getDialectBlock(effectiveFlavor, dialectStyle);
   lines.push(
     "",
     ...v2StructureRules,
@@ -50948,6 +50950,7 @@ router2.post("/generate-song", async (req, res) => {
     notes,
     songLength,
     languageFlavor,
+    dialectStyle,
     customFlavor,
     commercialMode,
     lyricalDepth,
@@ -50982,6 +50985,7 @@ router2.post("/generate-song", async (req, res) => {
     notes,
     songLength: selectedLength,
     languageFlavor: selectedFlavor,
+    dialectStyle: dialectStyle && dialectStyle !== "Auto" ? dialectStyle : void 0,
     customFlavor,
     commercialMode: commercialMode === true,
     lyricalDepth: selectedDepth,
