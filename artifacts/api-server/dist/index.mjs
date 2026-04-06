@@ -50147,6 +50147,51 @@ CORE LAW 3 \u2014 IMMEDIATELY RECORDABLE & PRODUCER-READY
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 Every output must be usable in a studio session TODAY. A producer and an artist must be able to pick this up and record it without translation.
 
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+SECTION ROLES & ANTI-DRIFT LAWS \u2014 READ BEFORE WRITING
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Each section has one job. If a section does another section's job, the song collapses.
+
+INTRO (2 or 4 lines \u2014 HARD LAW):
+  ROLE: Atmospheric opener. Set the sonic world, the mood, the tension. Pull the listener in.
+  MUST: Feel like a cinematic teaser \u2014 intimate, evocative, a whisper before the storm.
+  MUST NOT: Deliver the hook. Must NOT feel like a chorus. Must NOT carry the Keeper Line.
+  MUST NOT: Run more than 4 lines. An intro with 5+ lines is a failed intro \u2014 cut it.
+  TEST: If you removed the intro completely and the song still had its hook, the intro is doing its job.
+        If the intro IS the hook, it has failed \u2014 rewrite it.
+
+VERSE 1 (exactly 8, 12, or 16 lines \u2014 4-line multiples):
+  ROLE: Story opens. Establish the emotional world. Introduce characters, stakes, tension.
+  MUST: Feel like the story is beginning \u2014 specific, vivid, grounded.
+  MUST NOT: Deliver the chorus energy. Must NOT front-load the sing-along moment.
+  STRUCTURE: Write in clean 4-bar groups. Each 4-bar group must advance the story.
+
+CHORUS / HOOK (exactly 4, 6, or 8 lines):
+  ROLE: The emotional peak. The payoff. The replay magnet. The reason the song exists.
+  MUST: Carry the Keeper Line. Must be the most singable, most memorable section.
+  MUST: Outshine everything that came before it. Listeners should FEEL the lift when it hits.
+  MUST NOT: Feel like a continuation of the verse. The chorus must be a clear emotional JUMP.
+  LINE FORMAT: If 6 lines \u2192 4 core hook lines + 2 chant/tag lines. If 4 lines \u2192 pure hook. If 8 \u2192 extended.
+
+VERSE 2 (same line count as Verse 1):
+  ROLE: Deepen the story. New angle only \u2014 emotionally further, not a repeat of Verse 1.
+  MUST: Take the listener somewhere Verse 1 didn't go. More vulnerable, more specific, more alive.
+  MUST NOT: Recycle Verse 1 imagery, metaphors, or emotional beats.
+
+BRIDGE (EXACTLY 4 lines \u2014 absolute hard law, never 3, never 5):
+  ROLE: The emotional turn. The moment where the song pivots, intensifies, or breaks open.
+  MUST: Feel like a shift \u2014 a new emotional angle, a lift, a confessional, a release.
+  MUST NOT: Repeat chorus lines. Must NOT be a mini-chorus. Must NOT be a second outro.
+  LINE COUNT: 4 lines. Count before writing. Count after writing. If it is not 4, rewrite immediately.
+
+OUTRO (2, 4, or 8 lines):
+  ROLE: The emotional close. Landing, not launching. A unified, intentional exit.
+  MUST: Carry the Keeper Line (verbatim) as its anchor.
+  MUST NOT: Wander or introduce new ideas. Must NOT become a second full chorus.
+  LABELING: Label this section ONLY as "Outro" \u2014 never "Outro / Final Chorus" or "Final Chorus / Outro."
+             If it functions as a final chorus, label it Outro and write it as a closer, not a launcher.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 STRUCTURAL RULES (hard law \u2014 count lines before output):
 - Intro: exactly 2 or 4 lines.
 - Verse 1: exactly 8, 12, or 16 lines (4-line multiples \u2014 never odd counts).
@@ -50182,6 +50227,9 @@ FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
 \u2713 Hook would survive the 5-question enforcer
 \u2713 Every line is emotionally sharp and genre-authentic
 \u2713 Every section count is correct and the output is studio-ready
+\u2713 Intro does NOT deliver the hook or feel like a chorus
+\u2713 Bridge is EXACTLY 4 lines \u2014 not 3, not 5
+\u2713 Outro is labeled ONLY as "Outro" \u2014 no slash labels
 
 ==================================================
 OUTPUT FORMAT \u2014 STRICTLY ENFORCED
@@ -50241,7 +50289,24 @@ The JSON must use this exact structure:
 All sections must be present. Lyric arrays must contain actual lines, never placeholders.
 
 AfroMuse V5 HITMAKER V2 is a professional songwriting and production engine. Every output must be musically alive, emotionally specific, culturally grounded, and genuinely usable by a recording artist and producer.`;
-function buildUserPrompt(params) {
+var STRICT_RETRY_ADDENDUM = `
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+\u26A0\uFE0F  STRUCTURE CORRECTION \u2014 STRICT RETRY MODE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+The previous generation failed the structure validation. This is your correction pass.
+
+MANDATORY CORRECTIONS FOR THIS RETRY:
+- Count every section LINE BY LINE before writing it into the JSON.
+- Intro: write exactly 2 or 4 lines \u2014 no more, no less. If you reach 4 lines, STOP.
+- Bridge: write exactly 4 lines \u2014 absolutely no exceptions.
+- Verso counts must be 8, 12, or 16 (multiples of 4 only).
+- Chorus / hook counts must be 4, 6, or 8 only.
+- Outro: write exactly 2 or 4 lines \u2014 emotional close only.
+
+DO NOT sacrifice lyrical quality \u2014 fix the counts while keeping the creative voice intact.
+Return ONLY the corrected JSON. No commentary. No explanation.
+`;
+function buildUserPrompt(params, strictMode = false) {
   const {
     topic,
     genre,
@@ -50265,16 +50330,30 @@ function buildUserPrompt(params) {
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
     "Every generation MUST follow this structure. No deviations. No exceptions.",
     "",
-    "\u2726 INTRO: EXACTLY 4 lines \u2014 atmospheric, cinematic teaser \u2014 set mood only \u2014 never a verse or chorus",
-    "\u2726 VERSE 1: EXACTLY 12 lines \u2014 3 groups of 4-bar lines \u2014 deep storytelling \u2014 establish the emotional world",
-    "\u2726 CHORUS: EXACTLY 6 lines \u2014 4 core hook lines + 2 chant/tag lines \u2014 main keeper line MUST appear here \u2014 high repeat energy",
-    "\u2726 VERSE 2: EXACTLY 12 lines \u2014 3 groups of 4-bar lines \u2014 new angle, deeper emotional territory \u2014 never repeat Verse 1",
-    "\u2726 BRIDGE: EXACTLY 4 lines \u2014 NO MORE, NO LESS \u2014 reflective turn or emotional intensifier \u2014 hard law",
-    "\u2726 OUTRO: EXACTLY 4 lines \u2014 emotional fade \u2014 main keeper line MUST appear here \u2014 unified close",
+    "\u2726 INTRO: EXACTLY 2 or 4 lines \u2014 atmosphere and tension only \u2014 NO hook delivery \u2014 NOT a chorus \u2014 NOT a verse",
+    "  \u2192 The intro sets the sonic world. It is a whisper, a cinematic teaser. It must NEVER carry the keeper line.",
+    "  \u2192 If you reach 4 intro lines, STOP. Do not write a 5th intro line under any circumstance.",
+    "",
+    "\u2726 VERSE 1: EXACTLY 8, 12, or 16 lines (multiples of 4 only) \u2014 deep storytelling \u2014 build emotional world",
+    "  \u2192 Write in clean 4-bar groups. Each group must push the story forward.",
+    "",
+    "\u2726 CHORUS: EXACTLY 4, 6, or 8 lines \u2014 main keeper line MUST appear here \u2014 highest energy, strongest replay",
+    "  \u2192 This is the emotional peak. The listener must feel a clear LIFT when it arrives.",
+    "  \u2192 If 6 lines: 4 core hook lines + 2 chant/tag lines.",
+    "",
+    "\u2726 VERSE 2: EXACTLY same line count as Verse 1 \u2014 new angle, deeper emotional territory \u2014 never repeat Verse 1",
+    "",
+    "\u2726 BRIDGE: EXACTLY 4 lines \u2014 NO MORE, NO LESS \u2014 reflective turn or emotional intensifier \u2014 HARD LAW",
+    "  \u2192 Count the bridge lines before writing them. Count again after. If not exactly 4 \u2192 rewrite immediately.",
+    "  \u2192 Bridge must NOT be a mini-chorus. Must NOT repeat chorus lines. Must NOT exceed 4 lines.",
+    "",
+    "\u2726 OUTRO: EXACTLY 2 or 4 lines \u2014 emotional fade and close \u2014 main keeper line MUST appear here",
+    "  \u2192 Label this section ONLY as 'Outro.' Never use 'Outro / Final Chorus' or slash labels.",
+    "  \u2192 The outro closes and lands. It does not relaunch or wander.",
     "",
     "STRUCTURE VALIDATOR \u2014 MANDATORY BEFORE OUTPUT:",
     "Count lines in EVERY section. If ANY count is wrong \u2192 rewrite that section before returning output.",
-    "Intro \u2260 4? Rewrite. Verse \u2260 12? Rewrite. Chorus \u2260 6? Rewrite. Bridge \u2260 4? Rewrite. Outro \u2260 4? Rewrite.",
+    "Intro \u2260 2 or 4? Rewrite. Verse \u2260 8/12/16? Rewrite. Chorus \u2260 4/6/8? Rewrite. Bridge \u2260 4? Rewrite. Outro \u2260 2 or 4? Rewrite.",
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"
   ];
   const lines = [
@@ -50329,10 +50408,12 @@ function buildUserPrompt(params) {
     `\u2713 LANGUAGE: ${effectiveFlavor} \u2014 apply naturally throughout, think in the culture`,
     "\u2713 KEEPER LINE: silently generate 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing",
     "\u2713 MAIN KEEPER LINE: must appear in BOTH the Chorus (hook) AND the Outro \u2014 this is non-negotiable",
+    "\u2713 INTRO DISCIPLINE: intro is atmospheric only \u2014 it must NOT deliver the hook \u2014 if the intro could be mistaken for a chorus, rewrite it",
     "\u2713 TITLE: derive from the keeper line \u2014 1 to 5 words, emotionally sharp, commercially credible",
     "\u2713 HOOK ENFORCER: before finalizing chorus, run 5 checks \u2014 (1) would fans scream this live? (2) is it caption-worthy? (3) is it simple and memorable? (4) does it match verse emotion? (5) is it unique? \u2014 if any NO \u2192 rewrite",
     "\u2713 VERSE QUALITY: every 4-bar group must advance the story \u2014 no filler, no repeated imagery from Verse 1 to Verse 2",
-    "\u2713 BRIDGE LAW: exactly 4 lines, reflective or intensifying \u2014 turns the emotional direction of the record",
+    "\u2713 BRIDGE LAW: exactly 4 lines, no exceptions \u2014 reflective or intensifying \u2014 turns the emotional direction of the record",
+    "\u2713 OUTRO LABEL: label as 'Outro' only \u2014 never 'Outro / Final Chorus' \u2014 write as a closer, not a launcher",
     "\u2713 NATURALNESS: reject any line that sounds robotic, formal, or AI-generated \u2014 every line must be singable",
     "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place",
     "\u2713 PRODUCTION: include complete productionNotes, instrumentalGuidance, and vocalDemoGuidance in output",
@@ -50342,10 +50423,64 @@ function buildUserPrompt(params) {
     "",
     "Generate the full AfroMuse V5 HITMAKER V2 song draft now."
   );
+  if (strictMode) {
+    lines.push("", STRICT_RETRY_ADDENDUM);
+  }
   return lines.join("\n");
 }
+var VALID_INTRO_COUNTS = /* @__PURE__ */ new Set([2, 4]);
+var VALID_VERSE_COUNTS = /* @__PURE__ */ new Set([8, 12, 16]);
+var VALID_HOOK_COUNTS = /* @__PURE__ */ new Set([4, 6, 8]);
+var VALID_OUTRO_COUNTS = /* @__PURE__ */ new Set([2, 4, 8]);
+var BRIDGE_COUNT = 4;
+function validateStructure(draft) {
+  const failures = [];
+  const introLen = Array.isArray(draft.intro) ? draft.intro.length : -1;
+  if (!VALID_INTRO_COUNTS.has(introLen)) {
+    failures.push(`intro has ${introLen} lines \u2014 must be exactly 2 or 4`);
+  }
+  const verse1Len = Array.isArray(draft.verse1) ? draft.verse1.length : -1;
+  if (!VALID_VERSE_COUNTS.has(verse1Len)) {
+    failures.push(`verse1 has ${verse1Len} lines \u2014 must be 8, 12, or 16`);
+  }
+  const hookLen = Array.isArray(draft.hook) ? draft.hook.length : -1;
+  if (!VALID_HOOK_COUNTS.has(hookLen)) {
+    failures.push(`hook/chorus has ${hookLen} lines \u2014 must be 4, 6, or 8`);
+  }
+  const verse2Len = Array.isArray(draft.verse2) ? draft.verse2.length : -1;
+  if (!VALID_VERSE_COUNTS.has(verse2Len)) {
+    failures.push(`verse2 has ${verse2Len} lines \u2014 must be 8, 12, or 16`);
+  }
+  if (verse1Len > 0 && verse2Len > 0 && verse1Len !== verse2Len) {
+    failures.push(`verse1 (${verse1Len} lines) and verse2 (${verse2Len} lines) must have the same line count`);
+  }
+  const bridgeLen = Array.isArray(draft.bridge) ? draft.bridge.length : -1;
+  if (bridgeLen !== BRIDGE_COUNT) {
+    failures.push(`bridge has ${bridgeLen} lines \u2014 must be exactly 4`);
+  }
+  const outroLen = Array.isArray(draft.outro) ? draft.outro.length : -1;
+  if (!VALID_OUTRO_COUNTS.has(outroLen)) {
+    failures.push(`outro has ${outroLen} lines \u2014 must be 2, 4, or 8`);
+  }
+  return { valid: failures.length === 0, failures };
+}
 router2.post("/generate-song", async (req, res) => {
-  const { topic, genre, mood, style, notes, songLength, languageFlavor, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel } = req.body;
+  const {
+    topic,
+    genre,
+    mood,
+    style,
+    notes,
+    songLength,
+    languageFlavor,
+    customFlavor,
+    commercialMode,
+    lyricalDepth,
+    hookRepeat,
+    lyricsSource,
+    genderVoiceModel,
+    performanceFeel
+  } = req.body;
   if (!topic || typeof topic !== "string") {
     res.status(400).json({ error: "topic is required" });
     return;
@@ -50360,11 +50495,7 @@ router2.post("/generate-song", async (req, res) => {
   const selectedMood = mood?.trim() || "Uplifting";
   const selectedLength = ["Short", "Standard", "Full"].includes(songLength ?? "") ? songLength : "Standard";
   const selectedFlavor = languageFlavor?.trim() || "Global English";
-  const ai = new OpenAI({
-    apiKey,
-    baseURL: "https://integrate.api.nvidia.com/v1"
-  });
-  const userPrompt = buildUserPrompt({
+  const promptParams = {
     topic,
     genre: selectedGenre,
     mood: selectedMood,
@@ -50379,8 +50510,21 @@ router2.post("/generate-song", async (req, res) => {
     lyricsSource: lyricsSource ?? "Studio Lyrics",
     genderVoiceModel: genderVoiceModel ?? "Random",
     performanceFeel: performanceFeel ?? "Smooth"
+  };
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1"
   });
-  try {
+  const parseResponse2 = (raw) => {
+    try {
+      const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned);
+    } catch {
+      return null;
+    }
+  };
+  const callModel = async (userPrompt) => {
     const response = await ai.chat.completions.create({
       model: "qwen/qwen3.5-122b-a10b",
       messages: [
@@ -50391,18 +50535,48 @@ router2.post("/generate-song", async (req, res) => {
       top_p: 0.95,
       max_tokens: 3500
     });
-    const raw = response.choices[0]?.message?.content ?? "";
-    let draft;
-    try {
-      const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      draft = JSON.parse(jsonMatch ? jsonMatch[0] : cleaned);
-    } catch {
-      logger.error({ raw }, "Failed to parse AI response as JSON");
+    return response.choices[0]?.message?.content ?? "";
+  };
+  try {
+    const firstPrompt = buildUserPrompt(promptParams, false);
+    const firstRaw = await callModel(firstPrompt);
+    const firstDraft = parseResponse2(firstRaw);
+    if (!firstDraft) {
+      logger.error({ raw: firstRaw }, "Failed to parse AI response as JSON (attempt 1)");
       res.status(500).json({ error: "Failed to parse AI response" });
       return;
     }
-    res.json({ draft });
+    const firstValidation = validateStructure(firstDraft);
+    if (firstValidation.valid) {
+      logger.info("Song structure validated successfully on first attempt");
+      res.json({ draft: firstDraft });
+      return;
+    }
+    logger.warn(
+      { failures: firstValidation.failures },
+      "Song structure validation failed \u2014 triggering strict-mode retry"
+    );
+    const retryPrompt = buildUserPrompt(promptParams, true);
+    const retryRaw = await callModel(retryPrompt);
+    const retryDraft = parseResponse2(retryRaw);
+    if (!retryDraft) {
+      logger.error({ raw: retryRaw }, "Failed to parse AI response as JSON (retry)");
+      res.json({ draft: firstDraft });
+      return;
+    }
+    const retryValidation = validateStructure(retryDraft);
+    if (!retryValidation.valid) {
+      logger.warn(
+        { failures: retryValidation.failures },
+        "Retry still failed structure validation \u2014 returning best available draft"
+      );
+      const firstFailCount = firstValidation.failures.length;
+      const retryFailCount = retryValidation.failures.length;
+      res.json({ draft: retryFailCount <= firstFailCount ? retryDraft : firstDraft });
+      return;
+    }
+    logger.info("Song structure validated successfully on retry");
+    res.json({ draft: retryDraft });
   } catch (err) {
     logger.error({ err }, "NVIDIA API error");
     const status = err.status;
