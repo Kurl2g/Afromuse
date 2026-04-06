@@ -1047,26 +1047,36 @@ export default function Studio() {
                         />
                       )}
 
-                      {/* VERSE 1 */}
+                      {/* CHORUS — first hit */}
                       <LyricsSection
                         sectionNumber="01"
-                        label="Verse 1"
-                        color="blue"
-                        lines={draft.verse1}
-                      />
-
-                      {/* CHORUS */}
-                      <LyricsSection
-                        sectionNumber="02"
                         label="Chorus"
                         color="gold"
                         lines={draft.hook}
                         isHook
                       />
 
-                      {/* VERSE 2 */}
+                      {/* VERSE 1 */}
+                      <LyricsSection
+                        sectionNumber="02"
+                        label="Verse 1"
+                        color="blue"
+                        lines={draft.verse1}
+                      />
+
+                      {/* CHORUS REPEAT */}
                       <LyricsSection
                         sectionNumber="03"
+                        label="Chorus"
+                        color="gold"
+                        lines={draft.hook}
+                        isHook
+                        repeat
+                      />
+
+                      {/* VERSE 2 */}
+                      <LyricsSection
+                        sectionNumber="04"
                         label="Verse 2"
                         color="blue"
                         lines={draft.verse2}
@@ -1074,7 +1084,7 @@ export default function Studio() {
 
                       {/* CHORUS REPEAT */}
                       <LyricsSection
-                        sectionNumber="04"
+                        sectionNumber="05"
                         label="Chorus"
                         color="gold"
                         lines={draft.hook}
@@ -1085,7 +1095,7 @@ export default function Studio() {
                       {/* BRIDGE */}
                       {draft.bridge && draft.bridge.length > 0 && (
                         <LyricsSection
-                          sectionNumber="05"
+                          sectionNumber="06"
                           label="Bridge"
                           color="violet"
                           lines={draft.bridge}
@@ -1093,18 +1103,18 @@ export default function Studio() {
                         />
                       )}
 
-                      {/* OUTRO / FINAL CHORUS */}
+                      {/* FINAL CHORUS / OUTRO */}
                       {draft.outro && draft.outro.length > 0 ? (
                         <LyricsSection
-                          sectionNumber="06"
-                          label="Outro / Final Chorus"
+                          sectionNumber="07"
+                          label="Final Chorus / Outro"
                           color="gold"
                           lines={draft.outro}
                           isHook
                         />
                       ) : (
                         <LyricsSection
-                          sectionNumber="06"
+                          sectionNumber="07"
                           label="Final Chorus"
                           color="gold"
                           lines={draft.hook}

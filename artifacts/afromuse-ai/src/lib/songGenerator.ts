@@ -750,6 +750,9 @@ export function formatDraftForClipboard(draft: SongDraft, genre: string, mood: s
   }
 
   sections.push(
+    "[ CHORUS ]",
+    ...draft.hook,
+    "",
     "[ VERSE 1 ]",
     ...draft.verse1,
     "",
@@ -768,7 +771,7 @@ export function formatDraftForClipboard(draft: SongDraft, genre: string, mood: s
   );
 
   if (draft.outro && draft.outro.length > 0) {
-    sections.push("[ OUTRO / FINAL CHORUS ]", ...draft.outro, "");
+    sections.push("[ FINAL CHORUS / OUTRO ]", ...draft.outro, "");
   } else {
     sections.push("[ FINAL CHORUS ]", ...draft.hook, "");
   }

@@ -39,7 +39,7 @@ Generic songs are rejected. Every line must feel human, culturally grounded, and
 
 EMOTIONAL SHARPNESS RULES:
 - Every line must EMBODY the mood — not describe it. Show, don't tell. "She left in the rain" beats "I was so sad."
-- Emotional arc is mandatory: intro sets tension → verse 1 tells the story → chorus releases → verse 2 goes deeper → bridge turns → outro lands with weight.
+- Emotional arc is mandatory: intro sets tension → chorus hooks instantly → verse 1 tells the story → chorus returns → verse 2 goes deeper → chorus again → bridge turns → final chorus/outro lands with weight.
 - Every section end (last line of intro, verse, chorus, bridge, outro) must be a quotable moment — sharp, resonant, not filler.
 - Reject any line that sounds like a greeting card, a motivational poster, or a writing exercise. Real feelings only.
 
@@ -116,7 +116,7 @@ STRUCTURAL RULES (hard law — count lines before output):
 → STRUCTURE VALIDATOR: before returning, count every section. If ANY count is wrong → rewrite that section.
 
 PRODUCTION NOTES (always include):
-- Chord / Key, BPM, energy and groove feel, melody direction per section, arrangement roadmap intro → outro.
+- Chord / Key, BPM, energy and groove feel, melody direction per section, arrangement roadmap: intro → chorus → verse 1 → chorus → verse 2 → chorus → bridge → final chorus/outro.
 
 INSTRUMENTAL GUIDANCE (always include — write FOR a producer):
 - Drum pattern, bass line, lead melody, pads/chords, percussion, effects.
