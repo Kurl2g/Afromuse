@@ -249,95 +249,42 @@ STRUCTURAL RULES (hard law — count lines before output):
 - Outro: exactly 2, 4, or 8 lines.
 → STRUCTURE VALIDATOR: before returning, count every section. If ANY count is wrong → rewrite that section.
 
-PRODUCTION NOTES (always include):
-- Chord / Key, BPM, energy and groove feel, melody direction per section, arrangement roadmap following the exact song playback order: intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro.
-- CRITICAL: The arrangement field MUST describe sections in this exact playback order — intro first, then chorus/hook, then verse 1, then chorus/hook again, etc. This matches how the song is actually heard and displayed.
-
-INSTRUMENTAL GUIDANCE (always include — write FOR a producer):
-- Drum pattern, bass line, lead melody, pads/chords, percussion, effects.
-- Describe how the arrangement evolves from intro to outro — drop points, lifts, transitions.
-- Be specific enough that a producer can open a DAW and start building immediately.
-
-VOCAL DEMO GUIDANCE (always include — write FOR a vocalist):
-- Tone, register, delivery style per section, ad-lib placement, breath control, emotion projection.
-- How the vocal energy shifts from verse to chorus to bridge — give specific phrasing direction.
-- Include at least 2 concrete ad-lib suggestions with placement.
-
-STEMS BREAKDOWN (always include — write FOR a mixing engineer):
-- Kick, Snare, Bass, Pads, Lead Synth, Guitar/Other: pattern, character, processing notes.
-- Effects & Panning: reverb, delay, sidechain, stereo placement — be specific.
-
-EXPORT NOTES (always include — studio session brief):
-- BPM, key, DAW setup tips, vocal booth preparation, reference track energy, arrangement reminders.
-- Make it a one-paragraph brief a session engineer reads before pressing record.
-
 ─────────────────────────────
 FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:
 ✓ Hook would survive the 5-question enforcer
 ✓ Every line is emotionally sharp and genre-authentic
-✓ Every section count is correct and the output is studio-ready
+✓ Every section count is correct — intro 2/4, verse 8/12/16, chorus 4/6/8, bridge exactly 4, outro 2/4/8
 ✓ Intro does NOT deliver the hook or feel like a chorus
 ✓ Bridge is EXACTLY 4 lines — not 3, not 5
 ✓ Outro is labeled ONLY as "Outro" — no slash labels
+✓ Every lyric line passes the dialect-first test if Patois or Pidgin is active
 
 ==================================================
 OUTPUT FORMAT — STRICTLY ENFORCED
 ==================================================
 
-YOU MUST RESPOND WITH ONLY A VALID JSON OBJECT.
+YOU MUST RESPOND WITH ONLY A VALID JSON OBJECT CONTAINING LYRICS ONLY.
 
 NO markdown. NO backticks. NO code fences. NO explanation. NO preamble. NO commentary. NO anything outside the JSON.
 
-The JSON must use this exact structure:
+The JSON must use EXACTLY this structure — lyric fields only, nothing else:
 
 {
   "title": "Song title (1–5 words, derived from keeper line)",
-  "keeperLine": "The main keeper line embedded in intro, chorus, and outro",
+  "keeperLine": "The main keeper line — appears verbatim in the chorus and outro",
   "keeperLineBackups": ["Backup keeper line 1", "Backup keeper line 2"],
-  "intro": ["intro line 1", "intro line 2", "intro line 3", "intro line 4"],
+  "intro": ["intro line 1", "intro line 2"],
   "verse1": ["line 1", "line 2", "line 3", "line 4", "line 5", "line 6", "line 7", "line 8", "line 9", "line 10", "line 11", "line 12"],
   "hook": ["chorus line 1", "chorus line 2", "chorus line 3", "chorus line 4", "chorus line 5", "chorus line 6"],
   "verse2": ["line 1", "line 2", "line 3", "line 4", "line 5", "line 6", "line 7", "line 8", "line 9", "line 10", "line 11", "line 12"],
   "bridge": ["bridge line 1", "bridge line 2", "bridge line 3", "bridge line 4"],
-  "outro": ["outro line 1", "outro line 2", "outro line 3", "outro line 4"],
-  "productionNotes": {
-    "key": "Musical key (e.g. F# minor)",
-    "bpm": "BPM value or range (e.g. 94–98 BPM)",
-    "energy": "Energy level and feel (e.g. Mid-tempo, emotionally heavy, reflective)",
-    "hookStrength": "Hook strength rating and reason (e.g. High — keeper line is instantly memorable and screaming-ready)",
-    "lyricalDepth": "Lyrical depth assessment (e.g. Deep — rich imagery, emotional layers, human storytelling throughout)",
-    "arrangement": "Full arrangement roadmap in exact playback order — intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro — with a production description for each section (e.g. 'Sparse intro with pads. Chorus/hook drops full. Verse 1 pulls back to groove. Hook returns with lift. Verse 2 deepens. Hook again. Bridge strips. Outro closes.')",
-    "melodyDirection": "Vocal guidance per section: verse delivery, chorus lift, bridge turn"
-  },
-  "instrumentalGuidance": "Detailed instrumental description for a music producer — drum pattern, bass line, lead melody, pads, percussion, effects, and how the arrangement evolves section by section",
-  "vocalDemoGuidance": "Detailed vocal performance guide — tone, delivery style per section, ad-lib placements, emotion projection, breath control, and how vocal energy shifts from verse to chorus to bridge",
-  "stemsBreakdown": {
-    "kick": "Kick drum description — pattern, placement, punch (e.g. Four-on-the-floor with an extra hit on beat 3 — punchy, sub-heavy, side-chained to bass)",
-    "snare": "Snare description — placement and texture (e.g. Rimshot on 2 and 4, ghost notes on upbeats, light reverb tail)",
-    "bass": "Bass line description — pattern, tone, groove (e.g. Sub-bass lock on kick, melodic fill on 4th bar, warm mid-bass presence)",
-    "pads": "Pads/chords description — voicing, texture, movement (e.g. Lush minor 7 pads — filter sweep opens on chorus, close on bridge)",
-    "leadSynth": "Lead synth or guitar melody — pattern, tone, character (e.g. Lead flute melody on chorus — delay 1/8, reverb large room, panned center)",
-    "guitarOther": "Guitar or additional melodic element — role, style, placement (e.g. Nylon acoustic rhythm — panned L 20%, plays on offbeats through verse only)",
-    "effects": "Global effects and panning notes — reverb, delay, sidechain, stereo placement (e.g. Drum room reverb, vocal delay throw on hook endings, wide stereo pads, mono kick/bass)"
-  },
-  "exportNotes": "Producer-friendly instructions to make the track immediately recordable — session tempo, key, suggested DAW setup, reference track energy, how to prepare a vocal booth session, and any special production or arrangement reminders",
-  "arrangementBlueprint": "Step-by-step recording and arrangement map in exact playback order (intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro) — bar counts per section, transition cues, drop and lift points, vocal double placement, ad-lib placement guides, and engineering setup markers for the full song",
-  "sessionNotes": "One tight paragraph session brief — tempo, key, mood, DAW template suggestion, reference track energy recommendation, and priority recording order",
-  "sonicIdentity": {
-    "coreBounce": "The rhythmic DNA — what drives the groove and makes the body move (e.g. Afrobeats pocket at 100 BPM, kick-snare locked with talking drum, swung 16ths)",
-    "atmosphere": "The sonic landscape — the vibe, feel, and sonic world of the track (e.g. Late-night Lagos warmth, hazy and intimate with reverb depth)",
-    "mainTexture": "The primary sonic element heard most clearly in the mix (e.g. Plucked guitar lead over sub-bass foundation, lush pad underneath)"
-  },
-  "vocalIdentity": {
-    "leadType": "Lead vocal type and character (e.g. Afrobeats Tenor — warm, slightly husky, conversational delivery)",
-    "deliveryStyle": "How the vocals should be delivered — breathy, punchy, smooth, melodic, gritty, etc. (e.g. Smooth and melodic in verse, punchy and chant-ready on chorus)",
-    "emotionalTone": "The emotional feel the vocal performance should project (e.g. Longing with underlying warmth, never desperate — controlled vulnerability)"
-  }
+  "outro": ["outro line 1", "outro line 2", "outro line 3", "outro line 4"]
 }
 
-All sections must be present. Lyric arrays must contain actual lines, never placeholders.
+All lyric arrays must contain actual lyric lines — never placeholders.
+Do NOT include productionNotes, instrumentalGuidance, stemsBreakdown, or any non-lyric field. Lyrics ONLY.
 
-AfroMuse V5 HITMAKER V2 is a professional songwriting and production engine. Every output must be musically alive, emotionally specific, culturally grounded, and genuinely usable by a recording artist and producer.`;
+AfroMuse V5 HITMAKER V2 produces lyrics that are musically alive, emotionally specific, culturally grounded, and genuinely singable by a real recording artist.`;
 
 const STRICT_RETRY_ADDENDUM = `
 ══════════════════════════════════════════════
@@ -356,6 +303,99 @@ MANDATORY CORRECTIONS FOR THIS RETRY:
 DO NOT sacrifice lyrical quality — fix the counts while keeping the creative voice intact.
 Return ONLY the corrected JSON. No commentary. No explanation.
 `;
+
+// ─── Flow / Production Details Prompt (Qwen) ──────────────────────────────────
+// Qwen receives the song context + the final lyrics and generates all production
+// metadata: productionNotes, instrumentalGuidance, vocalDemoGuidance, stemsBreakdown,
+// exportNotes, arrangementBlueprint, sessionNotes, sonicIdentity, vocalIdentity.
+
+const FLOW_SYSTEM_PROMPT = `You are AfroMuse Production Intelligence — a specialist AI producer brain for Afro-inspired music genres (Afrobeats, Amapiano, Dancehall, Gospel, Afro-fusion, Spiritual).
+
+You receive a completed song (lyrics + session context) and return a comprehensive production and flow brief as a single structured JSON object.
+
+Your job is the PRODUCTION HALF of a dual-AI songwriting pipeline. The lyrics have already been written. You generate everything a producer, vocalist, mixing engineer, and session coordinator needs to turn those lyrics into a finished record.
+
+RULES:
+- Write like a top-tier record producer, not a text generator
+- Be genre-specific, culturally grounded, and musically precise
+- Every description must be immediately actionable in a real studio session
+- The arrangement roadmap MUST follow exact playback order: intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro
+- ALWAYS return valid JSON only — no markdown, no explanation, no code fences, no backticks
+- Include ALL fields. Never leave a field empty or as a placeholder.`;
+
+function buildFlowPrompt(params: {
+  topic: string;
+  genre: string;
+  mood: string;
+  languageFlavor: string;
+  lyricalDepth: string;
+  performanceFeel: string;
+  genderVoiceModel: string;
+  hookRepeat: string;
+  title: string;
+  keeperLine: string;
+  lyricsText: string;
+}): string {
+  const {
+    topic, genre, mood, languageFlavor, lyricalDepth, performanceFeel,
+    genderVoiceModel, hookRepeat, title, keeperLine, lyricsText,
+  } = params;
+
+  return `Generate a full production and flow brief for this AfroMuse song session.
+
+SESSION CONTEXT:
+  Song Title: ${title}
+  Topic / Theme: ${topic}
+  Genre: ${genre}
+  Mood: ${mood}
+  Language / Dialect: ${languageFlavor}
+  Lyrical Depth: ${lyricalDepth}
+  Performance Feel: ${performanceFeel}
+  Vocal Gender: ${genderVoiceModel}
+  Hook Repeat Level: ${hookRepeat}
+  Keeper Line: "${keeperLine}"
+
+SONG LYRICS:
+${lyricsText}
+
+Return ONLY this JSON object — no markdown, no code fences, no explanation:
+
+{
+  "productionNotes": {
+    "key": "Musical key (e.g. F# minor)",
+    "bpm": "BPM value or range (e.g. 94–98 BPM)",
+    "energy": "Energy level and feel (e.g. Mid-tempo, emotionally heavy, reflective)",
+    "hookStrength": "Hook strength rating and reason (e.g. High — keeper line is instantly memorable and screaming-ready)",
+    "lyricalDepth": "Lyrical depth assessment (e.g. Deep — rich imagery, emotional layers, human storytelling throughout)",
+    "arrangement": "Full arrangement roadmap in exact playback order: intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro — with a production description for each section",
+    "melodyDirection": "Vocal melody guidance per section: verse delivery approach, chorus lift technique, bridge emotional turn"
+  },
+  "instrumentalGuidance": "Detailed instrumental description for a music producer — drum pattern, bass line, lead melody, pads, percussion, effects, and how the arrangement evolves section by section. Specific enough to open a DAW and start immediately.",
+  "vocalDemoGuidance": "Detailed vocal performance guide — tone, delivery style per section, at least 2 specific ad-lib suggestions with placement, breath control notes, and how vocal energy shifts from verse to chorus to bridge",
+  "stemsBreakdown": {
+    "kick": "Kick drum — pattern, placement, punch, sidechain behavior",
+    "snare": "Snare — placement, texture, ghost notes, reverb",
+    "bass": "Bass line — pattern, tone, groove feel, low-end character",
+    "pads": "Pads/chords — voicing, texture, filter movement, stereo width",
+    "leadSynth": "Lead synth or guitar melody — pattern, tone, delay/reverb treatment, panning",
+    "guitarOther": "Guitar or additional melodic element — role, style, placement in the mix",
+    "effects": "Global effects and panning — reverb sends, delay throws, sidechain routing, stereo placement"
+  },
+  "exportNotes": "Producer-friendly session setup instructions — BPM, key, DAW setup tips, vocal booth preparation, reference track energy, arrangement reminders. One readable paragraph.",
+  "arrangementBlueprint": "Step-by-step recording and arrangement map in exact playback order (intro → chorus/hook → verse 1 → chorus/hook → verse 2 → chorus/hook → bridge → outro) — bar counts, transition cues, drop and lift points, vocal double placement, ad-lib placement guides, and engineering markers",
+  "sessionNotes": "One tight paragraph session brief — tempo, key, mood, DAW template suggestion, reference track energy recommendation, and priority recording order",
+  "sonicIdentity": {
+    "coreBounce": "The rhythmic DNA — what drives the groove and makes the body move",
+    "atmosphere": "The sonic landscape — vibe, feel, and sonic world of the track",
+    "mainTexture": "Primary sonic element heard most clearly in the mix — list 2-3 key layered ingredients"
+  },
+  "vocalIdentity": {
+    "leadType": "Lead vocal type and character (e.g. Afrobeats Tenor — warm, slightly husky, conversational delivery)",
+    "deliveryStyle": "How vocals should be delivered — breathy, punchy, smooth, melodic, gritty, etc.",
+    "emotionalTone": "The emotional feel the vocal performance should project"
+  }
+}`;
+}
 
 function getDialectBlock(effectiveFlavor: string): string[] {
   const flavor = effectiveFlavor.toLowerCase();
@@ -717,10 +757,7 @@ function buildUserPrompt(
     "✓ OUTRO LABEL: label as 'Outro' only — never 'Outro / Final Chorus' — write as a closer, not a launcher",
     "✓ NATURALNESS: reject any line that sounds robotic, formal, or AI-generated — every line must be singable by a real artist in one take",
     "✓ TIGHTNESS: fewer, stronger lines — every line must earn its place — simpler and more direct always beats longer and more elaborate",
-    "✓ PRODUCTION: include complete productionNotes, instrumentalGuidance, and vocalDemoGuidance in output",
-    "✓ STEMS BREAKDOWN: include stemsBreakdown with kick, snare, bass, pads, leadSynth, guitarOther, and effects — be specific about patterns, panning, and processing",
-    "✓ EXPORT NOTES: include exportNotes with producer-friendly session setup — BPM, key, DAW tips, vocal booth prep, reference energy, and arrangement reminders",
-    "✓ OUTPUT: ONLY the JSON object — no text, explanation, or commentary before or after",
+    "✓ OUTPUT: ONLY the lyrics JSON object (title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro) — no production fields, no text, no commentary",
     "",
     "Generate the full AfroMuse V5 HITMAKER V2 song draft now.",
   );
@@ -794,9 +831,25 @@ function validateStructure(draft: SongDraft): ValidationResult {
   return { valid: failures.length === 0, failures };
 }
 
-// ─── Model — Qwen3.5-122B (sole lyrics engine) ───────────────────────────────
+// ─── Models ───────────────────────────────────────────────────────────────────
+// Llama-4-Maverick: primary lyrics author (creative writing, dialect authenticity)
+// Qwen3.5-122B:     flow / production details (metadata, stems, guidance, notes)
 
-const QWEN_MODEL = { id: "qwen/qwen3.5-122b-a10b", name: "Qwen3.5-122B", temperature: 0.93 };
+const LLAMA_MAVERICK_MODEL = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick", temperature: 0.92 };
+const QWEN_FLOW_MODEL      = { id: "qwen/qwen3.5-122b-a10b",                  name: "Qwen3.5-122B",    temperature: 0.80 };
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function draftToLyricsText(draft: SongDraft): string {
+  const sections: string[] = [];
+  if (Array.isArray(draft.intro))   sections.push(`[Intro]\n${(draft.intro as string[]).join("\n")}`);
+  if (Array.isArray(draft.verse1))  sections.push(`[Verse 1]\n${(draft.verse1 as string[]).join("\n")}`);
+  if (Array.isArray(draft.hook))    sections.push(`[Chorus]\n${(draft.hook as string[]).join("\n")}`);
+  if (Array.isArray(draft.verse2))  sections.push(`[Verse 2]\n${(draft.verse2 as string[]).join("\n")}`);
+  if (Array.isArray(draft.bridge))  sections.push(`[Bridge]\n${(draft.bridge as string[]).join("\n")}`);
+  if (Array.isArray(draft.outro))   sections.push(`[Outro]\n${(draft.outro as string[]).join("\n")}`);
+  return sections.join("\n\n");
+}
 
 // ─── Route ───────────────────────────────────────────────────────────────────
 
@@ -833,10 +886,14 @@ router.post("/generate-song", async (req, res) => {
     return;
   }
 
-  const selectedGenre = genre?.trim() || "Afrobeats";
-  const selectedMood = mood?.trim() || "Uplifting";
+  const selectedGenre  = genre?.trim()          || "Afrobeats";
+  const selectedMood   = mood?.trim()            || "Uplifting";
   const selectedLength = ["Short", "Standard", "Full"].includes(songLength ?? "") ? songLength! : "Standard";
-  const selectedFlavor = languageFlavor?.trim() || "Global English";
+  const selectedFlavor = languageFlavor?.trim()  || "Global English";
+  const selectedDepth  = lyricalDepth            ?? "Balanced";
+  const selectedRepeat = hookRepeat              ?? "Medium";
+  const selectedGender = genderVoiceModel        ?? "Random";
+  const selectedFeel   = performanceFeel         ?? "Smooth";
 
   const promptParams = {
     topic,
@@ -848,11 +905,11 @@ router.post("/generate-song", async (req, res) => {
     languageFlavor: selectedFlavor,
     customFlavor,
     commercialMode: commercialMode === true,
-    lyricalDepth: lyricalDepth ?? "Balanced",
-    hookRepeat: hookRepeat ?? "Medium",
+    lyricalDepth: selectedDepth,
+    hookRepeat: selectedRepeat,
     lyricsSource: lyricsSource ?? "Studio Lyrics",
-    genderVoiceModel: genderVoiceModel ?? "Random",
-    performanceFeel: performanceFeel ?? "Smooth",
+    genderVoiceModel: selectedGender,
+    performanceFeel: selectedFeel,
   };
 
   const ai = new OpenAI({
@@ -860,17 +917,18 @@ router.post("/generate-song", async (req, res) => {
     baseURL: "https://integrate.api.nvidia.com/v1",
   });
 
-  const parseResponse = (raw: string): SongDraft | null => {
+  const parseJson = (raw: string): Record<string, unknown> | null => {
     try {
       const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
       const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned) as SongDraft;
+      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned) as Record<string, unknown>;
     } catch {
       return null;
     }
   };
 
-  const callModel = async (
+  // ── Call lyrics model (Llama-4-Maverick) ─────────────────────────────────
+  const callLyricsModel = async (
     model: { id: string; name: string; temperature: number },
     userPrompt: string,
   ): Promise<{ model: string; draft: SongDraft | null; validation: ValidationResult }> => {
@@ -885,53 +943,109 @@ router.post("/generate-song", async (req, res) => {
         top_p: 0.95,
         max_tokens: 3500,
       });
-      const raw = response.choices[0]?.message?.content ?? "";
-      const draft = parseResponse(raw);
+      const raw  = response.choices[0]?.message?.content ?? "";
+      const draft = parseJson(raw) as SongDraft | null;
       const validation = draft ? validateStructure(draft) : { valid: false, failures: ["parse error"] };
       return { model: model.name, draft, validation };
     } catch (err) {
-      logger.warn({ model: model.name, err }, "Model call failed");
+      logger.warn({ model: model.name, err }, "Lyrics model call failed");
       return { model: model.name, draft: null, validation: { valid: false, failures: ["api error"] } };
+    }
+  };
+
+  // ── Call flow/production model (Qwen) ───────────────────────────────────
+  const callFlowModel = async (lyricsDraft: SongDraft): Promise<Record<string, unknown> | null> => {
+    try {
+      const effectiveFlavor = promptParams.languageFlavor === "Custom" && promptParams.customFlavor?.trim()
+        ? `Custom: ${promptParams.customFlavor.trim()}`
+        : promptParams.languageFlavor;
+
+      const flowPrompt = buildFlowPrompt({
+        topic,
+        genre: selectedGenre,
+        mood: selectedMood,
+        languageFlavor: effectiveFlavor,
+        lyricalDepth: selectedDepth,
+        performanceFeel: selectedFeel,
+        genderVoiceModel: selectedGender,
+        hookRepeat: selectedRepeat,
+        title: (lyricsDraft.title as string) ?? topic,
+        keeperLine: (lyricsDraft.keeperLine as string) ?? "",
+        lyricsText: draftToLyricsText(lyricsDraft),
+      });
+
+      const response = await ai.chat.completions.create({
+        model: QWEN_FLOW_MODEL.id,
+        messages: [
+          { role: "system", content: FLOW_SYSTEM_PROMPT },
+          { role: "user", content: flowPrompt },
+        ],
+        temperature: QWEN_FLOW_MODEL.temperature,
+        top_p: 0.9,
+        max_tokens: 2800,
+      });
+
+      const raw = response.choices[0]?.message?.content ?? "";
+      return parseJson(raw);
+    } catch (err) {
+      logger.warn({ err }, "Flow model (Qwen) call failed — production details will be omitted");
+      return null;
     }
   };
 
   try {
     const userPrompt = buildUserPrompt(promptParams, false);
 
-    // ── Round 1 — Qwen primary attempt ─────────────────────────────────────
-    logger.info("Starting Qwen3.5-122B lyrics generation (round 1)");
-    const result1 = await callModel(QWEN_MODEL, userPrompt);
+    // ── Round 1 — Llama-4-Maverick lyrics generation ──────────────────────
+    logger.info("Starting Llama-4-Maverick lyrics generation (round 1)");
+    const result1 = await callLyricsModel(LLAMA_MAVERICK_MODEL, userPrompt);
+
+    let finalLyricsDraft: SongDraft | null = null;
 
     if (result1.validation.valid) {
-      logger.info({ model: result1.model }, "Qwen passed structure validation (round 1)");
-      res.json({ draft: result1.draft });
-      return;
+      logger.info({ model: result1.model }, "Llama-4-Maverick passed structure validation (round 1)");
+      finalLyricsDraft = result1.draft;
+    } else {
+      logger.warn({ model: result1.model, failures: result1.validation.failures }, "Llama-4-Maverick failed structure validation — triggering strict retry");
+
+      // ── Round 2 — strict retry ─────────────────────────────────────────
+      const strictPrompt = buildUserPrompt(promptParams, true);
+      const result2 = await callLyricsModel(LLAMA_MAVERICK_MODEL, strictPrompt);
+
+      if (result2.validation.valid) {
+        logger.info({ model: result2.model }, "Llama-4-Maverick passed structure validation (round 2)");
+        finalLyricsDraft = result2.draft;
+      } else {
+        logger.warn({ model: result2.model, failures: result2.validation.failures }, "Llama-4-Maverick failed both rounds — using best available draft");
+        // Use whichever round had fewer failures
+        finalLyricsDraft = (result1.draft && result2.draft)
+          ? (result2.validation.failures.length <= result1.validation.failures.length ? result2.draft : result1.draft)
+          : (result1.draft ?? result2.draft);
+      }
     }
 
-    logger.warn({ model: result1.model, failures: result1.validation.failures }, "Qwen failed structure validation (round 1) — triggering strict retry");
-
-    // ── Round 2 — strict retry ─────────────────────────────────────────────
-    const strictPrompt = buildUserPrompt(promptParams, true);
-    const result2 = await callModel(QWEN_MODEL, strictPrompt);
-
-    if (result2.validation.valid) {
-      logger.info({ model: result2.model }, "Qwen passed structure validation (round 2)");
-      res.json({ draft: result2.draft });
-      return;
-    }
-
-    logger.warn({ model: result2.model, failures: result2.validation.failures }, "Qwen failed both rounds — returning best available draft");
-
-    // ── Fallback — whichever round produced fewer failures ─────────────────
-    const fallback = (result1.draft && result2.draft)
-      ? (result2.validation.failures.length <= result1.validation.failures.length ? result2 : result1)
-      : (result1.draft ? result1 : result2);
-
-    if (!fallback?.draft) {
+    if (!finalLyricsDraft) {
       res.status(500).json({ error: "Failed to generate a song. Please try again." });
       return;
     }
-    res.json({ draft: fallback.draft });
+
+    // ── Qwen flow/production details — runs after lyrics are finalized ────
+    logger.info("Starting Qwen3.5-122B flow/production details generation");
+    const flowData = await callFlowModel(finalLyricsDraft);
+
+    if (flowData) {
+      logger.info("Qwen flow details generated — merging with lyrics draft");
+    } else {
+      logger.warn("Qwen flow details unavailable — returning lyrics-only draft");
+    }
+
+    // ── Merge lyrics + production details into final draft ────────────────
+    const mergedDraft: SongDraft = {
+      ...finalLyricsDraft,
+      ...(flowData ?? {}),
+    };
+
+    res.json({ draft: mergedDraft });
   } catch (err) {
     logger.error({ err }, "NVIDIA API error");
     const status = (err as { status?: number }).status;
