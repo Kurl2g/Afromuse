@@ -51144,6 +51144,10 @@ function buildUserPrompt(params, strictMode = false) {
     languageFlavor = "Global English",
     dialectStyle,
     customFlavor,
+    dialectDepth = "Balanced Native",
+    clarityMode = "Artist Real",
+    blendBalance,
+    voiceTexture,
     commercialMode = false,
     lyricalDepth = "Balanced",
     hookRepeat = "Medium",
@@ -51198,7 +51202,78 @@ function buildUserPrompt(params, strictMode = false) {
     "Do not rely on English sentence structure with surface spelling changes.",
     "Do not overuse generic fallback phrases.",
     "The lyrics must sound culturally lived-in and musically natural.",
-    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "",
+    "\u2500\u2500 DIALECT DEPTH \u2500\u2500",
+    ...{
+      "Light Accent": [
+        "DIALECT DEPTH: LIGHT ACCENT \u2014 use a soft local flavor. Keep phrasing accessible and mostly understandable.",
+        "Sprinkle in native words and rhythm naturally \u2014 do not force heavy slang."
+      ],
+      "Balanced Native": [
+        "DIALECT DEPTH: BALANCED NATIVE \u2014 write as a real native artist would naturally speak and sing.",
+        "Use authentic vocabulary, flow, and rhythm without overloading slang."
+      ],
+      "Deep Native / Street": [
+        "DIALECT DEPTH: DEEP NATIVE / STREET \u2014 full cultural immersion. Raw, street-level phrasing.",
+        "Write exactly how a local artist performing for their own community would write \u2014 unfiltered and lived-in."
+      ]
+    }[dialectDepth] ?? ["DIALECT DEPTH: BALANCED NATIVE \u2014 authentic and natural phrasing."],
+    "",
+    "\u2500\u2500 CLARITY MODE \u2500\u2500",
+    ...{
+      "Radio Clean": [
+        "CLARITY MODE: RADIO CLEAN \u2014 prioritize polished, catchy phrasing. Broad appeal. Clear melodic structure.",
+        "Avoid roughness or ambiguity. Every line should feel ready for mainstream airplay."
+      ],
+      "Artist Real": [
+        "CLARITY MODE: ARTIST REAL \u2014 write as an authentic recording artist, emotionally real and naturally phrased.",
+        "Balance clarity with artistic expression. Avoid both over-polished and overly rough extremes."
+      ],
+      "Raw Street": [
+        "CLARITY MODE: RAW STREET \u2014 gritty, unfiltered, and local. Rough edges are intentional.",
+        "Write for the streets, not radio. Local texture and rawness are the goal."
+      ]
+    }[clarityMode] ?? ["CLARITY MODE: ARTIST REAL \u2014 authentic and emotionally natural."],
+    ...effectiveFlavor === "Mixed / Blend" && blendBalance ? [
+      "",
+      "\u2500\u2500 BLEND BALANCE \u2500\u2500",
+      ...{
+        "Mostly English": [
+          "BLEND BALANCE: MOSTLY ENGLISH \u2014 lyrics should be primarily in English with occasional local dialect phrases woven in for flavor.",
+          "Local language should feel like accents, not the dominant voice."
+        ],
+        "Balanced Mix": [
+          "BLEND BALANCE: BALANCED MIX \u2014 alternate naturally between English and local dialect.",
+          "Neither language should dominate. Flow between both as a real bilingual artist would."
+        ],
+        "Mostly Local": [
+          "BLEND BALANCE: MOSTLY LOCAL \u2014 lead with local dialect and Pidgin/Patois vocabulary.",
+          "English appears sparingly, as bridges or for global hook moments only."
+        ]
+      }[blendBalance] ?? []
+    ] : [],
+    ...voiceTexture ? [
+      "",
+      "\u2500\u2500 VOICE TEXTURE \u2500\u2500",
+      ...{
+        "Romantic / Melodic": [
+          "VOICE TEXTURE: ROMANTIC / MELODIC \u2014 lean into sweet, tender, lovefilled imagery. Melodic phrasing, flowing rhythm, emotional warmth."
+        ],
+        "Street / Gritty": [
+          "VOICE TEXTURE: STREET / GRITTY \u2014 tough, confident, street-hardened phrasing. Punchy lines, local bravado, raw energy."
+        ],
+        "Spiritual / Conscious": [
+          "VOICE TEXTURE: SPIRITUAL / CONSCIOUS \u2014 layered meaning, wisdom, introspection. Uplift, purpose, cultural pride. Avoid surface-level lines."
+        ],
+        "Pain / Reflective": [
+          "VOICE TEXTURE: PAIN / REFLECTIVE \u2014 emotional depth, vulnerability, longing. Write from a place of lived experience and honest heartbreak."
+        ],
+        "Confident / Bossy": [
+          "VOICE TEXTURE: CONFIDENT / BOSSY \u2014 powerful, assertive, self-assured. Every line exudes presence and ownership."
+        ]
+      }[voiceTexture] ?? []
+    ] : []
   ];
   if (style?.trim()) {
     lines.push(`STYLE / ARTIST REFERENCE: ${style.trim()} \u2014 capture the feel and writing DNA only \u2014 do NOT copy lyrics`);
@@ -51335,6 +51410,10 @@ router2.post("/generate-song", async (req, res) => {
     languageFlavor,
     dialectStyle,
     customFlavor,
+    dialectDepth,
+    clarityMode,
+    blendBalance,
+    voiceTexture,
     commercialMode,
     lyricalDepth,
     hookRepeat,
@@ -51370,6 +51449,10 @@ router2.post("/generate-song", async (req, res) => {
     languageFlavor: selectedFlavor,
     dialectStyle: dialectStyle && dialectStyle !== "Auto" ? dialectStyle : void 0,
     customFlavor,
+    dialectDepth: dialectDepth ?? "Balanced Native",
+    clarityMode: clarityMode ?? "Artist Real",
+    blendBalance: blendBalance ?? void 0,
+    voiceTexture: voiceTexture ?? void 0,
     commercialMode: commercialMode === true,
     lyricalDepth: selectedDepth,
     hookRepeat: selectedRepeat,

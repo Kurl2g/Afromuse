@@ -68,6 +68,33 @@ const LANGUAGE_FLAVORS = [
   { value: "Afro-fusion Clean Pidgin", label: "Afro-fusion Clean Pidgin" },
   { value: "Jamaican Street Patois", label: "Jamaican Street Patois" },
   { value: "Jamaican Spiritual Patois", label: "Jamaican Spiritual Patois" },
+  { value: "Mixed / Blend", label: "Mixed / Blend" },
+] as const;
+
+const DIALECT_DEPTH_OPTIONS = [
+  { value: "Light Accent", label: "Light Accent", hint: "Soft local flavor, mostly understandable" },
+  { value: "Balanced Native", label: "Balanced Native", hint: "Authentic and natural without overdoing slang" },
+  { value: "Deep Native / Street", label: "Deep Native / Street", hint: "Strong local identity, raw and immersive" },
+] as const;
+
+const CLARITY_MODE_OPTIONS = [
+  { value: "Radio Clean", label: "Radio Clean", hint: "Catchy, polished, broad appeal" },
+  { value: "Artist Real", label: "Artist Real", hint: "Authentic, emotional, natural writing" },
+  { value: "Raw Street", label: "Raw Street", hint: "Rougher, grittier, more local edge" },
+] as const;
+
+const BLEND_BALANCE_OPTIONS = [
+  { value: "Mostly English", label: "Mostly English" },
+  { value: "Balanced Mix", label: "Balanced Mix" },
+  { value: "Mostly Local", label: "Mostly Local" },
+] as const;
+
+const VOICE_TEXTURE_OPTIONS = [
+  { value: "Romantic / Melodic", label: "Romantic / Melodic" },
+  { value: "Street / Gritty", label: "Street / Gritty" },
+  { value: "Spiritual / Conscious", label: "Spiritual / Conscious" },
+  { value: "Pain / Reflective", label: "Pain / Reflective" },
+  { value: "Confident / Bossy", label: "Confident / Bossy" },
 ] as const;
 
 function getApiLanguageParams(flavor: string): { languageFlavor: string; dialectStyle: string | undefined } {
@@ -84,6 +111,8 @@ function getApiLanguageParams(flavor: string): { languageFlavor: string; dialect
       return { languageFlavor: "Jamaican Patois", dialectStyle: "Jamaican Street" };
     case "Jamaican Spiritual Patois":
       return { languageFlavor: "Jamaican Patois", dialectStyle: "Jamaican Spiritual" };
+    case "Mixed / Blend":
+      return { languageFlavor: "Mixed / Blend", dialectStyle: undefined };
     default:
       return { languageFlavor: "Global English", dialectStyle: undefined };
   }
@@ -113,6 +142,10 @@ export default function Studio() {
   const [languageFlavor, setLanguageFlavor] = useState("English");
   const [dialectStyle, setDialectStyle] = useState("Auto");
   const [customFlavor, setCustomFlavor] = useState("");
+  const [dialectDepth, setDialectDepth] = useState("Balanced Native");
+  const [clarityMode, setClarityMode] = useState("Artist Real");
+  const [blendBalance, setBlendBalance] = useState("Balanced Mix");
+  const [voiceTexture, setVoiceTexture] = useState("");
   const [style, setStyle] = useState("");
   const [notes, setNotes] = useState("");
   const [generatingStep, setGeneratingStep] = useState(0);
@@ -169,7 +202,13 @@ export default function Studio() {
       const res = await fetch("/api/generate-song", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, genre, mood, style, notes, songLength, languageFlavor: apiLanguageFlavor, dialectStyle: apiDialectStyle, customFlavor, commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel }),
+        body: JSON.stringify({
+          topic, genre, mood, style, notes, songLength,
+          languageFlavor: apiLanguageFlavor, dialectStyle: apiDialectStyle, customFlavor,
+          dialectDepth, clarityMode, blendBalance: languageFlavor === "Mixed / Blend" ? blendBalance : undefined,
+          voiceTexture: voiceTexture || undefined,
+          commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
+        }),
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -233,6 +272,10 @@ export default function Studio() {
     setLanguageFlavor("English");
     setDialectStyle("Auto");
     setCustomFlavor("");
+    setDialectDepth("Balanced Native");
+    setClarityMode("Artist Real");
+    setBlendBalance("Balanced Mix");
+    setVoiceTexture("");
     setStyle("");
     setNotes("");
     setCommercialMode(false);
@@ -619,24 +662,129 @@ export default function Studio() {
                   </p>
                 </div>
 
-                {/* Language / Flavor */}
-                <div>
-                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
-                    Language / Flavor
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={languageFlavor}
-                      onChange={(e) => setLanguageFlavor(e.target.value)}
-                      className="w-full h-12 rounded-xl bg-[#13131f] border border-white/10 px-3 pr-8 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
-                    >
-                      {LANGUAGE_FLAVORS.map((f) => (
-                        <option key={f.value} value={f.value} className="bg-[#13131f]">{f.label}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                {/* Language & Voice */}
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-bold text-white/80 uppercase tracking-wider">Language &amp; Voice</p>
+                    <p className="text-[11px] text-white/35 mt-0.5 leading-relaxed">Choose how the lyrics should sound culturally, emotionally, and street-wise. Controls vocabulary, phrasing, realism, and dialect depth.</p>
                   </div>
-                  <p className="text-[11px] text-white/25 mt-1.5">Shapes dialect, slang level, and cultural tone</p>
+
+                  {/* Field 1 — Language Style */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-1.5">Language Style</label>
+                    <div className="relative">
+                      <select
+                        value={languageFlavor}
+                        onChange={(e) => setLanguageFlavor(e.target.value)}
+                        className="w-full h-12 rounded-xl bg-[#13131f] border border-white/10 px-3 pr-8 text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                      >
+                        {LANGUAGE_FLAVORS.map((f) => (
+                          <option key={f.value} value={f.value} className="bg-[#13131f]">{f.label}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Field 2 — Dialect Depth */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-1">Dialect Depth</label>
+                    <p className="text-[11px] text-white/25 mb-1.5">How native should the language feel?</p>
+                    <div className="flex gap-1.5">
+                      {DIALECT_DEPTH_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setDialectDepth(opt.value)}
+                          title={opt.hint}
+                          className={`flex-1 h-9 rounded-xl text-[11px] font-bold tracking-wide transition-all border truncate px-1 ${
+                            dialectDepth === opt.value
+                              ? "bg-primary/15 border-primary/45 text-primary shadow-[0_0_10px_rgba(251,191,36,0.1)]"
+                              : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-white/20 mt-1">
+                      {DIALECT_DEPTH_OPTIONS.find(o => o.value === dialectDepth)?.hint}
+                    </p>
+                  </div>
+
+                  {/* Field 3 — Clarity Mode */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-1">Clarity Mode</label>
+                    <p className="text-[11px] text-white/25 mb-1.5">How polished or raw should the lyrics sound?</p>
+                    <div className="flex gap-1.5">
+                      {CLARITY_MODE_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setClarityMode(opt.value)}
+                          title={opt.hint}
+                          className={`flex-1 h-9 rounded-xl text-[11px] font-bold tracking-wide transition-all border truncate px-1 ${
+                            clarityMode === opt.value
+                              ? "bg-primary/15 border-primary/45 text-primary shadow-[0_0_10px_rgba(251,191,36,0.1)]"
+                              : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-white/20 mt-1">
+                      {CLARITY_MODE_OPTIONS.find(o => o.value === clarityMode)?.hint}
+                    </p>
+                  </div>
+
+                  {/* Field 4 — Blend Balance (only when Mixed / Blend selected) */}
+                  {languageFlavor === "Mixed / Blend" && (
+                    <div>
+                      <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-1">Blend Balance</label>
+                      <p className="text-[11px] text-white/25 mb-1.5">Control how much local language appears versus clean English.</p>
+                      <div className="flex gap-1.5">
+                        {BLEND_BALANCE_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setBlendBalance(opt.value)}
+                            className={`flex-1 h-9 rounded-xl text-[11px] font-bold tracking-wide transition-all border truncate px-1 ${
+                              blendBalance === opt.value
+                                ? "bg-secondary/15 border-secondary/45 text-secondary shadow-[0_0_10px_rgba(139,92,246,0.12)]"
+                                : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Field 5 — Voice Texture (optional) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-1">
+                      Voice Texture <span className="text-white/25 font-normal normal-case tracking-normal">optional</span>
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {VOICE_TEXTURE_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setVoiceTexture(voiceTexture === opt.value ? "" : opt.value)}
+                          className={`h-8 px-3 rounded-xl text-[11px] font-bold tracking-wide transition-all border ${
+                            voiceTexture === opt.value
+                              ? "bg-secondary/15 border-secondary/45 text-secondary shadow-[0_0_10px_rgba(139,92,246,0.12)]"
+                              : "bg-white/3 border-white/8 text-white/35 hover:text-white/60 hover:border-white/20 hover:bg-white/5"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-white/20 mt-1">Shapes the emotional phrasing style inside the dialect</p>
+                  </div>
                 </div>
 
 
