@@ -515,6 +515,44 @@ Return ONLY this JSON object — no markdown, no code fences, no explanation:
 }`;
 }
 
+// ─── Language Realism Engine — universal dialect guard ───────────────────────
+
+function getLanguageRealismEngineBlock(): string[] {
+  return [
+    "",
+    "╔══════════════════════════════════════════════════════════════╗",
+    "  ⚠  LANGUAGE REALISM ENGINE — MANDATORY BEFORE EVERY LINE",
+    "╚══════════════════════════════════════════════════════════════╝",
+    "",
+    "CRITICAL RULE — YOU ARE NOT ALLOWED TO WRITE FAKE DIALECT.",
+    "Do NOT write 'English wearing dialect clothes.'",
+    "That means:",
+    "  → Do NOT take standard English sentences and just respell them.",
+    "  → Do NOT rely on generic AI-safe phrases.",
+    "  → Do NOT write translated English and pretend it is authentic local language.",
+    "  → Do NOT overuse the same fallback expressions across different sections.",
+    "The lyrics must feel like a real artist from that language world could naturally sing them.",
+    "",
+    "── ANTI-REPETITION / ANTI-FAKE LANGUAGE TEST ──",
+    "Before finalizing ANY section, silently run every line through this test:",
+    "  1. Would a real artist from this language world naturally sing this line?",
+    "  2. Is this line emotionally local — or just English with altered spelling?",
+    "  3. Have I repeated lazy fallback phrases too many times in this song?",
+    "  4. Does this language feel lived-in, or AI-generated?",
+    "If ANY answer is weak — rewrite the line before continuing.",
+    "",
+    "FINAL PRIORITY ORDER (enforce in this sequence):",
+    "  1. Believability — would a real native artist own this line?",
+    "  2. Emotional impact — does it land with real human feeling?",
+    "  3. Singability — does it sit naturally on a melody?",
+    "  4. Cultural realism — is it anchored in the real language world?",
+    "  5. Catchiness — is it sticky enough to replay?",
+    "╔══════════════════════════════════════════════════════════════╗",
+    "  Every line must earn its place. Realism before poetry. Always.",
+    "╚══════════════════════════════════════════════════════════════╝",
+  ];
+}
+
 // ─── Sub-style intelligence blocks ───────────────────────────────────────────
 
 function getDialectSubStyleBlock(dialectStyle: string): string[] {
@@ -698,6 +736,57 @@ function getDialectSubStyleBlock(dialectStyle: string): string[] {
     ];
   }
 
+  if (style === "naija street pidgin") {
+    return [
+      "",
+      "╔══════════════════════════════════════════════╗",
+      "  ⚡ ACTIVE LANGUAGE MODE: NAIJA STREET PIDGIN",
+      "╚══════════════════════════════════════════════╝",
+      "",
+      "USE FOR: hustle reality, trenches, pressure, survival, grit, pain, flex, confidence — street-rooted Lagos energy.",
+      "",
+      "TONE: rough · direct · trenches-coded · emotionally raw · street-believable — not dramatised fake toughness.",
+      "",
+      "VOCABULARY TENDENCIES — draw from these naturally:",
+      "  e don red, road don dey, e be like, no cap",
+      "  dem no see am, we hustle from ground, nobody send us",
+      "  I don see road, wetin I chop, e hard outside",
+      "  pressure dey, I carry am, from gutter to something",
+      "  hunger real, God dey watch, I no go relax",
+      "",
+      "WRITING RULES — enforce every line:",
+      "  → Must feel like LIVED street speech — not dramatic movie dialogue about the streets",
+      "  → Lean into the grind, survival, pain, quiet confidence — not empty bravado",
+      "  → Avoid smooth romantic Afrobeats phrasing — this is not Naija Melodic Pidgin",
+      "  → Avoid over-clean lines — this is raw and direct, not polished",
+      "  → Lines should feel earned and real — like someone who has actually been in the trenches",
+      "",
+      "GOOD ENERGY — write lines like these:",
+      "  ✓ 'From nothing — na so I start, na so I go finish strong'",
+      "  ✓ 'Road hard but I never carry last'",
+      "  ✓ 'Dem no send me — I send myself'",
+      "  ✓ 'Hunger teach me wetin comfort no fit teach'",
+      "  ✓ 'I hustle in silence — God see everything'",
+      "  ✓ 'No be shine I want — na solid foundation'",
+      "",
+      "REJECTED LINES — these all fail — do not write anything like them:",
+      "  ✗ 'I am grinding hard every day to achieve my dreams' — English sentence, zero street Pidgin",
+      "  ✗ 'Together we rise, na so e be for the boys' — generic motivational, no real street weight",
+      "  ✗ 'You sweet me die' — that is Naija Melodic Pidgin, wrong register for this mode",
+      "",
+      "FORBIDDEN OVERUSED PHRASES — these are lazy fallbacks, do NOT use them:",
+      "  ✗ 'I no go fall' — overused, empty",
+      "  ✗ 'Na so e be' — used correctly only if it truly fits",
+      "  ✗ 'Only God sabi' — overused as filler",
+      "  ✗ 'I don arrive' — allowed only if truly earned by the story",
+      "  ✗ 'E dey happen' — too vague, too lazy",
+      "",
+      "AVOID: romantic phrasing, smooth emotional softness, polished Afrobeats pop language — this is street, not radio-smooth.",
+      "EMOTIONAL REGISTER: hard on the surface, quietly determined underneath. Survival as a badge of honour.",
+      "HOOK ENERGY: declarations you'd hear from someone who has paid the price and wants the world to know — confrontational, chantable, real.",
+    ];
+  }
+
   if (style === "afro-fusion clean pidgin") {
     return [
       "",
@@ -755,6 +844,7 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
 
   if (isPatois) {
     return [
+      ...getLanguageRealismEngineBlock(),
       "",
       "╔══════════════════════════════════════════════╗",
       "  ⚡ ACTIVE MODE: JAMAICAN PATOIS — DIALECT-FIRST",
@@ -853,6 +943,7 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
 
   if (isPidgin) {
     return [
+      ...getLanguageRealismEngineBlock(),
       "",
       "╔══════════════════════════════════════════════╗",
       "  ⚡ ACTIVE MODE: WEST AFRICAN PIDGIN — DIALECT-FIRST",

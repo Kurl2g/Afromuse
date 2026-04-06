@@ -50588,6 +50588,41 @@ Return ONLY this JSON object \u2014 no markdown, no code fences, no explanation:
   }
 }`;
 }
+function getLanguageRealismEngineBlock() {
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u26A0  LANGUAGE REALISM ENGINE \u2014 MANDATORY BEFORE EVERY LINE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "CRITICAL RULE \u2014 YOU ARE NOT ALLOWED TO WRITE FAKE DIALECT.",
+    "Do NOT write 'English wearing dialect clothes.'",
+    "That means:",
+    "  \u2192 Do NOT take standard English sentences and just respell them.",
+    "  \u2192 Do NOT rely on generic AI-safe phrases.",
+    "  \u2192 Do NOT write translated English and pretend it is authentic local language.",
+    "  \u2192 Do NOT overuse the same fallback expressions across different sections.",
+    "The lyrics must feel like a real artist from that language world could naturally sing them.",
+    "",
+    "\u2500\u2500 ANTI-REPETITION / ANTI-FAKE LANGUAGE TEST \u2500\u2500",
+    "Before finalizing ANY section, silently run every line through this test:",
+    "  1. Would a real artist from this language world naturally sing this line?",
+    "  2. Is this line emotionally local \u2014 or just English with altered spelling?",
+    "  3. Have I repeated lazy fallback phrases too many times in this song?",
+    "  4. Does this language feel lived-in, or AI-generated?",
+    "If ANY answer is weak \u2014 rewrite the line before continuing.",
+    "",
+    "FINAL PRIORITY ORDER (enforce in this sequence):",
+    "  1. Believability \u2014 would a real native artist own this line?",
+    "  2. Emotional impact \u2014 does it land with real human feeling?",
+    "  3. Singability \u2014 does it sit naturally on a melody?",
+    "  4. Cultural realism \u2014 is it anchored in the real language world?",
+    "  5. Catchiness \u2014 is it sticky enough to replay?",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  Every line must earn its place. Realism before poetry. Always.",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D"
+  ];
+}
 function getDialectSubStyleBlock(dialectStyle) {
   const style = dialectStyle?.toLowerCase().trim() ?? "";
   if (style === "jamaican street") {
@@ -50764,6 +50799,56 @@ function getDialectSubStyleBlock(dialectStyle) {
       "HOOK ENERGY: conversational but classy \u2014 the kind you'd overhear from someone effortlessly cool."
     ];
   }
+  if (style === "naija street pidgin") {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u26A1 ACTIVE LANGUAGE MODE: NAIJA STREET PIDGIN",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "USE FOR: hustle reality, trenches, pressure, survival, grit, pain, flex, confidence \u2014 street-rooted Lagos energy.",
+      "",
+      "TONE: rough \xB7 direct \xB7 trenches-coded \xB7 emotionally raw \xB7 street-believable \u2014 not dramatised fake toughness.",
+      "",
+      "VOCABULARY TENDENCIES \u2014 draw from these naturally:",
+      "  e don red, road don dey, e be like, no cap",
+      "  dem no see am, we hustle from ground, nobody send us",
+      "  I don see road, wetin I chop, e hard outside",
+      "  pressure dey, I carry am, from gutter to something",
+      "  hunger real, God dey watch, I no go relax",
+      "",
+      "WRITING RULES \u2014 enforce every line:",
+      "  \u2192 Must feel like LIVED street speech \u2014 not dramatic movie dialogue about the streets",
+      "  \u2192 Lean into the grind, survival, pain, quiet confidence \u2014 not empty bravado",
+      "  \u2192 Avoid smooth romantic Afrobeats phrasing \u2014 this is not Naija Melodic Pidgin",
+      "  \u2192 Avoid over-clean lines \u2014 this is raw and direct, not polished",
+      "  \u2192 Lines should feel earned and real \u2014 like someone who has actually been in the trenches",
+      "",
+      "GOOD ENERGY \u2014 write lines like these:",
+      "  \u2713 'From nothing \u2014 na so I start, na so I go finish strong'",
+      "  \u2713 'Road hard but I never carry last'",
+      "  \u2713 'Dem no send me \u2014 I send myself'",
+      "  \u2713 'Hunger teach me wetin comfort no fit teach'",
+      "  \u2713 'I hustle in silence \u2014 God see everything'",
+      "  \u2713 'No be shine I want \u2014 na solid foundation'",
+      "",
+      "REJECTED LINES \u2014 these all fail \u2014 do not write anything like them:",
+      "  \u2717 'I am grinding hard every day to achieve my dreams' \u2014 English sentence, zero street Pidgin",
+      "  \u2717 'Together we rise, na so e be for the boys' \u2014 generic motivational, no real street weight",
+      "  \u2717 'You sweet me die' \u2014 that is Naija Melodic Pidgin, wrong register for this mode",
+      "",
+      "FORBIDDEN OVERUSED PHRASES \u2014 these are lazy fallbacks, do NOT use them:",
+      "  \u2717 'I no go fall' \u2014 overused, empty",
+      "  \u2717 'Na so e be' \u2014 used correctly only if it truly fits",
+      "  \u2717 'Only God sabi' \u2014 overused as filler",
+      "  \u2717 'I don arrive' \u2014 allowed only if truly earned by the story",
+      "  \u2717 'E dey happen' \u2014 too vague, too lazy",
+      "",
+      "AVOID: romantic phrasing, smooth emotional softness, polished Afrobeats pop language \u2014 this is street, not radio-smooth.",
+      "EMOTIONAL REGISTER: hard on the surface, quietly determined underneath. Survival as a badge of honour.",
+      "HOOK ENERGY: declarations you'd hear from someone who has paid the price and wants the world to know \u2014 confrontational, chantable, real."
+    ];
+  }
   if (style === "afro-fusion clean pidgin") {
     return [
       "",
@@ -50814,6 +50899,7 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
   const subStyleBlock = dialectStyle && dialectStyle !== "Auto" ? getDialectSubStyleBlock(dialectStyle) : [];
   if (isPatois) {
     return [
+      ...getLanguageRealismEngineBlock(),
       "",
       "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
       "  \u26A1 ACTIVE MODE: JAMAICAN PATOIS \u2014 DIALECT-FIRST",
@@ -50911,6 +50997,7 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
   }
   if (isPidgin) {
     return [
+      ...getLanguageRealismEngineBlock(),
       "",
       "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
       "  \u26A1 ACTIVE MODE: WEST AFRICAN PIDGIN \u2014 DIALECT-FIRST",
