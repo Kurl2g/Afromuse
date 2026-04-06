@@ -236,37 +236,54 @@ export default function Studio() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const saveProject = () => {
+  const saveProject = async () => {
     if (!draft) return;
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
     const beatDNA = audioStudioRef.current?.getBeatDNAState();
-    const persistedSession = saveCurrentSession({
-      sessionId: activeSessionId ?? undefined,
-      topic,
-      genre,
-      mood,
-      songLength,
-      lyricsSource,
-      languageFlavor,
-      customFlavor,
-      style,
-      notes,
-      commercialMode,
-      lyricalDepth,
-      hookRepeat,
-      genderVoiceModel,
-      performanceFeel,
-      bounceStyle: beatDNA?.bounceStyle,
-      melodyDensity: beatDNA?.melodyDensity,
-      drumCharacter: beatDNA?.drumCharacter,
-      hookLift: beatDNA?.hookLift,
-      draft,
-    });
-    setActiveSessionId(persistedSession.sessionId);
-    setSaved(true);
-    toast({
-      title: "Session saved!",
-      description: `"${draft.title}" saved to your Project Library.`,
-    });
+    try {
+      const persistedSession = await saveCurrentSession({
+        sessionId: activeSessionId ?? undefined,
+        topic,
+        genre,
+        mood,
+        songLength,
+        lyricsSource,
+        languageFlavor,
+        customFlavor,
+        style,
+        notes,
+        commercialMode,
+        lyricalDepth,
+        hookRepeat,
+        genderVoiceModel,
+        performanceFeel,
+        bounceStyle: beatDNA?.bounceStyle,
+        melodyDensity: beatDNA?.melodyDensity,
+        drumCharacter: beatDNA?.drumCharacter,
+        hookLift: beatDNA?.hookLift,
+        draft,
+      });
+      setActiveSessionId(persistedSession.sessionId);
+      setSaved(true);
+      toast({
+        title: "Session saved!",
+        description: `"${draft.title}" saved to your Project Library.`,
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg.includes("401")) {
+        setShowLoginModal(true);
+      } else {
+        toast({
+          title: "Save failed",
+          description: "Could not save your project. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleResume = (session: SavedSession) => {
