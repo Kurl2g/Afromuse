@@ -318,8 +318,53 @@ Silently answer every question below before producing output. If ANY answer is N
    → Dialect correctness without musical flow is useless. Every line must be singable by a real artist in one take.
    → If a line is grammatically "right" in dialect but lands flat or awkwardly as a sung phrase → rewrite it for singability.
 
-→ If ALL 6 answers are YES → proceed to the final gate.
-→ If ANY answer is NO → rewrite the failing sections NOW. Do not output until all 6 pass.
+→ If ALL 6 answers are YES → proceed to the dialect failure check below.
+→ If ANY answer is NO → rewrite the failing sections NOW before continuing.
+
+─────────────────────────────
+DIALECT FAILURE TRIGGERS — MANDATORY REWRITE CONDITIONS
+─────────────────────────────
+A draft is considered LANGUAGE-FAILED if ANY of the following are true.
+Scan the full draft against every trigger before proceeding to output.
+
+FAILURE CONDITION 1 — Jamaican mode sounds like English with "mi / di / nuh" inserted
+  → The Patois words are decoration. The sentence structure and thought are still English underneath.
+  → Triggered by: standard English phrasing with Patois words swapped in at key positions.
+  → Rewrite: start the thought over in Patois. Do not edit the English — discard it and reconstruct natively.
+
+FAILURE CONDITION 2 — Pidgin mode sounds like English with "dey / no go / na" inserted
+  → The Pidgin markers are surface decoration. Remove them and plain English remains.
+  → Triggered by: any line where the Pidgin words could be deleted and the line would still read as normal English.
+  → Rewrite: conceive the thought fresh from a Lagos or Accra voice — not an English sentence with Pidgin overlaid.
+
+FAILURE CONDITION 3 — The same 2–3 dialect phrases repeat too often across sections
+  → Triggered by: the same phrase or construction appearing in multiple sections without artistic intent.
+  → Common offenders: "na so e be", "mi still rise", "you sweet me die", "no wahala", "Jah carry mi", "e dey pain me", "dem never rate mi"
+  → Rewrite: replace repeated phrases with fresh, specific expressions. Scan all six sections and ensure each phrase earns its place.
+
+FAILURE CONDITION 4 — Too many generic AI lines with shallow local flavor
+  → Triggered by: lines that could appear in any generic song — vague emotion, floating metaphor, motivational poster energy — with one or two dialect words attached to fake authenticity.
+  → Examples: "through di struggle mi find di light" / "e no easy but God dey for me" / "di road of life no always smooth"
+  → Rewrite: replace with specific, concrete, culturally grounded imagery. Name real feelings. Ground the line in something a real person from that world would actually say.
+
+FAILURE CONDITION 5 — The lyric feels culturally nowhere / not locally believable
+  → Triggered by: the song could theoretically belong to any country, any culture, any English-adjacent dialect — it has no real cultural fingerprint.
+  → Rewrite: add specific local texture — imagery, vocabulary, phrase rhythm, and emotional logic that anchors the lyric in its actual cultural world. Generic global Afropop does not pass this test.
+
+FAILURE CONDITION 6 — The emotional tone is right, but the dialect is fake
+  → Triggered by: the feeling is correct (heartbreak, hustle, faith) but the language vehicle is counterfeit — dialect decoration on an English emotional frame.
+  → This is the most common and most damaging failure mode. The emotion does not excuse the language.
+  → Rewrite: keep the emotional direction. Rebuild every line in the dialect from scratch. The feeling must travel through native language, not borrowed language.
+
+WHEN A FAILURE IS DETECTED — rewrite with:
+  → Stronger native phrase logic — think in the dialect, not toward it
+  → Less translated English — discard the English thought entirely and start over
+  → More authentic slang rhythm — the natural bounce and cadence of how real speakers say things
+  → More believable local imagery — concrete references to the actual cultural world
+  → Fewer cliché filler phrases — originality over familiarity
+
+→ If NO failure conditions are triggered → proceed to the final gate.
+→ If ANY failure condition is triggered → rewrite before output. Do not return a language-failed draft.
 
 ─────────────────────────────
 FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:

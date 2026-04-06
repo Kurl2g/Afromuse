@@ -50404,8 +50404,53 @@ Silently answer every question below before producing output. If ANY answer is N
    \u2192 Dialect correctness without musical flow is useless. Every line must be singable by a real artist in one take.
    \u2192 If a line is grammatically "right" in dialect but lands flat or awkwardly as a sung phrase \u2192 rewrite it for singability.
 
-\u2192 If ALL 6 answers are YES \u2192 proceed to the final gate.
-\u2192 If ANY answer is NO \u2192 rewrite the failing sections NOW. Do not output until all 6 pass.
+\u2192 If ALL 6 answers are YES \u2192 proceed to the dialect failure check below.
+\u2192 If ANY answer is NO \u2192 rewrite the failing sections NOW before continuing.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+DIALECT FAILURE TRIGGERS \u2014 MANDATORY REWRITE CONDITIONS
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+A draft is considered LANGUAGE-FAILED if ANY of the following are true.
+Scan the full draft against every trigger before proceeding to output.
+
+FAILURE CONDITION 1 \u2014 Jamaican mode sounds like English with "mi / di / nuh" inserted
+  \u2192 The Patois words are decoration. The sentence structure and thought are still English underneath.
+  \u2192 Triggered by: standard English phrasing with Patois words swapped in at key positions.
+  \u2192 Rewrite: start the thought over in Patois. Do not edit the English \u2014 discard it and reconstruct natively.
+
+FAILURE CONDITION 2 \u2014 Pidgin mode sounds like English with "dey / no go / na" inserted
+  \u2192 The Pidgin markers are surface decoration. Remove them and plain English remains.
+  \u2192 Triggered by: any line where the Pidgin words could be deleted and the line would still read as normal English.
+  \u2192 Rewrite: conceive the thought fresh from a Lagos or Accra voice \u2014 not an English sentence with Pidgin overlaid.
+
+FAILURE CONDITION 3 \u2014 The same 2\u20133 dialect phrases repeat too often across sections
+  \u2192 Triggered by: the same phrase or construction appearing in multiple sections without artistic intent.
+  \u2192 Common offenders: "na so e be", "mi still rise", "you sweet me die", "no wahala", "Jah carry mi", "e dey pain me", "dem never rate mi"
+  \u2192 Rewrite: replace repeated phrases with fresh, specific expressions. Scan all six sections and ensure each phrase earns its place.
+
+FAILURE CONDITION 4 \u2014 Too many generic AI lines with shallow local flavor
+  \u2192 Triggered by: lines that could appear in any generic song \u2014 vague emotion, floating metaphor, motivational poster energy \u2014 with one or two dialect words attached to fake authenticity.
+  \u2192 Examples: "through di struggle mi find di light" / "e no easy but God dey for me" / "di road of life no always smooth"
+  \u2192 Rewrite: replace with specific, concrete, culturally grounded imagery. Name real feelings. Ground the line in something a real person from that world would actually say.
+
+FAILURE CONDITION 5 \u2014 The lyric feels culturally nowhere / not locally believable
+  \u2192 Triggered by: the song could theoretically belong to any country, any culture, any English-adjacent dialect \u2014 it has no real cultural fingerprint.
+  \u2192 Rewrite: add specific local texture \u2014 imagery, vocabulary, phrase rhythm, and emotional logic that anchors the lyric in its actual cultural world. Generic global Afropop does not pass this test.
+
+FAILURE CONDITION 6 \u2014 The emotional tone is right, but the dialect is fake
+  \u2192 Triggered by: the feeling is correct (heartbreak, hustle, faith) but the language vehicle is counterfeit \u2014 dialect decoration on an English emotional frame.
+  \u2192 This is the most common and most damaging failure mode. The emotion does not excuse the language.
+  \u2192 Rewrite: keep the emotional direction. Rebuild every line in the dialect from scratch. The feeling must travel through native language, not borrowed language.
+
+WHEN A FAILURE IS DETECTED \u2014 rewrite with:
+  \u2192 Stronger native phrase logic \u2014 think in the dialect, not toward it
+  \u2192 Less translated English \u2014 discard the English thought entirely and start over
+  \u2192 More authentic slang rhythm \u2014 the natural bounce and cadence of how real speakers say things
+  \u2192 More believable local imagery \u2014 concrete references to the actual cultural world
+  \u2192 Fewer clich\xE9 filler phrases \u2014 originality over familiarity
+
+\u2192 If NO failure conditions are triggered \u2192 proceed to the final gate.
+\u2192 If ANY failure condition is triggered \u2192 rewrite before output. Do not return a language-failed draft.
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
