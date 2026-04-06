@@ -50378,6 +50378,36 @@ STRUCTURAL RULES (hard law \u2014 count lines before output):
 \u2192 STRUCTURE VALIDATOR: before returning, count every section. If ANY count is wrong \u2192 rewrite that section.
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+LANGUAGE AUTHENTICITY CHECK \u2014 MANDATORY (run this before the final gate)
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Silently answer every question below before producing output. If ANY answer is NO, rewrite the failing lines or sections before continuing.
+
+1. Does the selected language mode sound NATIVE \u2014 not like English with accent spelling?
+   \u2192 If the dialect words were removed, would English sentences still be underneath? If YES \u2192 rewrite.
+
+2. Would a real Jamaican / Naija / Ghanaian street listener believe this voice is authentic?
+   \u2192 If it would read as a tourist impression or AI imitation \u2192 rewrite.
+
+3. Are repeated filler phrases being overused across the song?
+   \u2192 Phrases like "na so e be", "mi still rise", "you sweet me die", "no wahala again", "Jah carry mi" cannot appear more than once unless the artistic intent demands it.
+   \u2192 Scan every section. Remove or replace any phrase that appears more than once without a clear artistic reason.
+
+4. Does every line use REAL PHRASE LOGIC \u2014 not translated English?
+   \u2192 The thought must be conceived in the dialect, not taken from English and converted.
+   \u2192 Any line that sounds like a direct translation fails. Rebuild it natively.
+
+5. Is the dialect consistent across ALL sections?
+   \u2192 Intro, Verse 1, Chorus, Verse 2, Bridge, Outro must all hold the same dialect standard.
+   \u2192 A strong chorus surrounded by weak English-leaning verses is a failed song. Fix every section independently.
+
+6. If the song is emotional, does the language still feel musical and singable \u2014 not just "correct"?
+   \u2192 Dialect correctness without musical flow is useless. Every line must be singable by a real artist in one take.
+   \u2192 If a line is grammatically "right" in dialect but lands flat or awkwardly as a sung phrase \u2192 rewrite it for singability.
+
+\u2192 If ALL 6 answers are YES \u2192 proceed to the final gate.
+\u2192 If ANY answer is NO \u2192 rewrite the failing sections NOW. Do not output until all 6 pass.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
 \u2713 Hook would survive the 5-question enforcer
 \u2713 Every line is emotionally sharp and genre-authentic
@@ -50386,6 +50416,7 @@ FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
 \u2713 Bridge is EXACTLY 4 lines \u2014 not 3, not 5
 \u2713 Outro is labeled ONLY as "Outro" \u2014 no slash labels
 \u2713 Every lyric line passes the dialect-first test if Patois or Pidgin is active
+\u2713 Language Authenticity Check \u2014 all 6 questions answered YES
 
 ==================================================
 OUTPUT FORMAT \u2014 STRICTLY ENFORCED

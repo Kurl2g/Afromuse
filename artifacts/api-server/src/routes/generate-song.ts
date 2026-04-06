@@ -292,6 +292,36 @@ STRUCTURAL RULES (hard law — count lines before output):
 → STRUCTURE VALIDATOR: before returning, count every section. If ANY count is wrong → rewrite that section.
 
 ─────────────────────────────
+LANGUAGE AUTHENTICITY CHECK — MANDATORY (run this before the final gate)
+─────────────────────────────
+Silently answer every question below before producing output. If ANY answer is NO, rewrite the failing lines or sections before continuing.
+
+1. Does the selected language mode sound NATIVE — not like English with accent spelling?
+   → If the dialect words were removed, would English sentences still be underneath? If YES → rewrite.
+
+2. Would a real Jamaican / Naija / Ghanaian street listener believe this voice is authentic?
+   → If it would read as a tourist impression or AI imitation → rewrite.
+
+3. Are repeated filler phrases being overused across the song?
+   → Phrases like "na so e be", "mi still rise", "you sweet me die", "no wahala again", "Jah carry mi" cannot appear more than once unless the artistic intent demands it.
+   → Scan every section. Remove or replace any phrase that appears more than once without a clear artistic reason.
+
+4. Does every line use REAL PHRASE LOGIC — not translated English?
+   → The thought must be conceived in the dialect, not taken from English and converted.
+   → Any line that sounds like a direct translation fails. Rebuild it natively.
+
+5. Is the dialect consistent across ALL sections?
+   → Intro, Verse 1, Chorus, Verse 2, Bridge, Outro must all hold the same dialect standard.
+   → A strong chorus surrounded by weak English-leaning verses is a failed song. Fix every section independently.
+
+6. If the song is emotional, does the language still feel musical and singable — not just "correct"?
+   → Dialect correctness without musical flow is useless. Every line must be singable by a real artist in one take.
+   → If a line is grammatically "right" in dialect but lands flat or awkwardly as a sung phrase → rewrite it for singability.
+
+→ If ALL 6 answers are YES → proceed to the final gate.
+→ If ANY answer is NO → rewrite the failing sections NOW. Do not output until all 6 pass.
+
+─────────────────────────────
 FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:
 ✓ Hook would survive the 5-question enforcer
 ✓ Every line is emotionally sharp and genre-authentic
@@ -300,6 +330,7 @@ FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:
 ✓ Bridge is EXACTLY 4 lines — not 3, not 5
 ✓ Outro is labeled ONLY as "Outro" — no slash labels
 ✓ Every lyric line passes the dialect-first test if Patois or Pidgin is active
+✓ Language Authenticity Check — all 6 questions answered YES
 
 ==================================================
 OUTPUT FORMAT — STRICTLY ENFORCED
