@@ -50279,7 +50279,8 @@ STRUCTURAL RULES (hard law \u2014 count lines before output):
 \u2192 STRUCTURE VALIDATOR: before returning, count every section. If ANY count is wrong \u2192 rewrite that section.
 
 PRODUCTION NOTES (always include):
-- Chord / Key, BPM, energy and groove feel, melody direction per section, arrangement roadmap: intro \u2192 chorus \u2192 verse 1 \u2192 chorus \u2192 verse 2 \u2192 chorus \u2192 bridge \u2192 final chorus/outro.
+- Chord / Key, BPM, energy and groove feel, melody direction per section, arrangement roadmap: intro \u2192 verse 1 \u2192 chorus \u2192 verse 2 \u2192 chorus \u2192 bridge \u2192 outro.
+- The arrangement roadmap MUST follow the actual song section order above. Do NOT place chorus before verse 1.
 
 INSTRUMENTAL GUIDANCE (always include \u2014 write FOR a producer):
 - Drum pattern, bass line, lead melody, pads/chords, percussion, effects.
@@ -50334,7 +50335,7 @@ The JSON must use this exact structure:
     "energy": "Energy level and feel (e.g. Mid-tempo, emotionally heavy, reflective)",
     "hookStrength": "Hook strength rating and reason (e.g. High \u2014 keeper line is instantly memorable and screaming-ready)",
     "lyricalDepth": "Lyrical depth assessment (e.g. Deep \u2014 rich imagery, emotional layers, human storytelling throughout)",
-    "arrangement": "Full arrangement roadmap from intro to outro",
+    "arrangement": "Full arrangement roadmap in correct section order: intro \u2192 verse 1 \u2192 chorus \u2192 verse 2 \u2192 chorus \u2192 bridge \u2192 outro \u2014 with production description for each section",
     "melodyDirection": "Vocal guidance per section: verse delivery, chorus lift, bridge turn"
   },
   "instrumentalGuidance": "Detailed instrumental description for a music producer \u2014 drum pattern, bass line, lead melody, pads, percussion, effects, and how the arrangement evolves section by section",
@@ -50349,7 +50350,7 @@ The JSON must use this exact structure:
     "effects": "Global effects and panning notes \u2014 reverb, delay, sidechain, stereo placement (e.g. Drum room reverb, vocal delay throw on hook endings, wide stereo pads, mono kick/bass)"
   },
   "exportNotes": "Producer-friendly instructions to make the track immediately recordable \u2014 session tempo, key, suggested DAW setup, reference track energy, how to prepare a vocal booth session, and any special production or arrangement reminders",
-  "arrangementBlueprint": "Step-by-step recording and arrangement map \u2014 section order with bar counts, section transition cues, vocal double placement, ad-lib placement guides, and engineering setup markers for the full song",
+  "arrangementBlueprint": "Step-by-step recording and arrangement map in correct song order (intro \u2192 verse 1 \u2192 chorus \u2192 verse 2 \u2192 chorus \u2192 bridge \u2192 outro) \u2014 bar counts per section, transition cues, drop and lift points, vocal double placement, ad-lib placement guides, and engineering setup markers for the full song",
   "sessionNotes": "One tight paragraph session brief \u2014 tempo, key, mood, DAW template suggestion, reference track energy recommendation, and priority recording order",
   "sonicIdentity": {
     "coreBounce": "The rhythmic DNA \u2014 what drives the groove and makes the body move (e.g. Afrobeats pocket at 100 BPM, kick-snare locked with talking drum, swung 16ths)",
