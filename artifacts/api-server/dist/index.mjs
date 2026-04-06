@@ -20485,27 +20485,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router6;
+    module.exports = Router7;
     module.exports.Route = Route;
-    function Router6(options) {
-      if (!(this instanceof Router6)) {
-        return new Router6(options);
+    function Router7(options) {
+      if (!(this instanceof Router7)) {
+        return new Router7(options);
       }
       const opts = options || {};
-      function router6(req, res, next) {
-        router6.handle(req, res, next);
+      function router7(req, res, next) {
+        router7.handle(req, res, next);
       }
-      Object.setPrototypeOf(router6, this);
-      router6.caseSensitive = opts.caseSensitive;
-      router6.mergeParams = opts.mergeParams;
-      router6.params = {};
-      router6.strict = opts.strict;
-      router6.stack = [];
-      return router6;
+      Object.setPrototypeOf(router7, this);
+      router7.caseSensitive = opts.caseSensitive;
+      router7.mergeParams = opts.mergeParams;
+      router7.params = {};
+      router7.strict = opts.strict;
+      router7.stack = [];
+      return router7;
     }
-    Router6.prototype = function() {
+    Router7.prototype = function() {
     };
-    Router6.prototype.param = function param(name, fn) {
+    Router7.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20525,7 +20525,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router6.prototype.handle = function handle(req, res, callback) {
+    Router7.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20652,7 +20652,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router6.prototype.use = function use(handler) {
+    Router7.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20685,7 +20685,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router6.prototype.route = function route(path2) {
+    Router7.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20700,7 +20700,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router6.prototype[method] = function(path2) {
+      Router7.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20883,13 +20883,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router6 = require_router();
+    var Router7 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router6 = null;
+      var router7 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20898,13 +20898,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router6 === null) {
-            router6 = new Router6({
+          if (router7 === null) {
+            router7 = new Router7({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router6;
+          return router7;
         }
       });
     };
@@ -20975,15 +20975,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router6 = this.router;
+      var router7 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router6.use(path2, fn2);
+          return router7.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router6.use(path2, function mounted_app(req, res, next) {
+        router7.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23510,7 +23510,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router6 = require_router();
+    var Router7 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23532,8 +23532,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router6.Route;
-    exports.Router = Router6;
+    exports.Route = Router7.Route;
+    exports.Router = Router7;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -31091,9 +31091,9 @@ var require_jws = __commonJS({
 var require_decode = __commonJS({
   "../../node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js"(exports, module) {
     var jws = require_jws();
-    module.exports = function(jwt3, options) {
+    module.exports = function(jwt4, options) {
       options = options || {};
-      var decoded = jws.decode(jwt3, options);
+      var decoded = jws.decode(jwt4, options);
       if (!decoded) {
         return null;
       }
@@ -39176,13 +39176,13 @@ var require_lib5 = __commonJS({
 });
 
 // src/app.ts
-var import_express6 = __toESM(require_express2(), 1);
+var import_express7 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 
 // src/routes/index.ts
-var import_express5 = __toESM(require_express2(), 1);
+var import_express6 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -40054,11 +40054,11 @@ function isValidIP(ip, version3) {
   }
   return false;
 }
-function isValidJWT(jwt3, alg) {
-  if (!jwtRegex.test(jwt3))
+function isValidJWT(jwt4, alg) {
+  if (!jwtRegex.test(jwt4))
     return false;
   try {
-    const [header] = jwt3.split(".");
+    const [header] = jwt4.split(".");
     if (!header)
       return false;
     const base643 = header.replace(/-/g, "+").replace(/_/g, "/").padEnd(header.length + (4 - header.length % 4) % 4, "=");
@@ -71116,16 +71116,77 @@ router4.get("/auth/me", async (req, res) => {
 });
 var auth_default = router4;
 
-// src/routes/index.ts
+// src/routes/admin.ts
+var import_express5 = __toESM(require_express2(), 1);
+var import_jsonwebtoken2 = __toESM(require_jsonwebtoken(), 1);
 var router5 = (0, import_express5.Router)();
-router5.use(auth_default);
-router5.use(health_default);
-router5.use(generate_song_default);
-router5.use(generate_audio_default);
-var routes_default = router5;
+var COOKIE_NAME2 = "auth_token";
+function verifyAdminToken(token) {
+  try {
+    const secret = process.env["SESSION_SECRET"];
+    if (!secret) return null;
+    const payload = import_jsonwebtoken2.default.verify(token, secret);
+    return payload.role === "admin" ? payload : null;
+  } catch {
+    return null;
+  }
+}
+router5.get("/admin/stats", async (req, res) => {
+  const token = req.cookies?.[COOKIE_NAME2];
+  if (!token) {
+    res.status(401).json({ error: "Not authenticated." });
+    return;
+  }
+  const payload = verifyAdminToken(token);
+  if (!payload) {
+    res.status(403).json({ error: "Admin access required." });
+    return;
+  }
+  try {
+    const users = await db.select({
+      id: usersTable.id,
+      name: usersTable.name,
+      email: usersTable.email,
+      role: usersTable.role,
+      plan: usersTable.plan,
+      createdAt: usersTable.createdAt
+    }).from(usersTable).orderBy(desc(usersTable.createdAt));
+    const planCounts = users.reduce(
+      (acc, u) => {
+        const key = u.role === "admin" ? "admin" : u.plan;
+        acc[key] = (acc[key] ?? 0) + 1;
+        return acc;
+      },
+      {}
+    );
+    res.json({
+      users,
+      planCounts: {
+        Free: planCounts["Free"] ?? 0,
+        Pro: planCounts["Pro"] ?? 0,
+        Gold: planCounts["Gold"] ?? 0,
+        Admin: planCounts["admin"] ?? 0
+      },
+      totalUsers: users.length
+    });
+  } catch (err) {
+    logger.error({ err }, "Failed to fetch admin stats");
+    res.status(500).json({ error: "Failed to fetch stats." });
+  }
+});
+var admin_default = router5;
+
+// src/routes/index.ts
+var router6 = (0, import_express6.Router)();
+router6.use(auth_default);
+router6.use(health_default);
+router6.use(generate_song_default);
+router6.use(generate_audio_default);
+router6.use(admin_default);
+var routes_default = router6;
 
 // src/app.ts
-var app = (0, import_express6.default)();
+var app = (0, import_express7.default)();
 app.use(
   (0, import_pino_http.default)({
     logger,
@@ -71147,8 +71208,8 @@ app.use(
 );
 app.use((0, import_cors.default)({ origin: true, credentials: true }));
 app.use((0, import_cookie_parser.default)());
-app.use(import_express6.default.json());
-app.use(import_express6.default.urlencoded({ extended: true }));
+app.use(import_express7.default.json());
+app.use(import_express7.default.urlencoded({ extended: true }));
 app.use("/api", routes_default);
 var app_default = app;
 
