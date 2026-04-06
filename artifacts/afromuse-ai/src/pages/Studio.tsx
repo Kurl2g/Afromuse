@@ -112,6 +112,7 @@ export default function Studio() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleSendToAudio = (mode: QuickMode) => {
     if (!draft) return;
@@ -184,6 +185,13 @@ export default function Studio() {
     }
     setSeed((s) => s + 1);
     runGeneration();
+    setTimeout(() => {
+      if (resultsRef.current) {
+        const offset = 80;
+        const top = resultsRef.current.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 50);
   };
 
   const handleRegenerate = () => {
@@ -861,7 +869,7 @@ export default function Studio() {
           </div>
 
           {/* ── RIGHT PANEL: Output ──────────────────────────────────── */}
-          <div className="lg:col-span-8 min-h-[400px]">
+          <div ref={resultsRef} className="lg:col-span-8 min-h-[400px]">
             <AnimatePresence mode="wait">
 
               {/* IDLE STATE */}
