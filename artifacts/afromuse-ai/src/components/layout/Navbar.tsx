@@ -194,7 +194,7 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <PlanBadge />
+            {isLoggedIn && <PlanBadge />}
             {isLoggedIn ? (
               <UserMenu />
             ) : (
@@ -231,16 +231,18 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-background/95 backdrop-blur-3xl pt-24 px-6 md:hidden flex flex-col h-[100dvh] overflow-y-auto pb-6"
           >
-            {/* Mobile plan indicator — read only */}
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
-              <span className="text-xs text-muted-foreground">Current plan</span>
-              <div className={cn(
-                "text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full border",
-                PLAN_COLORS[plan].pill
-              )}>
-                {plan}
+            {/* Mobile plan indicator — read only, logged-in users only */}
+            {isLoggedIn && (
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+                <span className="text-xs text-muted-foreground">Current plan</span>
+                <div className={cn(
+                  "text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full border",
+                  PLAN_COLORS[plan].pill
+                )}>
+                  {plan}
+                </div>
               </div>
-            </div>
+            )}
 
             {isLoggedIn && (
               <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/5">
