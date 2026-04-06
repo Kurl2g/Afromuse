@@ -576,32 +576,6 @@ export default function Studio() {
                   <p className="text-[11px] text-white/25 mt-1.5">The theme or story at the heart of the song</p>
                 </div>
 
-                {/* Lyrics Source */}
-                <div>
-                  <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-1.5">
-                    Lyrics Source
-                  </label>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {(["Studio Lyrics", "Paste My Own", "Instrumental Only"] as const).map((src) => (
-                      <button
-                        key={src}
-                        type="button"
-                        onClick={() => setLyricsSource(src)}
-                        className={`h-10 rounded-xl text-[11px] font-bold tracking-wide transition-all border px-1 ${
-                          lyricsSource === src
-                            ? "bg-primary/15 border-primary/50 text-primary shadow-[0_0_12px_rgba(245,158,11,0.15)]"
-                            : "bg-white/3 border-white/8 text-white/40 hover:text-white/70 hover:border-white/20 hover:bg-white/5"
-                        }`}
-                      >
-                        {src === "Studio Lyrics" ? "Studio AI" : src === "Paste My Own" ? "My Lyrics" : "Beat Only"}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-white/25 mt-1.5">
-                    {lyricsSource === "Studio Lyrics" ? "AfroMuse writes full lyrics from your brief" : lyricsSource === "Paste My Own" ? "Your voice, AI structure & production notes" : "Instrumental session — no lyrics generated"}
-                  </p>
-                </div>
-
                 {/* Genre + Mood grid */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
