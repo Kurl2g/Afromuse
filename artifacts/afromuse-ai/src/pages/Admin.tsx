@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
   Users, Music, FolderOpen, TrendingUp, Shield, Crown,
   ChevronRight, ArrowUpRight, ArrowDownRight,
   Sparkles, Activity, MessageSquare, Zap, Globe,
-  RefreshCw, Search, CheckCircle, AlertCircle, Clock,
+  RefreshCw, Search, CheckCircle, AlertCircle, Clock, ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { loadProjectsFromStorage } from "@/lib/songGenerator";
@@ -199,6 +200,13 @@ export default function Admin() {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <Link
+              href="/studio"
+              className="flex items-center gap-2 h-9 px-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm text-muted-foreground hover:text-white transition-all"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to Studio
+            </Link>
             <button
               onClick={handleRefresh}
               disabled={isLoading}
