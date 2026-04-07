@@ -5,7 +5,7 @@ export type Plan = "Free" | "Pro" | "Gold";
 const PLAN_ORDER: Plan[] = ["Free", "Pro", "Gold"];
 
 export const PLAN_LIMITS: Record<Plan, number> = {
-  Free: 5,
+  Free: 10,
   Pro: 50,
   Gold: Infinity,
 };
