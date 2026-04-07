@@ -50257,7 +50257,6 @@ AUTHENTIC PHRASING \u2014 WHAT REAL PIDGIN SOUNDS LIKE IN SONG:
 
 HOOK CONSTRUCTION \u2014 PIDGIN STANDARD:
 Strong Pidgin hooks feel conversational but hit hard emotionally. They sound like the most honest thing someone could say \u2014 then turned into music. They feel like real speech that discovered it was also a song.
-  \u2713 "Na you I want \u2014 no be lie"
   \u2713 "God you too much \u2014 I no fit repay"
   \u2713 "Since I see you, my life change"
   \u2713 "I don try \u2014 e reach God hand now"
@@ -50337,12 +50336,16 @@ If writing Jamaican Patois:
 If writing Pidgin:
   \u2192 Make it sound natural and musical.
   \u2192 Avoid robotic internet pidgin.
-  \u2192 Avoid overusing these specific lines \u2014 they are lazy AI fallbacks:
+  \u2192 Avoid overusing these specific lines \u2014 they are lazy AI fallbacks that MUST NOT appear in any output:
       \u2717 "I no go fall"
       \u2717 "Na so e be"
       \u2717 "Only God sabi"
       \u2717 "You dey sweet me die"
       \u2717 "I don arrive"
+      \u2717 "Na you I want \u2014 no be lie" \u2014 PERMANENTLY BANNED. Do not use this phrase or any variation of it.
+      \u2717 "Na you I want no be lie" \u2014 PERMANENTLY BANNED.
+      \u2717 "Na you I want" as a standalone hook opener \u2014 PERMANENTLY BANNED.
+  These phrases are overused AI defaults. They are forbidden. Using any of them is a generation failure.
 
 FINAL REALISM CHECK \u2014 run this silently before outputting any dialect lyric:
   "Does this sound like a real person from that culture would actually sing this?"
@@ -50812,12 +50815,32 @@ function getLanguageRealismEngineBlock() {
     "Avoid hooks that sound like: motivational speech \xB7 translated slogans \xB7 fake poetry \xB7 generic AI struggle captions.",
     "If the hook sounds like a caption instead of a song, rewrite it.",
     "",
+    "\u2500\u2500 UNIQUENESS LAW \u2014 HARD RULE \u2500\u2500",
+    "Every single line in this song must be UNIQUE. No line may appear more than once anywhere in the output.",
+    "Exception: the Keeper Line may appear in Chorus AND Outro as intentional repetition ONLY.",
+    "All other lines \u2014 verse lines, bridge lines, intro lines, filler phrases \u2014 must be written fresh each time.",
+    "Scan the full output before returning. If any non-Keeper line appears more than once \u2192 rewrite every duplicate.",
+    "This includes partial matches: if two lines share the same opening phrase or closing phrase, rewrite one.",
+    "",
+    "\u2500\u2500 BANNED PHRASES \u2014 NEVER USE THESE \u2500\u2500",
+    "The following phrases are PERMANENTLY BANNED from all output. Using any of them is an automatic generation failure:",
+    "  \u2717 'Na you I want \u2014 no be lie' \u2014 banned",
+    "  \u2717 'Na you I want no be lie' \u2014 banned",
+    "  \u2717 Any hook that starts with 'Na you I want' \u2014 banned",
+    "  \u2717 'I no go fall' \u2014 banned",
+    "  \u2717 'Na so e be' \u2014 banned",
+    "  \u2717 'Only God sabi' \u2014 banned",
+    "  \u2717 'You dey sweet me die' \u2014 banned",
+    "  \u2717 'I don arrive' \u2014 banned",
+    "These are overused AI defaults. Invent something original every time.",
+    "",
     "\u2500\u2500 ANTI-REPETITION / ANTI-FAKE LANGUAGE TEST \u2500\u2500",
     "Before finalizing ANY section, silently run every line through this test:",
     "  1. Would a real artist from this language world naturally sing this line?",
     "  2. Is this line emotionally local \u2014 or just English with altered spelling?",
     "  3. Have I repeated lazy fallback phrases too many times in this song?",
     "  4. Does this language feel lived-in, or AI-generated?",
+    "  5. Does this exact line appear anywhere else in the song? If yes \u2014 rewrite it.",
     "If ANY answer is weak \u2014 rewrite the line before continuing.",
     "",
     "\u2500\u2500 SELF-CHECK BEFORE FINAL OUTPUT \u2500\u2500",
@@ -51323,8 +51346,8 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
       "  \u2717 'Through every storm I rise, na so e be for me' \u2014 mostly English with Pidgin ending",
       "",
       "STRONG PIDGIN LINES (examples of what to write):",
-      "  \u2713 'Na you I want \u2014 no be lie, I swear' \u2014 Pidgin-first construction with emotional hit",
-      "  \u2713 'Life dey hard but I no go fall \u2014 God dey' \u2014 Pidgin rhythm and logic throughout",
+      "  \u2713 'E pain me choke but I no fit explain am' \u2014 Pidgin-first construction with emotional hit",
+      "  \u2713 'Life dey hard but my God no go fail me' \u2014 Pidgin rhythm and logic throughout",
       "  \u2713 'Wetin I pass through, na only God sabi' \u2014 full Pidgin sentence with weight",
       "  \u2713 'I don arrive \u2014 make dem observe now' \u2014 completion + flex in Pidgin",
       "  \u2713 'Since I see you, my heart no rest again' \u2014 Pidgin thought structure naturally",
@@ -51332,7 +51355,7 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
       "  \u2713 'I hustle quiet \u2014 God dey see am for me' \u2014 hustle and faith in natural Pidgin voice",
       "",
       "\u2500\u2500 PIDGIN GRAMMAR REFERENCE \u2500\u2500",
-      "  Na = is/are/it is/emphasis: 'Na you I need', 'Na so e be', 'Na God I thank'",
+      "  Na = is/are/it is/emphasis: 'Na God I thank', 'Na my people be this', 'Na so dem do am'",
       "  Dey = continuous state/location: 'I dey feel you', 'wahala dey', 'e dey sweet me'",
       "  Don = completed: 'I don see am', 'e don happen', 'we don try'",
       "  Wey = who/which/that: 'person wey I love', 'thing wey dey pain me'",
