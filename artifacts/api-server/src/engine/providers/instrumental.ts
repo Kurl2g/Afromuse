@@ -701,7 +701,7 @@ async function callLiveInstrumentalProvider(
 
   if (!creds.apiKey) {
     throw new Error(
-      "ELEVENLABS_API_KEY is not configured. " +
+      "AI_MUSIC_API_KEY (or ELEVENLABS_API_KEY) is not configured. " +
       "Set the secret to enable live instrumental generation.",
     );
   }
@@ -710,15 +710,23 @@ async function callLiveInstrumentalProvider(
   const durationMs = resolveDurationMs(p.songLength);
   const endpoint   = creds.endpoint!; // always set — defaults in providerCredentials.ts
 
+  // Select the correct auth header based on the endpoint.
+  // ElevenLabs uses a proprietary xi-api-key header; all other providers
+  // (including custom AI music APIs) use the standard Authorization: Bearer scheme.
+  const isElevenLabs = endpoint.includes("elevenlabs.io");
+  const authHeaders: Record<string, string> = isElevenLabs
+    ? { "xi-api-key": creds.apiKey }
+    : { "Authorization": `Bearer ${creds.apiKey}` };
+
   logger.info(
-    { jobId, prompt, brief, durationMs },
-    "ElevenLabs Music API — requesting generation",
+    { jobId, prompt, brief, durationMs, endpoint },
+    "AI Music API — requesting generation",
   );
 
   const response = await fetch(endpoint, {
     method:  "POST",
     headers: {
-      "xi-api-key":   creds.apiKey,
+      ...authHeaders,
       "Content-Type": "application/json",
       "Accept":       "audio/mpeg, audio/*, */*",
     },
@@ -732,7 +740,7 @@ async function callLiveInstrumentalProvider(
 
   if (!response.ok) {
     const errText = await response.text().catch(() => response.statusText);
-    throw new Error(`ElevenLabs Music API error: ${response.status} — ${errText}`);
+    throw new Error(`AI Music API error: ${response.status} — ${errText}`);
   }
 
   // ElevenLabs returns raw binary audio — convert to a base64 data URL so the

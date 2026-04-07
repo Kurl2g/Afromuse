@@ -52,7 +52,7 @@ const CREDENTIAL_SLOTS: Record<ProviderCategory, ProviderCredentialSlot> = {
    */
   instrumental: {
     apiKey:    process.env.ELEVENLABS_API_KEY ?? process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1/music/compose",
+    endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? process.env.AI_MUSIC_API_BASE ?? "https://api.elevenlabs.io/v1/music/compose",
     model:     process.env.INSTRUMENTAL_MODEL ?? null,
     region:    process.env.INSTRUMENTAL_REGION ?? null,
     timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 90_000),

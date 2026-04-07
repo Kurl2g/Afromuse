@@ -52811,7 +52811,7 @@ var CREDENTIAL_SLOTS = {
    */
   instrumental: {
     apiKey: process.env.ELEVENLABS_API_KEY ?? process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1/music/compose",
+    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? process.env.AI_MUSIC_API_BASE ?? "https://api.elevenlabs.io/v1/music/compose",
     model: process.env.INSTRUMENTAL_MODEL ?? null,
     region: process.env.INSTRUMENTAL_REGION ?? null,
     timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 9e4)
@@ -53734,20 +53734,22 @@ async function callLiveInstrumentalProvider(p, jobId) {
   const creds = getProviderCredentials("instrumental");
   if (!creds.apiKey) {
     throw new Error(
-      "ELEVENLABS_API_KEY is not configured. Set the secret to enable live instrumental generation."
+      "AI_MUSIC_API_KEY (or ELEVENLABS_API_KEY) is not configured. Set the secret to enable live instrumental generation."
     );
   }
   const { prompt, brief } = buildElevenLabsPrompt(p);
   const durationMs = resolveDurationMs(p.songLength);
   const endpoint = creds.endpoint;
+  const isElevenLabs = endpoint.includes("elevenlabs.io");
+  const authHeaders = isElevenLabs ? { "xi-api-key": creds.apiKey } : { "Authorization": `Bearer ${creds.apiKey}` };
   logger.info(
-    { jobId, prompt, brief, durationMs },
-    "ElevenLabs Music API \u2014 requesting generation"
+    { jobId, prompt, brief, durationMs, endpoint },
+    "AI Music API \u2014 requesting generation"
   );
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
-      "xi-api-key": creds.apiKey,
+      ...authHeaders,
       "Content-Type": "application/json",
       "Accept": "audio/mpeg, audio/*, */*"
     },
@@ -53760,7 +53762,7 @@ async function callLiveInstrumentalProvider(p, jobId) {
   });
   if (!response.ok) {
     const errText = await response.text().catch(() => response.statusText);
-    throw new Error(`ElevenLabs Music API error: ${response.status} \u2014 ${errText}`);
+    throw new Error(`AI Music API error: ${response.status} \u2014 ${errText}`);
   }
   const audioBuffer = await response.arrayBuffer();
   const base643 = Buffer.from(audioBuffer).toString("base64");
