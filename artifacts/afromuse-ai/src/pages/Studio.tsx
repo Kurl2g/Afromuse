@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
-  Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key,
+  Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key, Pen,
 } from "lucide-react";
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
 import SendToAudioCard from "@/components/audio/SendToAudioCard";
@@ -163,6 +163,7 @@ export default function Studio() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [isHumanizing, setIsHumanizing] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -262,6 +263,42 @@ export default function Studio() {
     }
     setSeed((s) => s + 1);
     runGeneration();
+  };
+
+  const handleHumanizeLyrics = async () => {
+    if (!draft || isHumanizing) return;
+    setIsHumanizing(true);
+    setSaved(false);
+    const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
+    try {
+      const res = await fetch("/api/rewrite-lyrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draft,
+          genre,
+          mood,
+          languageFlavor: apiLanguageFlavor,
+          dialectDepth,
+          clarityMode,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error((errData as { error?: string }).error ?? "Rewrite failed");
+      }
+      const data = await res.json() as { draft: SongDraft };
+      setDraft(data.draft);
+      toast({ title: "Lyrics humanized!", description: "AI lines rewritten by your session songwriter." });
+    } catch (err) {
+      toast({
+        title: "Humanize failed",
+        description: err instanceof Error ? err.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsHumanizing(false);
+    }
   };
 
   const handleClear = () => {
@@ -1127,11 +1164,25 @@ export default function Studio() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={handleRegenerate}
-                        disabled={status === "generating"}
+                        disabled={status === "generating" || isHumanizing}
                         className="flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border border-white/10 hover:bg-white/5 text-white/50 hover:text-white transition-all disabled:opacity-40"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Regenerate
+                      </button>
+                      <button
+                        onClick={handleHumanizeLyrics}
+                        disabled={isHumanizing || status === "generating"}
+                        className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
+                          isHumanizing
+                            ? "border-secondary/40 bg-secondary/10 text-secondary/70 cursor-wait"
+                            : "border-secondary/30 bg-secondary/8 text-secondary hover:bg-secondary/15 hover:border-secondary/50 shadow-[0_0_14px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(139,92,246,0.2)]"
+                        }`}
+                      >
+                        {isHumanizing
+                          ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Humanizing...</>
+                          : <><Pen className="w-3.5 h-3.5" /> Humanize Lyrics</>
+                        }
                       </button>
                       <button
                         onClick={copyToClipboard}
@@ -1159,7 +1210,7 @@ export default function Studio() {
                   </div>
 
                   {/* ── LYRICS CARD ─────────────────────────────────── */}
-                  <div className="rounded-3xl border border-white/8 bg-[#06060e] overflow-hidden shadow-2xl">
+                  <div className={`rounded-3xl border bg-[#06060e] overflow-hidden shadow-2xl transition-all duration-300 ${isHumanizing ? "border-secondary/30 shadow-[0_0_40px_rgba(139,92,246,0.08)]" : "border-white/8"}`}>
 
                     {/* Card toolbar */}
                     <div className="flex items-center justify-between bg-[#0c0c18] border-b border-white/5 px-5 py-3">
@@ -1174,8 +1225,17 @@ export default function Studio() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <FileText className="w-3 h-3 text-white/20" />
-                        <span className="text-[10px] text-white/25 font-medium">Lyrics Document</span>
+                        {isHumanizing ? (
+                          <>
+                            <Loader2 className="w-3 h-3 text-secondary/70 animate-spin" />
+                            <span className="text-[10px] text-secondary/70 font-medium">Humanizing lyrics...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="w-3 h-3 text-white/20" />
+                            <span className="text-[10px] text-white/25 font-medium">Lyrics Document</span>
+                          </>
+                        )}
                       </div>
                     </div>
 

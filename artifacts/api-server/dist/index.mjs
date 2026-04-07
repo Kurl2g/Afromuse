@@ -51741,6 +51741,189 @@ router2.post("/generate-song", async (req, res) => {
     }
   }
 });
+var REWRITER_SYSTEM_PROMPT = `You are a professional Afrobeats, Dancehall, and Afro-inspired songwriter with 20+ years of session experience. Your only job is to REWRITE AI-generated lyrics and make them 100% authentic, human, and singable.
+
+You are not a lyric generator. You are a lyric editor and humanizer. You take what the AI wrote and make it sound like a real artist wrote it.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 1 \u2014 PROTECT THE STRUCTURE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Keep the original song structure EXACTLY: [Intro], [Chorus], [Verse 1], [Verse 2], [Bridge], [Outro]
+- Do NOT add or remove sections
+- Keep the same approximate line count per section
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 2 \u2014 KEEP THE KEEPER LINE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Identify the main hook/keeper line and protect it
+- The keeper line must survive the rewrite intact or only slightly polished
+- It must still appear in the Chorus AND Outro
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 3 \u2014 KILL AI LANGUAGE \u2014 NO EXCEPTIONS
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LINES YOU MUST REWRITE OR DELETE:
+  \u2717 Literal English translation into Pidgin or Patois \u2014 if it sounds like a sentence was written in English then the dialect words were swapped in, rewrite it from scratch in the dialect
+  \u2717 Over-explained emotions \u2014 "I feel a deep and powerful connection every time you look at me" \u2192 should just be "every time you look at me, e don do"
+  \u2717 Generic AI emotional essay phrasing: "in this moment I find myself", "searching for something real", "time is fleeting but our love stands strong", "together we can face anything"
+  \u2717 Greeting card / motivational poster lines: "rise above the storm", "you are stronger than you know", "believe in yourself"
+  \u2717 Unanchored floating metaphors: "like rivers flowing to the sea" as filler
+  \u2717 Vague spiritual abstraction: "the universe whispers my name", "I am light finding its way through darkness"
+  \u2717 Lines that are awkward, forced, or unnatural when sung aloud
+  \u2717 Lines with too many syllables that break the natural flow
+
+WHAT REAL LINES LOOK LIKE:
+  \u2713 Short, natural, spoken-language phrasing
+  \u2713 Culturally grounded details \u2014 real places, real situations, real feelings
+  \u2713 Lines a crowd could shout back at a show
+  \u2713 Lines that feel lived-in, not observed from outside
+  \u2713 Conversational rhythm \u2014 how people actually talk and feel
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 4 \u2014 DIALECT MUST BE NATIVE-BORN
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Write FROM INSIDE the dialect, not English-first-then-translated
+- For Naija Pidgin: use natural Pidgin construction \u2014 "e go beta", "I no go leave", "na she be that", "omo", "wahala", "sabi"
+- For Jamaican Patois: use real Patois builds \u2014 "mi nuh", "dem cyaan", "inna di", "real suh", "yuh nuh see it", "nuff love"
+- CONSISTENCY LAW: the dialect level must be identical from the first intro line to the last outro line
+  \u2192 If 4 lines feel native and then 2 lines drift back to clean English \u2014 those 2 lines fail \u2014 rewrite them
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 5 \u2014 RHYTHM & SINGABILITY
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Every rewritten line must fit naturally into the melodic pocket of Afrobeats or Dancehall
+- Natural stress placement, good syllable density \u2014 not too cramped, not too sparse
+- Lines should end on strong syllables or natural cadences
+- If a line is too long to sing naturally in one breath, shorten it
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 6 \u2014 SIMPLIFY AGGRESSIVELY
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Short is better. "No wahala" beats "I have no problems with this situation at all"
+- 6 words that hit hard > 14 words that explain themselves
+- If you can cut a word and the line still works \u2014 cut it
+- The listener should FEEL the line before they process it
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+OUTPUT FORMAT \u2014 CRITICAL
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Return ONLY a JSON object with this shape:
+{
+  "keeperLine": "the main keeper/hook line",
+  "keeperLineBackups": ["backup 1", "backup 2"],
+  "intro": ["line 1", "line 2"],
+  "hook": ["line 1", "line 2", "line 3", "line 4"],
+  "verse1": ["line 1", "line 2", ...],
+  "verse2": ["line 1", "line 2", ...],
+  "bridge": ["line 1", "line 2", "line 3", "line 4"],
+  "outro": ["line 1", "line 2"]
+}
+
+- Output ONLY the JSON object. No explanation, no commentary, no preamble.
+- Only include sections that were present in the original lyrics
+- Preserve exact section array format
+`;
+router2.post("/rewrite-lyrics", async (req, res) => {
+  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  if (!draft || typeof draft !== "object") {
+    res.status(400).json({ error: "draft is required" });
+    return;
+  }
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.error("NVIDIA_API_KEY not configured");
+    res.status(500).json({ error: "AI service not configured" });
+    return;
+  }
+  const formatSection = (label, lines) => {
+    if (!Array.isArray(lines) || lines.length === 0) return "";
+    return `[${label}]
+${lines.join("\n")}`;
+  };
+  const lyricsText = [
+    formatSection("Intro", draft.intro),
+    formatSection("Chorus", draft.hook),
+    formatSection("Verse 1", draft.verse1),
+    formatSection("Verse 2", draft.verse2),
+    formatSection("Bridge", draft.bridge),
+    formatSection("Outro", draft.outro)
+  ].filter(Boolean).join("\n\n");
+  const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const userPrompt = [
+    `REWRITE TASK`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `Genre: ${genre ?? "Afrobeats"}`,
+    `Mood: ${mood ?? "Uplifting"}`,
+    `Language: ${languageFlavor ?? "Global English"}`,
+    `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
+    `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
+    ``,
+    `ORIGINAL AI LYRICS TO REWRITE:`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    lyricsText,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    ``,
+    `Now rewrite every line that sounds AI-generated, over-translated, generic, or unnatural.`,
+    `Keep every line that already sounds authentic, human, and singable.`,
+    `The output must feel like it was written by a real artist in this genre \u2014 not generated.`,
+    `Return ONLY the JSON object. No text before or after.`
+  ].filter((l) => l !== null).join("\n");
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1"
+  });
+  const parseRewriteJson = (raw) => {
+    try {
+      const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned);
+    } catch {
+      return null;
+    }
+  };
+  try {
+    logger.info({ genre, mood, languageFlavor }, "Starting lyrics humanization (rewrite)");
+    const response = await ai.chat.completions.create({
+      model: LLAMA_MAVERICK_MODEL.id,
+      messages: [
+        { role: "system", content: REWRITER_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.85,
+      top_p: 0.95,
+      max_tokens: 3e3
+    });
+    const raw = response.choices[0]?.message?.content ?? "";
+    const rewritten = parseRewriteJson(raw);
+    if (!rewritten) {
+      logger.error({ raw }, "Failed to parse rewriter output");
+      res.status(500).json({ error: "Rewriter returned unreadable output. Please try again." });
+      return;
+    }
+    const mergedDraft = {
+      ...draft,
+      ...rewritten.keeperLine !== void 0 && { keeperLine: rewritten.keeperLine },
+      ...rewritten.keeperLineBackups !== void 0 && { keeperLineBackups: rewritten.keeperLineBackups },
+      ...Array.isArray(rewritten.intro) && rewritten.intro.length > 0 && { intro: rewritten.intro },
+      ...Array.isArray(rewritten.hook) && rewritten.hook.length > 0 && { hook: rewritten.hook },
+      ...Array.isArray(rewritten.verse1) && rewritten.verse1.length > 0 && { verse1: rewritten.verse1 },
+      ...Array.isArray(rewritten.verse2) && rewritten.verse2.length > 0 && { verse2: rewritten.verse2 },
+      ...Array.isArray(rewritten.bridge) && rewritten.bridge.length > 0 && { bridge: rewritten.bridge },
+      ...Array.isArray(rewritten.outro) && rewritten.outro.length > 0 && { outro: rewritten.outro }
+    };
+    logger.info("Lyrics humanization completed successfully");
+    res.json({ draft: mergedDraft });
+  } catch (err) {
+    logger.error({ err }, "Lyrics rewriter error");
+    const status = err.status;
+    if (status === 429) {
+      res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
+    } else {
+      res.status(500).json({ error: "Lyrics rewriting failed. Please try again." });
+    }
+  }
+});
 var generate_song_default = router2;
 
 // src/routes/generate-audio.ts
