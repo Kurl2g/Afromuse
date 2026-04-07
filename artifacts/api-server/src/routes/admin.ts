@@ -1,7 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import { db, usersTable } from "@workspace/db";
-import { desc } from "drizzle-orm";
+import { db, usersTable, projectsTable } from "@workspace/db";
+import { desc, count } from "drizzle-orm";
 import { logger } from "../lib/logger";
 
 const router = Router();
@@ -54,6 +54,9 @@ router.get("/admin/stats", async (req, res) => {
       {} as Record<string, number>,
     );
 
+    const [projectCountRow] = await db.select({ value: count() }).from(projectsTable);
+    const totalProjects = projectCountRow?.value ?? 0;
+
     res.json({
       users,
       planCounts: {
@@ -63,6 +66,7 @@ router.get("/admin/stats", async (req, res) => {
         Admin: planCounts["admin"] ?? 0,
       },
       totalUsers: users.length,
+      totalProjects,
     });
   } catch (err) {
     logger.error({ err }, "Failed to fetch admin stats");

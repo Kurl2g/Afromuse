@@ -8,7 +8,6 @@ import {
   RefreshCw, Search, CheckCircle, AlertCircle, Clock, ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { loadProjectsFromStorage } from "@/lib/songGenerator";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -25,6 +24,7 @@ interface AdminStats {
   users: RealUser[];
   planCounts: { Free: number; Pro: number; Gold: number; Admin: number };
   totalUsers: number;
+  totalProjects: number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -126,9 +126,6 @@ export default function Admin() {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const realProjects = loadProjectsFromStorage();
-  const realProjectCount = realProjects.length;
 
   const fetchStats = useCallback(async () => {
     setIsLoading(true);
@@ -248,8 +245,8 @@ export default function Admin() {
           />
           <StatCard
             label="Saved Projects"
-            value={realProjectCount.toLocaleString()}
-            sub="From your session"
+            value={isLoading ? "—" : (stats?.totalProjects ?? 0).toLocaleString()}
+            sub="Across all users"
             icon={<FolderOpen className="w-4 h-4" />}
           />
           <StatCard

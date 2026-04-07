@@ -760,8 +760,8 @@ var require_depd = __commonJS({
       return deprecate;
     }
     function eehaslisteners(emitter, type) {
-      var count = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
-      return count > 0;
+      var count2 = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
+      return count2 > 0;
     }
     function isignored(namespace) {
       if (process.noDeprecation) {
@@ -18331,14 +18331,14 @@ var require_urlencoded = __commonJS({
       };
     }
     function parameterCount(body, limit2) {
-      let count = 0;
+      let count2 = 0;
       let index = -1;
       do {
-        count++;
-        if (count > limit2) return void 0;
+        count2++;
+        if (count2 > limit2) return void 0;
         index = body.indexOf("&", index + 1);
       } while (index !== -1);
-      return count;
+      return count2;
     }
   }
 });
@@ -21537,13 +21537,13 @@ var require_mediaType = __commonJS({
       return spec.q > 0;
     }
     function quoteCount(string4) {
-      var count = 0;
+      var count2 = 0;
       var index = 0;
       while ((index = string4.indexOf('"', index)) !== -1) {
-        count++;
+        count2++;
         index++;
       }
-      return count;
+      return count2;
     }
     function splitKeyValuePair(str2) {
       var index = str2.indexOf("=");
@@ -22802,8 +22802,8 @@ var require_send = __commonJS({
       }
     }
     function hasListeners(emitter, type) {
-      var count = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
-      return count > 0;
+      var count2 = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
+      return count2 > 0;
     }
     function normalizeList(val, name) {
       var list = [].concat(val || []);
@@ -34849,11 +34849,11 @@ var require_binaryParsers = __commonJS({
         var array2 = [];
         var i2;
         if (dimension.length > 1) {
-          var count = dimension.shift();
-          for (i2 = 0; i2 < count; i2++) {
+          var count2 = dimension.shift();
+          for (i2 = 0; i2 < count2; i2++) {
             array2[i2] = parse3(dimension, elementType2);
           }
-          dimension.unshift(count);
+          dimension.unshift(count2);
         } else {
           for (i2 = 0; i2 < dimension[0]; i2++) {
             array2[i2] = parseElement(elementType2);
@@ -57908,6 +57908,11 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
   return result;
 }
 
+// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/aggregate.js
+function count(expression) {
+  return sql`count(${expression || sql.raw("*")})`.mapWith(Number);
+}
+
 // ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js
 var PgViewBase = class extends View {
   static [entityKind] = "PgViewBase";
@@ -65289,8 +65294,8 @@ function az_default() {
 }
 
 // ../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/locales/be.js
-function getBelarusianPlural(count, one, few, many) {
-  const absCount = Math.abs(count);
+function getBelarusianPlural(count2, one, few, many) {
+  const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
   if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
@@ -68435,8 +68440,8 @@ function pt_default() {
 }
 
 // ../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/locales/ru.js
-function getRussianPlural(count, one, few, many) {
-  const absCount = Math.abs(count);
+function getRussianPlural(count2, one, few, many) {
+  const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
   if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
@@ -73029,6 +73034,8 @@ router5.get("/admin/stats", async (req, res) => {
       },
       {}
     );
+    const [projectCountRow] = await db.select({ value: count() }).from(projectsTable);
+    const totalProjects = projectCountRow?.value ?? 0;
     res.json({
       users,
       planCounts: {
@@ -73037,7 +73044,8 @@ router5.get("/admin/stats", async (req, res) => {
         Gold: planCounts["Gold"] ?? 0,
         Admin: planCounts["admin"] ?? 0
       },
-      totalUsers: users.length
+      totalUsers: users.length,
+      totalProjects
     });
   } catch (err) {
     logger.error({ err }, "Failed to fetch admin stats");

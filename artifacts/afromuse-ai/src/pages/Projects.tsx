@@ -1,73 +1,52 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "wouter";
 import {
   Plus, Search, Trash2, Copy, Eye, Calendar, Music,
-  Sparkles, X, ChevronDown, Sliders, Check,
+  Sparkles, X, ChevronDown, Sliders, Check, Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-import {
-  loadProjectsFromStorage,
-  persistProjects,
-  formatDraftForClipboard,
-  type SavedProject,
-} from "@/lib/songGenerator";
+import { formatDraftForClipboard } from "@/lib/songGenerator";
+import { type SavedSession, formatRelativeTime } from "@/lib/projectLibrary";
+import { useProjectLibrary } from "@/context/ProjectLibraryContext";
 
 const GENRES = ["All", "Afrobeats", "Afropop", "Amapiano", "Dancehall", "R&B"];
 
-function formatDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
-
 export default function Projects() {
   const { toast } = useToast();
-  const [projects, setProjects] = useState<SavedProject[]>([]);
+  const { sessions, isLoading, deleteSession, duplicateSession } = useProjectLibrary();
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [openProject, setOpenProject] = useState<SavedProject | null>(null);
+  const [openSession, setOpenSession] = useState<SavedSession | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    setProjects(loadProjectsFromStorage());
-  }, []);
+  const handleDelete = useCallback(async (sessionId: string) => {
+    try {
+      await deleteSession(sessionId);
+      setConfirmDeleteId(null);
+      if (openSession?.sessionId === sessionId) setOpenSession(null);
+      toast({ title: "Project deleted" });
+    } catch {
+      toast({ title: "Delete failed", variant: "destructive" });
+    }
+  }, [deleteSession, openSession, toast]);
 
-  const save = useCallback((updated: SavedProject[]) => {
-    setProjects(updated);
-    persistProjects(updated);
-  }, []);
+  const handleDuplicate = useCallback(async (sessionId: string) => {
+    try {
+      const clone = await duplicateSession(sessionId);
+      if (clone) {
+        toast({ title: "Project duplicated", description: `"${clone.sessionTitle}" added to your library.` });
+      }
+    } catch {
+      toast({ title: "Duplicate failed", variant: "destructive" });
+    }
+  }, [duplicateSession, toast]);
 
-  const handleDelete = (id: string) => {
-    const updated = projects.filter((p) => p.id !== id);
-    save(updated);
-    setConfirmDeleteId(null);
-    if (openProject?.id === id) setOpenProject(null);
-    toast({ title: "Project deleted" });
-  };
-
-  const handleDuplicate = (project: SavedProject) => {
-    const copy: SavedProject = {
-      ...project,
-      id: `proj_${Date.now()}`,
-      title: `${project.draft.title} (Copy)`,
-      draft: { ...project.draft, title: `${project.draft.title} (Copy)` },
-      savedAt: new Date().toISOString(),
-    };
-    const updated = [copy, ...projects];
-    save(updated);
-    toast({ title: "Project duplicated", description: `"${copy.title}" added to your library.` });
-  };
-
-  const handleCopyLyrics = async (project: SavedProject) => {
-    const text = formatDraftForClipboard(project.draft, project.genre, project.mood);
+  const handleCopyLyrics = useCallback(async (session: SavedSession) => {
+    if (!session.draft) return;
+    const text = formatDraftForClipboard(session.draft, session.genre, session.mood);
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -81,12 +60,13 @@ export default function Projects() {
     setCopied(true);
     toast({ title: "Copied!", description: "Full draft copied to clipboard." });
     setTimeout(() => setCopied(false), 2500);
-  };
+  }, [toast]);
 
-  const filtered = projects.filter((p) => {
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.topic.toLowerCase().includes(search.toLowerCase());
-    const matchGenre = filter === "All" || p.genre === filter;
+  const filtered = sessions.filter((s) => {
+    const matchSearch =
+      s.sessionTitle.toLowerCase().includes(search.toLowerCase()) ||
+      s.topic.toLowerCase().includes(search.toLowerCase());
+    const matchGenre = filter === "All" || s.genre === filter;
     return matchSearch && matchGenre;
   });
 
@@ -138,11 +118,18 @@ export default function Projects() {
           </Link>
         </div>
 
+        {/* Loading */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
+          </div>
+        )}
+
         {/* STATS BAR */}
-        {projects.length > 0 && (
+        {!isLoading && sessions.length > 0 && (
           <div className="flex items-center gap-4 mb-6 text-xs text-muted-foreground">
-            <span><span className="text-white font-medium">{projects.length}</span> {projects.length === 1 ? "project" : "projects"} saved</span>
-            {filtered.length !== projects.length && (
+            <span><span className="text-white font-medium">{sessions.length}</span> {sessions.length === 1 ? "project" : "projects"} saved</span>
+            {filtered.length !== sessions.length && (
               <span>· showing <span className="text-white font-medium">{filtered.length}</span> result{filtered.length !== 1 ? "s" : ""}</span>
             )}
             {(search || filter !== "All") && (
@@ -157,59 +144,59 @@ export default function Projects() {
         )}
 
         {/* GRID */}
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <AnimatePresence mode="popLayout">
-              {filtered.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onOpen={() => setOpenProject(project)}
-                  onDuplicate={() => handleDuplicate(project)}
-                  onDelete={() => {
-                    if (confirmDeleteId === project.id) {
-                      handleDelete(project.id);
-                    } else {
-                      setConfirmDeleteId(project.id);
-                    }
-                  }}
-                  onCancelDelete={() => setConfirmDeleteId(null)}
-                  isConfirmingDelete={confirmDeleteId === project.id}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
-        ) : projects.length === 0 ? (
-          /* TRUE EMPTY STATE */
-          <EmptyState />
-        ) : (
-          /* FILTERED EMPTY */
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="py-20 text-center flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.015]"
-          >
-            <Search className="w-10 h-10 text-muted-foreground/30 mb-4" />
-            <h3 className="text-lg font-semibold text-white mb-2">No results found</h3>
-            <p className="text-muted-foreground text-sm mb-5">No songs match "{search || filter}". Try a different search or filter.</p>
-            <button
-              onClick={() => { setSearch(""); setFilter("All"); }}
-              className="text-sm text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/50 px-5 h-10 rounded-xl transition-all"
+        {!isLoading && (
+          filtered.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <AnimatePresence mode="popLayout">
+                {filtered.map((session) => (
+                  <ProjectCard
+                    key={session.sessionId}
+                    session={session}
+                    onOpen={() => setOpenSession(session)}
+                    onDuplicate={() => handleDuplicate(session.sessionId)}
+                    onDelete={() => {
+                      if (confirmDeleteId === session.sessionId) {
+                        handleDelete(session.sessionId);
+                      } else {
+                        setConfirmDeleteId(session.sessionId);
+                      }
+                    }}
+                    onCancelDelete={() => setConfirmDeleteId(null)}
+                    isConfirmingDelete={confirmDeleteId === session.sessionId}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          ) : sessions.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="py-20 text-center flex flex-col items-center justify-center border border-dashed border-white/10 rounded-3xl bg-white/[0.015]"
             >
-              Clear filters
-            </button>
-          </motion.div>
+              <Search className="w-10 h-10 text-muted-foreground/30 mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">No results found</h3>
+              <p className="text-muted-foreground text-sm mb-5">No songs match "{search || filter}". Try a different search or filter.</p>
+              <button
+                onClick={() => { setSearch(""); setFilter("All"); }}
+                className="text-sm text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/50 px-5 h-10 rounded-xl transition-all"
+              >
+                Clear filters
+              </button>
+            </motion.div>
+          )
         )}
 
       </div>
 
       {/* PROJECT DETAIL DRAWER */}
       <AnimatePresence>
-        {openProject && (
+        {openSession && (
           <ProjectDrawer
-            project={openProject}
-            onClose={() => setOpenProject(null)}
-            onCopyLyrics={() => handleCopyLyrics(openProject)}
+            session={openSession}
+            onClose={() => setOpenSession(null)}
+            onCopyLyrics={() => handleCopyLyrics(openSession)}
             copied={copied}
           />
         )}
@@ -221,21 +208,21 @@ export default function Projects() {
 // ── PROJECT CARD ─────────────────────────────────────────────────────────────
 
 function ProjectCard({
-  project,
+  session,
   onOpen,
   onDuplicate,
   onDelete,
   onCancelDelete,
   isConfirmingDelete,
 }: {
-  project: SavedProject;
+  session: SavedSession;
   onOpen: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
   onCancelDelete: () => void;
   isConfirmingDelete: boolean;
 }) {
-  const hookPreview = project.draft.hook?.[0] ?? "";
+  const hookPreview = session.draft?.hook?.[0] ?? "";
 
   const moodColors: Record<string, string> = {
     Uplifting: "text-amber-400 bg-amber-500/10 border-amber-500/20",
@@ -244,7 +231,7 @@ function ProjectCard({
     Spiritual: "text-violet-400 bg-violet-500/10 border-violet-500/20",
     Sad: "text-blue-400 bg-blue-500/10 border-blue-500/20",
   };
-  const moodClass = moodColors[project.mood] ?? "text-muted-foreground bg-white/5 border-white/10";
+  const moodClass = moodColors[session.mood] ?? "text-muted-foreground bg-white/5 border-white/10";
 
   return (
     <motion.div
@@ -262,19 +249,19 @@ function ProjectCard({
             className="font-bold text-lg text-white mb-2 group-hover:text-primary transition-colors leading-tight cursor-pointer truncate"
             onClick={onOpen}
           >
-            {project.title}
+            {session.sessionTitle}
           </h3>
           <div className="flex flex-wrap gap-1.5">
             <span className="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-              {project.genre}
+              {session.genre}
             </span>
             <span className={`text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full border ${moodClass}`}>
-              {project.mood}
+              {session.mood}
             </span>
           </div>
         </div>
 
-        {/* Action icons — always visible on mobile, hover on desktop */}
+        {/* Action icons */}
         <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
           <button
             onClick={onOpen}
@@ -301,15 +288,15 @@ function ProjectCard({
       </div>
 
       {/* Topic */}
-      {project.topic && (
+      {session.topic && (
         <p className="text-xs text-muted-foreground/60 mb-3 italic">
-          Theme: {project.topic}
+          Theme: {session.topic}
         </p>
       )}
 
       {/* Hook preview */}
       <p className="text-sm text-muted-foreground line-clamp-2 mb-5 flex-1 italic leading-relaxed">
-        "{hookPreview}"
+        {hookPreview ? `"${hookPreview}"` : <span className="not-italic text-muted-foreground/40">No lyrics yet</span>}
       </p>
 
       {/* Delete confirm */}
@@ -346,7 +333,7 @@ function ProjectCard({
       <div className="flex items-center justify-between pt-4 border-t border-white/5">
         <div className="flex items-center gap-1 text-xs text-muted-foreground/60">
           <Calendar className="w-3 h-3 mr-0.5" />
-          {formatDate(project.savedAt)}
+          {formatRelativeTime(session.updatedAt)}
         </div>
         <button
           onClick={onOpen}
@@ -397,21 +384,20 @@ function EmptyState() {
 // ── PROJECT DETAIL DRAWER ────────────────────────────────────────────────────
 
 function ProjectDrawer({
-  project,
+  session,
   onClose,
   onCopyLyrics,
   copied,
 }: {
-  project: SavedProject;
+  session: SavedSession;
   onClose: () => void;
   onCopyLyrics: () => void;
   copied: boolean;
 }) {
-  const { draft, genre, mood } = project;
+  const { draft, genre, mood } = session;
 
   return (
     <>
-      {/* Backdrop */}
       <motion.div
         key="backdrop"
         initial={{ opacity: 0 }}
@@ -421,7 +407,6 @@ function ProjectDrawer({
         className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
       />
 
-      {/* Drawer Panel */}
       <motion.div
         key="drawer"
         initial={{ x: "100%" }}
@@ -439,23 +424,25 @@ function ProjectDrawer({
               </span>
               <span className="text-[10px] text-muted-foreground/50">{genre} · {mood}</span>
             </div>
-            <h2 className="text-xl font-display font-bold text-white leading-tight">{draft.title}</h2>
-            {project.topic && (
-              <p className="text-xs text-muted-foreground/60 mt-0.5 italic">Theme: {project.topic}</p>
+            <h2 className="text-xl font-display font-bold text-white leading-tight">{session.sessionTitle}</h2>
+            {session.topic && (
+              <p className="text-xs text-muted-foreground/60 mt-0.5 italic">Theme: {session.topic}</p>
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={onCopyLyrics}
-              className={`flex items-center gap-2 h-9 px-4 rounded-xl text-sm border transition-all ${
-                copied
-                  ? "border-green-500/40 bg-green-500/10 text-green-400"
-                  : "border-white/10 text-muted-foreground hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              {copied ? "Copied!" : "Copy"}
-            </button>
+            {draft && (
+              <button
+                onClick={onCopyLyrics}
+                className={`flex items-center gap-2 h-9 px-4 rounded-xl text-sm border transition-all ${
+                  copied
+                    ? "border-green-500/40 bg-green-500/10 text-green-400"
+                    : "border-white/10 text-muted-foreground hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            )}
             <button
               onClick={onClose}
               className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
@@ -469,47 +456,55 @@ function ProjectDrawer({
         <div className="flex items-center gap-3 px-6 py-3 border-b border-white/5 bg-white/[0.015] shrink-0 flex-wrap">
           <MetaChip label="Genre" value={genre} />
           <MetaChip label="Mood" value={mood} />
-          {project.style && <MetaChip label="Reference" value={project.style} />}
-          <MetaChip label="Saved" value={formatDate(project.savedAt)} />
+          {session.style && <MetaChip label="Reference" value={session.style} />}
+          <MetaChip label="Updated" value={formatRelativeTime(session.updatedAt)} />
         </div>
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="p-6 space-y-8">
+          {draft ? (
+            <div className="p-6 space-y-8">
+              <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} />
+              <DrawerSection label="Verse 1" lines={draft.verse1} />
+              <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} repeat />
+              <DrawerSection label="Verse 2" lines={draft.verse2} />
 
-            <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} />
-            <DrawerSection label="Verse 1" lines={draft.verse1} />
-            <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} repeat />
-            <DrawerSection label="Verse 2" lines={draft.verse2} />
+              <div>
+                <SectionLabel label="Bridge" className="bg-violet-500/12 text-violet-400 border-violet-500/20" />
+                <div className="rounded-xl bg-violet-500/5 border border-violet-500/10 p-5 mt-3">
+                  <p className="text-sm text-white/70 leading-8 italic text-center">
+                    {draft.bridge.map((line, i) => (
+                      <span key={i}>{line}{i < draft.bridge.length - 1 && <br />}</span>
+                    ))}
+                  </p>
+                </div>
+              </div>
 
-            {/* Bridge */}
-            <div>
-              <SectionLabel label="Bridge" className="bg-violet-500/12 text-violet-400 border-violet-500/20" />
-              <div className="rounded-xl bg-violet-500/5 border border-violet-500/10 p-5 mt-3">
-                <p className="text-sm text-white/70 leading-8 italic text-center">
-                  {draft.bridge.map((line, i) => (
-                    <span key={i}>{line}{i < draft.bridge.length - 1 && <br />}</span>
-                  ))}
-                </p>
+              <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} repeat />
+
+              <div className="border-t border-white/6 pt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sliders className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Production Notes</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <ProdCard label="Chord / Vibe" color="text-primary" value={draft.chordVibe} />
+                  <ProdCard label="Melody Direction" color="text-secondary" value={draft.melodyDirection} />
+                  <ProdCard label="Arrangement" color="text-violet-400" value={draft.arrangement} />
+                </div>
               </div>
             </div>
-
-            <DrawerSection label="⚡ Hook / Chorus" isHook lines={draft.hook} repeat />
-
-            {/* Production Notes */}
-            <div className="border-t border-white/6 pt-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Sliders className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Production Notes</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <ProdCard label="Chord / Vibe" color="text-primary" value={draft.chordVibe} />
-                <ProdCard label="Melody Direction" color="text-secondary" value={draft.melodyDirection} />
-                <ProdCard label="Arrangement" color="text-violet-400" value={draft.arrangement} />
-              </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full py-20 text-center px-6">
+              <Music className="w-10 h-10 text-muted-foreground/30 mb-4" />
+              <p className="text-muted-foreground text-sm">No lyrics generated for this session yet.</p>
+              <Link href="/studio">
+                <button onClick={onClose} className="mt-6 text-sm text-primary hover:text-primary/80 border border-primary/30 px-5 h-10 rounded-xl transition-all">
+                  Go to Studio →
+                </button>
+              </Link>
             </div>
-
-          </div>
+          )}
         </div>
 
         {/* Drawer footer */}
