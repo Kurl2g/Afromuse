@@ -91,7 +91,9 @@ function Router() {
 
       <Route path="/projects">
         <ProtectedRoute>
-          <PageLayout><Projects /></PageLayout>
+          <ProjectLibraryProvider>
+            <PageLayout><Projects /></PageLayout>
+          </ProjectLibraryProvider>
         </ProtectedRoute>
       </Route>
 
