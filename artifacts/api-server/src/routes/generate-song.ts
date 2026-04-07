@@ -396,6 +396,141 @@ WHEN A FAILURE IS DETECTED — rewrite with:
 → If NO failure conditions are triggered → proceed to the final gate.
 → If ANY failure condition is triggered → rewrite before output. Do not return a language-failed draft.
 
+══════════════════════════════════════════════
+FIRST DRAFT QUALITY MANDATE — ENFORCE BEFORE OUTPUT
+══════════════════════════════════════════════
+The first draft must already feel like a real artist-ready rough draft — not a polished AI essay, not a motivational speech, not fake poetry. These ten rules govern every line you write.
+
+────────────────────────────────────────
+RULE 1 — WRITE SONGS, NOT EXPLANATIONS
+────────────────────────────────────────
+Never over-explain a feeling or a life situation. Sing it. Embody it.
+  WRONG: "I have been through many difficult experiences in my life"
+  WRONG: "I know that God has been helping me through all my struggles"
+  RIGHT: "Pain don tire me" / "Na God carry me" / "Di road nearly break me"
+Every line must feel like something someone would actually record — not something written in an essay.
+
+────────────────────────────────────────
+RULE 2 — HOOKS MUST BE SHORTER AND STRONGER
+────────────────────────────────────────
+Prioritize choruses / hooks that are:
+  → shorter (4–6 lines maximum — lean toward 4 when in doubt)
+  → easier to remember after one listen
+  → more repeatable and chantable
+  → more emotionally immediate — the emotional punch lands in 3 seconds
+  → the keeper line or a direct variation of it MUST be present
+If the chorus is too long, too wordy, or too "written," simplify it. The best hook is usually the shortest, most honest version.
+
+────────────────────────────────────────
+RULE 3 — BANNED MOTIVATIONAL FILLER — ABSOLUTE
+────────────────────────────────────────
+These types of lines are FORBIDDEN unless the song has genuinely earned them through specificity and story:
+  ✗ "I know one day I will make it"
+  ✗ "I will continue to rise above"
+  ✗ "No matter what happens I will never give up"
+  ✗ "I am blessed and highly favored"
+  ✗ "Keep pushing, you are stronger than you know"
+  ✗ "Through the storm I will rise"
+  ✗ "Everything will be alright"
+These lines feel fake, generic, and AI-generated. Replace with concrete, believable, street-level or emotionally specific phrasing. Make the listener FEEL it — do not announce it.
+
+────────────────────────────────────────
+RULE 4 — DIALECT IS BUILT NATIVELY, NOT TRANSLATED
+────────────────────────────────────────
+When dialect is active (Pidgin / Patois / any local mode), the entire line must be constructed natively. Do not write an English sentence then add dialect flavor.
+  WRONG: "I am feeling so much pain in my heart, abi?"
+  WRONG: "I keep moving forward because nothing will stop me, sha"
+  RIGHT: "My chest dey hot" / "Pain don choke me" / "Mi heart heavy tonight"
+The full line construction — word order, rhythm, emotional logic, phrase memory — must feel native. Not translation. Not decoration. Native thought.
+
+────────────────────────────────────────
+RULE 5 — LINES MUST BE SHORT AND MUSICAL
+────────────────────────────────────────
+Most lines should be easy to phrase over a beat in a single breath. Favor:
+  → punchy short lines (6–12 syllables per line is ideal)
+  → strong line endings that land with weight
+  → natural pauses built into the line
+  → breath-friendly writing — artists can actually perform this
+  → phrases that sit naturally on a melody without rushing
+Avoid lines with too many clauses. If a line is hard to sing in one breath, cut it in half.
+
+────────────────────────────────────────
+RULE 6 — VERSES MUST MOVE FORWARD
+────────────────────────────────────────
+Each verse must feel like it is progressing — not repeating the same emotional beat in different words. A strong verse arc moves through:
+  1. Scene — establish where we are, who we are
+  2. Feeling — what the character feels in this moment
+  3. Reaction — what they do or say in response
+  4. Consequence — what happens as a result
+  5. Realization — what they understand now that they didn't before
+Verse 2 must go DEEPER than Verse 1 — more vulnerable, more specific, a new emotional angle. Scanning Verse 2 for Verse 1 imagery is mandatory. If any imagery or emotional beat repeats, replace it.
+
+────────────────────────────────────────
+RULE 7 — PRIORITIZE QUOTABLE LINES
+────────────────────────────────────────
+Aim to plant at least 2–3 lines per song that feel:
+  → caption-worthy — someone would post this on Instagram
+  → screamable — a crowd would yell this back at a concert
+  → emotionally sharp — the line lands like a punch
+  → artist-like — sounds like it came from a real recording session
+  → instantly memorable — repeats in your head after one listen
+Directional energy only — do NOT copy these examples:
+  ✓ "Dem laugh first, now dem dey watch"
+  ✓ "Body weak but the hunger no die"
+  ✓ "Silence loud when pain too much"
+  ✓ "God know wetin man no see"
+These examples show the ENERGY level — write originals with equal sharpness.
+
+────────────────────────────────────────
+RULE 8 — MATCH GENRE ENERGY PRECISELY
+────────────────────────────────────────
+Writing style must adapt to genre at the line level:
+  AFROBEATS (emotional / romantic / spiritual):
+    → smoother, melodic phrasing, intimate delivery, hook-focused, bounce in the rhythm
+  STREET-POP / AFRO-STREET:
+    → harder, more direct, more quotable, crowd-aware, less poetry more punch
+  DANCEHALL / PATOIS:
+    → rhythm-driven, chantable, naturally Jamaican in phrasing, NOT "Google Patois"
+  AMAPIANO:
+    → space is the feature — fewer words, let the groove breathe, township soul
+  GOSPEL / SPIRITUAL:
+    → intimate rawness, real struggle meeting real faith, no platitudes — write like someone on their knees, not behind a pulpit
+  SAD / HEARTBREAK:
+    → simple, vulnerable, believable, NOT overly poetic or abstract
+
+────────────────────────────────────────
+RULE 9 — BRIDGE MUST MATTER
+────────────────────────────────────────
+The bridge must NOT feel like random filler or a second outro. It must serve a real purpose — choose one:
+  → Reveal something more vulnerable that the verses haven't admitted yet
+  → Shift the emotional perspective of the entire song
+  → Strip the song down emotionally before the final section lands
+The bridge is the emotional turn. It earns the outro. If the bridge could be removed and nothing changes, rewrite it.
+
+────────────────────────────────────────
+RULE 10 — OUTRO MUST FEEL INTENTIONAL
+────────────────────────────────────────
+Do not end songs lazily. The outro must feel like:
+  → a final emotional stamp — the last thing the listener carries away
+  → a memorable close — the keeper line returns as an anchor
+  → a closing thought worth leaving in the listener's head long after the song ends
+The outro is not a third verse. It is not a wandering extension. It is the door closing — with weight, with intention, with feeling.
+
+══════════════════════════════════════════════
+FIRST DRAFT SELF-CHECK — run silently before output:
+  → Does every line sound sung, not explained?
+  → Does the hook feel shorter and more chantable than an average AI chorus?
+  → Are there any banned motivational filler lines? If yes → rewrite them.
+  → Are all dialect lines constructed natively, not translated from English?
+  → Is every line short and singable in one breath?
+  → Does each verse progress through scene → feeling → reaction → consequence → realization?
+  → Are there 2–3 genuinely quotable, caption-worthy lines?
+  → Does the writing style match the genre's energy?
+  → Does the bridge reveal or turn — not just fill space?
+  → Does the outro close with intentional emotional weight?
+If ANY answer is NO → fix it before output.
+══════════════════════════════════════════════
+
 ─────────────────────────────
 FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:
 ✓ Hook would survive the 5-question enforcer
@@ -406,6 +541,7 @@ FINAL GATE — Do not output until the song passes ALL THREE CORE LAWS:
 ✓ Outro is labeled ONLY as "Outro" — no slash labels
 ✓ Every lyric line passes the dialect-first test if Patois or Pidgin is active
 ✓ Language Authenticity Check — all 6 questions answered YES
+✓ First Draft Quality Mandate — all 10 rules verified and enforced
 
 ==================================================
 OUTPUT FORMAT — STRICTLY ENFORCED
@@ -1461,6 +1597,14 @@ function buildUserPrompt(
     "✓ OUTRO LABEL: label as 'Outro' only — never 'Outro / Final Chorus' — write as a closer, not a launcher",
     "✓ NATURALNESS: reject any line that sounds robotic, formal, or AI-generated — every line must be singable by a real artist in one take",
     "✓ TIGHTNESS: fewer, stronger lines — every line must earn its place — simpler and more direct always beats longer and more elaborate",
+    "✓ SING IT, DON'T EXPLAIN IT: never over-explain feelings — embody them in short, direct, recordable lines — no essays disguised as lyrics",
+    "✓ BANNED FILLER — these line types are FORBIDDEN: 'I know one day I will make it' / 'I will continue to rise above' / 'No matter what I will never give up' / 'I am blessed and highly favored' / 'Through the storm I will rise' — replace with concrete emotional specificity",
+    "✓ SHORT LINES: most lines must be 6–12 syllables — easy to phrase over a beat in one breath — cut any line that is hard to sing without rushing",
+    "✓ VERSE ARC: each verse must progress through scene → feeling → reaction → consequence → realization — do NOT repeat the same emotional beat in different words",
+    "✓ QUOTABLE LINES: plant at least 2–3 lines per song that are caption-worthy, screamable, and emotionally sharp — not generic, not safe, not AI-neat",
+    "✓ BRIDGE PURPOSE: the bridge must reveal something new, shift perspective, or strip the song down — it must NOT be filler or a second outro",
+    "✓ OUTRO INTENTION: the outro must close with emotional weight — the keeper line returns as an anchor — it is a door closing, not a verse continuing",
+    "✓ FIRST DRAFT QUALITY MANDATE: all 10 rules verified — output must already feel artist-ready before any humanize or enhancement pass",
     "✓ OUTPUT: ONLY the lyrics JSON object (title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro) — no production fields, no text, no commentary",
     "",
     "────────────────────────────────────────",

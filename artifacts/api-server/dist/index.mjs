@@ -50482,6 +50482,141 @@ WHEN A FAILURE IS DETECTED \u2014 rewrite with:
 \u2192 If NO failure conditions are triggered \u2192 proceed to the final gate.
 \u2192 If ANY failure condition is triggered \u2192 rewrite before output. Do not return a language-failed draft.
 
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+FIRST DRAFT QUALITY MANDATE \u2014 ENFORCE BEFORE OUTPUT
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+The first draft must already feel like a real artist-ready rough draft \u2014 not a polished AI essay, not a motivational speech, not fake poetry. These ten rules govern every line you write.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 1 \u2014 WRITE SONGS, NOT EXPLANATIONS
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Never over-explain a feeling or a life situation. Sing it. Embody it.
+  WRONG: "I have been through many difficult experiences in my life"
+  WRONG: "I know that God has been helping me through all my struggles"
+  RIGHT: "Pain don tire me" / "Na God carry me" / "Di road nearly break me"
+Every line must feel like something someone would actually record \u2014 not something written in an essay.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 2 \u2014 HOOKS MUST BE SHORTER AND STRONGER
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Prioritize choruses / hooks that are:
+  \u2192 shorter (4\u20136 lines maximum \u2014 lean toward 4 when in doubt)
+  \u2192 easier to remember after one listen
+  \u2192 more repeatable and chantable
+  \u2192 more emotionally immediate \u2014 the emotional punch lands in 3 seconds
+  \u2192 the keeper line or a direct variation of it MUST be present
+If the chorus is too long, too wordy, or too "written," simplify it. The best hook is usually the shortest, most honest version.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 3 \u2014 BANNED MOTIVATIONAL FILLER \u2014 ABSOLUTE
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+These types of lines are FORBIDDEN unless the song has genuinely earned them through specificity and story:
+  \u2717 "I know one day I will make it"
+  \u2717 "I will continue to rise above"
+  \u2717 "No matter what happens I will never give up"
+  \u2717 "I am blessed and highly favored"
+  \u2717 "Keep pushing, you are stronger than you know"
+  \u2717 "Through the storm I will rise"
+  \u2717 "Everything will be alright"
+These lines feel fake, generic, and AI-generated. Replace with concrete, believable, street-level or emotionally specific phrasing. Make the listener FEEL it \u2014 do not announce it.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 4 \u2014 DIALECT IS BUILT NATIVELY, NOT TRANSLATED
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+When dialect is active (Pidgin / Patois / any local mode), the entire line must be constructed natively. Do not write an English sentence then add dialect flavor.
+  WRONG: "I am feeling so much pain in my heart, abi?"
+  WRONG: "I keep moving forward because nothing will stop me, sha"
+  RIGHT: "My chest dey hot" / "Pain don choke me" / "Mi heart heavy tonight"
+The full line construction \u2014 word order, rhythm, emotional logic, phrase memory \u2014 must feel native. Not translation. Not decoration. Native thought.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 5 \u2014 LINES MUST BE SHORT AND MUSICAL
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Most lines should be easy to phrase over a beat in a single breath. Favor:
+  \u2192 punchy short lines (6\u201312 syllables per line is ideal)
+  \u2192 strong line endings that land with weight
+  \u2192 natural pauses built into the line
+  \u2192 breath-friendly writing \u2014 artists can actually perform this
+  \u2192 phrases that sit naturally on a melody without rushing
+Avoid lines with too many clauses. If a line is hard to sing in one breath, cut it in half.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 6 \u2014 VERSES MUST MOVE FORWARD
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Each verse must feel like it is progressing \u2014 not repeating the same emotional beat in different words. A strong verse arc moves through:
+  1. Scene \u2014 establish where we are, who we are
+  2. Feeling \u2014 what the character feels in this moment
+  3. Reaction \u2014 what they do or say in response
+  4. Consequence \u2014 what happens as a result
+  5. Realization \u2014 what they understand now that they didn't before
+Verse 2 must go DEEPER than Verse 1 \u2014 more vulnerable, more specific, a new emotional angle. Scanning Verse 2 for Verse 1 imagery is mandatory. If any imagery or emotional beat repeats, replace it.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 7 \u2014 PRIORITIZE QUOTABLE LINES
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Aim to plant at least 2\u20133 lines per song that feel:
+  \u2192 caption-worthy \u2014 someone would post this on Instagram
+  \u2192 screamable \u2014 a crowd would yell this back at a concert
+  \u2192 emotionally sharp \u2014 the line lands like a punch
+  \u2192 artist-like \u2014 sounds like it came from a real recording session
+  \u2192 instantly memorable \u2014 repeats in your head after one listen
+Directional energy only \u2014 do NOT copy these examples:
+  \u2713 "Dem laugh first, now dem dey watch"
+  \u2713 "Body weak but the hunger no die"
+  \u2713 "Silence loud when pain too much"
+  \u2713 "God know wetin man no see"
+These examples show the ENERGY level \u2014 write originals with equal sharpness.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 8 \u2014 MATCH GENRE ENERGY PRECISELY
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Writing style must adapt to genre at the line level:
+  AFROBEATS (emotional / romantic / spiritual):
+    \u2192 smoother, melodic phrasing, intimate delivery, hook-focused, bounce in the rhythm
+  STREET-POP / AFRO-STREET:
+    \u2192 harder, more direct, more quotable, crowd-aware, less poetry more punch
+  DANCEHALL / PATOIS:
+    \u2192 rhythm-driven, chantable, naturally Jamaican in phrasing, NOT "Google Patois"
+  AMAPIANO:
+    \u2192 space is the feature \u2014 fewer words, let the groove breathe, township soul
+  GOSPEL / SPIRITUAL:
+    \u2192 intimate rawness, real struggle meeting real faith, no platitudes \u2014 write like someone on their knees, not behind a pulpit
+  SAD / HEARTBREAK:
+    \u2192 simple, vulnerable, believable, NOT overly poetic or abstract
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 9 \u2014 BRIDGE MUST MATTER
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+The bridge must NOT feel like random filler or a second outro. It must serve a real purpose \u2014 choose one:
+  \u2192 Reveal something more vulnerable that the verses haven't admitted yet
+  \u2192 Shift the emotional perspective of the entire song
+  \u2192 Strip the song down emotionally before the final section lands
+The bridge is the emotional turn. It earns the outro. If the bridge could be removed and nothing changes, rewrite it.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+RULE 10 \u2014 OUTRO MUST FEEL INTENTIONAL
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+Do not end songs lazily. The outro must feel like:
+  \u2192 a final emotional stamp \u2014 the last thing the listener carries away
+  \u2192 a memorable close \u2014 the keeper line returns as an anchor
+  \u2192 a closing thought worth leaving in the listener's head long after the song ends
+The outro is not a third verse. It is not a wandering extension. It is the door closing \u2014 with weight, with intention, with feeling.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+FIRST DRAFT SELF-CHECK \u2014 run silently before output:
+  \u2192 Does every line sound sung, not explained?
+  \u2192 Does the hook feel shorter and more chantable than an average AI chorus?
+  \u2192 Are there any banned motivational filler lines? If yes \u2192 rewrite them.
+  \u2192 Are all dialect lines constructed natively, not translated from English?
+  \u2192 Is every line short and singable in one breath?
+  \u2192 Does each verse progress through scene \u2192 feeling \u2192 reaction \u2192 consequence \u2192 realization?
+  \u2192 Are there 2\u20133 genuinely quotable, caption-worthy lines?
+  \u2192 Does the writing style match the genre's energy?
+  \u2192 Does the bridge reveal or turn \u2014 not just fill space?
+  \u2192 Does the outro close with intentional emotional weight?
+If ANY answer is NO \u2192 fix it before output.
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
 \u2713 Hook would survive the 5-question enforcer
@@ -50492,6 +50627,7 @@ FINAL GATE \u2014 Do not output until the song passes ALL THREE CORE LAWS:
 \u2713 Outro is labeled ONLY as "Outro" \u2014 no slash labels
 \u2713 Every lyric line passes the dialect-first test if Patois or Pidgin is active
 \u2713 Language Authenticity Check \u2014 all 6 questions answered YES
+\u2713 First Draft Quality Mandate \u2014 all 10 rules verified and enforced
 
 ==================================================
 OUTPUT FORMAT \u2014 STRICTLY ENFORCED
@@ -51478,6 +51614,14 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2713 OUTRO LABEL: label as 'Outro' only \u2014 never 'Outro / Final Chorus' \u2014 write as a closer, not a launcher",
     "\u2713 NATURALNESS: reject any line that sounds robotic, formal, or AI-generated \u2014 every line must be singable by a real artist in one take",
     "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place \u2014 simpler and more direct always beats longer and more elaborate",
+    "\u2713 SING IT, DON'T EXPLAIN IT: never over-explain feelings \u2014 embody them in short, direct, recordable lines \u2014 no essays disguised as lyrics",
+    "\u2713 BANNED FILLER \u2014 these line types are FORBIDDEN: 'I know one day I will make it' / 'I will continue to rise above' / 'No matter what I will never give up' / 'I am blessed and highly favored' / 'Through the storm I will rise' \u2014 replace with concrete emotional specificity",
+    "\u2713 SHORT LINES: most lines must be 6\u201312 syllables \u2014 easy to phrase over a beat in one breath \u2014 cut any line that is hard to sing without rushing",
+    "\u2713 VERSE ARC: each verse must progress through scene \u2192 feeling \u2192 reaction \u2192 consequence \u2192 realization \u2014 do NOT repeat the same emotional beat in different words",
+    "\u2713 QUOTABLE LINES: plant at least 2\u20133 lines per song that are caption-worthy, screamable, and emotionally sharp \u2014 not generic, not safe, not AI-neat",
+    "\u2713 BRIDGE PURPOSE: the bridge must reveal something new, shift perspective, or strip the song down \u2014 it must NOT be filler or a second outro",
+    "\u2713 OUTRO INTENTION: the outro must close with emotional weight \u2014 the keeper line returns as an anchor \u2014 it is a door closing, not a verse continuing",
+    "\u2713 FIRST DRAFT QUALITY MANDATE: all 10 rules verified \u2014 output must already feel artist-ready before any humanize or enhancement pass",
     "\u2713 OUTPUT: ONLY the lyrics JSON object (title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro) \u2014 no production fields, no text, no commentary",
     "",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
