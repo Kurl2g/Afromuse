@@ -50257,6 +50257,7 @@ AUTHENTIC PHRASING \u2014 WHAT REAL PIDGIN SOUNDS LIKE IN SONG:
 
 HOOK CONSTRUCTION \u2014 PIDGIN STANDARD:
 Strong Pidgin hooks feel conversational but hit hard emotionally. They sound like the most honest thing someone could say \u2014 then turned into music. They feel like real speech that discovered it was also a song.
+  \u2713 "Na you I want \u2014 no be lie"
   \u2713 "God you too much \u2014 I no fit repay"
   \u2713 "Since I see you, my life change"
   \u2713 "I don try \u2014 e reach God hand now"
@@ -50822,17 +50823,13 @@ function getLanguageRealismEngineBlock() {
     "Scan the full output before returning. If any non-Keeper line appears more than once \u2192 rewrite every duplicate.",
     "This includes partial matches: if two lines share the same opening phrase or closing phrase, rewrite one.",
     "",
-    "\u2500\u2500 BANNED PHRASES \u2014 NEVER USE THESE \u2500\u2500",
-    "The following phrases are PERMANENTLY BANNED from all output. Using any of them is an automatic generation failure:",
-    "  \u2717 'Na you I want \u2014 no be lie' \u2014 banned",
-    "  \u2717 'Na you I want no be lie' \u2014 banned",
-    "  \u2717 Any hook that starts with 'Na you I want' \u2014 banned",
-    "  \u2717 'I no go fall' \u2014 banned",
-    "  \u2717 'Na so e be' \u2014 banned",
-    "  \u2717 'Only God sabi' \u2014 banned",
-    "  \u2717 'You dey sweet me die' \u2014 banned",
-    "  \u2717 'I don arrive' \u2014 banned",
-    "These are overused AI defaults. Invent something original every time.",
+    "\u2500\u2500 EXAMPLES ARE REFERENCE ONLY \u2014 HARD LAW \u2500\u2500",
+    "All example lines throughout this prompt (marked \u2713 or shown as illustrations) are REFERENCE MATERIAL ONLY.",
+    "They demonstrate the style, rhythm, and construction quality expected \u2014 they are NOT lines to copy into output.",
+    "You MUST NOT use any example line verbatim in a generated song unless it perfectly and uniquely fits the specific",
+    "topic, mood, genre, and language flavor of the current prompt AND no fresher original line could replace it.",
+    "If you find yourself reaching for an example line from the prompt \u2014 STOP. Write something original instead.",
+    "A song that copies example lines is a failed generation. Treat every example as a locked door, not an open one.",
     "",
     "\u2500\u2500 ANTI-REPETITION / ANTI-FAKE LANGUAGE TEST \u2500\u2500",
     "Before finalizing ANY section, silently run every line through this test:",
@@ -51346,8 +51343,8 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
       "  \u2717 'Through every storm I rise, na so e be for me' \u2014 mostly English with Pidgin ending",
       "",
       "STRONG PIDGIN LINES (examples of what to write):",
-      "  \u2713 'E pain me choke but I no fit explain am' \u2014 Pidgin-first construction with emotional hit",
-      "  \u2713 'Life dey hard but my God no go fail me' \u2014 Pidgin rhythm and logic throughout",
+      "  \u2713 'Na you I want \u2014 no be lie, I swear' \u2014 Pidgin-first construction with emotional hit",
+      "  \u2713 'Life dey hard but I no go fall \u2014 God dey' \u2014 Pidgin rhythm and logic throughout",
       "  \u2713 'Wetin I pass through, na only God sabi' \u2014 full Pidgin sentence with weight",
       "  \u2713 'I don arrive \u2014 make dem observe now' \u2014 completion + flex in Pidgin",
       "  \u2713 'Since I see you, my heart no rest again' \u2014 Pidgin thought structure naturally",
@@ -51355,7 +51352,7 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
       "  \u2713 'I hustle quiet \u2014 God dey see am for me' \u2014 hustle and faith in natural Pidgin voice",
       "",
       "\u2500\u2500 PIDGIN GRAMMAR REFERENCE \u2500\u2500",
-      "  Na = is/are/it is/emphasis: 'Na God I thank', 'Na my people be this', 'Na so dem do am'",
+      "  Na = is/are/it is/emphasis: 'Na you I need', 'Na so e be', 'Na God I thank'",
       "  Dey = continuous state/location: 'I dey feel you', 'wahala dey', 'e dey sweet me'",
       "  Don = completed: 'I don see am', 'e don happen', 'we don try'",
       "  Wey = who/which/that: 'person wey I love', 'thing wey dey pain me'",

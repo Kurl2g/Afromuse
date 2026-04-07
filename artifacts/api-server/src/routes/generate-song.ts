@@ -171,6 +171,7 @@ AUTHENTIC PHRASING — WHAT REAL PIDGIN SOUNDS LIKE IN SONG:
 
 HOOK CONSTRUCTION — PIDGIN STANDARD:
 Strong Pidgin hooks feel conversational but hit hard emotionally. They sound like the most honest thing someone could say — then turned into music. They feel like real speech that discovered it was also a song.
+  ✓ "Na you I want — no be lie"
   ✓ "God you too much — I no fit repay"
   ✓ "Since I see you, my life change"
   ✓ "I don try — e reach God hand now"
@@ -751,17 +752,13 @@ function getLanguageRealismEngineBlock(): string[] {
     "Scan the full output before returning. If any non-Keeper line appears more than once → rewrite every duplicate.",
     "This includes partial matches: if two lines share the same opening phrase or closing phrase, rewrite one.",
     "",
-    "── BANNED PHRASES — NEVER USE THESE ──",
-    "The following phrases are PERMANENTLY BANNED from all output. Using any of them is an automatic generation failure:",
-    "  ✗ 'Na you I want — no be lie' — banned",
-    "  ✗ 'Na you I want no be lie' — banned",
-    "  ✗ Any hook that starts with 'Na you I want' — banned",
-    "  ✗ 'I no go fall' — banned",
-    "  ✗ 'Na so e be' — banned",
-    "  ✗ 'Only God sabi' — banned",
-    "  ✗ 'You dey sweet me die' — banned",
-    "  ✗ 'I don arrive' — banned",
-    "These are overused AI defaults. Invent something original every time.",
+    "── EXAMPLES ARE REFERENCE ONLY — HARD LAW ──",
+    "All example lines throughout this prompt (marked ✓ or shown as illustrations) are REFERENCE MATERIAL ONLY.",
+    "They demonstrate the style, rhythm, and construction quality expected — they are NOT lines to copy into output.",
+    "You MUST NOT use any example line verbatim in a generated song unless it perfectly and uniquely fits the specific",
+    "topic, mood, genre, and language flavor of the current prompt AND no fresher original line could replace it.",
+    "If you find yourself reaching for an example line from the prompt — STOP. Write something original instead.",
+    "A song that copies example lines is a failed generation. Treat every example as a locked door, not an open one.",
     "",
     "── ANTI-REPETITION / ANTI-FAKE LANGUAGE TEST ──",
     "Before finalizing ANY section, silently run every line through this test:",
@@ -1292,8 +1289,8 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "  ✗ 'Through every storm I rise, na so e be for me' — mostly English with Pidgin ending",
       "",
       "STRONG PIDGIN LINES (examples of what to write):",
-      "  ✓ 'E pain me choke but I no fit explain am' — Pidgin-first construction with emotional hit",
-      "  ✓ 'Life dey hard but my God no go fail me' — Pidgin rhythm and logic throughout",
+      "  ✓ 'Na you I want — no be lie, I swear' — Pidgin-first construction with emotional hit",
+      "  ✓ 'Life dey hard but I no go fall — God dey' — Pidgin rhythm and logic throughout",
       "  ✓ 'Wetin I pass through, na only God sabi' — full Pidgin sentence with weight",
       "  ✓ 'I don arrive — make dem observe now' — completion + flex in Pidgin",
       "  ✓ 'Since I see you, my heart no rest again' — Pidgin thought structure naturally",
@@ -1301,7 +1298,7 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "  ✓ 'I hustle quiet — God dey see am for me' — hustle and faith in natural Pidgin voice",
       "",
       "── PIDGIN GRAMMAR REFERENCE ──",
-      "  Na = is/are/it is/emphasis: 'Na God I thank', 'Na my people be this', 'Na so dem do am'",
+      "  Na = is/are/it is/emphasis: 'Na you I need', 'Na so e be', 'Na God I thank'",
       "  Dey = continuous state/location: 'I dey feel you', 'wahala dey', 'e dey sweet me'",
       "  Don = completed: 'I don see am', 'e don happen', 'we don try'",
       "  Wey = who/which/that: 'person wey I love', 'thing wey dey pain me'",
