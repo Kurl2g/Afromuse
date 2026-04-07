@@ -165,6 +165,7 @@ export default function Studio() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [isHumanizing, setIsHumanizing] = useState(false);
   const [isHardening, setIsHardening] = useState(false);
+  const [isCatchifying, setIsCatchifying] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -299,6 +300,42 @@ export default function Studio() {
       });
     } finally {
       setIsHumanizing(false);
+    }
+  };
+
+  const handleMakeItCatchier = async () => {
+    if (!draft || isCatchifying) return;
+    setIsCatchifying(true);
+    setSaved(false);
+    const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
+    try {
+      const res = await fetch("/api/catchier-lyrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draft,
+          genre,
+          mood,
+          languageFlavor: apiLanguageFlavor,
+          dialectDepth,
+          clarityMode,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error((errData as { error?: string }).error ?? "Rewrite failed");
+      }
+      const data = await res.json() as { draft: SongDraft };
+      setDraft(data.draft);
+      toast({ title: "Hook upgraded.", description: "Your song just got catchier." });
+    } catch (err) {
+      toast({
+        title: "Make It Catchier failed",
+        description: err instanceof Error ? err.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCatchifying(false);
     }
   };
 
@@ -1201,7 +1238,7 @@ export default function Studio() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={handleRegenerate}
-                        disabled={status === "generating" || isHumanizing || isHardening}
+                        disabled={status === "generating" || isHumanizing || isHardening || isCatchifying}
                         className="flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border border-white/10 hover:bg-white/5 text-white/50 hover:text-white transition-all disabled:opacity-40"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
@@ -1209,7 +1246,7 @@ export default function Studio() {
                       </button>
                       <button
                         onClick={handleHumanizeLyrics}
-                        disabled={isHumanizing || isHardening || status === "generating"}
+                        disabled={isHumanizing || isHardening || isCatchifying || status === "generating"}
                         className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
                           isHumanizing
                             ? "border-secondary/40 bg-secondary/10 text-secondary/70 cursor-wait"
@@ -1223,7 +1260,7 @@ export default function Studio() {
                       </button>
                       <button
                         onClick={handleMakeItHarder}
-                        disabled={isHardening || isHumanizing || status === "generating"}
+                        disabled={isHardening || isHumanizing || isCatchifying || status === "generating"}
                         className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
                           isHardening
                             ? "border-orange-700/50 bg-orange-950/30 text-orange-400/70 cursor-wait"
@@ -1233,6 +1270,20 @@ export default function Studio() {
                         {isHardening
                           ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Making it harder...</>
                           : <><Flame className="w-3.5 h-3.5" /> Make It Harder</>
+                        }
+                      </button>
+                      <button
+                        onClick={handleMakeItCatchier}
+                        disabled={isCatchifying || isHumanizing || isHardening || status === "generating"}
+                        className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
+                          isCatchifying
+                            ? "border-yellow-500/40 bg-yellow-950/30 text-yellow-400/70 cursor-wait"
+                            : "border-yellow-500/30 bg-yellow-950/20 text-yellow-400 hover:bg-yellow-950/40 hover:border-yellow-400/50 shadow-[0_0_14px_rgba(234,179,8,0.1)] hover:shadow-[0_0_20px_rgba(234,179,8,0.2)]"
+                        }`}
+                      >
+                        {isCatchifying
+                          ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Making it catchier...</>
+                          : <><Sparkles className="w-3.5 h-3.5" /> Make It Catchier</>
                         }
                       </button>
                       <button
@@ -1261,7 +1312,7 @@ export default function Studio() {
                   </div>
 
                   {/* ── LYRICS CARD ─────────────────────────────────── */}
-                  <div className={`rounded-3xl border bg-[#06060e] overflow-hidden shadow-2xl transition-all duration-300 ${isHumanizing ? "border-secondary/30 shadow-[0_0_40px_rgba(139,92,246,0.08)]" : isHardening ? "border-orange-700/30 shadow-[0_0_40px_rgba(194,65,12,0.08)]" : "border-white/8"}`}>
+                  <div className={`rounded-3xl border bg-[#06060e] overflow-hidden shadow-2xl transition-all duration-300 ${isHumanizing ? "border-secondary/30 shadow-[0_0_40px_rgba(139,92,246,0.08)]" : isHardening ? "border-orange-700/30 shadow-[0_0_40px_rgba(194,65,12,0.08)]" : isCatchifying ? "border-yellow-500/25 shadow-[0_0_40px_rgba(234,179,8,0.07)]" : "border-white/8"}`}>
 
                     {/* Card toolbar */}
                     <div className="flex items-center justify-between bg-[#0c0c18] border-b border-white/5 px-5 py-3">
@@ -1285,6 +1336,11 @@ export default function Studio() {
                           <>
                             <Loader2 className="w-3 h-3 text-orange-400/70 animate-spin" />
                             <span className="text-[10px] text-orange-400/70 font-medium">Making lyrics harder...</span>
+                          </>
+                        ) : isCatchifying ? (
+                          <>
+                            <Loader2 className="w-3 h-3 text-yellow-400/70 animate-spin" />
+                            <span className="text-[10px] text-yellow-400/70 font-medium">Making it catchier...</span>
                           </>
                         ) : (
                           <>

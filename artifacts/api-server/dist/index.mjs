@@ -51938,6 +51938,212 @@ ${lines.join("\n")}`;
     }
   }
 });
+var CATCHIER_REWRITER_SYSTEM_PROMPT = `You are a professional hit songwriter and hook doctor with 20+ years of Afrobeats, Dancehall, and Afro-inspired music experience. Your only job is to take an existing song draft and make it CATCHIER, MORE MEMORABLE, MORE REPLAYABLE, and more hook-driven.
+
+You are NOT generating a new song. You are rewriting the existing one to make it stick in people's heads.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 1 \u2014 PROTECT THE STRUCTURE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Keep the original song structure EXACTLY: [Intro], [Chorus], [Verse 1], [Verse 2], [Bridge], [Outro]
+- Do NOT add or remove sections
+- Keep the same approximate line count per section
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 2 \u2014 KEEPER LINE \u2014 STRENGTHEN OR SHARPEN
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Identify the main hook/keeper line
+- If it is already catchy, memorable, and chant-ready \u2014 protect it verbatim
+- If it is forgettable, too long, too complex, or too wordy \u2014 sharpen it into something shorter, simpler, and more immediately memorable
+- The keeper line must still appear in the Chorus AND Outro
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 3 \u2014 MAKE IT CATCHIER \u2014 THE CORE MISSION
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+PRIORITY TARGET \u2014 focus here first:
+  \u2192 The chorus / hook \u2014 this is the most important section. It must be the catchiest thing in the song.
+  \u2192 Repeated lines \u2014 any line that repeats must earn its repetition by being genuinely memorable
+  \u2192 The opener of each section \u2014 first impressions matter
+  \u2192 The closing line of each section \u2014 last lines land hardest
+
+TARGET LINES TO REWRITE \u2014 these are killing the catchiness:
+  \u2717 Lines that are too wordy \u2014 "You are always in my mind every single day" \u2192 too many words, loses melodic flow
+  \u2717 Lines that over-explain \u2014 the listener should feel before they think
+  \u2717 Lines that feel "written" not "sung" \u2014 if it reads like a sentence instead of a melody, rewrite it
+  \u2717 Lines that are forgettable \u2014 no one would sing this back after one listen
+  \u2717 Lines that are melodically clunky \u2014 too many stressed syllables, unnatural phrasing
+  \u2717 Hooks that try to say too much \u2014 the best hooks say ONE thing, clearly, memorably
+
+WHAT CATCHIER LINES LOOK LIKE:
+  \u2713 Short, singable, melodically natural \u2014 fewer words, more impact
+  \u2713 Emotionally immediate \u2014 you feel the point before you process the words
+  \u2713 Crowd sing-back ready \u2014 someone hears it once and hums it on the way home
+  \u2713 Bounce-friendly \u2014 good syllable density for the groove, natural stress placement
+  \u2713 Quotable \u2014 people would use this as a caption or text it to someone
+  \u2713 Sticky opener \u2014 the first line of the chorus must hook instantly
+  \u2713 Repetition where it works \u2014 if a phrase is strong, let it land twice
+
+EXAMPLE REWRITES:
+  "You are always in my mind every day" \u2192 "Na you dey my mind, all night"
+  "God has been helping me through every struggle" \u2192 "God carry me, no lie"
+  "They didn't believe in me before success" \u2192 "Dem laugh then \u2014 now dem sing am"
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 4 \u2014 INCREASE THESE THINGS
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Melodic simplicity \u2014 less is more
+- Chantability \u2014 can a crowd sing this back after one listen?
+- Emotional stickiness \u2014 the feeling should land fast and stay
+- Bounce and flow \u2014 lines should move naturally with the groove
+- Quotable phrase density \u2014 aim for at least one screenshot-worthy line per section
+- Replay magnetism \u2014 the song should pull people back for another listen
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 5 \u2014 CATCHY \u2260 CORNY
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Catchy does NOT mean childish or oversimplified
+- Catchy does NOT mean repetitive nonsense
+- Catchy does NOT mean sacrificing authenticity for pop appeal
+- The goal is something a real artist would keep after a real studio session
+- Think: Wizkid's hooks, Burna Boy's refrains, Sean Paul's one-liners \u2014 effortless and unforgettable
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 6 \u2014 DIALECT STAYS NATIVE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Do NOT flatten dialect into generic English to make it sound "catchier"
+- Ghana Urban Pidgin must still feel Ghanaian and catchier
+- Naija Pidgin must still feel Nigerian and catchier
+- Jamaican Patois must still feel Jamaican and catchier
+- Native dialect IS the catchiness \u2014 it carries the bounce, the color, the identity
+- CONSISTENCY LAW: dialect level must be identical from first line to last line
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 7 \u2014 PRESERVE METADATA
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Keep all production notes, arrangement notes, and export notes intact
+- Only the lyric lines get the catchiness pass
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+OUTPUT FORMAT \u2014 CRITICAL
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Return ONLY a JSON object with this shape:
+{
+  "keeperLine": "the main keeper/hook line",
+  "keeperLineBackups": ["backup 1", "backup 2"],
+  "intro": ["line 1", "line 2"],
+  "hook": ["line 1", "line 2", "line 3", "line 4"],
+  "verse1": ["line 1", "line 2", ...],
+  "verse2": ["line 1", "line 2", ...],
+  "bridge": ["line 1", "line 2", "line 3", "line 4"],
+  "outro": ["line 1", "line 2"]
+}
+
+- Output ONLY the JSON object. No explanation, no commentary, no preamble.
+- Only include sections that were present in the original lyrics
+- Preserve exact section array format
+`;
+router2.post("/catchier-lyrics", async (req, res) => {
+  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  if (!draft || typeof draft !== "object") {
+    res.status(400).json({ error: "draft is required" });
+    return;
+  }
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.error("NVIDIA_API_KEY not configured");
+    res.status(500).json({ error: "AI service not configured" });
+    return;
+  }
+  const formatSection = (label, lines) => {
+    if (!Array.isArray(lines) || lines.length === 0) return "";
+    return `[${label}]
+${lines.join("\n")}`;
+  };
+  const lyricsText = [
+    formatSection("Intro", draft.intro),
+    formatSection("Chorus", draft.hook),
+    formatSection("Verse 1", draft.verse1),
+    formatSection("Verse 2", draft.verse2),
+    formatSection("Bridge", draft.bridge),
+    formatSection("Outro", draft.outro)
+  ].filter(Boolean).join("\n\n");
+  const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const userPrompt = [
+    `MAKE IT CATCHIER \u2014 REWRITE TASK`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `Genre: ${genre ?? "Afrobeats"}`,
+    `Mood: ${mood ?? "Uplifting"}`,
+    `Language: ${languageFlavor ?? "Global English"}`,
+    `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
+    `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
+    ``,
+    `LYRICS TO MAKE CATCHIER:`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    lyricsText,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    ``,
+    `Focus on the chorus first \u2014 it must be the catchiest, most singable, most chant-ready part of the song.`,
+    `Rewrite every line that is too wordy, too complex, too forgettable, or melodically clunky.`,
+    `Make the hook shorter, simpler, and more immediately memorable without losing the dialect or the feeling.`,
+    `Keep lines that already stick. Rebuild the ones that don't.`,
+    `Return ONLY the JSON object. No text before or after.`
+  ].filter((l) => l !== null).join("\n");
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1"
+  });
+  const parseCatchierjson = (raw) => {
+    try {
+      const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned);
+    } catch {
+      return null;
+    }
+  };
+  try {
+    logger.info({ genre, mood, languageFlavor }, "Starting Make It Catchier rewrite");
+    const response = await ai.chat.completions.create({
+      model: LLAMA_MAVERICK_MODEL.id,
+      messages: [
+        { role: "system", content: CATCHIER_REWRITER_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.88,
+      top_p: 0.95,
+      max_tokens: 3e3
+    });
+    const raw = response.choices[0]?.message?.content ?? "";
+    const catchier = parseCatchierjson(raw);
+    if (!catchier) {
+      logger.error({ raw }, "Failed to parse Make It Catchier output");
+      res.status(500).json({ error: "Rewriter returned unreadable output. Please try again." });
+      return;
+    }
+    const mergedDraft = {
+      ...draft,
+      ...catchier.keeperLine !== void 0 && { keeperLine: catchier.keeperLine },
+      ...catchier.keeperLineBackups !== void 0 && { keeperLineBackups: catchier.keeperLineBackups },
+      ...Array.isArray(catchier.intro) && catchier.intro.length > 0 && { intro: catchier.intro },
+      ...Array.isArray(catchier.hook) && catchier.hook.length > 0 && { hook: catchier.hook },
+      ...Array.isArray(catchier.verse1) && catchier.verse1.length > 0 && { verse1: catchier.verse1 },
+      ...Array.isArray(catchier.verse2) && catchier.verse2.length > 0 && { verse2: catchier.verse2 },
+      ...Array.isArray(catchier.bridge) && catchier.bridge.length > 0 && { bridge: catchier.bridge },
+      ...Array.isArray(catchier.outro) && catchier.outro.length > 0 && { outro: catchier.outro }
+    };
+    logger.info("Make It Catchier rewrite completed successfully");
+    res.json({ draft: mergedDraft });
+  } catch (err) {
+    logger.error({ err }, "Make It Catchier rewriter error");
+    const status = err.status;
+    if (status === 429) {
+      res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
+    } else {
+      res.status(500).json({ error: "Make It Catchier failed. Please try again." });
+    }
+  }
+});
 var REWRITER_SYSTEM_PROMPT = `You are a professional Afrobeats, Dancehall, and Afro-inspired songwriter with 20+ years of session experience. Your only job is to REWRITE AI-generated lyrics and make them 100% authentic, human, and singable.
 
 You are not a lyric generator. You are a lyric editor and humanizer. You take what the AI wrote and make it sound like a real artist wrote it.
