@@ -348,7 +348,7 @@ export function buildStemData(
   bassWeightOverride?: string,
 ): StemDef[] {
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
-  const e = energy as "Low" | "Medium" | "High";
+  const e = energy.toLowerCase() as "low" | "medium" | "high";
   const w = profile.stemWeights;
 
   // Energy scale factor: low=0.65, medium=1.0, high=1.25 (capped at 95)
@@ -791,7 +791,7 @@ export function buildProducerNotes(opts: {
     bounceStyle, melodyDensity, drumCharacter, hookLift, lyricsSignal,
   } = opts;
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
-  const e = energy as "Low" | "Medium" | "High";
+  const e = energy.toLowerCase() as "low" | "medium" | "high";
 
   const parts: string[] = [];
 
@@ -1064,7 +1064,7 @@ export function buildStudioExportNotes(opts: {
   } = opts;
 
   const profile = GENRE_PROFILES[genre] ?? GENRE_PROFILES["Afrobeats"];
-  const e = energy as "Low" | "Medium" | "High";
+  const e = energy.toLowerCase() as "low" | "medium" | "high";
   const tone = toneTag(lyricsTone);
   const intensity = vocalIntensity(energy);
   const cl = chorusLift ?? "Gradual swell";

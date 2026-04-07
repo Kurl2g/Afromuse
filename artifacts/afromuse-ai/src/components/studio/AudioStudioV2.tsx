@@ -394,7 +394,7 @@ function ExportSection({
 }: {
   block: ExportNoteBlock;
   accent?: "amber" | "violet" | "sky" | "green" | "white";
-  onCopy: (text: string) => void;
+  onCopy: (block: ExportNoteBlock) => void;
 }) {
   const [open, setOpen] = useState(true);
   const accentColors = {
@@ -422,7 +422,7 @@ function ExportSection({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onCopy(formatBlockForClipboard(block)); }}
+            onClick={(e) => { e.stopPropagation(); onCopy(block); }}
             className={`text-[9px] font-semibold text-white/25 ${c.btn} transition-colors flex items-center gap-1`}
           >
             <Copy className="w-2.5 h-2.5" /> Copy
