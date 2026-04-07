@@ -51741,6 +51741,203 @@ router2.post("/generate-song", async (req, res) => {
     }
   }
 });
+var HARDER_REWRITER_SYSTEM_PROMPT = `You are a senior session songwriter and punch-up writer with 20+ years of Afrobeats, Dancehall, and street music experience. Your only job is to take an existing AI-generated song draft and make every line HARDER, MORE EMOTIONALLY POWERFUL, MORE QUOTABLE, and more artist-performable.
+
+You are NOT generating a new song. You are rewriting the existing one to hit harder.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 1 \u2014 PROTECT THE STRUCTURE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Keep the original song structure EXACTLY: [Intro], [Chorus], [Verse 1], [Verse 2], [Bridge], [Outro]
+- Do NOT add or remove sections
+- Keep the same approximate line count per section
+- The song title may remain the same or be sharpened if needed
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 2 \u2014 KEEPER LINE \u2014 PROTECT OR SHARPEN
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Identify the main hook/keeper line
+- If the keeper line is already strong and quotable, protect it verbatim
+- If the keeper line is weak or generic, sharpen it into something more memorable and performance-ready
+- The keeper line must still appear in the Chorus AND Outro
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 3 \u2014 MAKE IT HARDER \u2014 THE CORE MISSION
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+TARGET LINES TO REWRITE \u2014 these are soft and must be hardened:
+  \u2717 Lines that sound too polite, too safe, or too gentle for the genre
+  \u2717 Lines that feel like AI motivational poster content: "rise above the storm", "you are stronger than you know"
+  \u2717 Lines that over-explain instead of hitting: "I am trying my best in this life" \u2192 "Pressure heavy but I still no bend"
+  \u2717 Lines that are emotionally vague or broad: "You left me and I feel sad" \u2192 "You comot, leave my chest in pieces"
+  \u2717 Lines that describe feelings from outside instead of inside: "They didn't believe in me but I made it" \u2192 "Dem laugh first \u2014 now dem dey quote me"
+  \u2717 Lines that sound like a spoken essay instead of a song
+  \u2717 Generic rhymes that don't create vivid imagery or emotional impact
+  \u2717 Any line where the emotion is stated but not FELT
+
+WHAT HARDER LINES LOOK LIKE:
+  \u2713 Confident, direct, emotionally raw \u2014 says the exact truth without dressing it up
+  \u2713 More pressure, more edge, more emotional tension in every line
+  \u2713 Lines that create a visual or physical feeling when heard
+  \u2713 Quotable \u2014 someone would screenshot this line and post it
+  \u2713 Performance-ready \u2014 an artist could step up to a mic and deliver this live RIGHT NOW
+  \u2713 Street-believable \u2014 feels lived-in, not composed from outside
+  \u2713 Crowd-chant energy in the hook \u2014 the chorus should feel like a rally
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 4 \u2014 INCREASE THESE THINGS
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Pressure and edge in every verse line
+- Emotional directness \u2014 say the real thing, not the polite version
+- Quotability \u2014 every section end should have at least one line worth screenshotting
+- Hook energy \u2014 the chorus should feel like it was built to be shouted back at a show
+- Artist energy and confidence in delivery feel
+- Crowd-chant potential in the main hook lines
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 5 \u2014 DIALECT STAYS NATIVE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Do NOT flatten dialect into generic English to make it sound "tougher"
+- Ghana Urban Pidgin must still feel Ghanaian and harder
+- Naija Pidgin must still feel Nigerian and harder
+- Jamaican Patois must still feel Jamaican and harder
+- The dialect carries culture \u2014 hardening the lyrics means making them MORE rooted, not less
+- CONSISTENCY LAW: dialect level must be identical from the first intro line to the last outro line
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 6 \u2014 KEEP IT SINGABLE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Short, punchy, emotionally loaded lines beat long poetic lines every time
+- Every rewritten line must fit naturally into the melodic pocket of the genre
+- Natural stress placement, good syllable density \u2014 not too cramped, not too sparse
+- If a line is too long to deliver in one breath, cut it
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+LAW 7 \u2014 PRESERVE METADATA
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+- Keep all production notes, arrangement notes, and export notes intact
+- Only the lyric lines get hardened \u2014 the song's metadata and structural notes are preserved
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+OUTPUT FORMAT \u2014 CRITICAL
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Return ONLY a JSON object with this shape:
+{
+  "keeperLine": "the main keeper/hook line",
+  "keeperLineBackups": ["backup 1", "backup 2"],
+  "intro": ["line 1", "line 2"],
+  "hook": ["line 1", "line 2", "line 3", "line 4"],
+  "verse1": ["line 1", "line 2", ...],
+  "verse2": ["line 1", "line 2", ...],
+  "bridge": ["line 1", "line 2", "line 3", "line 4"],
+  "outro": ["line 1", "line 2"]
+}
+
+- Output ONLY the JSON object. No explanation, no commentary, no preamble.
+- Only include sections that were present in the original lyrics
+- Preserve exact section array format
+`;
+router2.post("/harden-lyrics", async (req, res) => {
+  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  if (!draft || typeof draft !== "object") {
+    res.status(400).json({ error: "draft is required" });
+    return;
+  }
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.error("NVIDIA_API_KEY not configured");
+    res.status(500).json({ error: "AI service not configured" });
+    return;
+  }
+  const formatSection = (label, lines) => {
+    if (!Array.isArray(lines) || lines.length === 0) return "";
+    return `[${label}]
+${lines.join("\n")}`;
+  };
+  const lyricsText = [
+    formatSection("Intro", draft.intro),
+    formatSection("Chorus", draft.hook),
+    formatSection("Verse 1", draft.verse1),
+    formatSection("Verse 2", draft.verse2),
+    formatSection("Bridge", draft.bridge),
+    formatSection("Outro", draft.outro)
+  ].filter(Boolean).join("\n\n");
+  const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const userPrompt = [
+    `MAKE IT HARDER \u2014 REWRITE TASK`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `Genre: ${genre ?? "Afrobeats"}`,
+    `Mood: ${mood ?? "Uplifting"}`,
+    `Language: ${languageFlavor ?? "Global English"}`,
+    `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
+    `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
+    ``,
+    `LYRICS TO HARDEN:`,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    lyricsText,
+    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    ``,
+    `Rewrite every soft, safe, over-explained, or generic line to hit HARDER.`,
+    `Increase pressure, edge, emotional directness, and quotability throughout.`,
+    `Make every line feel more confident, more raw, more street-believable, and more artist-performable.`,
+    `Keep strong lines that already hit hard. Destroy and rebuild weak ones.`,
+    `Return ONLY the JSON object. No text before or after.`
+  ].filter((l) => l !== null).join("\n");
+  const ai = new OpenAI({
+    apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1"
+  });
+  const parseHardenJson = (raw) => {
+    try {
+      const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      return JSON.parse(jsonMatch ? jsonMatch[0] : cleaned);
+    } catch {
+      return null;
+    }
+  };
+  try {
+    logger.info({ genre, mood, languageFlavor }, "Starting Make It Harder rewrite");
+    const response = await ai.chat.completions.create({
+      model: LLAMA_MAVERICK_MODEL.id,
+      messages: [
+        { role: "system", content: HARDER_REWRITER_SYSTEM_PROMPT },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.9,
+      top_p: 0.95,
+      max_tokens: 3e3
+    });
+    const raw = response.choices[0]?.message?.content ?? "";
+    const hardened = parseHardenJson(raw);
+    if (!hardened) {
+      logger.error({ raw }, "Failed to parse Make It Harder output");
+      res.status(500).json({ error: "Rewriter returned unreadable output. Please try again." });
+      return;
+    }
+    const mergedDraft = {
+      ...draft,
+      ...hardened.keeperLine !== void 0 && { keeperLine: hardened.keeperLine },
+      ...hardened.keeperLineBackups !== void 0 && { keeperLineBackups: hardened.keeperLineBackups },
+      ...Array.isArray(hardened.intro) && hardened.intro.length > 0 && { intro: hardened.intro },
+      ...Array.isArray(hardened.hook) && hardened.hook.length > 0 && { hook: hardened.hook },
+      ...Array.isArray(hardened.verse1) && hardened.verse1.length > 0 && { verse1: hardened.verse1 },
+      ...Array.isArray(hardened.verse2) && hardened.verse2.length > 0 && { verse2: hardened.verse2 },
+      ...Array.isArray(hardened.bridge) && hardened.bridge.length > 0 && { bridge: hardened.bridge },
+      ...Array.isArray(hardened.outro) && hardened.outro.length > 0 && { outro: hardened.outro }
+    };
+    logger.info("Make It Harder rewrite completed successfully");
+    res.json({ draft: mergedDraft });
+  } catch (err) {
+    logger.error({ err }, "Make It Harder rewriter error");
+    const status = err.status;
+    if (status === 429) {
+      res.status(429).json({ error: "The AI is busy right now. Please wait a moment and try again." });
+    } else {
+      res.status(500).json({ error: "Make It Harder failed. Please try again." });
+    }
+  }
+});
 var REWRITER_SYSTEM_PROMPT = `You are a professional Afrobeats, Dancehall, and Afro-inspired songwriter with 20+ years of session experience. Your only job is to REWRITE AI-generated lyrics and make them 100% authentic, human, and singable.
 
 You are not a lyric generator. You are a lyric editor and humanizer. You take what the AI wrote and make it sound like a real artist wrote it.

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Sliders, Volume2, Music2, Download, Check, Lock,
-  Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key, Pen,
+  Mic2, Wand2, FileText, RotateCcw, Zap, Guitar, Radio, Key, Pen, Flame,
 } from "lucide-react";
 import BringToLifeCard from "@/components/audio/BringToLifeCard";
 import SendToAudioCard from "@/components/audio/SendToAudioCard";
@@ -164,6 +164,7 @@ export default function Studio() {
   const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [isHumanizing, setIsHumanizing] = useState(false);
+  const [isHardening, setIsHardening] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -298,6 +299,42 @@ export default function Studio() {
       });
     } finally {
       setIsHumanizing(false);
+    }
+  };
+
+  const handleMakeItHarder = async () => {
+    if (!draft || isHardening) return;
+    setIsHardening(true);
+    setSaved(false);
+    const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
+    try {
+      const res = await fetch("/api/harden-lyrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draft,
+          genre,
+          mood,
+          languageFlavor: apiLanguageFlavor,
+          dialectDepth,
+          clarityMode,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error((errData as { error?: string }).error ?? "Rewrite failed");
+      }
+      const data = await res.json() as { draft: SongDraft };
+      setDraft(data.draft);
+      toast({ title: "Lyrics hit harder now.", description: "Your session songwriter punched up every line." });
+    } catch (err) {
+      toast({
+        title: "Make It Harder failed",
+        description: err instanceof Error ? err.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsHardening(false);
     }
   };
 
@@ -1164,7 +1201,7 @@ export default function Studio() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={handleRegenerate}
-                        disabled={status === "generating" || isHumanizing}
+                        disabled={status === "generating" || isHumanizing || isHardening}
                         className="flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border border-white/10 hover:bg-white/5 text-white/50 hover:text-white transition-all disabled:opacity-40"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
@@ -1172,7 +1209,7 @@ export default function Studio() {
                       </button>
                       <button
                         onClick={handleHumanizeLyrics}
-                        disabled={isHumanizing || status === "generating"}
+                        disabled={isHumanizing || isHardening || status === "generating"}
                         className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
                           isHumanizing
                             ? "border-secondary/40 bg-secondary/10 text-secondary/70 cursor-wait"
@@ -1182,6 +1219,20 @@ export default function Studio() {
                         {isHumanizing
                           ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Humanizing...</>
                           : <><Pen className="w-3.5 h-3.5" /> Humanize Lyrics</>
+                        }
+                      </button>
+                      <button
+                        onClick={handleMakeItHarder}
+                        disabled={isHardening || isHumanizing || status === "generating"}
+                        className={`flex items-center gap-1.5 rounded-xl h-10 px-4 text-sm border transition-all disabled:opacity-40 ${
+                          isHardening
+                            ? "border-orange-700/50 bg-orange-950/30 text-orange-400/70 cursor-wait"
+                            : "border-orange-700/40 bg-orange-950/20 text-orange-400 hover:bg-orange-950/40 hover:border-orange-600/60 shadow-[0_0_14px_rgba(194,65,12,0.12)] hover:shadow-[0_0_20px_rgba(194,65,12,0.22)]"
+                        }`}
+                      >
+                        {isHardening
+                          ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Making it harder...</>
+                          : <><Flame className="w-3.5 h-3.5" /> Make It Harder</>
                         }
                       </button>
                       <button
@@ -1210,7 +1261,7 @@ export default function Studio() {
                   </div>
 
                   {/* ── LYRICS CARD ─────────────────────────────────── */}
-                  <div className={`rounded-3xl border bg-[#06060e] overflow-hidden shadow-2xl transition-all duration-300 ${isHumanizing ? "border-secondary/30 shadow-[0_0_40px_rgba(139,92,246,0.08)]" : "border-white/8"}`}>
+                  <div className={`rounded-3xl border bg-[#06060e] overflow-hidden shadow-2xl transition-all duration-300 ${isHumanizing ? "border-secondary/30 shadow-[0_0_40px_rgba(139,92,246,0.08)]" : isHardening ? "border-orange-700/30 shadow-[0_0_40px_rgba(194,65,12,0.08)]" : "border-white/8"}`}>
 
                     {/* Card toolbar */}
                     <div className="flex items-center justify-between bg-[#0c0c18] border-b border-white/5 px-5 py-3">
@@ -1229,6 +1280,11 @@ export default function Studio() {
                           <>
                             <Loader2 className="w-3 h-3 text-secondary/70 animate-spin" />
                             <span className="text-[10px] text-secondary/70 font-medium">Humanizing lyrics...</span>
+                          </>
+                        ) : isHardening ? (
+                          <>
+                            <Loader2 className="w-3 h-3 text-orange-400/70 animate-spin" />
+                            <span className="text-[10px] text-orange-400/70 font-medium">Making lyrics harder...</span>
                           </>
                         ) : (
                           <>
