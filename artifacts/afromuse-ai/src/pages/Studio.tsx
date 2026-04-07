@@ -1795,7 +1795,7 @@ export default function Studio() {
           </div>
 
           {/* ── COMING SOON OVERLAY ─────────────────────────────────────── */}
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gradient-to-b from-black/85 via-black/80 to-black/90 backdrop-blur-sm">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-start pt-12 bg-gradient-to-b from-black/85 via-black/80 to-black/90 backdrop-blur-sm">
 
             {/* Ambient glow rings */}
             <motion.div
