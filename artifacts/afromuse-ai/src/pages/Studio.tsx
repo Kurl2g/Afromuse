@@ -1787,7 +1787,113 @@ export default function Studio() {
         </div>
 
         {/* ── V2 AUDIO STUDIO — full width below main grid ── */}
-        <AudioStudioV2 ref={audioStudioRef} draft={draft} genre={genre} mood={mood} />
+        <div className="relative" id="audio-studio-v2">
+
+          {/* Blurred & disabled studio underneath */}
+          <div className="pointer-events-none select-none opacity-30 blur-[3px]">
+            <AudioStudioV2 ref={audioStudioRef} draft={draft} genre={genre} mood={mood} />
+          </div>
+
+          {/* ── COMING SOON OVERLAY ─────────────────────────────────────── */}
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gradient-to-b from-black/85 via-black/80 to-black/90 backdrop-blur-sm">
+
+            {/* Ambient glow rings */}
+            <motion.div
+              animate={{ scale: [1, 1.18, 1], opacity: [0.15, 0.35, 0.15] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute w-[480px] h-[480px] rounded-full bg-primary/20 blur-[80px] pointer-events-none"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.28, 1], opacity: [0.08, 0.2, 0.08] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+              className="absolute w-[640px] h-[640px] rounded-full bg-secondary/15 blur-[100px] pointer-events-none"
+            />
+
+            <div className="relative z-10 flex flex-col items-center text-center px-6">
+
+              {/* Heartbeat lock icon */}
+              <motion.div
+                animate={{ scale: [1, 1.15, 0.97, 1.08, 1], opacity: [1, 1, 1, 1, 1] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: [0.45, 0.05, 0.55, 0.95] }}
+                className="relative mb-6"
+              >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/25 to-secondary/20 border border-primary/40 flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.25)]">
+                  <Lock className="w-9 h-9 text-primary" strokeWidth={1.8} />
+                </div>
+                {/* Ping ring */}
+                <motion.div
+                  animate={{ scale: [1, 1.7], opacity: [0.5, 0] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "easeOut" }}
+                  className="absolute inset-0 rounded-2xl border-2 border-primary/50"
+                />
+              </motion.div>
+
+              {/* COMING SOON label */}
+              <motion.div
+                animate={{ opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/35 text-primary text-[11px] font-bold tracking-[0.25em] uppercase mb-5 shadow-[0_0_16px_rgba(245,158,11,0.2)]"
+              >
+                <motion.span
+                  animate={{ scale: [1, 1.4, 1] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: [0.45, 0.05, 0.55, 0.95] }}
+                  className="w-2 h-2 rounded-full bg-primary block"
+                />
+                Coming Soon
+              </motion.div>
+
+              {/* Main headline */}
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3 leading-tight">
+                Audio Studio{" "}
+                <span className="bg-gradient-to-r from-primary via-amber-300 to-secondary bg-clip-text text-transparent">
+                  V2
+                </span>
+              </h2>
+
+              <p className="text-base text-white/55 max-w-sm leading-relaxed mb-8">
+                We're putting the finishing touches on something incredible.
+                Real AI-generated beats, live session briefs, and full production tools — dropping soon.
+              </p>
+
+              {/* Heartbeat line */}
+              <div className="flex items-center gap-1 mb-8">
+                {[0, 0.12, 0.24, 0.36, 0.48].map((delay, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ scaleY: [0.3, 1.6, 0.3], opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay }}
+                    className="w-1 rounded-full bg-primary"
+                    style={{ height: i === 2 ? 28 : i === 1 || i === 3 ? 18 : 10 }}
+                  />
+                ))}
+                <motion.div
+                  animate={{ scaleY: [0.3, 2.4, 0.3], opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+                  className="w-1.5 rounded-full bg-amber-300 mx-0.5"
+                  style={{ height: 36 }}
+                />
+                {[0.72, 0.84, 0.96, 1.08, 1.2].map((delay, i) => (
+                  <motion.div
+                    key={i + 5}
+                    animate={{ scaleY: [0.3, 1.6, 0.3], opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay }}
+                    className="w-1 rounded-full bg-primary"
+                    style={{ height: i === 2 ? 28 : i === 1 || i === 3 ? 18 : 10 }}
+                  />
+                ))}
+              </div>
+
+              {/* Notify chip */}
+              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm text-white/50">
+                <Sparkles className="w-4 h-4 text-primary/70 shrink-0" />
+                Stay tuned — production audio drops are on the way
+              </div>
+
+            </div>
+          </div>
+          {/* ── END COMING SOON OVERLAY ─────────────────────────────────── */}
+
+        </div>
 
       </div>
     </div>
