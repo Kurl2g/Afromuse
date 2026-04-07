@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { Button, Input, Card } from "@/components/ui-elements";
 import { useAuth } from "@/context/AuthContext";
+
+function generateCaptcha() {
+  const ops = ["+", "-"] as const;
+  const op = ops[Math.floor(Math.random() * ops.length)];
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+  const answer = op === "+" ? a + b : Math.abs(a - b);
+  const display = op === "+" ? `${a} + ${b}` : `${Math.max(a, b)} − ${Math.min(a, b)}`;
+  return { display, answer };
+}
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +23,20 @@ export default function Auth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, signup, isLoggedIn } = useAuth();
   const [, navigate] = useLocation();
+
+  const [captcha, setCaptcha] = useState(generateCaptcha);
+  const [captchaInput, setCaptchaInput] = useState("");
+  const [captchaError, setCaptchaError] = useState(false);
+
+  const refreshCaptcha = useCallback(() => {
+    setCaptcha(generateCaptcha());
+    setCaptchaInput("");
+    setCaptchaError(false);
+  }, []);
+
+  useEffect(() => {
+    refreshCaptcha();
+  }, [isLogin, refreshCaptcha]);
 
   const getRedirect = () => {
     const params = new URLSearchParams(window.location.search);
@@ -25,11 +49,25 @@ export default function Auth() {
     return null;
   }
 
+  const validateCaptcha = () => {
+    const val = parseInt(captchaInput.trim(), 10);
+    if (isNaN(val) || val !== captcha.answer) {
+      setCaptchaError(true);
+      refreshCaptcha();
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (!email || !password) {
       setError("Please enter your email and password.");
+      return;
+    }
+    if (!validateCaptcha()) {
+      setError("Incorrect verification answer. Please try again.");
       return;
     }
     setIsSubmitting(true);
@@ -39,6 +77,7 @@ export default function Auth() {
       navigate(getRedirect());
     } else {
       setError(result.error ?? "Login failed.");
+      refreshCaptcha();
     }
   };
 
@@ -49,8 +88,16 @@ export default function Auth() {
       setError("Please fill in all fields.");
       return;
     }
+    if (!email.toLowerCase().endsWith("@gmail.com")) {
+      setError("Only Gmail accounts (@gmail.com) are allowed to sign up.");
+      return;
+    }
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (!validateCaptcha()) {
+      setError("Incorrect verification answer. Please try again.");
       return;
     }
     setIsSubmitting(true);
@@ -60,6 +107,7 @@ export default function Auth() {
       navigate(getRedirect());
     } else {
       setError(result.error ?? "Registration failed.");
+      refreshCaptcha();
     }
   };
 
@@ -120,6 +168,21 @@ export default function Auth() {
                   disabled={isSubmitting}
                 />
 
+                <div className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 flex items-center gap-3">
+                  <div className="flex-1">
+                    <p className="text-[11px] text-white/40 uppercase tracking-widest mb-1 font-semibold">Human Verification</p>
+                    <p className="text-sm text-white/80 font-medium">What is {captcha.display}?</p>
+                  </div>
+                  <Input
+                    type="number"
+                    placeholder="Answer"
+                    className={`h-10 w-24 bg-black/30 text-center ${captchaError ? "border-red-500/60" : ""}`}
+                    value={captchaInput}
+                    onChange={(e) => { setCaptchaInput(e.target.value); setCaptchaError(false); }}
+                    disabled={isSubmitting}
+                  />
+                </div>
+
                 {error && (
                   <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
                     {error}
@@ -153,14 +216,19 @@ export default function Auth() {
                   onChange={(e) => setName(e.target.value)}
                   disabled={isSubmitting}
                 />
-                <Input
-                  type="email"
-                  placeholder="Email address"
-                  className="h-12 bg-black/30"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isSubmitting}
-                />
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Gmail address (e.g. you@gmail.com)"
+                    className="h-12 bg-black/30"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isSubmitting}
+                  />
+                  {email && !email.toLowerCase().endsWith("@gmail.com") && (
+                    <p className="text-[11px] text-amber-400/80 mt-1 pl-1">Only @gmail.com addresses are accepted</p>
+                  )}
+                </div>
                 <Input
                   type="password"
                   placeholder="Create a password (min. 8 characters)"
@@ -169,6 +237,21 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting}
                 />
+
+                <div className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 flex items-center gap-3">
+                  <div className="flex-1">
+                    <p className="text-[11px] text-white/40 uppercase tracking-widest mb-1 font-semibold">Human Verification</p>
+                    <p className="text-sm text-white/80 font-medium">What is {captcha.display}?</p>
+                  </div>
+                  <Input
+                    type="number"
+                    placeholder="Answer"
+                    className={`h-10 w-24 bg-black/30 text-center ${captchaError ? "border-red-500/60" : ""}`}
+                    value={captchaInput}
+                    onChange={(e) => { setCaptchaInput(e.target.value); setCaptchaError(false); }}
+                    disabled={isSubmitting}
+                  />
+                </div>
 
                 {error && (
                   <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">

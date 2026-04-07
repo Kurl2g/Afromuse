@@ -72916,6 +72916,10 @@ router4.post("/auth/register", async (req, res) => {
     res.status(400).json({ error: "Name, email, and password are required." });
     return;
   }
+  if (!email3.toLowerCase().endsWith("@gmail.com")) {
+    res.status(400).json({ error: "Only Gmail accounts (@gmail.com) are allowed to sign up." });
+    return;
+  }
   if (password.length < 8) {
     res.status(400).json({ error: "Password must be at least 8 characters." });
     return;
