@@ -46,8 +46,10 @@ function generateVerificationToken(): string {
 function getBaseUrl(req: import("express").Request): string {
   const appUrl = process.env["APP_URL"];
   if (appUrl) return appUrl.replace(/\/$/, "");
-  const protocol = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
-  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  const replitDomain = process.env["REPLIT_DEV_DOMAIN"] ?? process.env["REPLIT_DOMAINS"]?.split(",")[0];
+  if (replitDomain) return `https://${replitDomain}`;
+  const protocol = (req.headers["x-forwarded-proto"] as string | undefined) ?? req.protocol ?? "https";
+  const host = (req.headers["x-forwarded-host"] as string | undefined) ?? req.headers.host;
   return `${protocol}://${host}`;
 }
 

@@ -73943,6 +73943,8 @@ function generateVerificationToken() {
 function getBaseUrl(req) {
   const appUrl = process.env["APP_URL"];
   if (appUrl) return appUrl.replace(/\/$/, "");
+  const replitDomain = process.env["REPLIT_DEV_DOMAIN"] ?? process.env["REPLIT_DOMAINS"]?.split(",")[0];
+  if (replitDomain) return `https://${replitDomain}`;
   const protocol = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
   const host = req.headers["x-forwarded-host"] ?? req.headers.host;
   return `${protocol}://${host}`;
