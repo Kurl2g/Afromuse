@@ -110,6 +110,7 @@ export type AudioJobType =
   | "instrumental"
   | "vocal"
   | "lead-vocal"
+  | "voice-clone-sing"
   | "mix-master"
   | "stem-extraction";
 
@@ -228,6 +229,24 @@ export interface SessionBlueprintData {
     artistReference: string;
   };
   adLibSuggestions?: string[];
+
+  // Voice Clone Singing Engine brief fields
+  singingBrief?: string;
+  voiceAnalysis?: string;
+  singingDirection?: string;
+  performanceNotes?: string;
+  stemConfig?: string;
+  voiceCloneProcessingChain?: string;
+  voiceCloneMetadata?: {
+    performanceFeel: string;
+    dialectDepth: string;
+    voiceTexture: string;
+    hitmakerMode: boolean;
+    recordingDuration: number;
+    genre: string;
+    bpm?: number;
+    key?: string;
+  };
 }
 
 // ─── Output Registry Map ──────────────────────────────────────────────────────

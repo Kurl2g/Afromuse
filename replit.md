@@ -121,7 +121,7 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 ### Backend Routes (V3 additions)
 - `routes/artist-dna.ts` — `GET/POST /api/artist-dna` (Artist Pro gated)
-- `routes/voice-clone.ts` — `POST /api/voice-clone` (Artist Pro placeholder)
+- `routes/voice-clone.ts` — `POST /api/voice-clone/sing` (Personal Voice Clone Singing Engine — active), `GET /api/voice-clone/job/:jobId` (job polling), `GET /api/voice-clone/status`
 - `routes/stripe.ts` — `POST /api/stripe/create-checkout-session`, `POST /api/stripe/webhook`; gracefully returns 503 if `STRIPE_SECRET_KEY` not set
 - `routes/usage.ts` — `GET /api/usage/stats`
 - `routes/generate-song.ts` — `/rewrite-lyrics`, `/harden-lyrics`, `/catchier-lyrics` now gated with Creator Pro middleware
@@ -339,6 +339,30 @@ Added `POST /api/generate-lead-vocals` endpoint in `artifacts/api-server/src/rou
 - "Copy Full Brief" button copies all 7 fields to clipboard
 
 **Requires**: `NVIDIA_API_KEY` environment secret for AI brief generation.
+
+## Personal Voice Clone Singing Engine
+
+Full AI singing engine where the user's own 30-second voice recording is the sole reference. No artist imitation. 
+
+**Parameters** (from user spec):
+- **Performance Feel**: Smooth / Melodic / Gritty / Emotional / Soulful / Intimate / Confident / Airy / Prayerful / Street
+- **Dialect Depth**: Light / Medium / Deep
+- **Voice Texture**: Warm / Bright / Breathier / Raspy / Powerful
+- **Hitmaker Mode**: On / Off — enhances energy, timing, phrasing without altering voice identity
+
+**Backend** (`artifacts/api-server/src/`):
+- `engine/providers/vocal.ts` — `VoiceClonePayload` interface + `runVoiceCloneSing()` function with dedicated NVIDIA AI prompt
+- `routes/voice-clone.ts` — `POST /api/voice-clone/sing` (multipart-free — base64 JSON), `GET /api/voice-clone/job/:jobId`, `GET /api/voice-clone/status`
+- `engine/types.ts` — `SessionBlueprintData` extended with `singingBrief`, `voiceAnalysis`, `singingDirection`, `performanceNotes`, `stemConfig`, `voiceCloneProcessingChain`, `voiceCloneMetadata`; `AudioJobType` extended with `"voice-clone-sing"`
+
+**Frontend** (`AudioStudioV2.tsx`):
+- `VoiceCloneData` interface
+- Voice recorder (MediaRecorder API, webm/opus, 30s max) with waveform animation, countdown progress bar, playback, discard/redo
+- "Personal Voice Clone" sub-section inside Voice Engine expander panel with: recorder, Performance Feel selector (10 options), Hitmaker Mode toggle, "Generate My Singing Demo" CTA button (visible only when recording captured)
+- Voice Clone Singing Demo result card: Singing Directive, Voice Analysis, Singing Direction, Performance Notes, Processing Chain, Stem Configuration, Ad-lib Suggestions, vocal demo stem slot (with "Export Stem" button that notifies when synthesis API not yet connected), Copy Directive button
+- Recording stored as `Blob`, converted to base64 on submit, sent as JSON to `/api/voice-clone/sing`
+
+**Synthesis API slot**: Audio URL slots remain `null` until a real voice synthesis provider (e.g. ElevenLabs Voice Clone API) is connected.
 
 ## Authentication System
 

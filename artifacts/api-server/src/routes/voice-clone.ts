@@ -1,42 +1,150 @@
 /**
- * /api/voice-clone — Artist Pro feature (Coming Soon placeholder)
+ * /api/voice-clone — Personal Voice Clone Singing Engine
  *
- * Voice clone feature — Artist Pro only. Currently a placeholder
- * that returns a structured response indicating the feature is in development.
+ * Accepts the user's 30-second voice recording (base64) as the SOLE reference.
+ * Uses NVIDIA AI to generate a complete singing engine session directive
+ * describing exactly how to perform the given lyrics in the user's own voice.
+ *
+ * POST /api/voice-clone/sing  — Create a singing session job
+ * GET  /api/voice-clone/job/:jobId — Poll job status + result
+ * GET  /api/voice-clone/status — Feature availability
  */
 
 import { Router } from "express";
-import { requireAuth, attachPlanFromDb, requireFeature } from "../access/middleware.js";
+import { requireAuth, attachPlanFromDb } from "../access/middleware.js";
+import { logger } from "../lib/logger.js";
+import { createEngineJob, getEngineJob, advanceJob, failJob } from "../engine/jobStore.js";
+import { runVoiceCloneSing, type VoiceClonePayload } from "../engine/providers/vocal.js";
 
 const router = Router();
 
+// ─── Helper: fire-and-forget job dispatch ─────────────────────────────────────
+
+function dispatch(
+  jobId: string,
+  runner: () => Promise<import("../engine/types.js").NormalizedResponse>,
+  errorMessage: string,
+): void {
+  advanceJob(jobId, "processing");
+  runner()
+    .then((response) => advanceJob(jobId, "completed", response))
+    .catch((err: unknown) => {
+      logger.error({ err, jobId }, errorMessage);
+      failJob(jobId, errorMessage);
+    });
+}
+
+// ─── POST /api/voice-clone/sing ───────────────────────────────────────────────
+
 router.post(
-  "/voice-clone",
+  "/voice-clone/sing",
   requireAuth,
   attachPlanFromDb,
-  requireFeature("canUseVoiceClone"),
-  async (_req, res) => {
-    res.status(200).json({
-      status: "coming-soon",
-      message: "Voice Clone is available to Artist Pro members and is currently in development. You will be among the first to access it when it launches.",
-      estimatedLaunch: "Q3 2025",
-      feature: "voice-clone",
-    });
-  }
+  (req, res) => {
+    const body = req.body as {
+      voiceSampleBase64?: string;
+      lyrics?: string;
+      instrumentalUrl?: string;
+      genre?: string;
+      bpm?: number;
+      key?: string;
+      performanceFeel?: string;
+      dialectDepth?: string;
+      voiceTexture?: string;
+      hitmakerMode?: boolean;
+      keeperLines?: string;
+      recordingDuration?: number;
+    };
+
+    if (!body.voiceSampleBase64) {
+      res.status(400).json({ error: "voiceSampleBase64 is required — please record your voice first." });
+      return;
+    }
+
+    const payload: VoiceClonePayload = {
+      lyrics:             body.lyrics,
+      instrumentalUrl:    body.instrumentalUrl,
+      genre:              body.genre ?? "Afrobeats",
+      bpm:                body.bpm,
+      key:                body.key,
+      performanceFeel:    body.performanceFeel ?? "Smooth",
+      dialectDepth:       body.dialectDepth   ?? "Medium",
+      voiceTexture:       body.voiceTexture   ?? "Warm",
+      hitmakerMode:       body.hitmakerMode   ?? false,
+      keeperLines:        body.keeperLines,
+      recordingDuration:  body.recordingDuration ?? 30,
+      voiceSampleBase64:  body.voiceSampleBase64,
+    };
+
+    const job = createEngineJob("voice-clone-sing", "vocal");
+
+    dispatch(
+      job.jobId,
+      () => runVoiceCloneSing(job.jobId, payload),
+      "Voice clone singing brief generation failed",
+    );
+
+    logger.info(
+      { jobId: job.jobId, feel: payload.performanceFeel, genre: payload.genre, hitmaker: payload.hitmakerMode },
+      "Voice clone singing job created",
+    );
+
+    res.json({ success: true, jobId: job.jobId, status: "queued" });
+  },
 );
 
-router.get(
-  "/voice-clone/status",
-  requireAuth,
-  attachPlanFromDb,
-  requireFeature("canUseVoiceClone"),
-  async (_req, res) => {
-    res.json({
-      available: false,
-      status: "coming-soon",
-      message: "Voice Clone is in development. Artist Pro members will get early access.",
-    });
+// ─── GET /api/voice-clone/job/:jobId ─────────────────────────────────────────
+
+router.get("/voice-clone/job/:jobId", requireAuth, (req, res) => {
+  const job = getEngineJob(String(req.params.jobId));
+
+  if (!job) {
+    res.status(404).json({ error: "Job not found or expired" });
+    return;
   }
-);
+
+  if (job.status === "queued" || job.status === "processing") {
+    res.json({ jobId: job.jobId, status: job.status });
+    return;
+  }
+
+  if (job.status === "failed") {
+    res.json({
+      jobId: job.jobId,
+      status: "failed",
+      error: job.response?.error?.message ?? "Unknown error",
+    });
+    return;
+  }
+
+  const bp = job.response?.blueprintData ?? {};
+
+  res.json({
+    jobId: job.jobId,
+    status: "completed",
+    audioUrl: job.response?.audioUrl ?? null,
+    voiceCloneSingData: bp.singingBrief ? {
+      singingBrief:              bp.singingBrief,
+      voiceAnalysis:             bp.voiceAnalysis,
+      singingDirection:          bp.singingDirection,
+      performanceNotes:          bp.performanceNotes,
+      voiceCloneProcessingChain: bp.voiceCloneProcessingChain,
+      stemConfig:                bp.stemConfig,
+      adLibSuggestions:          bp.adLibSuggestions ?? [],
+      voiceCloneMetadata:        bp.voiceCloneMetadata ?? null,
+    } : null,
+  });
+});
+
+// ─── GET /api/voice-clone/status ─────────────────────────────────────────────
+
+router.get("/voice-clone/status", requireAuth, (_req, res) => {
+  res.json({
+    available: true,
+    status: "active",
+    mode: "ai-brief",
+    message: "Voice Clone Singing Engine is active. Record your voice to generate a personalised singing demo brief.",
+  });
+});
 
 export default router;

@@ -130,6 +130,26 @@ interface LeadVocalSessionData {
   adLibSuggestions?: string[] | null;
 }
 
+interface VoiceCloneData {
+  singingBrief: string;
+  voiceAnalysis: string;
+  singingDirection: string;
+  performanceNotes: string;
+  voiceCloneProcessingChain: string;
+  stemConfig: string;
+  adLibSuggestions?: string[];
+  voiceCloneMetadata?: {
+    performanceFeel: string;
+    dialectDepth: string;
+    voiceTexture: string;
+    hitmakerMode: boolean;
+    recordingDuration: number;
+    genre: string;
+    bpm?: number;
+    key?: string;
+  } | null;
+}
+
 interface MixMasterSessionData {
   mixBrief: string;
   levelBalancing: string;
@@ -1145,7 +1165,11 @@ function ProToolsSection({ onToast }: { onToast: (title: string, description: st
 
 const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudioV2({ draft, genre, mood }, ref) {
   const { toast } = useToast();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef          = useRef<HTMLTextAreaElement>(null);
+  const mediaRecorderRef     = useRef<MediaRecorder | null>(null);
+  const recordingChunksRef   = useRef<BlobPart[]>([]);
+  const recordingTimerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playbackAudioRef     = useRef<HTMLAudioElement | null>(null);
   const [highlighted, setHighlighted] = useState(false);
 
   const [workflowMode, setWorkflowMode] = useState<WorkflowMode>("artist");
@@ -1194,6 +1218,16 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [songMood,              setSongMood]              = useState<typeof SONG_MOODS[number]>("Energetic");
   const [keeperLines,           setKeeperLines]           = useState("");
   const [voiceEngineExpanded,   setVoiceEngineExpanded]   = useState(false);
+
+  // Personal Voice Clone Singing Engine
+  const [voiceRecording,        setVoiceRecording]        = useState<Blob | null>(null);
+  const [recordingPlaybackUrl,  setRecordingPlaybackUrl]  = useState<string | null>(null);
+  const [isRecording,           setIsRecording]           = useState(false);
+  const [recordingSeconds,      setRecordingSeconds]      = useState(0);
+  const [isPlayingBack,         setIsPlayingBack]         = useState(false);
+  const [hitmakerMode,          setHitmakerMode]          = useState(false);
+  const [voiceCloneStatus,      setVoiceCloneStatus]      = useState<CardStatus>("idle");
+  const [voiceCloneData,        setVoiceCloneData]        = useState<VoiceCloneData | null>(null);
 
   const [instrumentalStatus, setInstrumentalStatus] = useState<CardStatus>("idle");
   const [vocalStatus,        setVocalStatus]        = useState<CardStatus>("idle");
@@ -1519,6 +1553,161 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     }
   };
 
+  // ─── Voice Clone Recording ────────────────────────────────────────────────
+
+  const MAX_RECORDING_SECONDS = 30;
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingChunksRef.current = [];
+      const mr = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
+      mediaRecorderRef.current = mr;
+
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) recordingChunksRef.current.push(e.data);
+      };
+
+      mr.onstop = () => {
+        const blob = new Blob(recordingChunksRef.current, { type: "audio/webm" });
+        const url  = URL.createObjectURL(blob);
+        setVoiceRecording(blob);
+        setRecordingPlaybackUrl(url);
+        stream.getTracks().forEach((t) => t.stop());
+      };
+
+      mr.start(100);
+      setIsRecording(true);
+      setRecordingSeconds(0);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((s) => {
+          if (s + 1 >= MAX_RECORDING_SECONDS) {
+            stopRecording();
+            return MAX_RECORDING_SECONDS;
+          }
+          return s + 1;
+        });
+      }, 1000);
+    } catch {
+      toast({ title: "Microphone access denied", description: "Please allow microphone access to record your voice.", variant: "destructive" });
+    }
+  };
+
+  const stopRecording = () => {
+    if (recordingTimerRef.current) { clearInterval(recordingTimerRef.current); recordingTimerRef.current = null; }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  };
+
+  const discardRecording = () => {
+    if (isRecording) stopRecording();
+    if (recordingPlaybackUrl) URL.revokeObjectURL(recordingPlaybackUrl);
+    setVoiceRecording(null);
+    setRecordingPlaybackUrl(null);
+    setRecordingSeconds(0);
+    setIsPlayingBack(false);
+    setVoiceCloneStatus("idle");
+    setVoiceCloneData(null);
+  };
+
+  const togglePlayback = () => {
+    if (!recordingPlaybackUrl) return;
+    if (isPlayingBack) {
+      playbackAudioRef.current?.pause();
+      setIsPlayingBack(false);
+    } else {
+      if (!playbackAudioRef.current) {
+        playbackAudioRef.current = new Audio(recordingPlaybackUrl);
+        playbackAudioRef.current.onended = () => setIsPlayingBack(false);
+      }
+      playbackAudioRef.current.play().catch(() => null);
+      setIsPlayingBack(true);
+    }
+  };
+
+  const pollVoiceCloneJob = async (jobId: string) => {
+    const MAX_POLLS = 30;
+    let polls = 0;
+    while (polls < MAX_POLLS) {
+      await new Promise((r) => setTimeout(r, 2000));
+      polls++;
+      try {
+        const poll = await fetch(`/api/voice-clone/job/${jobId}`);
+        if (!poll.ok) throw new Error("Poll failed");
+        const data = await poll.json() as {
+          status: string;
+          voiceCloneSingData?: VoiceCloneData;
+          error?: string;
+        };
+        if (data.status === "completed") {
+          setVoiceCloneStatus("success");
+          setVoiceCloneData(data.voiceCloneSingData ?? null);
+          return;
+        }
+        if (data.status === "failed") {
+          setVoiceCloneStatus("error");
+          toast({ title: "Voice clone failed", description: data.error ?? "Singing brief generation failed.", variant: "destructive" });
+          return;
+        }
+      } catch { /* keep polling */ }
+    }
+    setVoiceCloneStatus("error");
+    toast({ title: "Timeout", description: "Voice clone singing brief timed out. Please try again.", variant: "destructive" });
+  };
+
+  const handleGenerateVoiceClone = async () => {
+    if (!voiceRecording) {
+      toast({ title: "No voice recording", description: "Please record your voice first — at least a few seconds.", variant: "destructive" });
+      return;
+    }
+    setVoiceCloneStatus("loading");
+    setVoiceCloneData(null);
+    try {
+      const reader = new FileReader();
+      const base64: string = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve((reader.result as string).split(",")[1] ?? "");
+        reader.onerror = reject;
+        reader.readAsDataURL(voiceRecording);
+      });
+
+      const defaults    = getGenreDefaults(audioGenre);
+      const resolvedBpm = bpm ? Number(bpm) : undefined;
+      const resolvedKey = musicalKey || defaults.key;
+
+      const res = await fetch("/api/voice-clone/sing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voiceSampleBase64: base64,
+          lyrics:            audioLyrics || undefined,
+          instrumentalUrl:   instrumentalUrl || undefined,
+          genre:             audioGenre,
+          bpm:               resolvedBpm,
+          key:               resolvedKey,
+          performanceFeel:   vocalStyle,
+          dialectDepth,
+          voiceTexture,
+          hitmakerMode,
+          keeperLines:       keeperLines || undefined,
+          recordingDuration: recordingSeconds,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json() as { error?: string };
+        throw new Error(err.error ?? "Failed to start voice clone session");
+      }
+      const { jobId } = await res.json() as { jobId: string };
+      await pollVoiceCloneJob(jobId);
+    } catch (err) {
+      setVoiceCloneStatus("error");
+      toast({ title: "Voice clone failed", description: err instanceof Error ? err.message : "Could not start voice clone session.", variant: "destructive" });
+    }
+  };
+
   const handleMixMaster = async () => {
     if (!mixInstrumentalUrl) {
       toast({ title: "Instrumental required", description: "Add an instrumental track URL to generate a mix & master brief.", variant: "destructive" });
@@ -1688,7 +1877,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     });
   };
 
-  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success" || stemStatus === "success";
+  const hasAnyResult = instrumentalStatus === "success" || vocalStatus === "success" || blueprintStatus === "success" || leadVocalStatus === "success" || mixMasterStatus === "success" || stemStatus === "success" || voiceCloneStatus === "success";
   const isGenerating = instrumentalStatus === "loading" || vocalStatus === "loading" || leadVocalStatus === "loading" || mixMasterStatus === "loading" || stemStatus === "loading";
   const genreDefaults = getGenreDefaults(audioGenre);
 
@@ -2518,6 +2707,202 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                                 <p className="text-[10px] text-fuchsia-300/45 leading-relaxed">Vocal dynamics and timing will be shaped to sit inside the backing track. Provide an instrumental URL above for tighter sync guidance.</p>
                               </div>
                             </div>
+
+                            {/* ── Divider ── */}
+                            <div className="flex items-center gap-3 pt-1">
+                              <div className="flex-1 h-px bg-fuchsia-500/10" />
+                              <span className="text-[8px] font-bold tracking-[0.16em] uppercase text-fuchsia-400/30">Personal Voice Clone</span>
+                              <div className="flex-1 h-px bg-fuchsia-500/10" />
+                            </div>
+
+                            {/* Voice Recorder */}
+                            <div className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/[0.04] overflow-hidden">
+
+                              {/* Header */}
+                              <div className="flex items-center justify-between px-4 py-3 border-b border-fuchsia-500/10">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-5 h-5 rounded-md bg-fuchsia-500/18 border border-fuchsia-500/35 flex items-center justify-center shrink-0">
+                                    <Mic2 className="w-3 h-3 text-fuchsia-300" />
+                                  </div>
+                                  <div>
+                                    <div className="text-[10px] font-bold text-fuchsia-200/90">Record Your Voice</div>
+                                    <div className="text-[8px] text-fuchsia-400/45">30-second sample · sole reference · no artist imitation</div>
+                                  </div>
+                                </div>
+                                <span className="text-[7.5px] font-bold tracking-[0.12em] uppercase px-2 py-0.5 rounded-full bg-fuchsia-500/14 border border-fuchsia-500/25 text-fuchsia-400/70">
+                                  Sole Ref
+                                </span>
+                              </div>
+
+                              {/* Recorder body */}
+                              <div className="px-4 py-4 space-y-3">
+                                {/* State: idle — no recording yet */}
+                                {!voiceRecording && !isRecording && (
+                                  <div className="text-center space-y-3">
+                                    <p className="text-[10px] text-white/25 leading-relaxed">
+                                      Sing, hum, or speak for up to 30 seconds.<br />
+                                      The AI will use only your voice as reference.
+                                    </p>
+                                    <button
+                                      type="button"
+                                      onClick={() => void startRecording()}
+                                      className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/35 text-xs font-bold text-fuchsia-300 hover:bg-fuchsia-500/22 hover:border-fuchsia-500/50 transition-all"
+                                    >
+                                      <Mic2 className="w-3.5 h-3.5" />
+                                      Start Recording
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* State: recording in progress */}
+                                {isRecording && (
+                                  <div className="space-y-3">
+                                    {/* Waveform animation + timer */}
+                                    <div className="flex items-center justify-center gap-1 h-10">
+                                      {Array.from({ length: 16 }).map((_, i) => (
+                                        <motion.div
+                                          key={i}
+                                          className="w-1 rounded-full bg-fuchsia-400/70"
+                                          animate={{ height: ["4px", `${8 + Math.random() * 20}px`, "4px"] }}
+                                          transition={{ duration: 0.5 + Math.random() * 0.4, repeat: Infinity, repeatType: "reverse", delay: i * 0.06 }}
+                                        />
+                                      ))}
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                                        <span className="text-xs font-bold text-red-400/80 tabular-nums">
+                                          {String(Math.floor(recordingSeconds / 60)).padStart(2, "0")}:{String(recordingSeconds % 60).padStart(2, "0")}
+                                        </span>
+                                      </div>
+                                      <div className="flex-1 mx-3 h-1 rounded-full bg-fuchsia-500/10">
+                                        <div
+                                          className="h-full rounded-full bg-gradient-to-r from-fuchsia-500/60 to-red-400/60 transition-all duration-1000"
+                                          style={{ width: `${(recordingSeconds / MAX_RECORDING_SECONDS) * 100}%` }}
+                                        />
+                                      </div>
+                                      <span className="text-[9px] text-white/20 tabular-nums">{MAX_RECORDING_SECONDS}s</span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={stopRecording}
+                                      className="w-full h-9 rounded-xl bg-red-500/12 border border-red-500/25 text-xs font-bold text-red-400/80 hover:bg-red-500/18 hover:border-red-500/40 transition-all flex items-center justify-center gap-2"
+                                    >
+                                      <div className="w-2.5 h-2.5 rounded-sm bg-red-400/80" />
+                                      Stop Recording
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* State: recorded — playback + redo */}
+                                {voiceRecording && !isRecording && (
+                                  <div className="space-y-3">
+                                    {/* Playback bar */}
+                                    <div className="flex items-center gap-3 rounded-xl border border-fuchsia-500/18 bg-fuchsia-500/[0.05] px-3.5 py-2.5">
+                                      <button
+                                        type="button"
+                                        onClick={togglePlayback}
+                                        className="w-8 h-8 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/35 flex items-center justify-center hover:bg-fuchsia-500/30 transition-all shrink-0"
+                                      >
+                                        {isPlayingBack ? (
+                                          <div className="flex gap-0.5">
+                                            <div className="w-1 h-3 rounded-sm bg-fuchsia-300" />
+                                            <div className="w-1 h-3 rounded-sm bg-fuchsia-300" />
+                                          </div>
+                                        ) : (
+                                          <div className="w-0 h-0 border-l-[7px] border-l-fuchsia-300 border-y-[5px] border-y-transparent ml-0.5" />
+                                        )}
+                                      </button>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="text-[10px] font-semibold text-fuchsia-200/80 truncate">Voice sample captured</div>
+                                        <div className="text-[8px] text-fuchsia-400/45">{recordingSeconds}s · webm/opus · sole reference</div>
+                                      </div>
+                                      <Check className="w-3.5 h-3.5 text-green-400/70 shrink-0" />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={discardRecording}
+                                      className="w-full h-8 rounded-xl bg-white/3 border border-white/8 text-[10px] font-semibold text-white/30 hover:text-white/50 hover:border-white/14 transition-all"
+                                    >
+                                      Discard &amp; Re-record
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Performance Feel (uses existing VOCAL_STYLES — 10 options matching spec) */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Performance Feel
+                                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">shapes delivery energy</span>
+                              </label>
+                              <div className="flex flex-wrap gap-2">
+                                {VOCAL_STYLES.map((s) => (
+                                  <button key={s} type="button" onClick={() => setVocalStyle(s)}
+                                    className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                                      vocalStyle === s
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{s}</button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Hitmaker Mode toggle */}
+                            <div className="flex items-center justify-between rounded-xl border border-amber-500/14 bg-amber-500/[0.03] px-4 py-3">
+                              <div className="flex items-center gap-2.5">
+                                <Zap className={`w-3.5 h-3.5 shrink-0 ${hitmakerMode ? "text-amber-400" : "text-white/25"}`} />
+                                <div>
+                                  <div className={`text-[10px] font-bold ${hitmakerMode ? "text-amber-300/90" : "text-white/40"}`}>Hitmaker Mode</div>
+                                  <div className="text-[8.5px] text-white/18">
+                                    {hitmakerMode ? "Energy · timing · phrasing boosted — voice identity preserved" : "Natural delivery — no enhancements"}
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setHitmakerMode((v) => !v)}
+                                className={`relative w-10 h-5.5 rounded-full border transition-all duration-200 shrink-0 ${
+                                  hitmakerMode
+                                    ? "bg-amber-500/25 border-amber-500/45"
+                                    : "bg-white/5 border-white/12"
+                                }`}
+                                style={{ height: "22px", width: "40px" }}
+                              >
+                                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all duration-200 ${
+                                  hitmakerMode ? "left-5 bg-amber-400" : "left-0.5 bg-white/25"
+                                }`} />
+                              </button>
+                            </div>
+
+                            {/* Voice Clone Generate CTA */}
+                            {voiceRecording && (
+                              <motion.button
+                                type="button"
+                                whileTap={{ scale: 0.98 }}
+                                disabled={voiceCloneStatus === "loading"}
+                                onClick={() => void handleGenerateVoiceClone()}
+                                className={`w-full h-11 rounded-2xl text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2 ${
+                                  voiceCloneStatus === "loading"
+                                    ? "bg-fuchsia-500/8 border border-fuchsia-500/15 text-fuchsia-400/35 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-fuchsia-600/20 to-violet-600/18 border border-fuchsia-500/35 text-fuchsia-300 hover:from-fuchsia-600/28 hover:to-violet-600/24 hover:border-fuchsia-400/50 shadow-[0_0_18px_rgba(217,70,239,0.08)]"
+                                }`}
+                              >
+                                {voiceCloneStatus === "loading" ? (
+                                  <>
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                    Singing Engine Processing…
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="w-3.5 h-3.5" />
+                                    Generate My Singing Demo
+                                  </>
+                                )}
+                              </motion.button>
+                            )}
 
                           </div>
                         </motion.div>
@@ -3598,6 +3983,254 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                       <Copy className="w-3 h-3" /> Copy Full Brief
                     </button>
                   </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ══════════════════════════════════════════
+            VOICE CLONE SINGING ENGINE RESULT PANEL
+        ══════════════════════════════════════════ */}
+        <AnimatePresence>
+          {(voiceCloneStatus === "loading" || voiceCloneStatus === "success" || voiceCloneStatus === "error") && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.4 }}
+              className={`rounded-3xl border overflow-hidden ${
+                voiceCloneStatus === "success"
+                  ? "border-fuchsia-500/22 bg-gradient-to-b from-fuchsia-500/[0.05] via-violet-500/[0.02] to-transparent"
+                  : voiceCloneStatus === "loading"
+                  ? "border-fuchsia-500/14 bg-fuchsia-500/[0.02]"
+                  : "border-red-500/15 bg-red-500/[0.02]"
+              }`}
+            >
+              {voiceCloneStatus === "success" && (
+                <div className="h-[2px] w-full bg-gradient-to-r from-fuchsia-500/50 via-violet-500/40 to-fuchsia-500/10" />
+              )}
+
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${
+                    voiceCloneStatus === "success" ? "bg-fuchsia-500/16 border-fuchsia-500/28"
+                    : voiceCloneStatus === "loading" ? "bg-fuchsia-500/10 border-fuchsia-500/18"
+                    : "bg-red-500/10 border-red-500/20"
+                  }`}>
+                    {voiceCloneStatus === "loading" ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-fuchsia-400/70" />
+                    ) : voiceCloneStatus === "success" ? (
+                      <Mic2 className="w-4 h-4 text-fuchsia-400" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-red-400" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-bold tracking-[0.12em] uppercase text-white/60 flex items-center gap-2">
+                      Voice Clone Singing Demo
+                      <span className="text-[7.5px] px-1.5 py-0.5 rounded-full bg-fuchsia-500/14 border border-fuchsia-500/25 text-fuchsia-400/70 normal-case tracking-normal">Sole Reference</span>
+                    </div>
+                    <div className="text-[9px] text-white/25 mt-0.5">
+                      {voiceCloneStatus === "loading"
+                        ? "Singing Engine is analysing your voice and generating the session directive…"
+                        : voiceCloneStatus === "success"
+                        ? `${vocalStyle} feel · ${voiceTexture} texture · ${dialectDepth} dialect${hitmakerMode ? " · Hitmaker ON" : ""}`
+                        : "Generation failed — please try again"}
+                    </div>
+                  </div>
+                </div>
+                {voiceCloneStatus === "success" && (
+                  <span className="text-[8px] font-bold tracking-[0.1em] uppercase px-2.5 py-1 rounded-full bg-fuchsia-500/12 border border-fuchsia-500/22 text-fuchsia-400/80">
+                    Stem Ready
+                  </span>
+                )}
+                {voiceCloneStatus === "loading" && (
+                  <div className="flex items-center gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div key={i} className="w-1 h-1 rounded-full bg-fuchsia-400/50"
+                        animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.1, 0.8] }}
+                        transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.22 }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Loading state */}
+              {voiceCloneStatus === "loading" && (
+                <div className="px-6 py-10 text-center">
+                  <div className="relative w-12 h-12 mx-auto mb-4">
+                    <div className="absolute inset-0 rounded-full border-[2px] border-white/4 border-t-fuchsia-400/80 animate-[spin_1.2s_linear_infinite]" />
+                    <div className="absolute inset-[3px] rounded-full border-[2px] border-white/3 border-b-fuchsia-300/40 animate-[spin_2s_linear_infinite_reverse]" />
+                    <div className="absolute inset-[7px] rounded-full border-[2px] border-white/[0.06] border-t-fuchsia-500/30 animate-[spin_3.5s_linear_infinite]" />
+                  </div>
+                  <p className="text-xs font-semibold text-fuchsia-400/70 animate-pulse">Singing Engine processing your voice…</p>
+                  <p className="text-[10px] text-white/20 mt-1.5">Voice analysis · Singing direction · Stem config · Processing chain</p>
+                </div>
+              )}
+
+              {/* Error state */}
+              {voiceCloneStatus === "error" && (
+                <div className="px-6 py-10 text-center">
+                  <AlertCircle className="w-8 h-8 text-red-400/50 mx-auto mb-3" />
+                  <p className="text-xs text-red-400/60 font-medium">Voice clone singing brief failed</p>
+                  <p className="text-[10px] text-white/20 mt-1">Check your recording and connection, then try again.</p>
+                  <button
+                    onClick={() => void handleGenerateVoiceClone()}
+                    className="mt-4 h-8 px-4 rounded-xl bg-white/4 border border-white/8 text-[10px] font-semibold text-white/40 hover:text-white/70 hover:border-white/14 transition-all"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {/* Success state */}
+              {voiceCloneStatus === "success" && voiceCloneData && (
+                <div className="p-6 space-y-4">
+
+                  {/* Singing Brief headline */}
+                  <div className="rounded-2xl bg-gradient-to-r from-fuchsia-500/[0.07] to-violet-500/[0.05] border border-fuchsia-500/16 px-5 py-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="w-3.5 h-3.5 text-fuchsia-400/70" />
+                      <div className="text-[9px] font-bold tracking-[0.14em] uppercase text-fuchsia-400/60">Singing Session Directive</div>
+                    </div>
+                    <p className="text-sm font-semibold text-white/75 leading-relaxed">{voiceCloneData.singingBrief}</p>
+                  </div>
+
+                  {/* Voice Clone params metadata chips */}
+                  {voiceCloneData.voiceCloneMetadata && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { label: "Feel", value: voiceCloneData.voiceCloneMetadata.performanceFeel, color: "text-fuchsia-300/65" },
+                        { label: "Texture", value: voiceCloneData.voiceCloneMetadata.voiceTexture, color: "text-violet-300/65" },
+                        { label: "Dialect", value: voiceCloneData.voiceCloneMetadata.dialectDepth, color: "text-sky-300/65" },
+                        { label: "Genre", value: voiceCloneData.voiceCloneMetadata.genre, color: "text-amber-300/65" },
+                        { label: "Hitmaker", value: voiceCloneData.voiceCloneMetadata.hitmakerMode ? "ON" : "OFF", color: voiceCloneData.voiceCloneMetadata.hitmakerMode ? "text-amber-400/80" : "text-white/25" },
+                        { label: "Ref", value: `${voiceCloneData.voiceCloneMetadata.recordingDuration}s recording`, color: "text-green-300/60" },
+                      ].map(({ label, value, color }) => (
+                        <div key={label} className="flex items-center gap-1 rounded-lg border border-white/6 bg-white/[0.025] px-2 py-1">
+                          <span className="text-[8.5px] text-white/22 uppercase tracking-widest">{label}</span>
+                          <span className={`text-[9px] font-semibold ${color}`}>{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Detail cards grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-fuchsia-500/12 bg-fuchsia-500/[0.03] px-4 py-3.5 space-y-1.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-fuchsia-400/55 flex items-center gap-1.5">
+                        <Mic2 className="w-3 h-3" /> Voice Analysis
+                      </div>
+                      <p className="text-[10.5px] text-fuchsia-300/60 leading-relaxed">{voiceCloneData.voiceAnalysis}</p>
+                    </div>
+
+                    <div className="rounded-xl border border-violet-500/12 bg-violet-500/[0.03] px-4 py-3.5 space-y-1.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-violet-400/55 flex items-center gap-1.5">
+                        <Wand2 className="w-3 h-3" /> Singing Direction
+                      </div>
+                      <p className="text-[10.5px] text-violet-300/60 leading-relaxed">{voiceCloneData.singingDirection}</p>
+                    </div>
+
+                    <div className="rounded-xl border border-sky-500/12 bg-sky-500/[0.025] px-4 py-3.5 space-y-1.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-sky-400/55 flex items-center gap-1.5">
+                        <Sliders className="w-3 h-3" /> Performance Notes
+                      </div>
+                      <p className="text-[10.5px] text-sky-300/60 leading-relaxed">{voiceCloneData.performanceNotes}</p>
+                    </div>
+
+                    <div className="rounded-xl border border-pink-500/12 bg-pink-500/[0.025] px-4 py-3.5 space-y-1.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-pink-400/55 flex items-center gap-1.5">
+                        <Cpu className="w-3 h-3" /> Processing Chain
+                      </div>
+                      <p className="text-[10.5px] text-pink-300/55 leading-relaxed">{voiceCloneData.voiceCloneProcessingChain}</p>
+                    </div>
+
+                    <div className="md:col-span-2 rounded-xl border border-amber-500/12 bg-amber-500/[0.025] px-4 py-3.5 space-y-1.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-amber-400/55 flex items-center gap-1.5">
+                        <FileAudio className="w-3 h-3" /> Stem Configuration
+                      </div>
+                      <p className="text-[10.5px] text-amber-300/55 leading-relaxed">{voiceCloneData.stemConfig}</p>
+                    </div>
+                  </div>
+
+                  {/* Ad-lib Suggestions */}
+                  {voiceCloneData.adLibSuggestions && voiceCloneData.adLibSuggestions.length > 0 && (
+                    <div>
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/25 mb-2 flex items-center gap-1.5">
+                        <Radio className="w-3 h-3" /> Ad-lib Suggestions
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {voiceCloneData.adLibSuggestions.map((adlib, i) => (
+                          <span key={i} className="px-3 py-1.5 rounded-xl border border-fuchsia-500/18 bg-fuchsia-500/[0.05] text-[10px] text-fuchsia-300/60 font-medium">
+                            "{adlib}"
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Vocal Stem Slot */}
+                  <div className="rounded-2xl border border-dashed border-fuchsia-500/22 bg-fuchsia-500/[0.025] px-5 py-4 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-xl border border-fuchsia-500/25 bg-fuchsia-500/12 flex items-center justify-center shrink-0">
+                        <FileAudio className="w-4 h-4 text-fuchsia-400/70" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[10.5px] font-bold text-white/55">Vocal Demo Stem</div>
+                        <div className="text-[9px] text-fuchsia-400/40 mt-0.5 truncate">
+                          WAV 24-bit · {voiceCloneData.voiceCloneMetadata?.bpm ?? "–"} BPM · {voiceCloneData.voiceCloneMetadata?.key ?? "–"} · Synthesis engine slot
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => toast({ title: "Synthesis API not connected", description: "Connect a vocal synthesis provider (e.g. ElevenLabs) to activate stem generation and export." })}
+                        className="h-8 px-3 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/22 text-[9.5px] font-semibold text-fuchsia-400/60 hover:bg-fuchsia-500/16 hover:text-fuchsia-300/80 transition-all flex items-center gap-1.5"
+                      >
+                        <Download className="w-3 h-3" /> Export Stem
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Copy Brief */}
+                  <div className="pt-2 border-t border-fuchsia-500/10 flex items-center justify-between gap-3">
+                    <p className="text-[9px] text-white/18 leading-relaxed">
+                      Send this directive to your synthesis engineer or paste into your AI vocal production workflow.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const text = [
+                          `VOICE CLONE SINGING DIRECTIVE`,
+                          ``,
+                          `Session: ${voiceCloneData.singingBrief}`,
+                          ``,
+                          `Voice Analysis:\n${voiceCloneData.voiceAnalysis}`,
+                          ``,
+                          `Singing Direction:\n${voiceCloneData.singingDirection}`,
+                          ``,
+                          `Performance Notes:\n${voiceCloneData.performanceNotes}`,
+                          ``,
+                          `Processing Chain:\n${voiceCloneData.voiceCloneProcessingChain}`,
+                          ``,
+                          `Stem Configuration:\n${voiceCloneData.stemConfig}`,
+                          ...(voiceCloneData.adLibSuggestions?.length ? [``, `Ad-libs: ${voiceCloneData.adLibSuggestions.join(" / ")}`] : []),
+                        ].join("\n");
+                        navigator.clipboard.writeText(text).then(
+                          () => toast({ title: "Singing directive copied", description: "Ready to paste into your vocal production workflow." }),
+                          () => toast({ title: "Copy failed", variant: "destructive" }),
+                        );
+                      }}
+                      className="h-8 px-4 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/22 text-[10px] font-semibold text-fuchsia-400/80 hover:bg-fuchsia-500/16 hover:text-fuchsia-300 transition-all flex items-center gap-1.5 shrink-0"
+                    >
+                      <Copy className="w-3 h-3" /> Copy Directive
+                    </button>
+                  </div>
+
                 </div>
               )}
             </motion.div>

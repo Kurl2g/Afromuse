@@ -20402,7 +20402,7 @@ var require_route = __commonJS({
       }
       return methods2;
     };
-    Route.prototype.dispatch = function dispatch2(req, res, done) {
+    Route.prototype.dispatch = function dispatch3(req, res, done) {
       let idx = 0;
       const stack = this.stack;
       let sync = 0;
@@ -72794,6 +72794,155 @@ async function fetchLeadVocalBrief(p) {
   if (start === -1 || end === -1) throw new Error("No JSON in lead vocal brief response");
   return JSON.parse(cleaned.slice(start, end + 1));
 }
+var VOICE_CLONE_SYSTEM_PROMPT = `You are AfroMuse Voice Clone Singing Engine \u2014 an elite AI singing director and vocal producer.
+
+The user has provided a 30-second personal voice recording as the SOLE reference for this session.
+You must NOT reference any other artist, style, or public persona.
+Your only reference is the user's own voice characteristics.
+
+Your task: generate a complete singing engine session directive that tells the synthesis engine exactly how to perform the given lyrics in the user's voice, adapted to the selected parameters.
+
+Rules:
+- Write with the precision of a world-class studio vocal producer
+- Every instruction must be actionable in a real synthesis session
+- Reference the user's voice only \u2014 no celebrity comparisons
+- ALWAYS return valid JSON only \u2014 no markdown, no explanation, no code fences`;
+function buildVoiceClonePrompt(p) {
+  const feel = p.performanceFeel;
+  const dialect = p.dialectDepth;
+  const texture = p.voiceTexture;
+  const hitmaker = p.hitmakerMode ? "ON \u2014 enhance energy, timing, phrasing without altering voice identity" : "OFF \u2014 natural, unenhanced delivery";
+  const genre = p.genre ?? "Afrobeats";
+  const bpm = p.bpm ?? 98;
+  const key = p.key ?? "F# Minor";
+  const duration3 = p.recordingDuration ?? 30;
+  const hasInstrumental = p.instrumentalUrl ? `Instrumental provided: ${p.instrumentalUrl}` : "No instrumental URL \u2014 use genre/BPM/key context for sync guidance";
+  const keeperBlock = p.keeperLines ? `KEEPER LINES (preserve exact phrasing in output):
+${p.keeperLines}` : "No keeper lines \u2014 apply natural phrasing throughout.";
+  const lyricsBlock = p.lyrics ? `LYRICS TO SING:
+${p.lyrics.slice(0, 2500)}` : "No lyrics provided \u2014 give general singing engine configuration for this voice profile.";
+  return `Configure the singing engine for this personal voice clone session:
+
+USER VOICE REFERENCE:
+  Source: 30-second personal voice recording (${duration3}s captured)
+  Sole Reference: YES \u2014 do not reference any other artist
+  Voice Texture Profile: ${texture}
+
+SINGING ENGINE PARAMETERS:
+  Performance Feel: ${feel}
+  Dialect Depth: ${dialect} \u2014 ${dialect === "Deep" ? "heavy Afro dialect patterns, patois phrases, pidgin flow" : dialect === "Medium" ? "blend of standard English with Afro phrases" : "light Afro flavour, mostly standard English"}
+  Hitmaker Mode: ${hitmaker}
+
+TRACK CONTEXT:
+  Genre: ${genre}
+  BPM: ${bpm}
+  Key: ${key}
+  ${hasInstrumental}
+
+${keeperBlock}
+
+${lyricsBlock}
+
+SYNTHESIS INSTRUCTIONS:
+- This is the user's OWN voice \u2014 preserve unique timbre, natural imperfections, breath patterns
+- Keep all lyrics intact, preserve song structure, respect keeper lines
+- Do not add or remove lines from the provided lyrics
+- Match song key (${key}), tempo (${bpm} BPM), and emotional mood of the ${genre} track
+- Maintain natural intonation and breath control based on the user's recording
+- Generate a vocal demo stem configuration that can be previewed and exported independently
+- Hitmaker Mode (${p.hitmakerMode ? "ON" : "OFF"}): ${p.hitmakerMode ? "boost energy, sharpen timing, enhance phrasing dynamics" : "maintain natural delivery"}
+
+Return ONLY this JSON object with no markdown, no code fences, no extra text:
+{
+  "singingBrief": "One compelling headline brief (max 30 words) describing this voice clone singing session \u2014 specific to the user's voice profile, feel, and genre",
+  "voiceAnalysis": "Detailed analysis of the user's vocal characteristics inferred from their recording session \u2014 unique timbre qualities, natural delivery style, breath patterns, tonal color, and what makes this voice distinctive. 4-5 sentences.",
+  "singingDirection": "Section-by-section singing direction for the synthesis engine \u2014 how to deliver intro, verse, hook, bridge, and outro in the user's voice with ${feel} feel and ${dialect} dialect. 5-6 sentences.",
+  "performanceNotes": "Precise performance coaching for the synthesis engine \u2014 phrasing timing, syllable emphasis, consonant handling, vibrato application, and how Hitmaker Mode (${p.hitmakerMode ? "ON" : "OFF"}) affects the delivery. 4-5 sentences.",
+  "voiceCloneProcessingChain": "Recommended synthesis processing chain tuned to the user's ${texture} voice texture \u2014 pitch correction approach, harmonics, reverb depth, compression, delay, and stem isolation configuration for independent export. 4 sentences.",
+  "stemConfig": "Vocal demo stem configuration \u2014 format (WAV 24-bit / 44.1kHz), BPM lock (${bpm}), key lock (${key}), silence padding, loop point markers, and DAW import guidance for the extracted stem. 2-3 sentences.",
+  "adLibSuggestions": ["Ad-lib phrase 1 in user's voice style", "Ad-lib phrase 2", "Ad-lib phrase 3", "Ad-lib phrase 4"],
+  "voiceCloneMetadata": {
+    "performanceFeel": "${feel}",
+    "dialectDepth": "${dialect}",
+    "voiceTexture": "${texture}",
+    "hitmakerMode": ${p.hitmakerMode},
+    "recordingDuration": ${duration3},
+    "genre": "${genre}",
+    "bpm": ${bpm},
+    "key": "${key}"
+  }
+}`;
+}
+async function fetchVoiceCloneBrief(p) {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) {
+    logger.warn("NVIDIA_API_KEY not set \u2014 skipping voice clone AI brief");
+    return null;
+  }
+  const ai = new OpenAI({ apiKey, baseURL: "https://integrate.api.nvidia.com/v1" });
+  const res = await ai.chat.completions.create({
+    model: "qwen/qwen3.5-122b-a10b",
+    messages: [
+      { role: "system", content: VOICE_CLONE_SYSTEM_PROMPT },
+      { role: "user", content: buildVoiceClonePrompt(p) }
+    ],
+    temperature: 0.68,
+    max_tokens: 1600
+  });
+  const raw = res.choices[0]?.message?.content ?? "";
+  const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("No JSON in voice clone brief response");
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+async function runVoiceCloneSing(jobId, p) {
+  const genre = p.genre ?? "Afrobeats";
+  const metadata = {
+    genre,
+    bpm: p.bpm,
+    key: p.key,
+    duration: "3:20",
+    audioType: "Voice Clone Stem",
+    hitmakerMode: p.hitmakerMode,
+    voiceCloneMetadata: {
+      performanceFeel: p.performanceFeel,
+      dialectDepth: p.dialectDepth,
+      voiceTexture: p.voiceTexture,
+      hitmakerMode: p.hitmakerMode,
+      recordingDuration: p.recordingDuration ?? 30,
+      genre,
+      bpm: p.bpm,
+      key: p.key
+    }
+  };
+  let aiBrief = null;
+  try {
+    aiBrief = await fetchVoiceCloneBrief(p);
+  } catch (err) {
+    logger.warn({ err, jobId }, "Voice clone AI brief failed \u2014 using metadata only");
+  }
+  const blueprintData = {
+    ...metadata,
+    ...aiBrief ?? {}
+  };
+  const raw = {
+    jobId,
+    status: "completed",
+    audioUrl: null,
+    // slot: voice clone singing stem URL
+    wavUrl: null,
+    // slot: WAV export URL
+    blueprintData,
+    externalJobId: null,
+    // slot: singing synthesis provider job ID
+    vocalPreviewUrl: null,
+    // slot: short preview clip
+    syncScore: null
+    // slot: vocal-to-beat sync quality score
+  };
+  return adaptVocal(raw);
+}
 async function runVocalDemo(jobId, p) {
   await new Promise((r) => setTimeout(r, 4e3 + Math.random() * 3e3));
   const genre = p.genre ?? "Afrobeats";
@@ -74774,33 +74923,93 @@ var artist_dna_default = router7;
 // src/routes/voice-clone.ts
 var import_express8 = __toESM(require_express2(), 1);
 var router8 = (0, import_express8.Router)();
+function dispatch2(jobId, runner, errorMessage) {
+  advanceJob(jobId, "processing");
+  runner().then((response) => advanceJob(jobId, "completed", response)).catch((err) => {
+    logger.error({ err, jobId }, errorMessage);
+    failJob(jobId, errorMessage);
+  });
+}
 router8.post(
-  "/voice-clone",
+  "/voice-clone/sing",
   requireAuth,
   attachPlanFromDb,
-  requireFeature("canUseVoiceClone"),
-  async (_req, res) => {
-    res.status(200).json({
-      status: "coming-soon",
-      message: "Voice Clone is available to Artist Pro members and is currently in development. You will be among the first to access it when it launches.",
-      estimatedLaunch: "Q3 2025",
-      feature: "voice-clone"
-    });
+  (req, res) => {
+    const body = req.body;
+    if (!body.voiceSampleBase64) {
+      res.status(400).json({ error: "voiceSampleBase64 is required \u2014 please record your voice first." });
+      return;
+    }
+    const payload = {
+      lyrics: body.lyrics,
+      instrumentalUrl: body.instrumentalUrl,
+      genre: body.genre ?? "Afrobeats",
+      bpm: body.bpm,
+      key: body.key,
+      performanceFeel: body.performanceFeel ?? "Smooth",
+      dialectDepth: body.dialectDepth ?? "Medium",
+      voiceTexture: body.voiceTexture ?? "Warm",
+      hitmakerMode: body.hitmakerMode ?? false,
+      keeperLines: body.keeperLines,
+      recordingDuration: body.recordingDuration ?? 30,
+      voiceSampleBase64: body.voiceSampleBase64
+    };
+    const job = createEngineJob("voice-clone-sing", "vocal");
+    dispatch2(
+      job.jobId,
+      () => runVoiceCloneSing(job.jobId, payload),
+      "Voice clone singing brief generation failed"
+    );
+    logger.info(
+      { jobId: job.jobId, feel: payload.performanceFeel, genre: payload.genre, hitmaker: payload.hitmakerMode },
+      "Voice clone singing job created"
+    );
+    res.json({ success: true, jobId: job.jobId, status: "queued" });
   }
 );
-router8.get(
-  "/voice-clone/status",
-  requireAuth,
-  attachPlanFromDb,
-  requireFeature("canUseVoiceClone"),
-  async (_req, res) => {
+router8.get("/voice-clone/job/:jobId", requireAuth, (req, res) => {
+  const job = getEngineJob(String(req.params.jobId));
+  if (!job) {
+    res.status(404).json({ error: "Job not found or expired" });
+    return;
+  }
+  if (job.status === "queued" || job.status === "processing") {
+    res.json({ jobId: job.jobId, status: job.status });
+    return;
+  }
+  if (job.status === "failed") {
     res.json({
-      available: false,
-      status: "coming-soon",
-      message: "Voice Clone is in development. Artist Pro members will get early access."
+      jobId: job.jobId,
+      status: "failed",
+      error: job.response?.error?.message ?? "Unknown error"
     });
+    return;
   }
-);
+  const bp = job.response?.blueprintData ?? {};
+  res.json({
+    jobId: job.jobId,
+    status: "completed",
+    audioUrl: job.response?.audioUrl ?? null,
+    voiceCloneSingData: bp.singingBrief ? {
+      singingBrief: bp.singingBrief,
+      voiceAnalysis: bp.voiceAnalysis,
+      singingDirection: bp.singingDirection,
+      performanceNotes: bp.performanceNotes,
+      voiceCloneProcessingChain: bp.voiceCloneProcessingChain,
+      stemConfig: bp.stemConfig,
+      adLibSuggestions: bp.adLibSuggestions ?? [],
+      voiceCloneMetadata: bp.voiceCloneMetadata ?? null
+    } : null
+  });
+});
+router8.get("/voice-clone/status", requireAuth, (_req, res) => {
+  res.json({
+    available: true,
+    status: "active",
+    mode: "ai-brief",
+    message: "Voice Clone Singing Engine is active. Record your voice to generate a personalised singing demo brief."
+  });
+});
 var voice_clone_default = router8;
 
 // src/routes/stripe.ts
