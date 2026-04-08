@@ -211,6 +211,11 @@ export default function Auth() {
       setError("Only Gmail accounts (@gmail.com) are allowed to sign up.");
       return;
     }
+    const localPart = email.toLowerCase().split("@")[0] ?? "";
+    if (localPart.includes("+")) {
+      setError("Gmail alias addresses (with \"+\") are not allowed. Please use your main Gmail address.");
+      return;
+    }
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
       return;

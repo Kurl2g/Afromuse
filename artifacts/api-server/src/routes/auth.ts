@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { sendVerificationEmail } from "../email.js";
+import { validateRegistrationEmail, normalizeGmailAddress } from "../lib/emailValidation.js";
 
 const router = Router();
 
@@ -58,8 +59,9 @@ router.post("/auth/register", async (req, res) => {
     return;
   }
 
-  if (!email.toLowerCase().endsWith("@gmail.com")) {
-    res.status(400).json({ error: "Only Gmail accounts (@gmail.com) are allowed to sign up." });
+  const emailValidation = validateRegistrationEmail(email);
+  if (!emailValidation.valid) {
+    res.status(400).json({ error: emailValidation.error });
     return;
   }
 
@@ -68,8 +70,15 @@ router.post("/auth/register", async (req, res) => {
     return;
   }
 
+  const normalizedEmail = emailValidation.normalizedEmail!;
+
   try {
-    const existing = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+    // Check both the exact address and the normalized (dot-trick-proof) address
+    const existing = await db.select({ id: usersTable.id, email: usersTable.email })
+      .from(usersTable)
+      .where(eq(usersTable.email, normalizedEmail))
+      .limit(1);
+
     if (existing.length > 0) {
       res.status(409).json({ error: "An account with this email already exists." });
       return;
@@ -81,7 +90,7 @@ router.post("/auth/register", async (req, res) => {
 
     await db.insert(usersTable).values({
       name,
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       passwordHash,
       role: "user",
       emailVerified: false,
@@ -90,9 +99,9 @@ router.post("/auth/register", async (req, res) => {
     });
 
     const baseUrl = getBaseUrl(req);
-    await sendVerificationEmail(email.toLowerCase(), name, verificationToken, baseUrl);
+    await sendVerificationEmail(normalizedEmail, name, verificationToken, baseUrl);
 
-    res.status(201).json({ requiresVerification: true, email: email.toLowerCase() });
+    res.status(201).json({ requiresVerification: true, email: normalizedEmail });
   } catch {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
@@ -107,7 +116,8 @@ router.post("/auth/login", async (req, res) => {
   }
 
   try {
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+    const lookupEmail = normalizeGmailAddress(email);
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, lookupEmail)).limit(1);
 
     if (!user) {
       res.status(401).json({ error: "Invalid email or password." });
@@ -189,7 +199,8 @@ router.post("/auth/resend-verification", async (req, res) => {
   }
 
   try {
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+    const lookupEmail = normalizeGmailAddress(email);
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, lookupEmail)).limit(1);
 
     if (!user) {
       res.json({ success: true });
