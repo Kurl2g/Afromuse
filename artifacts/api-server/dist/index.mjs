@@ -72708,16 +72708,27 @@ function buildLeadVocalPrompt(p) {
   const genre = p.genre ?? "Afrobeats";
   const bpm = p.bpm ?? 98;
   const key = p.key ?? "F# minor";
+  const dialectDepth = p.dialectDepth ?? "Medium";
+  const voiceTexture = p.voiceTexture ?? "Warm";
+  const singingStyle = p.singingStyle ?? "Afrobeat";
+  const songMood = p.songMood ?? tone;
+  const artistRef = p.artistReference ? `Artist Reference / Voice Clone Target: ${p.artistReference}` : "No artist reference provided";
+  const keeperBlock = p.keeperLines ? `KEEPER LINES (preserve exact phrasing):
+${p.keeperLines}` : "No keeper lines specified \u2014 apply creative phrasing throughout.";
   const hasUrl = p.instrumentalUrl ? `Instrumental track provided at: ${p.instrumentalUrl}` : "No instrumental URL provided \u2014 use genre/BPM/key context";
   const lyricsBlock = p.lyrics ? `LYRICS PROVIDED:
 ${p.lyrics.slice(0, 2e3)}` : "No lyrics provided \u2014 give general vocal direction for this configuration.";
-  return `Generate a lead vocal session brief for this configuration:
+  return `Generate a complete voice engine session brief for this vocal configuration:
 
-VOCAL IDENTITY:
-  Gender: ${gender}
+VOICE PERSONALIZATION:
+  Gender / Voice Type: ${gender}
   Performance Feel: ${feel}
   Vocal Style: ${style}
-  Emotional Tone: ${tone}
+  Dialect Depth / Accent: ${dialectDepth}
+  Voice Texture: ${voiceTexture}
+  Singing Style: ${singingStyle}
+  Song Mood / Energy: ${songMood}
+  ${artistRef}
 
 TRACK CONTEXT:
   Genre: ${genre}
@@ -72726,17 +72737,38 @@ TRACK CONTEXT:
   ${hasUrl}
   Build Mode: ${buildMode === "full" ? "Full Session (all sections)" : "Vocal Demo (hook + one verse)"}
 
+${keeperBlock}
+
 ${lyricsBlock}
+
+INSTRUCTIONS:
+- Introduce natural variations in vibrato, breath, timing and emphasis for a human-like sound
+- Respect dialect depth (${dialectDepth}) \u2014 ${dialectDepth === "Deep" ? "lean heavily into regional Afro dialect patterns" : dialectDepth === "Medium" ? "blend standard English with Afro dialect phrases" : "keep light Afro flavour with mostly standard English"}
+- Voice texture (${voiceTexture}) shapes the processing and tone notes
+- Adjust vocal dynamics and timing to complement the backing track
+- Ensure keeper lines are phrased exactly as given
+- Ad-libs should match ${songMood} mood and ${singingStyle} style
 
 Return ONLY this JSON object with no markdown, no code fences, no extra text:
 {
-  "vocalBrief": "One compelling headline brief (max 25 words) describing this vocal session's identity and direction \u2014 be specific to genre, feel, and tone",
-  "phrasingGuide": "Detailed phrasing, breathing and flow notes mapped to song sections (Intro \u2192 Verse \u2192 Hook \u2192 Bridge \u2192 Outro). 4-6 sentences.",
-  "emotionalArc": "How the emotional delivery should evolve from the opening line to the final bar. 3-4 sentences.",
-  "syncNotes": "Specific guidance on how vocals sit in time with the instrumental \u2014 pocket feel, anticipation vs on-beat landing, ad-lib placement. 3 sentences.",
-  "performanceDirection": "Studio performance coaching \u2014 posture, mic distance, where to lean in, ad-lib timing, and energy control for this genre and feel. 4 sentences.",
-  "deliveryStyle": "Precise description of the vocal colour, texture, and delivery approach \u2014 tone, vibrato use, consonant sharpness, vocal warmth. 2-3 sentences.",
-  "vocalProcessingNotes": "Recommended processing chain \u2014 auto-tune level, pitch correction style, compression, reverb depth, delay use, harmonic doubling. 3-4 sentences."
+  "vocalBrief": "One compelling headline brief (max 25 words) describing this vocal session's identity and direction \u2014 specific to genre, feel, and texture",
+  "phrasingGuide": "Detailed phrasing, breathing and flow notes mapped to song sections (Intro \u2192 Verse \u2192 Hook \u2192 Bridge \u2192 Outro), respecting dialect depth and keeper lines. 4-6 sentences.",
+  "emotionalArc": "How the emotional delivery should evolve from the opening line to the final bar, matching the ${songMood} mood and ${voiceTexture} texture. 3-4 sentences.",
+  "syncNotes": "Specific guidance on how vocals sit in time with the instrumental \u2014 pocket feel, anticipation vs on-beat landing, ad-lib placement, backing awareness. 3 sentences.",
+  "performanceDirection": "Studio performance coaching \u2014 posture, mic distance, where to lean in, dialect cues, and energy control for ${singingStyle} style. 4 sentences.",
+  "deliveryStyle": "Precise description of the vocal colour, texture (${voiceTexture}), and delivery approach \u2014 tone, vibrato use, consonant sharpness, breath moments. 2-3 sentences.",
+  "vocalProcessingNotes": "Recommended processing chain tuned to ${voiceTexture} texture \u2014 auto-tune level, pitch correction style, compression, reverb depth, delay use, harmonic doubling. 3-4 sentences.",
+  "adLibSuggestions": ["Short ad-lib phrase 1 matching mood", "Short ad-lib phrase 2", "Short ad-lib phrase 3", "Short ad-lib phrase 4"],
+  "voiceMetadata": {
+    "gender": "${gender}",
+    "performanceFeel": "${feel}",
+    "voiceTexture": "${voiceTexture}",
+    "accentDepth": "${dialectDepth}",
+    "singingStyle": "${singingStyle}",
+    "songMood": "${songMood}",
+    "keeperLines": "${p.keeperLines?.replace(/"/g, "'") ?? ""}",
+    "artistReference": "${p.artistReference?.replace(/"/g, "'") ?? ""}"
+  }
 }`;
 }
 async function fetchLeadVocalBrief(p) {
@@ -72805,7 +72837,17 @@ async function runLeadVocal(jobId, p) {
     genre,
     mood: p.emotionalTone ?? "Uplifting",
     hitmakerMode: false,
-    audioType: "Vocal Demo"
+    audioType: "Vocal Demo",
+    voiceMetadata: {
+      gender: p.gender ?? "male",
+      performanceFeel: p.performanceFeel ?? "Smooth",
+      voiceTexture: p.voiceTexture ?? "Warm",
+      accentDepth: p.dialectDepth ?? "Medium",
+      singingStyle: p.singingStyle ?? "Afrobeat",
+      songMood: p.songMood ?? p.emotionalTone ?? "Uplifting",
+      keeperLines: p.keeperLines ?? "",
+      artistReference: p.artistReference ?? ""
+    }
   };
   let aiBrief = null;
   try {
@@ -73210,7 +73252,9 @@ router3.get("/audio-job/:jobId", (req, res) => {
       syncNotes: bp.syncNotes,
       performanceDirection: bp.performanceDirection,
       deliveryStyle: bp.deliveryStyle,
-      vocalProcessingNotes: bp.vocalProcessingNotes
+      vocalProcessingNotes: bp.vocalProcessingNotes,
+      voiceMetadata: bp.voiceMetadata ?? null,
+      adLibSuggestions: bp.adLibSuggestions ?? null
     } : null,
     mixMasterSessionData: bp.mixBrief ? {
       mixBrief: bp.mixBrief,

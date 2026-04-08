@@ -215,6 +215,19 @@ export interface SessionBlueprintData {
   phaseAlignmentNotes?: string;
   dawImportGuide?: string;
   recommendedTool?: string;
+
+  // Voice Engine personalization metadata
+  voiceMetadata?: {
+    gender: string;
+    performanceFeel: string;
+    voiceTexture: string;
+    accentDepth: string;
+    singingStyle: string;
+    songMood: string;
+    keeperLines: string;
+    artistReference: string;
+  };
+  adLibSuggestions?: string[];
 }
 
 // ─── Output Registry Map ──────────────────────────────────────────────────────

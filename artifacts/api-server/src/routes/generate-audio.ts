@@ -206,6 +206,8 @@ router.get("/audio-job/:jobId", (req, res) => {
       performanceDirection: bp.performanceDirection,
       deliveryStyle: bp.deliveryStyle,
       vocalProcessingNotes: bp.vocalProcessingNotes,
+      voiceMetadata: bp.voiceMetadata ?? null,
+      adLibSuggestions: bp.adLibSuggestions ?? null,
     } : null,
     mixMasterSessionData: bp.mixBrief ? {
       mixBrief: bp.mixBrief,

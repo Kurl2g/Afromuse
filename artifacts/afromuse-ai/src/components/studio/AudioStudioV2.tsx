@@ -102,6 +102,22 @@ const LEAD_VOCAL_BUILD_MODES = [
   { value: "vocal-demo", label: "Vocal Demo",    description: "Hook + verse only — faster turnaround" },
 ];
 
+const DIALECT_DEPTHS = ["Light", "Medium", "Deep"] as const;
+const VOICE_TEXTURES  = ["Warm", "Bright", "Breathier", "Raspy", "Powerful"] as const;
+const SINGING_STYLES  = ["Afrobeat", "Ballad", "Street Anthem", "Gospel", "Pop"] as const;
+const SONG_MOODS      = ["Happy", "Sad", "Reflective", "Energetic", "Anthemic", "Chill"] as const;
+
+interface VoiceMetadata {
+  gender: string;
+  performanceFeel: string;
+  voiceTexture: string;
+  accentDepth: string;
+  singingStyle: string;
+  songMood: string;
+  keeperLines: string;
+  artistReference: string;
+}
+
 interface LeadVocalSessionData {
   vocalBrief: string;
   phrasingGuide: string;
@@ -110,6 +126,8 @@ interface LeadVocalSessionData {
   performanceDirection: string;
   deliveryStyle: string;
   vocalProcessingNotes: string;
+  voiceMetadata?: VoiceMetadata | null;
+  adLibSuggestions?: string[] | null;
 }
 
 interface MixMasterSessionData {
@@ -1168,6 +1186,15 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [emotionalTone,         setEmotionalTone]         = useState("Uplifting");
   const [leadVocalBuildMode,    setLeadVocalBuildMode]    = useState("full");
 
+  // Voice Engine personalization
+  const [artistReference,       setArtistReference]       = useState("");
+  const [dialectDepth,          setDialectDepth]          = useState<typeof DIALECT_DEPTHS[number]>("Medium");
+  const [voiceTexture,          setVoiceTexture]          = useState<typeof VOICE_TEXTURES[number]>("Warm");
+  const [singingStyle,          setSingingStyle]          = useState<typeof SINGING_STYLES[number]>("Afrobeat");
+  const [songMood,              setSongMood]              = useState<typeof SONG_MOODS[number]>("Energetic");
+  const [keeperLines,           setKeeperLines]           = useState("");
+  const [voiceEngineExpanded,   setVoiceEngineExpanded]   = useState(false);
+
   const [instrumentalStatus, setInstrumentalStatus] = useState<CardStatus>("idle");
   const [vocalStatus,        setVocalStatus]        = useState<CardStatus>("idle");
   const [blueprintStatus,    setBlueprintStatus]    = useState<CardStatus>("idle");
@@ -1425,7 +1452,10 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         if (!res.ok) throw new Error("Poll failed");
         const data = await res.json() as {
           status: string;
-          leadVocalSessionData?: LeadVocalSessionData;
+          leadVocalSessionData?: LeadVocalSessionData & {
+            voiceMetadata?: VoiceMetadata | null;
+            adLibSuggestions?: string[] | null;
+          };
           error?: string;
         };
         if (data.status === "completed") {
@@ -1472,6 +1502,12 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
           genre:           audioGenre,
           bpm:             resolvedBpm,
           key:             resolvedKey,
+          artistReference: artistReference || undefined,
+          dialectDepth,
+          voiceTexture,
+          singingStyle,
+          songMood,
+          keeperLines:     keeperLines || undefined,
         }),
       });
       if (!res.ok) throw new Error("Failed to start lead vocal generation");
@@ -2327,6 +2363,168 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     <p className="text-[10px] text-white/15 mt-1.5 italic">Providing the track URL helps shape timing and sync notes in the vocal brief.</p>
                   </div>
 
+                  {/* ── Voice Engine Expander ── */}
+                  <div className="rounded-2xl border border-fuchsia-500/15 bg-fuchsia-500/[0.025] overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setVoiceEngineExpanded(v => !v)}
+                      className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-fuchsia-500/[0.04] transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 rounded-md bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center shrink-0">
+                          <Sparkles className="w-3 h-3 text-fuchsia-400" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[11px] font-bold tracking-widest uppercase text-fuchsia-300/80">Voice Engine</div>
+                          <div className="text-[9px] text-fuchsia-400/40 mt-0.5">Dialect · Texture · Style · Keeper Lines</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[8px] font-bold tracking-[0.1em] uppercase px-2 py-0.5 rounded-full bg-fuchsia-500/12 border border-fuchsia-500/22 text-fuchsia-400/70">
+                          Personalize
+                        </span>
+                        <ChevronDown className={`w-3.5 h-3.5 text-fuchsia-400/40 transition-transform duration-200 ${voiceEngineExpanded ? "rotate-180" : ""}`} />
+                      </div>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {voiceEngineExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.28, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 pb-5 space-y-5 border-t border-fuchsia-500/10">
+
+                            {/* Artist Reference */}
+                            <div className="pt-4">
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Artist Reference / Voice Clone
+                                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">optional — shape direction</span>
+                              </label>
+                              <div className="relative">
+                                <Mic2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-fuchsia-400/35 pointer-events-none" />
+                                <input
+                                  type="text"
+                                  value={artistReference}
+                                  onChange={(e) => setArtistReference(e.target.value)}
+                                  placeholder="e.g. Burna Boy, Wizkid, Tems, Davido…"
+                                  className="w-full h-10 rounded-xl bg-white/4 border border-fuchsia-500/15 pl-9 pr-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-fuchsia-500/40 transition-all"
+                                />
+                              </div>
+                              <p className="text-[10px] text-white/14 mt-1.5 italic">Shapes vocal texture, delivery cadence and stylistic phrasing — does not clone or replicate any artist.</p>
+                            </div>
+
+                            {/* Dialect Depth */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Dialect Depth / Accent
+                              </label>
+                              <div className="grid grid-cols-3 gap-2">
+                                {DIALECT_DEPTHS.map((d) => (
+                                  <button key={d} type="button" onClick={() => setDialectDepth(d)}
+                                    className={`h-9 rounded-xl text-xs font-semibold transition-all ${
+                                      dialectDepth === d
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{d}</button>
+                                ))}
+                              </div>
+                              <p className="text-[10px] text-white/14 mt-1.5 italic">
+                                {dialectDepth === "Deep" ? "Heavy Afro dialect patterns, patois phrases, pidgin flow" :
+                                 dialectDepth === "Medium" ? "Blend of standard English with Afro dialect phrases" :
+                                 "Light Afro flavour, mostly standard English delivery"}
+                              </p>
+                            </div>
+
+                            {/* Voice Texture */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Voice Texture
+                              </label>
+                              <div className="flex flex-wrap gap-2">
+                                {VOICE_TEXTURES.map((t) => (
+                                  <button key={t} type="button" onClick={() => setVoiceTexture(t)}
+                                    className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                                      voiceTexture === t
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{t}</button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Singing Style */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Singing Style
+                              </label>
+                              <div className="flex flex-wrap gap-2">
+                                {SINGING_STYLES.map((s) => (
+                                  <button key={s} type="button" onClick={() => setSingingStyle(s)}
+                                    className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                                      singingStyle === s
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{s}</button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Song Mood / Energy */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Song Mood / Energy
+                              </label>
+                              <div className="flex flex-wrap gap-2">
+                                {SONG_MOODS.map((m) => (
+                                  <button key={m} type="button" onClick={() => setSongMood(m)}
+                                    className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                                      songMood === m
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{m}</button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Lyrical Keeper Lines */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Lyrical Keeper Lines
+                                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">preserve exact phrasing</span>
+                              </label>
+                              <textarea
+                                value={keeperLines}
+                                onChange={(e) => setKeeperLines(e.target.value)}
+                                placeholder={"Paste the hook or key lines you want preserved exactly as-is…\ne.g. \"Baby come dance with me under the Lagos lights\""}
+                                rows={3}
+                                className="w-full rounded-xl bg-white/4 border border-fuchsia-500/15 px-3.5 py-2.5 text-sm text-white placeholder:text-white/16 focus:outline-none focus:border-fuchsia-500/38 transition-all resize-none leading-relaxed"
+                              />
+                              <p className="text-[10px] text-white/14 mt-1.5 italic">These lines will be preserved in phrasing notes and guide the AI to protect their exact delivery.</p>
+                            </div>
+
+                            {/* Backing Awareness note */}
+                            <div className="flex items-start gap-2.5 rounded-xl border border-fuchsia-500/10 bg-fuchsia-500/[0.03] px-3.5 py-3">
+                              <Headphones className="w-3.5 h-3.5 text-fuchsia-400/50 shrink-0 mt-0.5" />
+                              <div>
+                                <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-fuchsia-400/60 mb-0.5">Instrumental / Backing Awareness</div>
+                                <p className="text-[10px] text-fuchsia-300/45 leading-relaxed">Vocal dynamics and timing will be shaped to sit inside the backing track. Provide an instrumental URL above for tighter sync guidance.</p>
+                              </div>
+                            </div>
+
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   {/* Build Mode for Lead Vocals */}
                   <div>
                     <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
@@ -3179,9 +3377,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     <div className="text-[11px] font-bold tracking-[0.12em] uppercase text-white/60">Lead Vocal Brief</div>
                     <div className="text-[9px] text-white/25 mt-0.5">
                       {leadVocalStatus === "loading"
-                        ? "AI vocal director is writing your session brief…"
+                        ? "Voice Engine is personalizing your vocal session brief…"
                         : leadVocalStatus === "success"
-                        ? `${vocalGender.charAt(0).toUpperCase() + vocalGender.slice(1)} lead · ${vocalStyle} · ${emotionalTone}`
+                        ? `${vocalGender.charAt(0).toUpperCase() + vocalGender.slice(1)} lead · ${vocalStyle} · ${voiceTexture} · ${dialectDepth} accent`
                         : "Generation failed — please try again"}
                     </div>
                   </div>
@@ -3211,8 +3409,8 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     <div className="absolute inset-[3px] rounded-full border-[2px] border-white/3 border-b-violet-300/40 animate-[spin_2s_linear_infinite_reverse]" />
                     <div className="absolute inset-[7px] rounded-full border-[2px] border-white/[0.06] border-t-violet-500/30 animate-[spin_3.5s_linear_infinite]" />
                   </div>
-                  <p className="text-xs font-semibold text-violet-400/70 animate-pulse">Building your vocal session brief…</p>
-                  <p className="text-[10px] text-white/20 mt-1.5">Phrasing · Sync · Emotional arc · Studio direction</p>
+                  <p className="text-xs font-semibold text-violet-400/70 animate-pulse">Voice Engine personalizing your brief…</p>
+                  <p className="text-[10px] text-white/20 mt-1.5">Phrasing · Sync · Dialect · Texture · Ad-libs · Studio direction</p>
                 </div>
               )}
 
@@ -3291,6 +3489,81 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     </div>
                     <p className="text-[10.5px] text-white/45 leading-relaxed">{leadVocalData.vocalProcessingNotes}</p>
                   </div>
+
+                  {/* Ad-Lib Suggestions */}
+                  {leadVocalData.adLibSuggestions && leadVocalData.adLibSuggestions.length > 0 && (
+                    <div className="md:col-span-2 rounded-xl border border-fuchsia-500/14 bg-fuchsia-500/[0.03] px-4 py-3.5 space-y-2.5">
+                      <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-fuchsia-400/60 flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3" /> Ad-Lib Suggestions
+                        <span className="ml-auto text-[8px] normal-case tracking-normal font-normal text-fuchsia-400/35">consistent with song mood &amp; style</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {leadVocalData.adLibSuggestions.map((adlib, i) => (
+                          <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-fuchsia-500/[0.06] border border-fuchsia-500/15">
+                            <div className="w-1 h-1 rounded-full bg-fuchsia-400/50 shrink-0" />
+                            <span className="text-[10.5px] text-fuchsia-300/70 italic">&ldquo;{adlib}&rdquo;</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Voice Metadata JSON */}
+                  {leadVocalData.voiceMetadata && (
+                    <div className="md:col-span-2 rounded-xl border border-fuchsia-500/18 bg-gradient-to-b from-fuchsia-500/[0.05] to-fuchsia-500/[0.02] overflow-hidden">
+                      <div className="px-4 py-3 border-b border-fuchsia-500/10 flex items-center justify-between">
+                        <div className="text-[9px] font-bold tracking-[0.12em] uppercase text-fuchsia-400/65 flex items-center gap-1.5">
+                          <Cpu className="w-3 h-3" /> Voice Metadata JSON
+                          <span className="ml-1 text-[8px] normal-case tracking-normal font-normal text-fuchsia-400/35">style, texture &amp; performance settings</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const json = JSON.stringify(leadVocalData.voiceMetadata, null, 2);
+                            navigator.clipboard.writeText(json).then(() =>
+                              toast({ title: "Copied", description: "Voice metadata JSON copied to clipboard." })
+                            );
+                          }}
+                          className="h-6 px-2.5 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/18 text-[8px] font-semibold text-fuchsia-400/60 hover:text-fuchsia-300 hover:border-fuchsia-500/32 transition-all flex items-center gap-1"
+                        >
+                          <Copy className="w-2.5 h-2.5" /> Copy JSON
+                        </button>
+                      </div>
+                      <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {[
+                          { label: "Gender",          value: leadVocalData.voiceMetadata.gender,         color: "text-violet-300/70" },
+                          { label: "Performance Feel", value: leadVocalData.voiceMetadata.performanceFeel, color: "text-fuchsia-300/70" },
+                          { label: "Voice Texture",    value: leadVocalData.voiceMetadata.voiceTexture,   color: "text-pink-300/70" },
+                          { label: "Accent Depth",     value: leadVocalData.voiceMetadata.accentDepth,    color: "text-fuchsia-300/70" },
+                          { label: "Singing Style",    value: leadVocalData.voiceMetadata.singingStyle,   color: "text-violet-300/65" },
+                          { label: "Song Mood",        value: leadVocalData.voiceMetadata.songMood,       color: "text-pink-300/65" },
+                          ...(leadVocalData.voiceMetadata.artistReference
+                            ? [{ label: "Artist Ref", value: leadVocalData.voiceMetadata.artistReference, color: "text-amber-300/65" as const }]
+                            : []),
+                        ].map(({ label, value, color }) => (
+                          <div key={label} className="rounded-lg bg-fuchsia-500/[0.04] border border-fuchsia-500/10 px-3 py-2">
+                            <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-fuchsia-400/38 mb-0.5">{label}</div>
+                            <div className={`text-[10px] font-semibold leading-tight ${color}`}>{value || "—"}</div>
+                          </div>
+                        ))}
+                      </div>
+                      {leadVocalData.voiceMetadata.keeperLines && (
+                        <div className="px-4 pb-4">
+                          <div className="rounded-lg bg-fuchsia-500/[0.04] border border-fuchsia-500/10 px-3 py-2.5">
+                            <div className="text-[8px] font-bold tracking-[0.14em] uppercase text-fuchsia-400/38 mb-1">Keeper Lines</div>
+                            <p className="text-[10px] text-fuchsia-300/60 leading-relaxed italic">&ldquo;{leadVocalData.voiceMetadata.keeperLines}&rdquo;</p>
+                          </div>
+                        </div>
+                      )}
+                      <div className="px-4 pb-3">
+                        <div className="rounded-lg bg-black/20 border border-fuchsia-500/8 p-3 font-mono">
+                          <pre className="text-[9px] text-fuchsia-300/50 leading-relaxed whitespace-pre-wrap overflow-auto max-h-40">
+                            {JSON.stringify(leadVocalData.voiceMetadata, null, 2)}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Copy all button */}
                   <div className="md:col-span-2 flex justify-end">
