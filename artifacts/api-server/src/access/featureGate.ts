@@ -2,12 +2,11 @@
  * AfroMuse Backend Access Control — Feature Gate
  *
  * Server-side feature checks. Use these in route handlers to guard
- * premium endpoints. When real billing is added, replace resolveServerPlan
- * with a DB lookup — nothing in the route handlers needs to change.
+ * premium endpoints.
  */
 
 import { resolveServerPlan, getPlanFeatures } from "./plans.js";
-import type { AccessCheckResult, FeatureKey } from "./types.js";
+import type { AccessCheckResult, FeatureKey, ServerPlanId } from "./types.js";
 
 const FEATURE_LABELS: Record<FeatureKey, string> = {
   canGenerateInstrumental:  "Instrumental Generation",
@@ -22,21 +21,62 @@ const FEATURE_LABELS: Record<FeatureKey, string> = {
   canGenerateLeadVocals:    "Lead Vocal Generation",
   canUseMixMaster:          "Mix & Master",
   canUseHitmakerMode:       "Hitmaker Mode",
+  canRewriteLyrics:         "Lyric Rewrite",
+  canUseLyricalDepth:       "Lyrical Depth Control",
+  canUseHookRepeat:         "Hook Repeat Control",
+  canUseGenderVoice:        "Gender/Voice Control",
+  canUsePerformanceFeel:    "Performance Feel Control",
+  canUseVoiceClone:         "Voice Clone",
+  canUseArtistDna:          "Artist DNA",
+  canUsePersistentMemory:   "Persistent Memory",
+  canUseAdvancedDemos:      "Advanced Demos",
+};
+
+const FEATURE_REQUIRED_PLAN: Record<FeatureKey, ServerPlanId> = {
+  canGenerateInstrumental:  "free",
+  canGenerateVocals:        "free",
+  canGenerateBlueprint:     "free",
+  canGenerateLeadVocals:    "free",
+  canExportMp3:             "creator-pro",
+  canExportWav:             "creator-pro",
+  canExportStems:           "creator-pro",
+  canUsePremiumMixFeels:    "creator-pro",
+  canUseProTools:           "creator-pro",
+  canSaveProjects:          "creator-pro",
+  canUseMixMaster:          "creator-pro",
+  canUseHitmakerMode:       "creator-pro",
+  canRewriteLyrics:         "creator-pro",
+  canUseLyricalDepth:       "creator-pro",
+  canUseHookRepeat:         "creator-pro",
+  canUseGenderVoice:        "creator-pro",
+  canUsePerformanceFeel:    "creator-pro",
+  canUseVoiceClone:         "artist-pro",
+  canUseArtistDna:          "artist-pro",
+  canUsePersistentMemory:   "artist-pro",
+  canUseAdvancedDemos:      "artist-pro",
+};
+
+const PLAN_LABEL: Record<ServerPlanId, string> = {
+  "free":         "Free",
+  "creator-pro":  "Creator Pro",
+  "artist-pro":   "Artist Pro",
 };
 
 /**
  * Check whether a raw plan string (from JWT/DB) has access to a feature.
  */
-export function checkAccess(rawPlan: string, feature: FeatureKey): AccessCheckResult {
-  const planId = resolveServerPlan(rawPlan);
+export function checkAccess(rawPlan: string, feature: FeatureKey, role?: string): AccessCheckResult {
+  const planId = resolveServerPlan(rawPlan, role);
   const features = getPlanFeatures(planId);
   const allowed = features[feature] ?? false;
 
   if (!allowed) {
+    const requiredPlan = FEATURE_REQUIRED_PLAN[feature] ?? "creator-pro";
     return {
       allowed: false,
-      reason: `${FEATURE_LABELS[feature]} requires a Pro plan.`,
-      upgradeRequired: planId === "free",
+      reason: `${FEATURE_LABELS[feature]} requires the ${PLAN_LABEL[requiredPlan]} plan.`,
+      upgradeRequired: true,
+      requiredPlan,
     };
   }
 
@@ -46,6 +86,6 @@ export function checkAccess(rawPlan: string, feature: FeatureKey): AccessCheckRe
 /**
  * Simple boolean check for inline guards.
  */
-export function isAllowed(rawPlan: string, feature: FeatureKey): boolean {
-  return checkAccess(rawPlan, feature).allowed;
+export function isAllowed(rawPlan: string, feature: FeatureKey, role?: string): boolean {
+  return checkAccess(rawPlan, feature, role).allowed;
 }

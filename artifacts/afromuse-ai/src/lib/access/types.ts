@@ -8,7 +8,7 @@
 
 // ─── Plans ────────────────────────────────────────────────────────────────────
 
-export type PlanId = "free" | "pro";
+export type PlanId = "free" | "creator-pro" | "artist-pro";
 
 export interface Plan {
   id: PlanId;
@@ -33,7 +33,16 @@ export type FeatureKey =
   | "canSaveProjects"
   | "canGenerateLeadVocals"
   | "canUseMixMaster"
-  | "canUseHitmakerMode";
+  | "canUseHitmakerMode"
+  | "canRewriteLyrics"
+  | "canUseLyricalDepth"
+  | "canUseHookRepeat"
+  | "canUseGenderVoice"
+  | "canUsePerformanceFeel"
+  | "canUseVoiceClone"
+  | "canUseArtistDna"
+  | "canUsePersistentMemory"
+  | "canUseAdvancedDemos";
 
 export type FeatureAccessMap = Record<FeatureKey, boolean>;
 
@@ -48,6 +57,8 @@ export interface UsageLimits {
   vocalGenerationsPerDay: number | null;
   /** Max exports per day. null = unlimited */
   exportsPerDay: number | null;
+  /** Max lyric rewrites per day. null = unlimited */
+  rewritesPerDay: number | null;
 }
 
 // ─── Usage State ──────────────────────────────────────────────────────────────
@@ -57,6 +68,7 @@ export interface UsageState {
   instrumentalGenerationsUsed: number;
   vocalGenerationsUsed: number;
   exportsUsed: number;
+  rewritesUsed: number;
   /** ISO date string of when usage counters were last reset */
   lastResetDate: string;
 }
@@ -70,6 +82,7 @@ export interface AccessCheckResult {
   gateState: GateState;
   reason: string | null;
   upgradeRequired: boolean;
+  requiredPlan?: PlanId;
 }
 
 // ─── Pro Tool Card State ──────────────────────────────────────────────────────

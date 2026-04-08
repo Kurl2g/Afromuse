@@ -1,6 +1,7 @@
 import { Router } from "express";
 import OpenAI from "openai";
 import { logger } from "../lib/logger";
+import { requireAuth, attachPlanFromDb, requireFeature } from "../access/middleware.js";
 
 const router = Router();
 
@@ -2064,7 +2065,7 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 
-router.post("/harden-lyrics", async (req, res) => {
+router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("canRewriteLyrics"), async (req, res) => {
   const {
     draft, genre, mood, languageFlavor, dialectDepth, clarityMode,
     lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel, style, commercialMode,
@@ -2314,7 +2315,7 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 
-router.post("/catchier-lyrics", async (req, res) => {
+router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("canRewriteLyrics"), async (req, res) => {
   const {
     draft, genre, mood, languageFlavor, dialectDepth, clarityMode,
     lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel, style, commercialMode,
@@ -2547,7 +2548,7 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 
-router.post("/rewrite-lyrics", async (req, res) => {
+router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("canRewriteLyrics"), async (req, res) => {
   const {
     draft, genre, mood, languageFlavor, dialectDepth, clarityMode,
     lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel, style, commercialMode,

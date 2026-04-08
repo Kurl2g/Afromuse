@@ -97,6 +97,53 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 - `pnpm --filter @workspace/scripts run create-admin` — interactively create or promote a user to the admin role
 
+## AfroMuse V3+ Architecture (Monetization & Access Control)
+
+### 3-Tier Plan System
+- **Free** — 10 song generations total, basic lyric gen, 3 audio trials
+- **Creator Pro** ($20/mo) — Unlimited generations, full lyric controls, full rewrite stack (Humanize/Catchier/Harder), Audio Studio V2, exports, unlimited saves
+- **Artist Pro** ($40/mo) — Everything in Creator Pro + Artist DNA engine, voice clone placeholder, persistent memory
+
+### DB Schema (V3 additions to `lib/db/src/schema/users.ts`)
+- `planExpiry` — datetime, when the paid plan expires
+- `artistDna` — jsonb, persisted Artist DNA style profile
+- `voiceCloneData` — jsonb, voice clone metadata placeholder
+- `usageStats` — jsonb, per-user usage counters
+
+### DB Schema (new `lib/db/src/schema/usageLogs.ts`)
+- `usageLogsTable` — tracks feature-level usage events for analytics
+
+### Backend Access Layer (`artifacts/api-server/src/access/`)
+- `types.ts` — `ServerPlanId`, `FeatureKey` union types
+- `plans.ts` — PLANS config map, `getPlan()`, `resolveServerPlan()` (bridges legacy "Pro"/"Gold" to new IDs)
+- `featureGate.ts` — `checkFeatureAccess()`, `getFeatureGateLabel()`
+- `middleware.ts` — `requireAuth`, `attachPlanFromDb`, `requireFeature(key)` middleware chain
+
+### Backend Routes (V3 additions)
+- `routes/artist-dna.ts` — `GET/POST /api/artist-dna` (Artist Pro gated)
+- `routes/voice-clone.ts` — `POST /api/voice-clone` (Artist Pro placeholder)
+- `routes/stripe.ts` — `POST /api/stripe/create-checkout-session`, `POST /api/stripe/webhook`; gracefully returns 503 if `STRIPE_SECRET_KEY` not set
+- `routes/usage.ts` — `GET /api/usage/stats`
+- `routes/generate-song.ts` — `/rewrite-lyrics`, `/harden-lyrics`, `/catchier-lyrics` now gated with Creator Pro middleware
+
+### Frontend Access Layer (`artifacts/afromuse-ai/src/`)
+- `lib/access/types.ts` — `PlanId`, `FeatureKey` types
+- `lib/access/plans.ts` — `PLANS`, `resolveServerPlan()`, `getPlan()`
+- `context/PlanContext.tsx` — `Plan` = `"Free" | "Creator Pro" | "Artist Pro"`, `PLAN_LIMITS`, `PLAN_COLORS`, `FEATURES`, `usePlan()`
+
+### Frontend UI (V3 additions)
+- `components/ui/SubscriptionModal.tsx` — Stripe checkout flow modal with monthly/yearly toggle
+- `components/ui/UpgradeModal.tsx` — 3-tier upgrade prompt
+- `pages/Pricing.tsx` + `components/sections/Pricing.tsx` — Updated with Creator Pro/Artist Pro cards
+- `pages/Studio.tsx` — Advanced Songwriting controls gated (Creator Pro), rewrite buttons gated (Creator Pro), Artist DNA panel added (Artist Pro only)
+- `components/layout/Navbar.tsx` — Plan badge with Crown/Zap icons for Artist Pro/Creator Pro
+
+### Stripe Integration Notes
+- Add `STRIPE_SECRET_KEY` env var to enable payments
+- Add `STRIPE_WEBHOOK_SECRET` env var to verify webhooks
+- `app.ts` applies `express.raw()` before JSON middleware for `/api/stripe/webhook`
+- `build.mjs` externalizes `stripe` so runtime `require("stripe")` works without bundling
+
 ## Live Engine Control Layer (V2 Operations Upgrade)
 
 Second architectural upgrade adding full operational control before real audio API integration. Zero UI changes. Zero breaking changes to existing engine, routes, or providers.

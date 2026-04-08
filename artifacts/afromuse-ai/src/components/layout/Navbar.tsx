@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui-elements";
-import { Menu, X, Sparkles, LogOut, User, Shield } from "lucide-react";
+import { Menu, X, Sparkles, Crown, Zap, LogOut, User, Shield } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,7 +18,8 @@ function PlanBadge() {
         colors.pill, colors.glow
       )}
     >
-      {plan === "Gold" && <Sparkles className="w-3 h-3" />}
+      {plan === "Artist Pro" && <Crown className="w-3 h-3" />}
+      {plan === "Creator Pro" && <Zap className="w-3 h-3" />}
       {plan}
     </div>
   );

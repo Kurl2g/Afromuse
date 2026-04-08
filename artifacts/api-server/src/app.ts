@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
@@ -28,6 +28,10 @@ app.use(
 );
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
+
+// Stripe webhook needs raw body for signature verification — must come before json parser
+app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

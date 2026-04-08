@@ -5,8 +5,9 @@ import {
   ChevronDown, Volume2, Download, Check, Lock,
   Mic2, Wand2, FileText, Zap, Flame, Play, Pause,
   SkipForward, Repeat, Sliders, Radio, Guitar,
-  VolumeX, Volume1, ChevronRight,
+  VolumeX, Volume1, ChevronRight, Crown, Dna,
 } from "lucide-react";
+import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
 import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
 import ProjectLibraryPanel from "@/components/studio/ProjectLibraryPanel";
 import { useToast } from "@/hooks/use-toast";
@@ -132,7 +133,8 @@ export default function Studio() {
   const [performanceFeel, setPerformanceFeel] = useState("Smooth");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [upgradeTo, setUpgradeTo] = useState<Plan>("Pro");
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [upgradeTo, setUpgradeTo] = useState<Plan>("Creator Pro");
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [isHumanizing, setIsHumanizing] = useState(false);
   const [isHardening, setIsHardening] = useState(false);
@@ -213,7 +215,7 @@ export default function Studio() {
       return;
     }
     if (!canGenerate()) {
-      setUpgradeTo("Pro");
+      setUpgradeTo("Creator Pro");
       setShowUpgradeModal(true);
       return;
     }
@@ -222,7 +224,7 @@ export default function Studio() {
   };
 
   const handleRegenerate = () => {
-    if (!canGenerate()) { setUpgradeTo("Pro"); setShowUpgradeModal(true); return; }
+    if (!canGenerate()) { setUpgradeTo("Creator Pro"); setShowUpgradeModal(true); return; }
     setSeed((s) => s + 1);
     runGeneration();
   };
@@ -426,8 +428,8 @@ export default function Studio() {
                 <h3 className="text-xl font-bold text-white mb-2">You've Hit Your Limit</h3>
                 <p className="text-sm text-white/50 mb-6 leading-relaxed">
                   {plan === "Free"
-                    ? `You've used all ${PLAN_LIMITS.Free} Free generations. Upgrade to Pro for more.`
-                    : "Upgrade to Gold for unlimited generations and the full creator toolkit."}
+                    ? `You've used all ${PLAN_LIMITS.Free} Free generations. Upgrade to Creator Pro for unlimited.`
+                    : "Upgrade to Artist Pro for the full creator toolkit and Artist DNA."}
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link href="/pricing">
@@ -646,12 +648,24 @@ export default function Studio() {
               <div>
                 <button
                   type="button"
-                  onClick={() => setShowAdvanced((v) => !v)}
+                  onClick={() => {
+                    if (!hasAccess("Creator Pro")) {
+                      setUpgradeTo("Creator Pro");
+                      setShowSubscriptionModal(true);
+                      return;
+                    }
+                    setShowAdvanced((v) => !v);
+                  }}
                   className="w-full flex items-center justify-between py-2 px-3 rounded-xl bg-white/3 border border-white/6 hover:bg-white/5 hover:border-white/10 transition-all group"
                 >
                   <div className="flex items-center gap-2">
                     <Sliders className="w-3.5 h-3.5 text-violet-400" />
                     <span className="text-[11px] font-bold text-white/55 group-hover:text-white/75 transition-colors">Advanced Songwriting</span>
+                    {!hasAccess("Creator Pro") && (
+                      <span className="flex items-center gap-1 text-[9px] font-bold text-amber-500/70 border border-amber-500/25 bg-amber-500/8 px-1.5 py-0.5 rounded-md">
+                        <Lock className="w-2.5 h-2.5" /> Creator Pro
+                      </span>
+                    )}
                   </div>
                   <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`} />
                 </button>
@@ -807,32 +821,44 @@ export default function Studio() {
 
               <button
                 type="button"
-                onClick={handleHumanizeLyrics}
+                onClick={() => {
+                  if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; }
+                  handleHumanizeLyrics();
+                }}
                 disabled={!draft || isHumanizing}
                 className="w-full flex items-center gap-2.5 h-9 px-3 rounded-xl bg-white/4 border border-white/6 text-xs font-semibold text-white/55 hover:text-white hover:bg-white/8 hover:border-white/12 transition-all disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {isHumanizing ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Wand2 className="w-3.5 h-3.5 shrink-0 text-violet-400" />}
                 Humanize Lyrics
+                {!hasAccess("Creator Pro") && <Lock className="w-3 h-3 ml-auto text-amber-500/50" />}
               </button>
 
               <button
                 type="button"
-                onClick={handleMakeItHarder}
+                onClick={() => {
+                  if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; }
+                  handleMakeItHarder();
+                }}
                 disabled={!draft || isHardening}
                 className="w-full flex items-center gap-2.5 h-9 px-3 rounded-xl bg-white/4 border border-white/6 text-xs font-semibold text-white/55 hover:text-white hover:bg-white/8 hover:border-white/12 transition-all disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {isHardening ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Flame className="w-3.5 h-3.5 shrink-0 text-orange-400" />}
                 Make It Harder
+                {!hasAccess("Creator Pro") && <Lock className="w-3 h-3 ml-auto text-amber-500/50" />}
               </button>
 
               <button
                 type="button"
-                onClick={handleMakeItCatchier}
+                onClick={() => {
+                  if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; }
+                  handleMakeItCatchier();
+                }}
                 disabled={!draft || isCatchifying}
                 className="w-full flex items-center gap-2.5 h-9 px-3 rounded-xl bg-white/4 border border-white/6 text-xs font-semibold text-white/55 hover:text-white hover:bg-white/8 hover:border-white/12 transition-all disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {isCatchifying ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Sparkles className="w-3.5 h-3.5 shrink-0 text-amber-400" />}
                 Make It Catchier
+                {!hasAccess("Creator Pro") && <Lock className="w-3 h-3 ml-auto text-amber-500/50" />}
               </button>
 
               <button
@@ -1122,6 +1148,38 @@ export default function Studio() {
               })}
             </div>
 
+            {/* ── ARTIST DNA PANEL (Artist Pro) ──────────────────────── */}
+            <div className="p-4 border-t border-white/6">
+              <div className="flex items-center gap-1.5 mb-3">
+                <Dna className="w-3.5 h-3.5 text-violet-400/50" />
+                <span className="text-[10px] font-bold text-white/25 uppercase tracking-widest">Artist DNA</span>
+                {!hasAccess("Artist Pro") && <Lock className="w-3 h-3 text-white/15 ml-auto" />}
+              </div>
+              {hasAccess("Artist Pro") ? (
+                <div className="space-y-2">
+                  <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-3">
+                    <p className="text-[10px] text-violet-400 font-semibold mb-1">Style Active</p>
+                    <p className="text-[10px] text-white/40 leading-relaxed">Artist DNA is shaping every generation based on your style profile.</p>
+                  </div>
+                  <button className="w-full h-8 rounded-lg text-[10px] font-bold border border-violet-500/25 bg-violet-500/8 text-violet-400 hover:bg-violet-500/15 transition-all">
+                    Edit Artist DNA →
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowSubscriptionModal(true)}
+                  className="w-full rounded-xl border border-violet-500/20 bg-violet-500/5 p-3 text-left hover:border-violet-500/35 hover:bg-violet-500/8 transition-all group"
+                >
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Crown className="w-3 h-3 text-violet-400/60" />
+                    <p className="text-[10px] font-bold text-violet-400/60">Artist Pro Feature</p>
+                  </div>
+                  <p className="text-[10px] text-white/30 leading-relaxed">Train AfroMuse on your sound for personalized generations.</p>
+                  <p className="text-[10px] font-bold text-violet-400/50 mt-2 group-hover:text-violet-400 transition-colors">Unlock Artist DNA →</p>
+                </button>
+              )}
+            </div>
+
             {/* Output panel */}
             <div className="p-4 mt-auto border-t border-white/6 space-y-3">
               <div className="flex items-center gap-1.5 mb-3">
@@ -1155,6 +1213,12 @@ export default function Studio() {
 
         </div>
       </div>
+
+      <SubscriptionModal
+        open={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        defaultPlan={upgradeTo === "Artist Pro" ? "artist-pro" : "creator-pro"}
+      />
     </div>
   );
 }

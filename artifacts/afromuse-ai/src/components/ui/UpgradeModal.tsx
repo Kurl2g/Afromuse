@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Lock } from "lucide-react";
+import { X, Sparkles, Lock, Crown, Zap } from "lucide-react";
 import { Link } from "wouter";
 import { PLAN_COLORS, type Plan } from "@/context/PlanContext";
 
@@ -10,7 +10,55 @@ interface UpgradeModalProps {
   featureIcon?: string;
   featureDesc?: string;
   requiredPlan: Plan;
+  onUpgrade?: (plan: Plan) => void;
 }
+
+const PLAN_FEATURES_LIST: Record<Plan, string[]> = {
+  "Free": [],
+  "Creator Pro": [
+    "Full lyric controls (Depth, Hook Repeat, Voice, Feel)",
+    "Full rewrite stack (Humanize, Catchier, Harder)",
+    "Full Audio Studio V2",
+    "MP3 / WAV / Stems export",
+    "Unlimited project saves",
+    "Priority generation speed",
+  ],
+  "Artist Pro": [
+    "Everything in Creator Pro",
+    "Artist DNA — personalized style engine",
+    "Voice Clone (coming soon)",
+    "Persistent memory across sessions",
+    "Advanced demo production",
+    "Priority support",
+  ],
+};
+
+const PLAN_ICON: Record<Plan, React.ElementType> = {
+  "Free": Sparkles,
+  "Creator Pro": Zap,
+  "Artist Pro": Crown,
+};
+
+const PLAN_ACCENT: Record<Plan, { header: string; check: string; btn: string; shadow: string }> = {
+  "Free": {
+    header: "bg-white/10",
+    check: "text-white/60",
+    btn: "bg-white/10 text-white",
+    shadow: "",
+  },
+  "Creator Pro": {
+    header: "bg-gradient-to-r from-amber-500 to-orange-400",
+    check: "text-amber-400",
+    btn: "bg-primary text-primary-foreground shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:shadow-[0_0_32px_rgba(245,158,11,0.45)]",
+    shadow: "shadow-[0_0_40px_rgba(245,158,11,0.12)]",
+  },
+  "Artist Pro": {
+    header: "bg-gradient-to-r from-violet-500 to-fuchsia-400",
+    check: "text-violet-400",
+    btn: "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-[0_0_24px_rgba(167,139,250,0.35)] hover:shadow-[0_0_32px_rgba(167,139,250,0.5)]",
+    shadow: "shadow-[0_0_40px_rgba(167,139,250,0.12)]",
+  },
+};
 
 export function UpgradeModal({
   open,
@@ -19,9 +67,18 @@ export function UpgradeModal({
   featureIcon,
   featureDesc,
   requiredPlan,
+  onUpgrade,
 }: UpgradeModalProps) {
   const colors = PLAN_COLORS[requiredPlan];
-  const isGold = requiredPlan === "Gold";
+  const accent = PLAN_ACCENT[requiredPlan];
+  const PlanIcon = PLAN_ICON[requiredPlan];
+
+  const handleUpgrade = () => {
+    if (onUpgrade) {
+      onUpgrade(requiredPlan);
+      onClose();
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -43,9 +100,9 @@ export function UpgradeModal({
             transition={{ type: "spring", damping: 26, stiffness: 300 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
-            <div className="pointer-events-auto w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0a18] shadow-2xl overflow-hidden">
+            <div className={`pointer-events-auto w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0a18] shadow-2xl overflow-hidden ${accent.shadow}`}>
               {/* Gradient header band */}
-              <div className={`relative h-2 w-full ${isGold ? "bg-gradient-to-r from-amber-500 to-yellow-400" : "bg-gradient-to-r from-amber-500 to-orange-400"}`} />
+              <div className={`relative h-1.5 w-full ${accent.header}`} />
 
               <div className="p-7">
                 {/* Close */}
@@ -67,7 +124,7 @@ export function UpgradeModal({
                     </div>
                   </div>
                   <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border mb-3 ${colors.pill}`}>
-                    <Sparkles className="w-2.5 h-2.5" />
+                    <PlanIcon className="w-2.5 h-2.5" />
                     {requiredPlan} Feature
                   </div>
                   <h3 className="text-xl font-display font-bold text-white mb-2">{featureName}</h3>
@@ -82,37 +139,30 @@ export function UpgradeModal({
                     {requiredPlan} Plan Includes
                   </p>
                   <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    {requiredPlan === "Pro" && (
-                      <>
-                        <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> AI Audio Generation</li>
-                        <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Downloadable Stems</li>
-                        <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Unlimited Song Saves</li>
-                        <li className="flex items-center gap-2"><span className="text-amber-400">✓</span> Priority Generation Speed</li>
-                      </>
-                    )}
-                    {requiredPlan === "Gold" && (
-                      <>
-                        <li className="flex items-center gap-2"><span className="text-yellow-300">✓</span> Everything in Pro</li>
-                        <li className="flex items-center gap-2"><span className="text-yellow-300">✓</span> Collaboration Mode</li>
-                        <li className="flex items-center gap-2"><span className="text-yellow-300">✓</span> Upload Your Instrumental</li>
-                        <li className="flex items-center gap-2"><span className="text-yellow-300">✓</span> Voice Clone Demo</li>
-                        <li className="flex items-center gap-2"><span className="text-yellow-300">✓</span> Music Distribution</li>
-                      </>
-                    )}
+                    {PLAN_FEATURES_LIST[requiredPlan].map((f) => (
+                      <li key={f} className="flex items-center gap-2">
+                        <span className={accent.check}>✓</span> {f}
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
-                {/* CTA only — no demo switcher */}
+                {/* CTA */}
                 <div className="flex flex-col gap-2">
-                  <Link href="/pricing" onClick={onClose}>
-                    <button className={`w-full h-12 rounded-2xl font-bold text-sm tracking-wide transition-all hover:-translate-y-0.5 ${
-                      isGold
-                        ? "bg-gradient-to-r from-amber-500 to-yellow-400 text-black shadow-[0_0_24px_rgba(234,179,8,0.35)] hover:shadow-[0_0_32px_rgba(234,179,8,0.5)]"
-                        : "bg-primary text-primary-foreground shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:shadow-[0_0_32px_rgba(245,158,11,0.45)]"
-                    }`}>
-                      Upgrade to {requiredPlan} — See Pricing
+                  {onUpgrade ? (
+                    <button
+                      onClick={handleUpgrade}
+                      className={`w-full h-12 rounded-2xl font-bold text-sm tracking-wide transition-all hover:-translate-y-0.5 ${accent.btn}`}
+                    >
+                      Upgrade to {requiredPlan}
                     </button>
-                  </Link>
+                  ) : (
+                    <Link href="/pricing" onClick={onClose}>
+                      <button className={`w-full h-12 rounded-2xl font-bold text-sm tracking-wide transition-all hover:-translate-y-0.5 ${accent.btn}`}>
+                        Upgrade to {requiredPlan} — See Pricing
+                      </button>
+                    </Link>
+                  )}
                   <button
                     onClick={onClose}
                     className="w-full h-10 rounded-xl border border-white/8 text-xs text-muted-foreground/60 hover:text-muted-foreground hover:border-white/15 transition-all"

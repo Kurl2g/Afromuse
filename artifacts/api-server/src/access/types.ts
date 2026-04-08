@@ -5,7 +5,7 @@
  * Keep in sync with artifacts/afromuse-ai/src/lib/access/types.ts.
  */
 
-export type ServerPlanId = "free" | "pro";
+export type ServerPlanId = "free" | "creator-pro" | "artist-pro";
 
 export type FeatureKey =
   | "canGenerateInstrumental"
@@ -19,7 +19,16 @@ export type FeatureKey =
   | "canSaveProjects"
   | "canGenerateLeadVocals"
   | "canUseMixMaster"
-  | "canUseHitmakerMode";
+  | "canUseHitmakerMode"
+  | "canRewriteLyrics"
+  | "canUseLyricalDepth"
+  | "canUseHookRepeat"
+  | "canUseGenderVoice"
+  | "canUsePerformanceFeel"
+  | "canUseVoiceClone"
+  | "canUseArtistDna"
+  | "canUsePersistentMemory"
+  | "canUseAdvancedDemos";
 
 export type FeatureAccessMap = Record<FeatureKey, boolean>;
 
@@ -27,4 +36,5 @@ export interface AccessCheckResult {
   allowed: boolean;
   reason: string | null;
   upgradeRequired: boolean;
+  requiredPlan?: ServerPlanId;
 }

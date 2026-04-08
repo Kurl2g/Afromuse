@@ -1,73 +1,81 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Crown } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Check, Sparkles, Crown, Zap } from "lucide-react";
+import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
+
+type PlanId = "creator-pro" | "artist-pro";
 
 const plans = [
   {
     id: "free",
     name: "Free",
     price: "$0",
-    description:
-      "Perfect for exploring AfroMuse AI and testing the creative experience before upgrading.",
+    description: "Perfect for exploring AfroMuse AI and testing the creative experience.",
     cta: "Start Free",
     badge: null,
     highlight: false,
-    isGold: false,
+    isArtistPro: false,
+    isCreatorPro: false,
+    stripeId: null as PlanId | null,
     features: [
-      "Limited song generations",
-      "Hook + lyrics generation",
-      "Save basic drafts",
+      "10 song generations total",
+      "Basic lyric generation",
+      "3 audio generation trials",
       "Access to AfroMuse Studio",
-      "3 one-time audio generation trials",
-      "1 one-time collaboration trial",
+      "Instrumental preview",
     ],
   },
   {
-    id: "pro",
-    name: "Pro",
+    id: "creator-pro",
+    name: "Creator Pro",
     price: "$20",
-    description:
-      "For creators who want more depth, more power, and a stronger songwriting workflow.",
-    cta: "Upgrade to Pro",
-    badge: { label: "Most Popular", icon: "sparkles" },
+    description: "Full lyric controls, rewrite stack, Audio Studio V2, and unlimited exports.",
+    cta: "Upgrade to Creator Pro",
+    badge: { label: "Most Popular", icon: "sparkles" as const },
     highlight: true,
-    isGold: false,
+    isArtistPro: false,
+    isCreatorPro: true,
+    stripeId: "creator-pro" as PlanId,
+    trial: "7-day free trial",
     features: [
-      "More song generations",
-      "Better songwriting assistance",
-      "Stronger outputs",
-      "Priority access to future premium features",
-      "Access to improved creator tools as AfroMuse AI grows",
+      "Unlimited song generations",
+      "Full lyric controls (Depth, Hook Repeat, Voice, Feel)",
+      "Full rewrite stack (Humanize, Catchier, Harder)",
+      "Full Audio Studio V2",
+      "MP3 / WAV / Stems export",
+      "Unlimited project saves",
     ],
   },
   {
-    id: "gold",
-    name: "Gold",
+    id: "artist-pro",
+    name: "Artist Pro",
     price: "$40",
-    description:
-      "For serious creators who want advanced creation tools and collaboration power.",
-    cta: "Go Gold",
-    badge: { label: "Best for Serious Artists", icon: "crown" },
+    description: "Everything in Creator Pro + Artist DNA, voice clone, and persistent memory.",
+    cta: "Go Artist Pro",
+    badge: { label: "For Serious Artists", icon: "crown" as const },
     highlight: false,
-    isGold: true,
+    isArtistPro: true,
+    isCreatorPro: false,
+    stripeId: "artist-pro" as PlanId,
     features: [
-      "Everything in Pro",
-      "Collaboration Mode access",
-      "50 collaboration generations per month",
-      "Upload your own instrumental",
-      "Priority future access: voice clone, stems & distribution",
+      "Everything in Creator Pro",
+      "Artist DNA — personalized style engine",
+      "Voice Clone (coming soon)",
+      "Persistent memory across sessions",
+      "Advanced demo production",
+      "Priority support",
     ],
   },
 ];
 
 export function Pricing() {
-  const { toast } = useToast();
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>("creator-pro");
 
-  const handlePlanClick = (plan: string) => {
-    toast({
-      title: `${plan} Selected`,
-      description: "Redirecting to checkout... (Mock Action)",
-    });
+  const handlePlanClick = (stripeId: PlanId | null) => {
+    if (!stripeId) return;
+    setSelectedPlan(stripeId);
+    setShowSubscriptionModal(true);
   };
 
   return (
@@ -107,16 +115,16 @@ export function Pricing() {
               {plan.highlight && (
                 <div className="absolute -inset-1 bg-gradient-to-b from-primary/50 to-secondary/30 rounded-3xl blur-xl opacity-40" />
               )}
-              {plan.isGold && (
-                <div className="absolute -inset-1 bg-gradient-to-b from-yellow-500/40 to-amber-600/20 rounded-3xl blur-xl opacity-40" />
+              {plan.isArtistPro && (
+                <div className="absolute -inset-1 bg-gradient-to-b from-violet-500/40 to-fuchsia-600/20 rounded-3xl blur-xl opacity-40" />
               )}
 
               <div
                 className={`relative z-10 flex flex-col w-full rounded-3xl p-8 border transition-all ${
                   plan.highlight
                     ? "bg-[#111116] border-primary/40 shadow-2xl"
-                    : plan.isGold
-                    ? "bg-[#0f0f0a] border-yellow-500/30 shadow-2xl"
+                    : plan.isArtistPro
+                    ? "bg-[#0d0d14] border-violet-500/30 shadow-2xl"
                     : "bg-card border-white/5 hover:border-white/10"
                 }`}
               >
@@ -125,8 +133,8 @@ export function Pricing() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span
                       className={`inline-flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap ${
-                        plan.isGold
-                          ? "bg-gradient-to-r from-yellow-500 to-amber-400 text-black"
+                        plan.isArtistPro
+                          ? "bg-gradient-to-r from-violet-500 to-fuchsia-400 text-white"
                           : "bg-primary text-primary-foreground"
                       }`}
                     >
@@ -141,23 +149,27 @@ export function Pricing() {
                 )}
 
                 <div className={`mb-6 ${plan.badge ? "mt-3" : ""}`}>
-                  <h3
-                    className={`text-2xl font-bold mb-1 ${
-                      plan.isGold
-                        ? "text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-300"
-                        : plan.highlight
-                        ? "text-primary"
-                        : "text-white"
-                    }`}
-                  >
-                    {plan.name}
-                  </h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    {plan.isArtistPro && <Crown className="w-4 h-4 text-violet-400" />}
+                    {plan.isCreatorPro && <Zap className="w-4 h-4 text-amber-400" />}
+                    <h3
+                      className={`text-2xl font-bold ${
+                        plan.isArtistPro
+                          ? "text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-300"
+                          : plan.highlight
+                          ? "text-primary"
+                          : "text-white"
+                      }`}
+                    >
+                      {plan.name}
+                    </h3>
+                  </div>
                   <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
                   <div className="flex items-baseline gap-1">
                     <span
                       className={`text-5xl font-bold ${
-                        plan.isGold
-                          ? "text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-300"
+                        plan.isArtistPro
+                          ? "text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-300"
                           : plan.highlight
                           ? "text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ff9900]"
                           : "text-white"
@@ -167,12 +179,15 @@ export function Pricing() {
                     </span>
                     <span className="text-muted-foreground">/month</span>
                   </div>
+                  {"trial" in plan && (
+                    <div className="mt-1.5 text-xs text-amber-400 font-semibold">✓ {plan.trial}</div>
+                  )}
                 </div>
 
                 <div
                   className={`h-px w-full mb-6 ${
-                    plan.isGold
-                      ? "bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent"
+                    plan.isArtistPro
+                      ? "bg-gradient-to-r from-transparent via-violet-500/30 to-transparent"
                       : plan.highlight
                       ? "bg-gradient-to-r from-transparent via-primary/30 to-transparent"
                       : "bg-white/5"
@@ -184,45 +199,33 @@ export function Pricing() {
                     <li key={i} className="flex items-start gap-3 text-white/80">
                       <Check
                         className={`w-4 h-4 shrink-0 mt-0.5 ${
-                          plan.isGold
-                            ? "text-yellow-400"
+                          plan.isArtistPro
+                            ? "text-violet-400"
                             : plan.highlight
                             ? "text-primary"
                             : "text-muted-foreground"
                         }`}
                       />
-                      <span
-                        className={
-                          i === 0 && plan.isGold
-                            ? "font-semibold text-white"
-                            : "text-white/80"
-                        }
-                      >
+                      <span className={i === 0 && plan.isArtistPro ? "font-semibold text-white" : "text-white/80"}>
                         {feature}
                       </span>
                     </li>
                   ))}
                 </ul>
 
-                {plan.isGold ? (
+                {plan.stripeId ? (
                   <button
-                    onClick={() => handlePlanClick("Gold Plan")}
-                    className="w-full py-4 rounded-xl font-bold bg-gradient-to-r from-yellow-500 to-amber-400 text-black hover:from-yellow-400 hover:to-amber-300 transition-all shadow-[0_0_20px_rgba(234,179,8,0.25)] hover:shadow-[0_0_30px_rgba(234,179,8,0.45)] hover:-translate-y-0.5"
-                  >
-                    {plan.cta}
-                  </button>
-                ) : plan.highlight ? (
-                  <button
-                    onClick={() => handlePlanClick("Pro Plan")}
-                    className="w-full py-4 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5"
+                    onClick={() => handlePlanClick(plan.stripeId)}
+                    className={`w-full py-4 rounded-xl font-bold transition-all hover:-translate-y-0.5 ${
+                      plan.isArtistPro
+                        ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:shadow-[0_0_30px_rgba(167,139,250,0.5)]"
+                        : "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90"
+                    }`}
                   >
                     {plan.cta}
                   </button>
                 ) : (
-                  <button
-                    onClick={() => handlePlanClick("Free Plan")}
-                    className="w-full py-4 rounded-xl font-bold bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10"
-                  >
+                  <button className="w-full py-4 rounded-xl font-bold bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10">
                     {plan.cta}
                   </button>
                 )}
@@ -231,6 +234,12 @@ export function Pricing() {
           ))}
         </div>
       </div>
+
+      <SubscriptionModal
+        open={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        defaultPlan={selectedPlan}
+      />
     </section>
   );
 }
