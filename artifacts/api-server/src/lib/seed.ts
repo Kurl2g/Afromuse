@@ -42,6 +42,7 @@ export async function seedAccounts() {
         passwordHash,
         role: account.role,
         plan: account.plan,
+        emailVerified: true,
       });
 
       logger.info({ email: account.email, role: account.role, plan: account.plan }, "Seed account created");

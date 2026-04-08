@@ -16,6 +16,7 @@ import Home from "@/pages/Home";
 import Studio from "@/pages/Studio";
 import Pricing from "@/pages/Pricing";
 import Auth from "@/pages/Auth";
+import VerifyEmail from "@/pages/VerifyEmail";
 import Projects from "@/pages/Projects";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
@@ -103,6 +104,10 @@ function Router() {
 
       <Route path="/auth">
         <Auth />
+      </Route>
+
+      <Route path="/verify-email">
+        <VerifyEmail />
       </Route>
 
       <Route path="/admin">

@@ -1,8 +1,10 @@
 import { Router } from "express";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { sendVerificationEmail } from "../email.js";
 
 const router = Router();
 
@@ -36,6 +38,18 @@ function verifyToken(token: string): { userId: number; email: string; role: stri
   }
 }
 
+function generateVerificationToken(): string {
+  return crypto.randomBytes(32).toString("hex");
+}
+
+function getBaseUrl(req: import("express").Request): string {
+  const appUrl = process.env["APP_URL"];
+  if (appUrl) return appUrl.replace(/\/$/, "");
+  const protocol = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  return `${protocol}://${host}`;
+}
+
 router.post("/auth/register", async (req, res) => {
   const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
 
@@ -62,16 +76,24 @@ router.post("/auth/register", async (req, res) => {
     }
 
     const passwordHash = await bcryptjs.hash(password, 12);
-    const [user] = await db
-      .insert(usersTable)
-      .values({ name, email: email.toLowerCase(), passwordHash, role: "user" })
-      .returning();
+    const verificationToken = generateVerificationToken();
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    const token = signToken({ userId: user.id, email: user.email, role: user.role });
-    res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
+    await db.insert(usersTable).values({
+      name,
+      email: email.toLowerCase(),
+      passwordHash,
+      role: "user",
+      emailVerified: false,
+      verificationToken,
+      verificationTokenExpiry,
+    });
 
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
-  } catch (err) {
+    const baseUrl = getBaseUrl(req);
+    await sendVerificationEmail(email.toLowerCase(), name, verificationToken, baseUrl);
+
+    res.status(201).json({ requiresVerification: true, email: email.toLowerCase() });
+  } catch {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
 });
@@ -98,12 +120,101 @@ router.post("/auth/login", async (req, res) => {
       return;
     }
 
+    if (!user.emailVerified) {
+      res.status(403).json({ error: "Please verify your email before logging in.", requiresVerification: true, email: user.email });
+      return;
+    }
+
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
 
     res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Login failed. Please try again." });
+  }
+});
+
+router.get("/auth/verify-email", async (req, res) => {
+  const { token } = req.query as { token?: string };
+
+  if (!token) {
+    res.status(400).json({ error: "Verification token is required." });
+    return;
+  }
+
+  try {
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.verificationToken, token))
+      .limit(1);
+
+    if (!user) {
+      res.status(400).json({ error: "Invalid or expired verification link." });
+      return;
+    }
+
+    if (user.emailVerified) {
+      const authToken = signToken({ userId: user.id, email: user.email, role: user.role });
+      res.cookie(COOKIE_NAME, authToken, COOKIE_OPTIONS);
+      res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token: authToken, alreadyVerified: true });
+      return;
+    }
+
+    if (user.verificationTokenExpiry && new Date() > user.verificationTokenExpiry) {
+      res.status(400).json({ error: "This verification link has expired. Please request a new one.", expired: true, email: user.email });
+      return;
+    }
+
+    await db
+      .update(usersTable)
+      .set({ emailVerified: true, verificationToken: null, verificationTokenExpiry: null })
+      .where(eq(usersTable.id, user.id));
+
+    const authToken = signToken({ userId: user.id, email: user.email, role: user.role });
+    res.cookie(COOKIE_NAME, authToken, COOKIE_OPTIONS);
+
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token: authToken });
+  } catch {
+    res.status(500).json({ error: "Verification failed. Please try again." });
+  }
+});
+
+router.post("/auth/resend-verification", async (req, res) => {
+  const { email } = req.body as { email?: string };
+
+  if (!email) {
+    res.status(400).json({ error: "Email is required." });
+    return;
+  }
+
+  try {
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
+
+    if (!user) {
+      res.json({ success: true });
+      return;
+    }
+
+    if (user.emailVerified) {
+      res.status(400).json({ error: "This email is already verified." });
+      return;
+    }
+
+    const verificationToken = generateVerificationToken();
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await db
+      .update(usersTable)
+      .set({ verificationToken, verificationTokenExpiry })
+      .where(eq(usersTable.id, user.id));
+
+    const baseUrl = getBaseUrl(req);
+    await sendVerificationEmail(user.email, user.name, verificationToken, baseUrl);
+
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: "Failed to resend verification email." });
   }
 });
 
@@ -137,7 +248,7 @@ router.get("/auth/me", async (req, res) => {
       res.status(401).json({ error: "User not found." });
       return;
     }
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), emailVerified: user.emailVerified });
   } catch {
     res.status(500).json({ error: "Failed to fetch user." });
   }

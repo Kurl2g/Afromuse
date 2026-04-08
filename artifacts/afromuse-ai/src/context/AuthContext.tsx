@@ -7,11 +7,14 @@ export interface AuthUser {
   email: string;
   role: "user" | "admin";
   plan: Plan;
+  emailVerified?: boolean;
 }
 
 interface AuthResult {
   success: boolean;
   error?: string;
+  requiresVerification?: boolean;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -73,7 +76,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) return { success: false, error: data.error ?? "Login failed." };
+      if (!res.ok) {
+        if (data.requiresVerification) {
+          return { success: false, requiresVerification: true, email: data.email, error: data.error };
+        }
+        return { success: false, error: data.error ?? "Login failed." };
+      }
       if (data.token) storeToken(data.token);
       setUser(data as AuthUser);
       return { success: true };
@@ -92,6 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error ?? "Registration failed." };
+      if (data.requiresVerification) {
+        return { success: true, requiresVerification: true, email: data.email };
+      }
       if (data.token) storeToken(data.token);
       setUser(data as AuthUser);
       return { success: true };

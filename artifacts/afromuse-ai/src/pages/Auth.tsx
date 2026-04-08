@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { Button, Input, Card } from "@/components/ui-elements";
 import { useAuth } from "@/context/AuthContext";
+import { Mail, RefreshCw, CheckCircle } from "lucide-react";
 
 function generateCaptcha() {
   const ops = ["+", "-"] as const;
@@ -14,6 +15,98 @@ function generateCaptcha() {
   return { display, answer };
 }
 
+function CheckEmailScreen({ email, onBack }: { email: string; onBack: () => void }) {
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resendError, setResendError] = useState("");
+
+  const handleResend = async () => {
+    setResending(true);
+    setResendError("");
+    setResendSuccess(false);
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setResendSuccess(true);
+      } else {
+        const data = await res.json();
+        setResendError(data.error ?? "Failed to resend. Please try again.");
+      }
+    } catch {
+      setResendError("Network error. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  };
+
+  return (
+    <motion.div
+      key="check-email"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{ duration: 0.25 }}
+    >
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/15 border border-primary/30 mb-4">
+          <Mail className="w-7 h-7 text-primary" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          We sent a verification link to
+        </p>
+        <p className="text-white text-sm font-semibold mt-1">{email}</p>
+      </div>
+
+      <div className="rounded-xl bg-white/5 border border-white/10 p-4 mb-6 space-y-2">
+        <p className="text-xs text-white/60 leading-relaxed">
+          Click the link in the email to verify your account. The link expires in <span className="text-white/80 font-medium">24 hours</span>.
+        </p>
+        <p className="text-xs text-white/40 leading-relaxed">
+          Don't see it? Check your spam folder or request a new link below.
+        </p>
+      </div>
+
+      {resendSuccess && (
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2 bg-green-500/10 border border-green-500/20 mb-4">
+          <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
+          <p className="text-xs text-green-400">New verification email sent!</p>
+        </div>
+      )}
+      {resendError && (
+        <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-4">
+          {resendError}
+        </p>
+      )}
+
+      <Button
+        type="button"
+        onClick={handleResend}
+        disabled={resending}
+        className="w-full h-12 mb-3"
+      >
+        {resending ? (
+          <><RefreshCw className="w-4 h-4 mr-2 animate-spin" />Sending…</>
+        ) : (
+          <><RefreshCw className="w-4 h-4 mr-2" />Resend verification email</>
+        )}
+      </Button>
+
+      <button
+        type="button"
+        onClick={onBack}
+        className="w-full text-sm text-muted-foreground hover:text-white transition-colors py-2"
+      >
+        Back to login
+      </button>
+    </motion.div>
+  );
+}
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -21,6 +114,7 @@ export default function Auth() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
   const { login, signup, isLoggedIn } = useAuth();
   const [, navigate] = useLocation();
 
@@ -49,6 +143,29 @@ export default function Auth() {
     return null;
   }
 
+  if (pendingVerificationEmail) {
+    return (
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center p-4 relative overflow-hidden bg-background">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[500px] bg-secondary/10 blur-[150px] pointer-events-none rounded-full" />
+        <Link href="/" className="relative z-10 mb-8 block hover:scale-105 transition-transform">
+          <img src="/logo.png" alt="AfroMuse AI" className="h-16 w-auto drop-shadow-2xl" />
+        </Link>
+        <Card className="w-full max-w-md p-6 md:p-8 glass-card border-white/10 relative z-10 shadow-2xl">
+          <AnimatePresence mode="wait">
+            <CheckEmailScreen
+              email={pendingVerificationEmail}
+              onBack={() => {
+                setPendingVerificationEmail(null);
+                setIsLogin(true);
+                setError("");
+              }}
+            />
+          </AnimatePresence>
+        </Card>
+      </div>
+    );
+  }
+
   const validateCaptcha = () => {
     const val = parseInt(captchaInput.trim(), 10);
     if (isNaN(val) || val !== captcha.answer) {
@@ -75,6 +192,8 @@ export default function Auth() {
     setIsSubmitting(false);
     if (result.success) {
       navigate(getRedirect());
+    } else if (result.requiresVerification && result.email) {
+      setPendingVerificationEmail(result.email);
     } else {
       setError(result.error ?? "Login failed.");
       refreshCaptcha();
@@ -103,7 +222,9 @@ export default function Auth() {
     setIsSubmitting(true);
     const result = await signup(name, email, password);
     setIsSubmitting(false);
-    if (result.success) {
+    if (result.requiresVerification && result.email) {
+      setPendingVerificationEmail(result.email);
+    } else if (result.success) {
       navigate(getRedirect());
     } else {
       setError(result.error ?? "Registration failed.");

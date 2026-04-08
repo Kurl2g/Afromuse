@@ -18769,14 +18769,14 @@ var require_etag = __commonJS({
   "../../node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports, module) {
     "use strict";
     module.exports = etag;
-    var crypto2 = __require("crypto");
+    var crypto3 = __require("crypto");
     var Stats = __require("fs").Stats;
     var toString = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash = crypto2.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash = crypto3.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash + '"';
     }
@@ -22205,17 +22205,17 @@ var require_content_disposition = __commonJS({
 // ../../node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
   "../../node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js"(exports) {
-    var crypto2 = __require("crypto");
+    var crypto3 = __require("crypto");
     exports.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto3.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports.unsign = function(input, secret) {
       if ("string" != typeof input) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       var tentativeValue = input.slice(0, input.lastIndexOf(".")), expectedInput = exports.sign(tentativeValue, secret), expectedBuffer = Buffer.from(expectedInput), inputBuffer = Buffer.from(input);
-      return expectedBuffer.length === inputBuffer.length && crypto2.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
+      return expectedBuffer.length === inputBuffer.length && crypto3.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
     };
   }
 });
@@ -23845,11 +23845,11 @@ var require_lib3 = __commonJS({
 // ../../node_modules/.pnpm/cookie-signature@1.0.6/node_modules/cookie-signature/index.js
 var require_cookie_signature2 = __commonJS({
   "../../node_modules/.pnpm/cookie-signature@1.0.6/node_modules/cookie-signature/index.js"(exports) {
-    var crypto2 = __require("crypto");
+    var crypto3 = __require("crypto");
     exports.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
-      return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto3.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports.unsign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Signed cookie string must be provided.");
@@ -23858,7 +23858,7 @@ var require_cookie_signature2 = __commonJS({
       return sha1(mac) == sha1(val) ? str2 : false;
     };
     function sha1(str2) {
-      return crypto2.createHash("sha1").update(str2).digest("hex");
+      return crypto3.createHash("sha1").update(str2).digest("hex");
     }
   }
 });
@@ -30644,14 +30644,14 @@ var require_buffer_equal_constant_time = __commonJS({
 var require_jwa = __commonJS({
   "../../node_modules/.pnpm/jwa@2.0.1/node_modules/jwa/index.js"(exports, module) {
     var Buffer2 = require_safe_buffer().Buffer;
-    var crypto2 = __require("crypto");
+    var crypto3 = __require("crypto");
     var formatEcdsa = require_ecdsa_sig_formatter();
     var util2 = __require("util");
     var MSG_INVALID_ALGORITHM = '"%s" is not a valid algorithm.\n  Supported algorithms are:\n  "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" and "none".';
     var MSG_INVALID_SECRET = "secret must be a string or buffer";
     var MSG_INVALID_VERIFIER_KEY = "key must be a string or a buffer";
     var MSG_INVALID_SIGNER_KEY = "key must be a string, a buffer or an object";
-    var supportsKeyObjects = typeof crypto2.createPublicKey === "function";
+    var supportsKeyObjects = typeof crypto3.createPublicKey === "function";
     if (supportsKeyObjects) {
       MSG_INVALID_VERIFIER_KEY += " or a KeyObject";
       MSG_INVALID_SECRET += "or a KeyObject";
@@ -30741,17 +30741,17 @@ var require_jwa = __commonJS({
       return function sign(thing, secret) {
         checkIsSecretKey(secret);
         thing = normalizeInput(thing);
-        var hmac = crypto2.createHmac("sha" + bits, secret);
+        var hmac = crypto3.createHmac("sha" + bits, secret);
         var sig = (hmac.update(thing), hmac.digest("base64"));
         return fromBase64(sig);
       };
     }
     var bufferEqual;
-    var timingSafeEqual = "timingSafeEqual" in crypto2 ? function timingSafeEqual2(a, b) {
+    var timingSafeEqual = "timingSafeEqual" in crypto3 ? function timingSafeEqual2(a, b) {
       if (a.byteLength !== b.byteLength) {
         return false;
       }
-      return crypto2.timingSafeEqual(a, b);
+      return crypto3.timingSafeEqual(a, b);
     } : function timingSafeEqual2(a, b) {
       if (!bufferEqual) {
         bufferEqual = require_buffer_equal_constant_time();
@@ -30768,7 +30768,7 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto2.createSign("RSA-SHA" + bits);
+        var signer = crypto3.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign(privateKey, "base64"));
         return fromBase64(sig);
       };
@@ -30778,7 +30778,7 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto2.createVerify("RSA-SHA" + bits);
+        var verifier = crypto3.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify(publicKey, signature, "base64");
       };
@@ -30787,11 +30787,11 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto2.createSign("RSA-SHA" + bits);
+        var signer = crypto3.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign({
           key: privateKey,
-          padding: crypto2.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto2.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto3.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto3.constants.RSA_PSS_SALTLEN_DIGEST
         }, "base64"));
         return fromBase64(sig);
       };
@@ -30801,12 +30801,12 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto2.createVerify("RSA-SHA" + bits);
+        var verifier = crypto3.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify({
           key: publicKey,
-          padding: crypto2.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto2.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto3.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto3.constants.RSA_PSS_SALTLEN_DIGEST
         }, signature, "base64");
       };
     }
@@ -35461,7 +35461,7 @@ var require_cert_signatures = __commonJS({
 var require_sasl = __commonJS({
   "../../node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/sasl.js"(exports, module) {
     "use strict";
-    var crypto2 = require_utils5();
+    var crypto3 = require_utils5();
     var { signatureAlgorithmHashFromCertificate } = require_cert_signatures();
     function startSession(mechanisms, stream) {
       const candidates = ["SCRAM-SHA-256"];
@@ -35473,7 +35473,7 @@ var require_sasl = __commonJS({
       if (mechanism === "SCRAM-SHA-256-PLUS" && typeof stream.getPeerCertificate !== "function") {
         throw new Error("SASL: Mechanism SCRAM-SHA-256-PLUS requires a certificate");
       }
-      const clientNonce = crypto2.randomBytes(18).toString("base64");
+      const clientNonce = crypto3.randomBytes(18).toString("base64");
       const gs2Header = mechanism === "SCRAM-SHA-256-PLUS" ? "p=tls-server-end-point" : stream ? "y" : "n";
       return {
         mechanism,
@@ -35508,20 +35508,20 @@ var require_sasl = __commonJS({
         const peerCert = stream.getPeerCertificate().raw;
         let hashName = signatureAlgorithmHashFromCertificate(peerCert);
         if (hashName === "MD5" || hashName === "SHA-1") hashName = "SHA-256";
-        const certHash = await crypto2.hashByName(hashName, peerCert);
+        const certHash = await crypto3.hashByName(hashName, peerCert);
         const bindingData = Buffer.concat([Buffer.from("p=tls-server-end-point,,"), Buffer.from(certHash)]);
         channelBinding = bindingData.toString("base64");
       }
       const clientFinalMessageWithoutProof = "c=" + channelBinding + ",r=" + sv.nonce;
       const authMessage = clientFirstMessageBare + "," + serverFirstMessage + "," + clientFinalMessageWithoutProof;
       const saltBytes = Buffer.from(sv.salt, "base64");
-      const saltedPassword = await crypto2.deriveKey(password, saltBytes, sv.iteration);
-      const clientKey = await crypto2.hmacSha256(saltedPassword, "Client Key");
-      const storedKey = await crypto2.sha256(clientKey);
-      const clientSignature = await crypto2.hmacSha256(storedKey, authMessage);
+      const saltedPassword = await crypto3.deriveKey(password, saltBytes, sv.iteration);
+      const clientKey = await crypto3.hmacSha256(saltedPassword, "Client Key");
+      const storedKey = await crypto3.sha256(clientKey);
+      const clientSignature = await crypto3.hmacSha256(storedKey, authMessage);
       const clientProof = xorBuffers(Buffer.from(clientKey), Buffer.from(clientSignature)).toString("base64");
-      const serverKey = await crypto2.hmacSha256(saltedPassword, "Server Key");
-      const serverSignatureBytes = await crypto2.hmacSha256(serverKey, authMessage);
+      const serverKey = await crypto3.hmacSha256(saltedPassword, "Server Key");
+      const serverSignatureBytes = await crypto3.hmacSha256(serverKey, authMessage);
       session.message = "SASLResponse";
       session.serverSignature = Buffer.from(serverSignatureBytes).toString("base64");
       session.response = clientFinalMessageWithoutProof + ",p=" + clientProof;
@@ -37689,7 +37689,7 @@ var require_client = __commonJS({
     var Query2 = require_query();
     var defaults3 = require_defaults();
     var Connection2 = require_connection();
-    var crypto2 = require_utils5();
+    var crypto3 = require_utils5();
     var activeQueryDeprecationNotice = nodeUtils.deprecate(
       () => {
       },
@@ -37924,7 +37924,7 @@ var require_client = __commonJS({
       _handleAuthMD5Password(msg) {
         this._getPassword(async () => {
           try {
-            const hashedPassword = await crypto2.postgresMd5PasswordHash(this.user, this.password, msg.salt);
+            const hashedPassword = await crypto3.postgresMd5PasswordHash(this.user, this.password, msg.salt);
             this.connection.password(hashedPassword);
           } catch (e) {
             this.emit("error", e);
@@ -43113,13 +43113,13 @@ function __classPrivateFieldGet(receiver, state, kind, f) {
 
 // ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
 var uuid4 = function() {
-  const { crypto: crypto2 } = globalThis;
-  if (crypto2?.randomUUID) {
-    uuid4 = crypto2.randomUUID.bind(crypto2);
-    return crypto2.randomUUID();
+  const { crypto: crypto3 } = globalThis;
+  if (crypto3?.randomUUID) {
+    uuid4 = crypto3.randomUUID.bind(crypto3);
+    return crypto3.randomUUID();
   }
   const u8 = new Uint8Array(1);
-  const randomByte = crypto2 ? () => crypto2.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
+  const randomByte = crypto3 ? () => crypto3.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (+c ^ randomByte() & 15 >> +c / 4).toString(16));
 };
 
@@ -54513,6 +54513,7 @@ var generate_audio_default = router3;
 var import_express4 = __toESM(require_express2(), 1);
 var import_bcryptjs = __toESM(require_bcryptjs(), 1);
 var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
+import crypto2 from "crypto";
 
 // ../../node_modules/.pnpm/pg@8.20.0/node_modules/pg/esm/index.mjs
 var import_lib = __toESM(require_lib5(), 1);
@@ -72889,6 +72890,9 @@ var usersTable = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   role: text("role").notNull().default("user"),
   plan: text("plan").notNull().default("Free"),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  verificationToken: text("verification_token"),
+  verificationTokenExpiry: timestamp("verification_token_expiry"),
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
 var insertUserSchema = createInsertSchema(usersTable).omit({
@@ -72917,6 +72921,92 @@ if (!process.env.DATABASE_URL) {
 var pool = new Pool3({ connectionString: process.env.DATABASE_URL });
 var db = drizzle(pool, { schema: schema_exports });
 
+// src/email.ts
+import nodemailer from "nodemailer";
+function getTransporter() {
+  const user = process.env["GMAIL_USER"];
+  const pass = process.env["GMAIL_APP_PASSWORD"];
+  if (!user || !pass) {
+    return null;
+  }
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass }
+  });
+}
+async function sendVerificationEmail(to, name, token, baseUrl) {
+  const verifyUrl = `${baseUrl}/verify-email?token=${token}`;
+  const transporter = getTransporter();
+  if (!transporter) {
+    console.warn("[Email] GMAIL_USER / GMAIL_APP_PASSWORD not set \u2014 logging verification link instead:");
+    console.warn(`[Email] Verify link for ${to}: ${verifyUrl}`);
+    return false;
+  }
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;color:#ffffff;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#111111;border:1px solid #1f1f1f;border-radius:16px;overflow:hidden;max-width:560px;">
+        <tr>
+          <td style="background:linear-gradient(135deg,#1a1a1a 0%,#111111 100%);padding:36px 40px 28px;border-bottom:1px solid #1f1f1f;text-align:center;">
+            <p style="margin:0;font-size:28px;font-weight:800;letter-spacing:-0.5px;">
+              <span style="color:#ffffff;">AfroMuse</span><span style="color:#f59e0b;"> AI</span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#ffffff;">Verify your email address</h1>
+            <p style="margin:0 0 24px;font-size:15px;color:#888888;line-height:1.6;">
+              Hey ${name}, thanks for joining AfroMuse AI! Click the button below to verify your email and start creating.
+            </p>
+            <div style="text-align:center;margin:32px 0;">
+              <a href="${verifyUrl}" style="display:inline-block;background:#f59e0b;color:#000000;font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:10px;letter-spacing:0.2px;">
+                Verify My Email
+              </a>
+            </div>
+            <p style="margin:24px 0 0;font-size:13px;color:#555555;line-height:1.6;">
+              This link expires in <strong style="color:#888888;">24 hours</strong>. If you didn't create an account, you can safely ignore this email.
+            </p>
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid #1f1f1f;">
+              <p style="margin:0;font-size:12px;color:#444444;">Or copy and paste this URL into your browser:</p>
+              <p style="margin:6px 0 0;font-size:11px;color:#555555;word-break:break-all;">${verifyUrl}</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 40px;border-top:1px solid #1a1a1a;text-align:center;">
+            <p style="margin:0;font-size:12px;color:#333333;">\xA9 ${(/* @__PURE__ */ new Date()).getFullYear()} AfroMuse AI. All rights reserved.</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+  try {
+    await transporter.sendMail({
+      from: `"AfroMuse AI" <${process.env["GMAIL_USER"]}>`,
+      to,
+      subject: "Verify your AfroMuse AI email address",
+      html,
+      text: `Hey ${name},
+
+Verify your AfroMuse AI email by visiting:
+${verifyUrl}
+
+This link expires in 24 hours.`
+    });
+    return true;
+  } catch (err) {
+    console.error("[Email] Failed to send verification email:", err);
+    return false;
+  }
+}
+
 // src/routes/auth.ts
 var router4 = (0, import_express4.Router)();
 var COOKIE_NAME = "auth_token";
@@ -72944,6 +73034,16 @@ function verifyToken(token) {
     return null;
   }
 }
+function generateVerificationToken() {
+  return crypto2.randomBytes(32).toString("hex");
+}
+function getBaseUrl(req) {
+  const appUrl = process.env["APP_URL"];
+  if (appUrl) return appUrl.replace(/\/$/, "");
+  const protocol = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  return `${protocol}://${host}`;
+}
 router4.post("/auth/register", async (req, res) => {
   const { name, email: email3, password } = req.body;
   if (!name || !email3 || !password) {
@@ -72965,11 +73065,21 @@ router4.post("/auth/register", async (req, res) => {
       return;
     }
     const passwordHash = await import_bcryptjs.default.hash(password, 12);
-    const [user] = await db.insert(usersTable).values({ name, email: email3.toLowerCase(), passwordHash, role: "user" }).returning();
-    const token = signToken({ userId: user.id, email: user.email, role: user.role });
-    res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
-    res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
-  } catch (err) {
+    const verificationToken = generateVerificationToken();
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1e3);
+    await db.insert(usersTable).values({
+      name,
+      email: email3.toLowerCase(),
+      passwordHash,
+      role: "user",
+      emailVerified: false,
+      verificationToken,
+      verificationTokenExpiry
+    });
+    const baseUrl = getBaseUrl(req);
+    await sendVerificationEmail(email3.toLowerCase(), name, verificationToken, baseUrl);
+    res.status(201).json({ requiresVerification: true, email: email3.toLowerCase() });
+  } catch {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
 });
@@ -72990,11 +73100,71 @@ router4.post("/auth/login", async (req, res) => {
       res.status(401).json({ error: "Invalid email or password." });
       return;
     }
+    if (!user.emailVerified) {
+      res.status(403).json({ error: "Please verify your email before logging in.", requiresVerification: true, email: user.email });
+      return;
+    }
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
     res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
     res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Login failed. Please try again." });
+  }
+});
+router4.get("/auth/verify-email", async (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    res.status(400).json({ error: "Verification token is required." });
+    return;
+  }
+  try {
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.verificationToken, token)).limit(1);
+    if (!user) {
+      res.status(400).json({ error: "Invalid or expired verification link." });
+      return;
+    }
+    if (user.emailVerified) {
+      const authToken2 = signToken({ userId: user.id, email: user.email, role: user.role });
+      res.cookie(COOKIE_NAME, authToken2, COOKIE_OPTIONS);
+      res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token: authToken2, alreadyVerified: true });
+      return;
+    }
+    if (user.verificationTokenExpiry && /* @__PURE__ */ new Date() > user.verificationTokenExpiry) {
+      res.status(400).json({ error: "This verification link has expired. Please request a new one.", expired: true, email: user.email });
+      return;
+    }
+    await db.update(usersTable).set({ emailVerified: true, verificationToken: null, verificationTokenExpiry: null }).where(eq(usersTable.id, user.id));
+    const authToken = signToken({ userId: user.id, email: user.email, role: user.role });
+    res.cookie(COOKIE_NAME, authToken, COOKIE_OPTIONS);
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), token: authToken });
+  } catch {
+    res.status(500).json({ error: "Verification failed. Please try again." });
+  }
+});
+router4.post("/auth/resend-verification", async (req, res) => {
+  const { email: email3 } = req.body;
+  if (!email3) {
+    res.status(400).json({ error: "Email is required." });
+    return;
+  }
+  try {
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email3.toLowerCase())).limit(1);
+    if (!user) {
+      res.json({ success: true });
+      return;
+    }
+    if (user.emailVerified) {
+      res.status(400).json({ error: "This email is already verified." });
+      return;
+    }
+    const verificationToken = generateVerificationToken();
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1e3);
+    await db.update(usersTable).set({ verificationToken, verificationTokenExpiry }).where(eq(usersTable.id, user.id));
+    const baseUrl = getBaseUrl(req);
+    await sendVerificationEmail(user.email, user.name, verificationToken, baseUrl);
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: "Failed to resend verification email." });
   }
 });
 router4.post("/auth/logout", (_req, res) => {
@@ -73024,7 +73194,7 @@ router4.get("/auth/me", async (req, res) => {
       res.status(401).json({ error: "User not found." });
       return;
     }
-    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user) });
+    res.json({ id: user.id, name: user.name, email: user.email, role: user.role, plan: effectivePlan(user), emailVerified: user.emailVerified });
   } catch {
     res.status(500).json({ error: "Failed to fetch user." });
   }
