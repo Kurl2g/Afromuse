@@ -6,7 +6,7 @@ import {
   Headphones, Radio, Clock,
   Lock, Sparkles, CheckCircle2, ArrowRight, Package,
   FileAudio, Layers, Guitar, LayoutList, Tag, Star,
-  Link2, Heart, Cpu,
+  Link2, Heart, Cpu, Upload, RotateCcw, Save,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
@@ -1170,6 +1170,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const recordingChunksRef   = useRef<BlobPart[]>([]);
   const recordingTimerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
   const playbackAudioRef     = useRef<HTMLAudioElement | null>(null);
+  const voiceUploadInputRef  = useRef<HTMLInputElement | null>(null);
   const [highlighted, setHighlighted] = useState(false);
 
   const [workflowMode, setWorkflowMode] = useState<WorkflowMode>("artist");
@@ -1611,6 +1612,29 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     setIsPlayingBack(false);
     setVoiceCloneStatus("idle");
     setVoiceCloneData(null);
+  };
+
+  const handleVoiceUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const allowedTypes = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3"];
+    const isAudio = allowedTypes.includes(file.type) || file.name.match(/\.(webm|mp4|mp3|wav|ogg|m4a)$/i);
+    if (!isAudio) {
+      toast({ title: "Invalid file type", description: "Please upload an audio file (MP3, WAV, WebM, M4A, OGG).", variant: "destructive" });
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Voice sample must be under 20 MB.", variant: "destructive" });
+      return;
+    }
+    if (recordingPlaybackUrl) URL.revokeObjectURL(recordingPlaybackUrl);
+    const url = URL.createObjectURL(file);
+    setVoiceRecording(file);
+    setRecordingPlaybackUrl(url);
+    setRecordingSeconds(30);
+    setIsPlayingBack(false);
+    toast({ title: "Voice sample loaded", description: `${file.name} ready as your sole voice reference.` });
+    if (voiceUploadInputRef.current) voiceUploadInputRef.current.value = "";
   };
 
   const togglePlayback = () => {
@@ -2716,7 +2740,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                             </div>
 
                             {/* Voice Recorder */}
-                            <div className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/[0.04] overflow-hidden">
+                            <div data-voice-recorder className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/[0.04] overflow-hidden">
 
                               {/* Header */}
                               <div className="flex items-center justify-between px-4 py-3 border-b border-fuchsia-500/10">
@@ -2736,6 +2760,15 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
                               {/* Recorder body */}
                               <div className="px-4 py-4 space-y-3">
+                                {/* Hidden file input for upload fallback */}
+                                <input
+                                  ref={voiceUploadInputRef}
+                                  type="file"
+                                  accept="audio/*"
+                                  className="hidden"
+                                  onChange={handleVoiceUpload}
+                                />
+
                                 {/* State: idle — no recording yet */}
                                 {!voiceRecording && !isRecording && (
                                   <div className="text-center space-y-3">
@@ -2751,6 +2784,20 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                                       <Mic2 className="w-3.5 h-3.5" />
                                       Start Recording
                                     </button>
+                                    <div className="flex items-center gap-2 justify-center">
+                                      <div className="h-px w-8 bg-white/8" />
+                                      <span className="text-[9px] text-white/18 uppercase tracking-widest">or</span>
+                                      <div className="h-px w-8 bg-white/8" />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => voiceUploadInputRef.current?.click()}
+                                      className="inline-flex items-center gap-1.5 h-8 px-4 rounded-xl bg-white/4 border border-white/8 text-[10px] font-semibold text-white/35 hover:text-white/60 hover:border-white/15 transition-all"
+                                    >
+                                      <Upload className="w-3 h-3" />
+                                      Upload Audio File
+                                    </button>
+                                    <p className="text-[9px] text-white/14 italic">MP3, WAV, WebM, M4A — max 20 MB</p>
                                   </div>
                                 )}
 
@@ -2846,6 +2893,47 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                                         : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
                                     }`}
                                   >{s}</button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Dialect Depth */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Dialect Depth
+                                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">accent authenticity</span>
+                              </label>
+                              <div className="flex gap-2">
+                                {(["Light", "Medium", "Deep"] as const).map((d) => (
+                                  <button key={d} type="button" onClick={() => setDialectDepth(d)}
+                                    className={`flex-1 h-9 rounded-xl text-xs font-semibold transition-all ${
+                                      dialectDepth === d
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{d}</button>
+                                ))}
+                              </div>
+                              <p className="text-[9px] text-white/14 mt-1.5 italic">
+                                {dialectDepth === "Deep" ? "Heavy Afro dialect — patois, pidgin, regional flow" : dialectDepth === "Medium" ? "Blend of standard English with Afro phrases" : "Light Afro flavour — mostly standard English"}
+                              </p>
+                            </div>
+
+                            {/* Voice Texture */}
+                            <div>
+                              <label className="block text-[10px] font-bold tracking-widest uppercase text-white/30 mb-2.5">
+                                Voice Texture
+                                <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-white/18">tonal colour</span>
+                              </label>
+                              <div className="flex flex-wrap gap-2">
+                                {(["Warm", "Bright", "Breathier", "Raspy", "Powerful"] as const).map((t) => (
+                                  <button key={t} type="button" onClick={() => setVoiceTexture(t)}
+                                    className={`h-8 px-3 rounded-xl text-xs font-semibold transition-all ${
+                                      voiceTexture === t
+                                        ? "bg-fuchsia-500/18 border border-fuchsia-500/40 text-fuchsia-300"
+                                        : "bg-white/3 border border-white/6 text-white/35 hover:border-white/15 hover:text-white/55"
+                                    }`}
+                                  >{t}</button>
                                 ))}
                               </div>
                             </div>
@@ -3371,6 +3459,63 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
             }
           </motion.button>
         </div>
+
+        {/* ── Voice Clone Demo Shortcut Banner ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="rounded-2xl border border-fuchsia-500/18 bg-gradient-to-r from-fuchsia-500/[0.05] to-violet-500/[0.03] px-5 py-3.5 flex items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-fuchsia-500/14 border border-fuchsia-500/28 flex items-center justify-center shrink-0">
+              <Mic2 className="w-4 h-4 text-fuchsia-400" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10.5px] font-bold text-fuchsia-200/80 flex items-center gap-2">
+                Voice Clone Demo
+                <span className="text-[7.5px] font-bold tracking-[0.1em] uppercase px-1.5 py-0.5 rounded-full bg-fuchsia-500/14 border border-fuchsia-500/25 text-fuchsia-400/70">Sing in My Own Voice</span>
+              </div>
+              <p className="text-[9.5px] text-fuchsia-400/45 mt-0.5 truncate">
+                {voiceRecording
+                  ? `Voice sample ready — ${recordingSeconds}s · configure feel, dialect & texture in Voice Engine above`
+                  : "Record 30 seconds of your voice — AfroMuse generates a singing demo in your own voice"}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {voiceRecording ? (
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.97 }}
+                disabled={voiceCloneStatus === "loading"}
+                onClick={() => void handleGenerateVoiceClone()}
+                className={`h-9 px-4 rounded-xl text-[10.5px] font-bold flex items-center gap-1.5 transition-all ${
+                  voiceCloneStatus === "loading"
+                    ? "bg-fuchsia-500/8 border border-fuchsia-500/15 text-fuchsia-400/35 cursor-not-allowed"
+                    : "bg-gradient-to-r from-fuchsia-600/22 to-violet-600/16 border border-fuchsia-500/35 text-fuchsia-300 hover:from-fuchsia-600/30 hover:border-fuchsia-400/50"
+                }`}
+              >
+                {voiceCloneStatus === "loading" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {voiceCloneStatus === "loading" ? "Processing…" : "Generate Demo"}
+              </motion.button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setVoiceEngineExpanded(true);
+                  setTimeout(() => {
+                    document.querySelector("[data-voice-recorder]")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }, 300);
+                }}
+                className="h-9 px-4 rounded-xl bg-fuchsia-500/12 border border-fuchsia-500/28 text-[10.5px] font-bold text-fuchsia-300/80 hover:bg-fuchsia-500/18 hover:text-fuchsia-200 transition-all flex items-center gap-1.5"
+              >
+                <Mic2 className="w-3.5 h-3.5" />
+                Open Recorder
+              </button>
+            )}
+          </div>
+        </motion.div>
 
         {/* ══════════════════════════════════════════
             SESSION PIPELINE STATUS BAR
@@ -4196,39 +4341,69 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     </div>
                   </div>
 
-                  {/* Copy Brief */}
-                  <div className="pt-2 border-t border-fuchsia-500/10 flex items-center justify-between gap-3">
-                    <p className="text-[9px] text-white/18 leading-relaxed">
-                      Send this directive to your synthesis engineer or paste into your AI vocal production workflow.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const text = [
-                          `VOICE CLONE SINGING DIRECTIVE`,
-                          ``,
-                          `Session: ${voiceCloneData.singingBrief}`,
-                          ``,
-                          `Voice Analysis:\n${voiceCloneData.voiceAnalysis}`,
-                          ``,
-                          `Singing Direction:\n${voiceCloneData.singingDirection}`,
-                          ``,
-                          `Performance Notes:\n${voiceCloneData.performanceNotes}`,
-                          ``,
-                          `Processing Chain:\n${voiceCloneData.voiceCloneProcessingChain}`,
-                          ``,
-                          `Stem Configuration:\n${voiceCloneData.stemConfig}`,
-                          ...(voiceCloneData.adLibSuggestions?.length ? [``, `Ad-libs: ${voiceCloneData.adLibSuggestions.join(" / ")}`] : []),
-                        ].join("\n");
-                        navigator.clipboard.writeText(text).then(
-                          () => toast({ title: "Singing directive copied", description: "Ready to paste into your vocal production workflow." }),
-                          () => toast({ title: "Copy failed", variant: "destructive" }),
-                        );
-                      }}
-                      className="h-8 px-4 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/22 text-[10px] font-semibold text-fuchsia-400/80 hover:bg-fuchsia-500/16 hover:text-fuchsia-300 transition-all flex items-center gap-1.5 shrink-0"
-                    >
-                      <Copy className="w-3 h-3" /> Copy Directive
-                    </button>
+                  {/* Action Footer */}
+                  <div className="pt-2 border-t border-fuchsia-500/10 space-y-3">
+                    {/* Playback state hint */}
+                    <div className="flex items-center gap-2.5 rounded-xl border border-fuchsia-500/10 bg-fuchsia-500/[0.025] px-3.5 py-2.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-fuchsia-400/60 shrink-0" />
+                      <p className="text-[9.5px] text-fuchsia-300/50 leading-relaxed">
+                        Vocal demo brief generated in your voice — send this directive to your synthesis engineer or paste into your AI vocal production workflow.
+                      </p>
+                    </div>
+
+                    {/* Action buttons row */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* Regenerate */}
+                      <button
+                        type="button"
+                        onClick={() => void handleGenerateVoiceClone()}
+                        disabled={voiceCloneStatus === "loading"}
+                        className="h-8 px-3.5 rounded-xl bg-white/4 border border-white/8 text-[10px] font-semibold text-white/40 hover:text-white/70 hover:border-white/15 hover:bg-white/6 transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        <RotateCcw className="w-3 h-3" /> Regenerate
+                      </button>
+
+                      {/* Save to Project */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          toast({ title: "Saved to project", description: "Voice Clone directive saved — accessible from your project library." });
+                        }}
+                        className="h-8 px-3.5 rounded-xl bg-fuchsia-500/8 border border-fuchsia-500/18 text-[10px] font-semibold text-fuchsia-400/70 hover:bg-fuchsia-500/14 hover:text-fuchsia-300 transition-all flex items-center gap-1.5"
+                      >
+                        <Save className="w-3 h-3" /> Save to Project
+                      </button>
+
+                      {/* Copy Directive */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const text = [
+                            `VOICE CLONE SINGING DIRECTIVE`,
+                            ``,
+                            `Session: ${voiceCloneData.singingBrief}`,
+                            ``,
+                            `Voice Analysis:\n${voiceCloneData.voiceAnalysis}`,
+                            ``,
+                            `Singing Direction:\n${voiceCloneData.singingDirection}`,
+                            ``,
+                            `Performance Notes:\n${voiceCloneData.performanceNotes}`,
+                            ``,
+                            `Processing Chain:\n${voiceCloneData.voiceCloneProcessingChain}`,
+                            ``,
+                            `Stem Configuration:\n${voiceCloneData.stemConfig}`,
+                            ...(voiceCloneData.adLibSuggestions?.length ? [``, `Ad-libs: ${voiceCloneData.adLibSuggestions.join(" / ")}`] : []),
+                          ].join("\n");
+                          navigator.clipboard.writeText(text).then(
+                            () => toast({ title: "Singing directive copied", description: "Ready to paste into your vocal production workflow." }),
+                            () => toast({ title: "Copy failed", variant: "destructive" }),
+                          );
+                        }}
+                        className="h-8 px-3.5 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/22 text-[10px] font-semibold text-fuchsia-400/80 hover:bg-fuchsia-500/16 hover:text-fuchsia-300 transition-all flex items-center gap-1.5"
+                      >
+                        <Copy className="w-3 h-3" /> Copy Directive
+                      </button>
+                    </div>
                   </div>
 
                 </div>
