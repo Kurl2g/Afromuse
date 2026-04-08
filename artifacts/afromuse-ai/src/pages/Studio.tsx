@@ -236,7 +236,11 @@ export default function Studio() {
       const res = await fetch("/api/rewrite-lyrics", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode }),
+        body: JSON.stringify({
+          draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode,
+          lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel,
+          style: style || undefined, commercialMode,
+        }),
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };
@@ -256,7 +260,11 @@ export default function Studio() {
       const res = await fetch("/api/catchier-lyrics", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode }),
+        body: JSON.stringify({
+          draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode,
+          lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel,
+          style: style || undefined, commercialMode,
+        }),
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };
@@ -276,7 +284,11 @@ export default function Studio() {
       const res = await fetch("/api/harden-lyrics", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode }),
+        body: JSON.stringify({
+          draft, genre, mood, languageFlavor: apiLanguageFlavor, dialectDepth, clarityMode,
+          lyricalDepth, hookRepeat, genderVoiceModel, performanceFeel,
+          style: style || undefined, commercialMode,
+        }),
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };

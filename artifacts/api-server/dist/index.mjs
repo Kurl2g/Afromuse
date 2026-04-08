@@ -52015,7 +52015,20 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 router2.post("/harden-lyrics", async (req, res) => {
-  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  const {
+    draft,
+    genre,
+    mood,
+    languageFlavor,
+    dialectDepth,
+    clarityMode,
+    lyricalDepth,
+    hookRepeat,
+    genderVoiceModel,
+    performanceFeel,
+    style,
+    commercialMode
+  } = req.body;
   if (!draft || typeof draft !== "object") {
     res.status(400).json({ error: "draft is required" });
     return;
@@ -52040,6 +52053,11 @@ ${lines.join("\n")}`;
     formatSection("Outro", draft.outro)
   ].filter(Boolean).join("\n\n");
   const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const hardenDepthNote = {
+    "Simple": "Simple = short, punchy, raw street hits \u2014 no complex imagery, just direct impact",
+    "Balanced": "Balanced = direct emotional punch \u2014 confident, clear, hard-hitting without being over-explained",
+    "Deep": "Deep = layered raw truth \u2014 dense imagery, emotional complexity, every line earns its place"
+  };
   const userPrompt = [
     `MAKE IT HARDER \u2014 REWRITE TASK`,
     `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
@@ -52048,6 +52066,12 @@ ${lines.join("\n")}`;
     `Language: ${languageFlavor ?? "Global English"}`,
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${hardenDepthNote[lyricalDepth ?? "Balanced"] ?? hardenDepthNote["Balanced"]}`,
+    `Performance Feel: ${performanceFeel ?? "Smooth"} \u2014 every hardened line must still match this performance register \u2014 do NOT lose the original feel while adding edge`,
+    `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 vocal perspective and phrasing edge must match this voice throughout`,
+    `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 even after hardening, maintain this hook replay intensity`,
+    ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 preserve this artist's writing DNA and edge while pushing harder`] : [],
+    ...commercialMode ? [`Hitmaker Mode: ON \u2014 hardened lines must still be mass-market singable and commercially viral, not just underground-hard`] : [],
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -52221,7 +52245,20 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 router2.post("/catchier-lyrics", async (req, res) => {
-  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  const {
+    draft,
+    genre,
+    mood,
+    languageFlavor,
+    dialectDepth,
+    clarityMode,
+    lyricalDepth,
+    hookRepeat,
+    genderVoiceModel,
+    performanceFeel,
+    style,
+    commercialMode
+  } = req.body;
   if (!draft || typeof draft !== "object") {
     res.status(400).json({ error: "draft is required" });
     return;
@@ -52246,6 +52283,16 @@ ${lines.join("\n")}`;
     formatSection("Outro", draft.outro)
   ].filter(Boolean).join("\n\n");
   const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const catchierDepthNote = {
+    "Simple": "Simple = trim aggressively \u2014 pure syllabic punch, minimal words, maximum memorability",
+    "Balanced": "Balanced = simplify without losing authentic feel \u2014 every word should earn its place",
+    "Deep": "Deep = preserve poetic layers but boost melodic memorability \u2014 the hook can be complex AND sticky"
+  };
+  const hookRepeatNote = {
+    "Low": "Low = one clean pass \u2014 don't over-repeat the hook phrase, let verses breathe",
+    "Medium": "Medium = standard chorus feel \u2014 hook phrase repeats 2-3 times per section naturally",
+    "High": "High = maximum chant-loop potential \u2014 the hook phrase should feel like a crowd anthem, highly repeatable"
+  };
   const userPrompt = [
     `MAKE IT CATCHIER \u2014 REWRITE TASK`,
     `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
@@ -52254,6 +52301,12 @@ ${lines.join("\n")}`;
     `Language: ${languageFlavor ?? "Global English"}`,
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${catchierDepthNote[lyricalDepth ?? "Balanced"] ?? catchierDepthNote["Balanced"]}`,
+    `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 ${hookRepeatNote[hookRepeat ?? "Medium"] ?? hookRepeatNote["Medium"]} \u2014 this is the primary driver of how the hook is restructured`,
+    `Performance Feel: ${performanceFeel ?? "Smooth"} \u2014 what "catchy" means depends on this register: Airy = floaty melodic hooks; Street = short quotable bars; Soulful = emotional resonance; Confident = bold declarative phrases`,
+    `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 singability and phrasing feel must naturally match this vocal perspective`,
+    ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the catchier version must still sound like it belongs in this artist's world`] : [],
+    ...commercialMode ? [`Hitmaker Mode: ON \u2014 maximum commercial catchiness required \u2014 this must work on radio, TikTok, live performance, and streaming hooks`] : [],
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -52405,7 +52458,20 @@ Return ONLY a JSON object with this shape:
 - Preserve exact section array format
 `;
 router2.post("/rewrite-lyrics", async (req, res) => {
-  const { draft, genre, mood, languageFlavor, dialectDepth, clarityMode } = req.body;
+  const {
+    draft,
+    genre,
+    mood,
+    languageFlavor,
+    dialectDepth,
+    clarityMode,
+    lyricalDepth,
+    hookRepeat,
+    genderVoiceModel,
+    performanceFeel,
+    style,
+    commercialMode
+  } = req.body;
   if (!draft || typeof draft !== "object") {
     res.status(400).json({ error: "draft is required" });
     return;
@@ -52430,14 +52496,25 @@ ${lines.join("\n")}`;
     formatSection("Outro", draft.outro)
   ].filter(Boolean).join("\n\n");
   const keeperLine = typeof draft.keeperLine === "string" ? draft.keeperLine : "";
+  const humanizeDepthNote = {
+    "Simple": "Simple = clear, conversational, streetwise \u2014 no complex imagery, direct and singable",
+    "Balanced": "Balanced = natural mix of depth and directness \u2014 human phrasing without losing meaning",
+    "Deep": "Deep = preserve rich metaphor and emotional complexity \u2014 the humanized version should feel like a storytelling artist wrote it"
+  };
   const userPrompt = [
-    `REWRITE TASK`,
+    `HUMANIZE LYRICS \u2014 REWRITE TASK`,
     `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
+    `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${humanizeDepthNote[lyricalDepth ?? "Balanced"] ?? humanizeDepthNote["Balanced"]}`,
+    `Performance Feel: ${performanceFeel ?? "Smooth"} \u2014 the humanized version must feel natural for an artist with this exact performance register \u2014 phrasing, breath pockets, and line endings should match`,
+    `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 rewrite phrasing to naturally match this vocal perspective \u2014 word choices, contractions, and delivery cues should fit this voice`,
+    `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 preserve the hook's sing-along potential at this intensity level during humanization`,
+    ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the humanized version must still sound like it belongs authentically in this artist's world`] : [],
+    ...commercialMode ? [`Hitmaker Mode: ON \u2014 keep commercial hook strength fully intact while stripping AI-sounding phrases \u2014 every line must be both human AND commercially viable`] : [],
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
