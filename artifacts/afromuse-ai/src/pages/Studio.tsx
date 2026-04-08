@@ -142,6 +142,7 @@ export default function Studio() {
     instrumental: 80, leadVocal: 90, harmony: 60, adlibs: 50, bass: 75, percussion: 85,
   });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
 
@@ -627,6 +628,127 @@ export default function Studio() {
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full rounded-xl bg-white/5 border border-white/8 px-3 py-2.5 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/15 transition-all resize-none min-h-[80px]"
                 />
+              </div>
+
+              {/* ── ADVANCED SONGWRITING CONTROLS ───────────────────────── */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced((v) => !v)}
+                  className="w-full flex items-center justify-between py-2 px-3 rounded-xl bg-white/3 border border-white/6 hover:bg-white/5 hover:border-white/10 transition-all group"
+                >
+                  <div className="flex items-center gap-2">
+                    <Sliders className="w-3.5 h-3.5 text-violet-400" />
+                    <span className="text-[11px] font-bold text-white/55 group-hover:text-white/75 transition-colors">Advanced Songwriting</span>
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`} />
+                </button>
+
+                {showAdvanced && (
+                  <div className="mt-3 space-y-4 px-0.5">
+
+                    {/* Lyrical Depth */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Lyrical Depth</label>
+                      <div className="grid grid-cols-3 gap-1">
+                        {(["Simple", "Balanced", "Deep"] as const).map((v) => (
+                          <button
+                            key={v} type="button"
+                            onClick={() => setLyricalDepth(v)}
+                            className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                              lyricalDepth === v
+                                ? "bg-violet-500/15 border-violet-500/40 text-violet-400"
+                                : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                            }`}
+                          >{v}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Hook Repeat Level */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Hook Repeat Level</label>
+                      <div className="grid grid-cols-3 gap-1">
+                        {(["Low", "Medium", "High"] as const).map((v) => (
+                          <button
+                            key={v} type="button"
+                            onClick={() => setHookRepeat(v)}
+                            className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                              hookRepeat === v
+                                ? "bg-amber-500/15 border-amber-500/40 text-amber-400"
+                                : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                            }`}
+                          >{v}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Gender / Voice Model */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Gender / Voice Model</label>
+                      <div className="grid grid-cols-2 gap-1">
+                        {(["Male", "Female", "Mixed", "Random"] as const).map((v) => (
+                          <button
+                            key={v} type="button"
+                            onClick={() => setGenderVoiceModel(v)}
+                            className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                              genderVoiceModel === v
+                                ? "bg-sky-500/15 border-sky-500/40 text-sky-400"
+                                : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                            }`}
+                          >{v}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Performance Feel */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Performance Feel</label>
+                      <div className="grid grid-cols-2 gap-1">
+                        {["Smooth", "Melodic", "Gritty", "Emotional", "Soulful", "Intimate", "Confident", "Airy", "Prayerful", "Street"].map((v) => (
+                          <button
+                            key={v} type="button"
+                            onClick={() => setPerformanceFeel(v)}
+                            className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                              performanceFeel === v
+                                ? "bg-pink-500/15 border-pink-500/40 text-pink-400"
+                                : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                            }`}
+                          >{v}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Dialect Depth */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Dialect Depth</label>
+                      <div className="relative">
+                        <select
+                          value={dialectDepth}
+                          onChange={(e) => setDialectDepth(e.target.value)}
+                          className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 pr-8 text-sm text-white focus:outline-none focus:border-violet-500/40 transition-all appearance-none cursor-pointer"
+                        >
+                          {["Light Touch", "Balanced Native", "Deep Immersive", "Full Street"].map((v) => (
+                            <option key={v} value={v} className="bg-[#111118]">{v}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Sound Reference */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Sound Reference</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Wizkid Essence vibes, Burna Boy Twice as Tall..."
+                        value={style}
+                        onChange={(e) => setStyle(e.target.value)}
+                        className="w-full h-10 rounded-xl bg-white/5 border border-white/8 px-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/15 transition-all"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Hitmaker toggle */}
