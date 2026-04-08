@@ -59,15 +59,28 @@ const CREDENTIAL_SLOTS: Record<ProviderCategory, ProviderCredentialSlot> = {
   },
 
   /**
-   * Vocal Synthesis
-   * Candidate APIs: ElevenLabs, Musicfy, Suno (vocals), PlayHT
+   * Vocal Synthesis — ElevenLabs Instant Voice Clone + TTS
+   *
+   * Live path uses two ElevenLabs endpoints:
+   *   1. POST /v1/voices/add          — Instant Voice Clone (upload user's audio sample)
+   *   2. POST /v1/text-to-speech/{id} — TTS with the cloned voice
+   *   3. DELETE /v1/voices/{id}        — Cleanup after generation
+   *
+   * Required env var:
+   *   ELEVENLABS_API_KEY — same key used by the instrumental provider
+   *
+   * Optional overrides:
+   *   VOCAL_API_KEY      — alternative key slot (falls back to ELEVENLABS_API_KEY)
+   *   VOCAL_API_ENDPOINT — override base URL (defaults to ElevenLabs API)
+   *   VOCAL_MODEL        — TTS model override (defaults to eleven_multilingual_v2)
+   *   VOCAL_TIMEOUT_MS   — request timeout in ms (defaults to 90 000)
    */
   vocal: {
-    apiKey:    process.env.VOCAL_API_KEY    ?? null,
-    endpoint:  process.env.VOCAL_API_ENDPOINT ?? null,
-    model:     process.env.VOCAL_MODEL     ?? null,
-    region:    process.env.VOCAL_REGION    ?? null,
-    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 30_000),
+    apiKey:    process.env.VOCAL_API_KEY ?? process.env.ELEVENLABS_API_KEY ?? null,
+    endpoint:  process.env.VOCAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1",
+    model:     process.env.VOCAL_MODEL ?? "eleven_multilingual_v2",
+    region:    process.env.VOCAL_REGION ?? null,
+    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 90_000),
   },
 
   /**

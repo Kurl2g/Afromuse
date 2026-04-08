@@ -1229,6 +1229,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [hitmakerMode,          setHitmakerMode]          = useState(false);
   const [voiceCloneStatus,      setVoiceCloneStatus]      = useState<CardStatus>("idle");
   const [voiceCloneData,        setVoiceCloneData]        = useState<VoiceCloneData | null>(null);
+  const [voiceCloneAudioUrl,    setVoiceCloneAudioUrl]    = useState<string | null>(null);
 
   const [instrumentalStatus, setInstrumentalStatus] = useState<CardStatus>("idle");
   const [vocalStatus,        setVocalStatus]        = useState<CardStatus>("idle");
@@ -1612,6 +1613,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     setIsPlayingBack(false);
     setVoiceCloneStatus("idle");
     setVoiceCloneData(null);
+    setVoiceCloneAudioUrl(null);
   };
 
   const handleVoiceUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1663,12 +1665,14 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         if (!poll.ok) throw new Error("Poll failed");
         const data = await poll.json() as {
           status: string;
+          audioUrl?: string | null;
           voiceCloneSingData?: VoiceCloneData;
           error?: string;
         };
         if (data.status === "completed") {
           setVoiceCloneStatus("success");
           setVoiceCloneData(data.voiceCloneSingData ?? null);
+          setVoiceCloneAudioUrl(data.audioUrl ?? null);
           return;
         }
         if (data.status === "failed") {
@@ -1689,6 +1693,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
     }
     setVoiceCloneStatus("loading");
     setVoiceCloneData(null);
+    setVoiceCloneAudioUrl(null);
     try {
       const reader = new FileReader();
       const base64: string = await new Promise((resolve, reject) => {
@@ -4317,29 +4322,46 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     </div>
                   )}
 
-                  {/* Vocal Stem Slot */}
-                  <div className="rounded-2xl border border-dashed border-fuchsia-500/22 bg-fuchsia-500/[0.025] px-5 py-4 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl border border-fuchsia-500/25 bg-fuchsia-500/12 flex items-center justify-center shrink-0">
-                        <FileAudio className="w-4 h-4 text-fuchsia-400/70" />
+                  {/* Vocal Demo Audio Output */}
+                  {voiceCloneAudioUrl ? (
+                    <div className="rounded-2xl border border-fuchsia-500/28 bg-gradient-to-r from-fuchsia-500/[0.08] to-violet-500/[0.04] px-5 py-4 space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg border border-fuchsia-500/30 bg-fuchsia-500/16 flex items-center justify-center shrink-0">
+                            <Mic2 className="w-3.5 h-3.5 text-fuchsia-400" />
+                          </div>
+                          <div>
+                            <div className="text-[10.5px] font-bold text-white/70">Your Vocal Demo</div>
+                            <div className="text-[9px] text-fuchsia-400/50">
+                              ElevenLabs Voice Clone · {voiceCloneData.voiceCloneMetadata?.bpm ?? "–"} BPM · {voiceCloneData.voiceCloneMetadata?.key ?? "–"}
+                            </div>
+                          </div>
+                        </div>
+                        <a
+                          href={voiceCloneAudioUrl}
+                          download={`afromuse-voice-demo-${Date.now()}.mp3`}
+                          className="h-8 px-3 rounded-xl bg-fuchsia-500/12 border border-fuchsia-500/25 text-[9.5px] font-semibold text-fuchsia-400/70 hover:bg-fuchsia-500/20 hover:text-fuchsia-300 transition-all flex items-center gap-1.5"
+                        >
+                          <Download className="w-3 h-3" /> Download MP3
+                        </a>
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-[10.5px] font-bold text-white/55">Vocal Demo Stem</div>
-                        <div className="text-[9px] text-fuchsia-400/40 mt-0.5 truncate">
-                          WAV 24-bit · {voiceCloneData.voiceCloneMetadata?.bpm ?? "–"} BPM · {voiceCloneData.voiceCloneMetadata?.key ?? "–"} · Synthesis engine slot
+                      <AudioPlayer audioUrl={voiceCloneAudioUrl} />
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl border border-dashed border-fuchsia-500/22 bg-fuchsia-500/[0.025] px-5 py-4 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl border border-fuchsia-500/25 bg-fuchsia-500/12 flex items-center justify-center shrink-0">
+                          <FileAudio className="w-4 h-4 text-fuchsia-400/70" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10.5px] font-bold text-white/55">Vocal Demo Stem</div>
+                          <div className="text-[9px] text-fuchsia-400/40 mt-0.5 truncate">
+                            {voiceCloneData.voiceCloneMetadata?.bpm ?? "–"} BPM · {voiceCloneData.voiceCloneMetadata?.key ?? "–"} · Add ELEVENLABS_API_KEY to enable audio
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => toast({ title: "Synthesis API not connected", description: "Connect a vocal synthesis provider (e.g. ElevenLabs) to activate stem generation and export." })}
-                        className="h-8 px-3 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/22 text-[9.5px] font-semibold text-fuchsia-400/60 hover:bg-fuchsia-500/16 hover:text-fuchsia-300/80 transition-all flex items-center gap-1.5"
-                      >
-                        <Download className="w-3 h-3" /> Export Stem
-                      </button>
-                    </div>
-                  </div>
+                  )}
 
                   {/* Action Footer */}
                   <div className="pt-2 border-t border-fuchsia-500/10 space-y-3">
@@ -4347,7 +4369,9 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                     <div className="flex items-center gap-2.5 rounded-xl border border-fuchsia-500/10 bg-fuchsia-500/[0.025] px-3.5 py-2.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-fuchsia-400/60 shrink-0" />
                       <p className="text-[9.5px] text-fuchsia-300/50 leading-relaxed">
-                        Vocal demo brief generated in your voice — send this directive to your synthesis engineer or paste into your AI vocal production workflow.
+                        {voiceCloneAudioUrl
+                          ? "Real vocal demo generated in your own cloned voice via ElevenLabs. Play or download above."
+                          : "Vocal session directive generated — add an ElevenLabs API key to generate real playable audio in your voice."}
                       </p>
                     </div>
 

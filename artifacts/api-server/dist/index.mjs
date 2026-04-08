@@ -26530,7 +26530,7 @@ var require_tools = __commonJS({
     } else {
       asJsonChan = {
         hasSubscribers: false,
-        traceSync(fn, store2, thisArg, ...args) {
+        traceSync(fn, store3, thisArg, ...args) {
           return fn.call(thisArg, ...args);
         }
       };
@@ -26600,8 +26600,8 @@ var require_tools = __commonJS({
       if (asJsonChan.hasSubscribers === false) {
         return _asJson.call(this, obj, msg, num, time4);
       }
-      const store2 = { instance: this, arguments };
-      return asJsonChan.traceSync(_asJson, store2, this, obj, msg, num, time4);
+      const store3 = { instance: this, arguments };
+      return asJsonChan.traceSync(_asJson, store3, this, obj, msg, num, time4);
     }
     function _asJson(obj, msg, num, time4) {
       const stringify3 = this[stringifySym];
@@ -71396,16 +71396,24 @@ function resolveElevenLabsInstrumentalMode() {
 }
 var ELEVENLABS_INSTRUMENTAL_MODE = resolveElevenLabsInstrumentalMode();
 var ELEVENLABS_ALLOW_LIVE_IN_DEV = ELEVENLABS_INSTRUMENTAL_MODE === "live";
+function resolveElevenLabsVocalMode() {
+  const explicit = (process.env.ELEVENLABS_VOCAL_MODE ?? "").trim().toLowerCase();
+  if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
+    return explicit;
+  }
+  return process.env.ELEVENLABS_API_KEY ? "live" : "mock";
+}
+var ELEVENLABS_VOCAL_MODE = resolveElevenLabsVocalMode();
 var DEVELOPMENT_CONFIG = {
   environment: "development",
   providerModes: {
     instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
   },
   safety: {
-    allowLiveInDev: ELEVENLABS_ALLOW_LIVE_IN_DEV,
+    allowLiveInDev: ELEVENLABS_ALLOW_LIVE_IN_DEV || ELEVENLABS_VOCAL_MODE === "live",
     strictMode: false
   }
 };
@@ -71413,7 +71421,7 @@ var STAGING_CONFIG = {
   environment: "staging",
   providerModes: {
     instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: "mock", fallbackToMock: true },
+    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
   },
@@ -71426,7 +71434,7 @@ var PRODUCTION_CONFIG = {
   environment: "production",
   providerModes: {
     instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: "mock", fallbackToMock: false },
+    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: false },
     mastering: { mode: "mock", fallbackToMock: false },
     stems: { mode: "mock", fallbackToMock: false }
   },
@@ -71538,10 +71546,10 @@ var REGISTRY = {
   },
   vocal: {
     category: "vocal",
-    name: "AfroMuse Vocal Engine",
-    description: "Generates vocal session briefs and demo guidance. Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
-    status: "mock",
-    isLive: false
+    name: "AfroMuse Vocal Engine \u2014 ElevenLabs Voice Clone",
+    description: "Clones the user's voice via ElevenLabs Instant Voice Clone and generates a real audio vocal demo via ElevenLabs TTS. Enriched with an NVIDIA AI singing directive. Requires ELEVENLABS_API_KEY.",
+    status: "live-ready",
+    isLive: true
   },
   mastering: {
     category: "mastering",
@@ -71589,15 +71597,28 @@ var CREDENTIAL_SLOTS = {
     timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 9e4)
   },
   /**
-   * Vocal Synthesis
-   * Candidate APIs: ElevenLabs, Musicfy, Suno (vocals), PlayHT
+   * Vocal Synthesis — ElevenLabs Instant Voice Clone + TTS
+   *
+   * Live path uses two ElevenLabs endpoints:
+   *   1. POST /v1/voices/add          — Instant Voice Clone (upload user's audio sample)
+   *   2. POST /v1/text-to-speech/{id} — TTS with the cloned voice
+   *   3. DELETE /v1/voices/{id}        — Cleanup after generation
+   *
+   * Required env var:
+   *   ELEVENLABS_API_KEY — same key used by the instrumental provider
+   *
+   * Optional overrides:
+   *   VOCAL_API_KEY      — alternative key slot (falls back to ELEVENLABS_API_KEY)
+   *   VOCAL_API_ENDPOINT — override base URL (defaults to ElevenLabs API)
+   *   VOCAL_MODEL        — TTS model override (defaults to eleven_multilingual_v2)
+   *   VOCAL_TIMEOUT_MS   — request timeout in ms (defaults to 90 000)
    */
   vocal: {
-    apiKey: process.env.VOCAL_API_KEY ?? null,
-    endpoint: process.env.VOCAL_API_ENDPOINT ?? null,
-    model: process.env.VOCAL_MODEL ?? null,
+    apiKey: process.env.VOCAL_API_KEY ?? process.env.ELEVENLABS_API_KEY ?? null,
+    endpoint: process.env.VOCAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1",
+    model: process.env.VOCAL_MODEL ?? "eleven_multilingual_v2",
     region: process.env.VOCAL_REGION ?? null,
-    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 3e4)
+    timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 9e4)
   },
   /**
    * Mix & Mastering
@@ -72643,6 +72664,22 @@ async function run(jobId, p) {
   return runMock(jobId, p);
 }
 
+// src/engine/audioBufferStore.ts
+var BUFFER_TTL_MS = 30 * 60 * 1e3;
+var store2 = /* @__PURE__ */ new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, entry] of store2) {
+    if (now - entry.createdAt > BUFFER_TTL_MS) store2.delete(id);
+  }
+}, 5 * 60 * 1e3).unref();
+function storeAudioBuffer(jobId, buffer, contentType = "audio/mpeg") {
+  store2.set(jobId, { buffer, contentType, createdAt: Date.now() });
+}
+function getAudioBuffer(jobId) {
+  return store2.get(jobId) ?? null;
+}
+
 // src/engine/providers/vocal.ts
 function parseBpm2(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -72896,6 +72933,96 @@ async function fetchVoiceCloneBrief(p) {
   if (start === -1 || end === -1) throw new Error("No JSON in voice clone brief response");
   return JSON.parse(cleaned.slice(start, end + 1));
 }
+async function deleteElevenLabsVoice(apiKey, voiceId, jobId) {
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
+      method: "DELETE",
+      headers: { "xi-api-key": apiKey }
+    });
+    if (res.ok) {
+      logger.info({ jobId, voiceId }, "ElevenLabs cloned voice deleted after synthesis");
+    } else {
+      logger.warn({ jobId, voiceId, status: res.status }, "ElevenLabs voice delete failed \u2014 may need manual cleanup");
+    }
+  } catch (err) {
+    logger.warn({ err, jobId, voiceId }, "ElevenLabs voice delete threw an error");
+  }
+}
+async function callLiveVoiceCloneProvider(jobId, p) {
+  const apiKey = process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY;
+  if (!apiKey) {
+    logger.warn({ jobId }, "ELEVENLABS_API_KEY not set \u2014 voice clone live path skipped, returning text brief only");
+    return { audioUrl: null, externalVoiceId: null };
+  }
+  if (!p.voiceSampleBase64) {
+    logger.warn({ jobId }, "No voiceSampleBase64 provided \u2014 live path skipped");
+    return { audioUrl: null, externalVoiceId: null };
+  }
+  const rawB64 = p.voiceSampleBase64.replace(/^data:[^;]+;base64,/, "");
+  const audioBuffer = Buffer.from(rawB64, "base64");
+  const mimeMatch = p.voiceSampleBase64.match(/^data:([^;]+);base64,/);
+  const mimeType = mimeMatch?.[1] ?? "audio/webm";
+  const ext = mimeType.split("/")[1]?.replace("mpeg", "mp3") ?? "webm";
+  logger.info({ jobId, mimeType, bytes: audioBuffer.byteLength }, "Voice sample decoded \u2014 uploading to ElevenLabs IVC");
+  const voiceName = `afromuse-vc-${jobId.slice(0, 8)}`;
+  const formData = new FormData();
+  const blob = new Blob([audioBuffer], { type: mimeType });
+  formData.append("name", voiceName);
+  formData.append("files", blob, `voice-sample.${ext}`);
+  formData.append("description", `AfroMuse Voice Clone Demo \u2014 Job ${jobId}`);
+  formData.append("remove_background_noise", "false");
+  const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
+    method: "POST",
+    headers: { "xi-api-key": apiKey },
+    body: formData
+  });
+  if (!cloneRes.ok) {
+    const errText = await cloneRes.text().catch(() => "(no body)");
+    throw new Error(`ElevenLabs IVC failed (${cloneRes.status}): ${errText.slice(0, 300)}`);
+  }
+  const cloneData = await cloneRes.json();
+  const voiceId = cloneData.voice_id;
+  logger.info({ jobId, voiceId }, "ElevenLabs instant voice clone created");
+  const genre = p.genre ?? "Afrobeats";
+  const feel = p.performanceFeel ?? "Smooth";
+  let ttsText = (p.lyrics ?? "").trim().slice(0, 2e3);
+  if (!ttsText) {
+    ttsText = `This is a personal vocal demo in ${genre} style. A ${feel.toLowerCase()} delivery, with ${(p.voiceTexture ?? "Warm").toLowerCase()} texture and ${(p.dialectDepth ?? "Medium").toLowerCase()} dialect depth. The rhythm flows naturally \u2014 rooted in culture, shaped by soul, and true to my own voice.`;
+  }
+  const model = process.env.VOCAL_MODEL ?? "eleven_multilingual_v2";
+  const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: "POST",
+    headers: {
+      "xi-api-key": apiKey,
+      "Accept": "audio/mpeg",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      text: ttsText,
+      model_id: model,
+      voice_settings: {
+        stability: 0.45,
+        similarity_boost: 0.8,
+        style: p.hitmakerMode ? 0.6 : 0.45,
+        use_speaker_boost: true
+      }
+    })
+  });
+  if (!ttsRes.ok) {
+    const errText = await ttsRes.text().catch(() => "(no body)");
+    await deleteElevenLabsVoice(apiKey, voiceId, jobId);
+    throw new Error(`ElevenLabs TTS failed (${ttsRes.status}): ${errText.slice(0, 300)}`);
+  }
+  const mp3ArrayBuffer = await ttsRes.arrayBuffer();
+  const mp3Buffer = Buffer.from(mp3ArrayBuffer);
+  storeAudioBuffer(jobId, mp3Buffer, "audio/mpeg");
+  logger.info({ jobId, voiceId, bytes: mp3Buffer.byteLength }, "ElevenLabs TTS audio generated and stored in memory");
+  await deleteElevenLabsVoice(apiKey, voiceId, jobId);
+  return {
+    audioUrl: `/api/voice-clone/audio/${jobId}`,
+    externalVoiceId: voiceId
+  };
+}
 async function runVoiceCloneSing(jobId, p) {
   const genre = p.genre ?? "Afrobeats";
   const metadata = {
@@ -72916,11 +73043,21 @@ async function runVoiceCloneSing(jobId, p) {
       key: p.key
     }
   };
-  let aiBrief = null;
-  try {
-    aiBrief = await fetchVoiceCloneBrief(p);
-  } catch (err) {
-    logger.warn({ err, jobId }, "Voice clone AI brief failed \u2014 using metadata only");
+  const [briefResult, liveResult] = await Promise.allSettled([
+    fetchVoiceCloneBrief(p),
+    callLiveVoiceCloneProvider(jobId, p)
+  ]);
+  const aiBrief = briefResult.status === "fulfilled" ? briefResult.value ?? null : null;
+  if (briefResult.status === "rejected") {
+    logger.warn({ err: briefResult.reason, jobId }, "Voice clone AI brief failed \u2014 using metadata only");
+  }
+  let audioUrl = null;
+  let externalJobId = null;
+  if (liveResult.status === "fulfilled" && liveResult.value) {
+    audioUrl = liveResult.value.audioUrl;
+    externalJobId = liveResult.value.externalVoiceId;
+  } else if (liveResult.status === "rejected") {
+    logger.error({ err: liveResult.reason, jobId }, "ElevenLabs voice clone synthesis failed \u2014 text brief returned without audio");
   }
   const blueprintData = {
     ...metadata,
@@ -72929,17 +73066,12 @@ async function runVoiceCloneSing(jobId, p) {
   const raw = {
     jobId,
     status: "completed",
-    audioUrl: null,
-    // slot: voice clone singing stem URL
+    audioUrl,
     wavUrl: null,
-    // slot: WAV export URL
     blueprintData,
-    externalJobId: null,
-    // slot: singing synthesis provider job ID
-    vocalPreviewUrl: null,
-    // slot: short preview clip
+    externalJobId,
+    vocalPreviewUrl: audioUrl,
     syncScore: null
-    // slot: vocal-to-beat sync quality score
   };
   return adaptVocal(raw);
 }
@@ -75002,12 +75134,29 @@ router8.get("/voice-clone/job/:jobId", requireAuth, (req, res) => {
     } : null
   });
 });
+router8.get("/voice-clone/audio/:jobId", requireAuth, (req, res) => {
+  const jobId = String(req.params.jobId);
+  const entry = getAudioBuffer(jobId);
+  if (!entry) {
+    res.status(404).json({ error: "Audio not found or expired \u2014 regenerate the demo to get a fresh link." });
+    return;
+  }
+  res.set({
+    "Content-Type": entry.contentType,
+    "Content-Length": String(entry.buffer.byteLength),
+    "Cache-Control": "private, max-age=1800",
+    "Accept-Ranges": "bytes"
+  });
+  res.send(entry.buffer);
+});
 router8.get("/voice-clone/status", requireAuth, (_req, res) => {
+  const hasApiKey = Boolean(process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY);
   res.json({
     available: true,
     status: "active",
-    mode: "ai-brief",
-    message: "Voice Clone Singing Engine is active. Record your voice to generate a personalised singing demo brief."
+    mode: hasApiKey ? "live" : "ai-brief",
+    audioEnabled: hasApiKey,
+    message: hasApiKey ? "Voice Clone Singing Engine is live \u2014 record your voice to generate a real vocal demo in your own voice." : "Voice Clone Singing Engine is active (AI brief mode). Connect ELEVENLABS_API_KEY to enable real audio generation."
   });
 });
 var voice_clone_default = router8;

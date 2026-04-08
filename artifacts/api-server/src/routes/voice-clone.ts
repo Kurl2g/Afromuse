@@ -15,6 +15,7 @@ import { requireAuth, attachPlanFromDb } from "../access/middleware.js";
 import { logger } from "../lib/logger.js";
 import { createEngineJob, getEngineJob, advanceJob, failJob } from "../engine/jobStore.js";
 import { runVoiceCloneSing, type VoiceClonePayload } from "../engine/providers/vocal.js";
+import { getAudioBuffer } from "../engine/audioBufferStore.js";
 
 const router = Router();
 
@@ -136,14 +137,42 @@ router.get("/voice-clone/job/:jobId", requireAuth, (req, res) => {
   });
 });
 
+// ─── GET /api/voice-clone/audio/:jobId ───────────────────────────────────────
+// Streams the generated MP3 audio buffer back to the frontend AudioPlayer.
+// The buffer is stored in-memory by the vocal provider after ElevenLabs TTS.
+// Expires after 30 minutes (same TTL as the job store).
+
+router.get("/voice-clone/audio/:jobId", requireAuth, (req, res) => {
+  const jobId = String(req.params.jobId);
+  const entry = getAudioBuffer(jobId);
+
+  if (!entry) {
+    res.status(404).json({ error: "Audio not found or expired — regenerate the demo to get a fresh link." });
+    return;
+  }
+
+  res.set({
+    "Content-Type": entry.contentType,
+    "Content-Length": String(entry.buffer.byteLength),
+    "Cache-Control": "private, max-age=1800",
+    "Accept-Ranges": "bytes",
+  });
+
+  res.send(entry.buffer);
+});
+
 // ─── GET /api/voice-clone/status ─────────────────────────────────────────────
 
 router.get("/voice-clone/status", requireAuth, (_req, res) => {
+  const hasApiKey = Boolean(process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY);
   res.json({
     available: true,
     status: "active",
-    mode: "ai-brief",
-    message: "Voice Clone Singing Engine is active. Record your voice to generate a personalised singing demo brief.",
+    mode: hasApiKey ? "live" : "ai-brief",
+    audioEnabled: hasApiKey,
+    message: hasApiKey
+      ? "Voice Clone Singing Engine is live — record your voice to generate a real vocal demo in your own voice."
+      : "Voice Clone Singing Engine is active (AI brief mode). Connect ELEVENLABS_API_KEY to enable real audio generation.",
   });
 });
 

@@ -47,12 +47,13 @@ const REGISTRY: Record<ProviderCategory, ProviderConfig> = {
   },
   vocal: {
     category: "vocal",
-    name: "AfroMuse Vocal Engine",
+    name: "AfroMuse Vocal Engine — ElevenLabs Voice Clone",
     description:
-      "Generates vocal session briefs and demo guidance. " +
-      "Slot: real vocal synthesis API (e.g. ElevenLabs, Musicfy).",
-    status: "mock",
-    isLive: false,
+      "Clones the user's voice via ElevenLabs Instant Voice Clone and generates " +
+      "a real audio vocal demo via ElevenLabs TTS. Enriched with an NVIDIA " +
+      "AI singing directive. Requires ELEVENLABS_API_KEY.",
+    status: "live-ready",
+    isLive: true,
   },
   mastering: {
     category: "mastering",
