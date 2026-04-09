@@ -506,25 +506,27 @@ export default function Studio() {
           {/* Center tabs */}
           <div className="flex items-center gap-1 bg-white/4 rounded-xl p-1 border border-white/6">
             {(["lyric", "audio", "release"] as StudioTab[]).map((tab) => {
-              const labels: Record<StudioTab, string> = { lyric: "Lyric Studio", audio: "Audio Studio", release: "Release Mode" };
+              const desktopLabels: Record<StudioTab, string> = { lyric: "Lyric Studio", audio: "Audio Studio", release: "Release Mode" };
+              const mobileLabels: Record<StudioTab, string> = { lyric: "Lyrics", audio: "Audio", release: "Release" };
               return (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-all ${
                     activeTab === tab
                       ? "bg-white/10 text-white shadow-sm"
                       : "text-white/35 hover:text-white/60"
                   }`}
                 >
-                  {labels[tab]}
+                  <span className="hidden sm:inline">{desktopLabels[tab]}</span>
+                  <span className="sm:hidden">{mobileLabels[tab]}</span>
                 </button>
               );
             })}
           </div>
 
           {/* Status pill */}
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${
+          <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${
             status === "generating" ? "bg-amber-500/10 border-amber-500/25 text-amber-400" :
             status === "done" ? "bg-green-500/10 border-green-500/25 text-green-400" :
             "bg-white/4 border-white/8 text-white/30"
@@ -537,6 +539,11 @@ export default function Studio() {
             {status === "generating" && "Writing..."}
             {status === "done" && "Draft Ready"}
           </div>
+          {/* Mobile status dot only */}
+          <div className={`sm:hidden w-2.5 h-2.5 rounded-full shrink-0 ${
+            status === "generating" ? "bg-amber-400 animate-pulse" :
+            status === "done" ? "bg-green-400" : "bg-white/20"
+          }`} />
         </div>
 
         {/* ── MAIN BODY ─────────────────────────────────────────────────── */}
@@ -1024,6 +1031,78 @@ export default function Studio() {
                           onChange={(e) => setNotes(e.target.value)}
                           className="w-full rounded-xl bg-white/5 border border-white/8 px-3 py-2.5 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-amber-500/40 transition-all resize-none min-h-[72px]"
                         />
+                      </div>
+
+                      {/* Advanced Songwriting */}
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!hasAccess("Creator Pro")) {
+                              setUpgradeTo("Creator Pro");
+                              setShowSubscriptionModal(true);
+                              return;
+                            }
+                            setShowAdvanced((v) => !v);
+                          }}
+                          className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl bg-white/3 border border-white/6 hover:bg-white/5 hover:border-white/10 transition-all group"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Sliders className="w-3.5 h-3.5 text-violet-400" />
+                            <span className="text-sm font-bold text-white/55 group-hover:text-white/75 transition-colors">Advanced Songwriting</span>
+                            {!hasAccess("Creator Pro") && (
+                              <span className="flex items-center gap-1 text-[9px] font-bold text-amber-500/70 border border-amber-500/25 bg-amber-500/8 px-1.5 py-0.5 rounded-md">
+                                <Lock className="w-2.5 h-2.5" /> Pro
+                              </span>
+                            )}
+                          </div>
+                          <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {showAdvanced && (
+                          <div className="mt-3 space-y-4 px-0.5">
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Lyrical Depth</label>
+                              <div className="grid grid-cols-3 gap-1.5">
+                                {(["Simple", "Balanced", "Deep"] as const).map((v) => (
+                                  <button key={v} type="button" onClick={() => setLyricalDepth(v)}
+                                    className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${lyricalDepth === v ? "bg-violet-500/15 border-violet-500/40 text-violet-400" : "bg-white/3 border-white/6 text-white/30"}`}
+                                  >{v}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Hook Repeat Level</label>
+                              <div className="grid grid-cols-3 gap-1.5">
+                                {(["Low", "Medium", "High"] as const).map((v) => (
+                                  <button key={v} type="button" onClick={() => setHookRepeat(v)}
+                                    className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${hookRepeat === v ? "bg-amber-500/15 border-amber-500/40 text-amber-400" : "bg-white/3 border-white/6 text-white/30"}`}
+                                  >{v}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Gender / Voice Model</label>
+                              <div className="grid grid-cols-4 gap-1.5">
+                                {(["Male", "Female", "Mixed", "Random"] as const).map((v) => (
+                                  <button key={v} type="button" onClick={() => setGenderVoiceModel(v)}
+                                    className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${genderVoiceModel === v ? "bg-sky-500/15 border-sky-500/40 text-sky-400" : "bg-white/3 border-white/6 text-white/30"}`}
+                                  >{v}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Sound Reference</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. Wizkid Essence vibes..."
+                                value={style}
+                                onChange={(e) => setStyle(e.target.value)}
+                                className="w-full h-10 rounded-xl bg-white/5 border border-white/8 px-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/15 transition-all"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Hitmaker toggle */}
