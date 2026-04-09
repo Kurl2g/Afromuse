@@ -145,6 +145,7 @@ export default function Studio() {
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [audioMixOpen, setAudioMixOpen] = useState(false);
+  const [mobileCreateOpen, setMobileCreateOpen] = useState(true);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
 
@@ -541,8 +542,8 @@ export default function Studio() {
         {/* ── MAIN BODY ─────────────────────────────────────────────────── */}
         <div className="flex flex-1 overflow-hidden">
 
-          {/* ══ LEFT SIDEBAR — CREATE PANEL ══════════════════════════════ */}
-          <div className="w-72 shrink-0 border-r border-white/6 bg-[#090912] overflow-y-auto flex flex-col">
+          {/* ══ LEFT SIDEBAR — CREATE PANEL (desktop only) ════════════════ */}
+          <div className="hidden lg:flex w-72 shrink-0 border-r border-white/6 bg-[#090912] overflow-y-auto flex-col">
             <form onSubmit={handleGenerate} className="flex flex-col gap-4 p-4">
 
               {/* Header */}
@@ -902,6 +903,198 @@ export default function Studio() {
 
           {/* ══ CENTER PANEL — SONG WORKSPACE ══════════════════════════════ */}
           <div className="flex-1 overflow-y-auto bg-[#08080f]">
+
+            {/* ══ MOBILE CREATE PANEL (hidden on desktop) ═════════════════ */}
+            <div className="lg:hidden border-b border-white/6 bg-[#090912]">
+              <button
+                onClick={() => setMobileCreateOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-5 py-4"
+              >
+                <div className="flex items-center gap-2">
+                  <Wand2 className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-bold text-white/70">Create Your Song</span>
+                  {status === "done" && (
+                    <span className="text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-green-500/12 border border-green-500/25 text-green-400">
+                      Draft Ready
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className={`w-4 h-4 text-white/30 transition-transform duration-300 ${mobileCreateOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {mobileCreateOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <form onSubmit={(e) => { handleGenerate(e); setMobileCreateOpen(false); }} className="px-4 pb-5 space-y-4">
+
+                      {/* Song Idea */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Song Idea</label>
+                        <input
+                          type="text"
+                          placeholder="love in Lagos, hustle, heartbreak..."
+                          value={topic}
+                          onChange={(e) => setTopic(e.target.value)}
+                          className="w-full h-11 rounded-xl bg-white/5 border border-white/8 px-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/15 transition-all"
+                        />
+                      </div>
+
+                      {/* Genre + Language */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Genre</label>
+                          <div className="relative">
+                            <select
+                              value={genre}
+                              onChange={(e) => setGenre(e.target.value)}
+                              className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 pr-7 text-sm text-white focus:outline-none focus:border-amber-500/40 transition-all appearance-none cursor-pointer"
+                            >
+                              {GENRES.map((g) => <option key={g.value} value={g.value} className="bg-[#111118]">{g.label}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Language</label>
+                          <div className="relative">
+                            <select
+                              value={languageFlavor}
+                              onChange={(e) => setLanguageFlavor(e.target.value)}
+                              className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 pr-7 text-sm text-white focus:outline-none focus:border-amber-500/40 transition-all appearance-none cursor-pointer"
+                            >
+                              {LANGUAGE_FLAVORS.map((f) => <option key={f.value} value={f.value} className="bg-[#111118]">{f.label}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Mood */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Mood</label>
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {MOODS.map((m) => (
+                            <button
+                              key={m.value} type="button"
+                              onClick={() => setMood(m.value)}
+                              className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${
+                                mood === m.value
+                                  ? "bg-amber-500/15 border-amber-500/40 text-amber-400"
+                                  : "bg-white/3 border-white/6 text-white/30"
+                              }`}
+                            >
+                              {m.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Length */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Length</label>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {SONG_LENGTHS.map((l) => (
+                            <button
+                              key={l.value} type="button"
+                              onClick={() => setSongLength(l.value)}
+                              className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${
+                                songLength === l.value
+                                  ? "bg-amber-500/15 border-amber-500/40 text-amber-400"
+                                  : "bg-white/3 border-white/6 text-white/30"
+                              }`}
+                            >
+                              {l.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Prompt */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Direction / Prompt</label>
+                        <textarea
+                          placeholder="A line, a feeling, a story..."
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                          className="w-full rounded-xl bg-white/5 border border-white/8 px-3 py-2.5 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-amber-500/40 transition-all resize-none min-h-[72px]"
+                        />
+                      </div>
+
+                      {/* Hitmaker toggle */}
+                      <div className="flex items-center justify-between py-3 px-3 rounded-xl bg-white/3 border border-white/6">
+                        <div>
+                          <p className="text-sm font-bold text-white/60">Hitmaker Mode</p>
+                          <p className="text-xs text-white/25">Max hooks & singability</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setCommercialMode((v) => !v)}
+                          className={`relative w-10 h-5.5 rounded-full transition-all duration-200 shrink-0 ${commercialMode ? "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)]" : "bg-white/10"}`}
+                        >
+                          <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all duration-200 shadow-sm ${commercialMode ? "left-[22px]" : "left-0.5"}`} />
+                        </button>
+                      </div>
+
+                      {/* Generate CTA */}
+                      <button
+                        type="submit"
+                        disabled={status === "generating"}
+                        className="w-full h-13 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-amber-500 to-amber-400 text-black hover:from-amber-400 hover:to-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {status === "generating" ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>{generatingSteps[generatingStep]}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-5 h-5" />
+                            Generate V3 Song
+                          </>
+                        )}
+                      </button>
+
+                    </form>
+
+                    {/* Quick Actions (mobile) */}
+                    {draft && (
+                      <div className="px-4 pb-5 pt-1 border-t border-white/5 space-y-2">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <Zap className="w-3 h-3 text-white/25" />
+                          <span className="text-[10px] font-bold text-white/25 uppercase tracking-widest">Quick Actions</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: "Humanize", icon: <Wand2 className="w-3.5 h-3.5 text-violet-400" />, action: () => { if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; } handleHumanizeLyrics(); }, loading: isHumanizing, locked: !hasAccess("Creator Pro") },
+                            { label: "Make Harder", icon: <Flame className="w-3.5 h-3.5 text-orange-400" />, action: () => { if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; } handleMakeItHarder(); }, loading: isHardening, locked: !hasAccess("Creator Pro") },
+                            { label: "Make Catchier", icon: <Sparkles className="w-3.5 h-3.5 text-amber-400" />, action: () => { if (!hasAccess("Creator Pro")) { setShowSubscriptionModal(true); return; } handleMakeItCatchier(); }, loading: isCatchifying, locked: !hasAccess("Creator Pro") },
+                            { label: "Regenerate", icon: <RefreshCw className="w-3.5 h-3.5 text-white/40" />, action: handleRegenerate, loading: status === "generating", locked: false },
+                          ].map(({ label, icon, action, loading, locked }) => (
+                            <button
+                              key={label}
+                              type="button"
+                              onClick={action}
+                              disabled={loading}
+                              className="flex items-center gap-2 h-10 px-3 rounded-xl bg-white/4 border border-white/6 text-xs font-semibold text-white/55 hover:text-white hover:bg-white/8 transition-all disabled:opacity-35"
+                            >
+                              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : icon}
+                              {label}
+                              {locked && <Lock className="w-3 h-3 ml-auto text-amber-500/50" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {activeTab === "lyric" && (
               <div className="p-6 max-w-3xl mx-auto space-y-5">
