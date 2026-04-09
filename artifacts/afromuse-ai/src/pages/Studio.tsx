@@ -490,60 +490,68 @@ export default function Studio() {
       <div className="flex flex-col h-screen pt-16">
 
         {/* ── TOP HEADER BAR ────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-white/6 bg-[#09090f]/90 backdrop-blur-xl shrink-0">
+        {/* Desktop: single row. Mobile: two rows (branding top, tabs bottom) */}
+        <div className="border-b border-white/6 bg-[#09090f]/90 backdrop-blur-xl shrink-0">
 
-          {/* Branding */}
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-[0_0_12px_rgba(245,158,11,0.4)]">
-              <Mic2 className="w-3.5 h-3.5 text-black" />
+          {/* ── Desktop row (single line) ── */}
+          <div className="hidden sm:flex items-center justify-between px-4 h-14">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-[0_0_12px_rgba(245,158,11,0.4)]">
+                <Mic2 className="w-3.5 h-3.5 text-black" />
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm font-black text-white tracking-tight">AfroMuse</span>
+                <span className="text-[10px] font-bold text-amber-400 tracking-widest uppercase bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded-md">V3</span>
+              </div>
             </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-sm font-black text-white tracking-tight">AfroMuse</span>
-              <span className="text-[10px] font-bold text-amber-400 tracking-widest uppercase bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded-md">V3</span>
+            <div className="flex items-center gap-1 bg-white/4 rounded-xl p-1 border border-white/6">
+              {(["lyric", "audio", "release"] as StudioTab[]).map((tab) => {
+                const labels: Record<StudioTab, string> = { lyric: "Lyric Studio", audio: "Audio Studio", release: "Release Mode" };
+                return (
+                  <button key={tab} onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-all ${activeTab === tab ? "bg-white/10 text-white shadow-sm" : "text-white/35 hover:text-white/60"}`}
+                  >{labels[tab]}</button>
+                );
+              })}
+            </div>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${
+              status === "generating" ? "bg-amber-500/10 border-amber-500/25 text-amber-400" :
+              status === "done" ? "bg-green-500/10 border-green-500/25 text-green-400" :
+              "bg-white/4 border-white/8 text-white/30"
+            }`}>
+              <div className={`w-1.5 h-1.5 rounded-full ${status === "generating" ? "bg-amber-400 animate-pulse" : status === "done" ? "bg-green-400" : "bg-white/25"}`} />
+              {status === "idle" && "Ready"}{status === "generating" && "Writing..."}{status === "done" && "Draft Ready"}
             </div>
           </div>
 
-          {/* Center tabs */}
-          <div className="flex items-center gap-1 bg-white/4 rounded-xl p-1 border border-white/6">
-            {(["lyric", "audio", "release"] as StudioTab[]).map((tab) => {
-              const desktopLabels: Record<StudioTab, string> = { lyric: "Lyric Studio", audio: "Audio Studio", release: "Release Mode" };
-              const mobileLabels: Record<StudioTab, string> = { lyric: "Lyrics", audio: "Audio", release: "Release" };
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-all ${
-                    activeTab === tab
-                      ? "bg-white/10 text-white shadow-sm"
-                      : "text-white/35 hover:text-white/60"
-                  }`}
-                >
-                  <span className="hidden sm:inline">{desktopLabels[tab]}</span>
-                  <span className="sm:hidden">{mobileLabels[tab]}</span>
-                </button>
-              );
-            })}
+          {/* ── Mobile rows ── */}
+          <div className="sm:hidden">
+            {/* Row 1: Branding centered */}
+            <div className="flex items-center justify-center gap-3 pt-3 pb-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-[0_0_12px_rgba(245,158,11,0.4)]">
+                <Mic2 className="w-3.5 h-3.5 text-black" />
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-base font-black text-white tracking-tight">AfroMuse</span>
+                <span className="text-[10px] font-bold text-amber-400 tracking-widest uppercase bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded-md">V3</span>
+              </div>
+              <div className={`w-2 h-2 rounded-full ml-1 ${status === "generating" ? "bg-amber-400 animate-pulse" : status === "done" ? "bg-green-400" : "bg-white/20"}`} />
+            </div>
+            {/* Row 2: Tabs centered */}
+            <div className="flex justify-center pb-2.5 px-4">
+              <div className="flex items-center gap-1 bg-white/4 rounded-xl p-1 border border-white/6">
+                {(["lyric", "audio", "release"] as StudioTab[]).map((tab) => {
+                  const labels: Record<StudioTab, string> = { lyric: "Lyrics", audio: "Audio", release: "Release" };
+                  return (
+                    <button key={tab} onClick={() => setActiveTab(tab)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all ${activeTab === tab ? "bg-white/10 text-white shadow-sm" : "text-white/35"}`}
+                    >{labels[tab]}</button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          {/* Status pill */}
-          <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-all ${
-            status === "generating" ? "bg-amber-500/10 border-amber-500/25 text-amber-400" :
-            status === "done" ? "bg-green-500/10 border-green-500/25 text-green-400" :
-            "bg-white/4 border-white/8 text-white/30"
-          }`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${
-              status === "generating" ? "bg-amber-400 animate-pulse" :
-              status === "done" ? "bg-green-400" : "bg-white/25"
-            }`} />
-            {status === "idle" && "Ready"}
-            {status === "generating" && "Writing..."}
-            {status === "done" && "Draft Ready"}
-          </div>
-          {/* Mobile status dot only */}
-          <div className={`sm:hidden w-2.5 h-2.5 rounded-full shrink-0 ${
-            status === "generating" ? "bg-amber-400 animate-pulse" :
-            status === "done" ? "bg-green-400" : "bg-white/20"
-          }`} />
         </div>
 
         {/* ── MAIN BODY ─────────────────────────────────────────────────── */}
