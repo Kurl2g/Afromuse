@@ -1091,7 +1091,7 @@ export default function Studio() {
                             </div>
                             <div>
                               <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Gender / Voice Model</label>
-                              <div className="grid grid-cols-4 gap-1.5">
+                              <div className="grid grid-cols-2 gap-1.5">
                                 {(["Male", "Female", "Mixed", "Random"] as const).map((v) => (
                                   <button key={v} type="button" onClick={() => setGenderVoiceModel(v)}
                                     className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${genderVoiceModel === v ? "bg-sky-500/15 border-sky-500/40 text-sky-400" : "bg-white/3 border-white/6 text-white/30"}`}
@@ -1100,10 +1100,35 @@ export default function Studio() {
                               </div>
                             </div>
                             <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Performance Feel</label>
+                              <div className="grid grid-cols-2 gap-1.5">
+                                {["Smooth", "Melodic", "Gritty", "Emotional", "Soulful", "Intimate", "Confident", "Airy", "Prayerful", "Street"].map((v) => (
+                                  <button key={v} type="button" onClick={() => setPerformanceFeel(v)}
+                                    className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${performanceFeel === v ? "bg-pink-500/15 border-pink-500/40 text-pink-400" : "bg-white/3 border-white/6 text-white/30"}`}
+                                  >{v}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Dialect Depth</label>
+                              <div className="relative">
+                                <select
+                                  value={dialectDepth}
+                                  onChange={(e) => setDialectDepth(e.target.value)}
+                                  className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 pr-8 text-sm text-white focus:outline-none focus:border-violet-500/40 transition-all appearance-none cursor-pointer"
+                                >
+                                  {["Light Touch", "Balanced Native", "Deep Immersive", "Full Street"].map((v) => (
+                                    <option key={v} value={v} className="bg-[#111118]">{v}</option>
+                                  ))}
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none" />
+                              </div>
+                            </div>
+                            <div>
                               <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Sound Reference</label>
                               <input
                                 type="text"
-                                placeholder="e.g. Wizkid Essence vibes..."
+                                placeholder="e.g. Wizkid Essence vibes, Burna Boy Twice as Tall..."
                                 value={style}
                                 onChange={(e) => setStyle(e.target.value)}
                                 className="w-full h-10 rounded-xl bg-white/5 border border-white/8 px-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/15 transition-all"
