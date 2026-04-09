@@ -74574,7 +74574,7 @@ var COOKIE_OPTIONS = {
   httpOnly: true,
   sameSite: "lax",
   path: "/",
-  maxAge: 60 * 60 * 24 * 7
+  maxAge: 60 * 60 * 24 * 7 * 1e3
 };
 function getJwtSecret() {
   const secret = process.env["SESSION_SECRET"];
