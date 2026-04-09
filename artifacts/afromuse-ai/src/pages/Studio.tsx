@@ -919,8 +919,8 @@ export default function Studio() {
           {/* ══ CENTER PANEL — SONG WORKSPACE ══════════════════════════════ */}
           <div className="flex-1 overflow-y-auto bg-[#08080f]">
 
-            {/* ══ MOBILE CREATE PANEL (hidden on desktop) ═════════════════ */}
-            <div className="lg:hidden border-b border-white/6 bg-[#090912]">
+            {/* ══ MOBILE CREATE PANEL (hidden on desktop, only on lyric tab) */}
+            {activeTab === "lyric" && <div className="lg:hidden border-b border-white/6 bg-[#090912]">
               <button
                 onClick={() => setMobileCreateOpen((o) => !o)}
                 className="w-full flex items-center justify-between px-5 py-4"
@@ -1206,7 +1206,7 @@ export default function Studio() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </div>}
 
             {activeTab === "lyric" && (
               <div className="p-6 max-w-3xl mx-auto space-y-5">
@@ -1521,8 +1521,8 @@ export default function Studio() {
               </div>
             )}
 
-            {/* ══ MOBILE AUDIO MIX PANEL (hidden on desktop) ══════════════ */}
-            <div className="lg:hidden border-t border-white/6 bg-[#090912]">
+            {/* ══ MOBILE AUDIO MIX PANEL (hidden on desktop, only on audio tab) */}
+            {activeTab === "audio" && <div className="lg:hidden border-t border-white/6 bg-[#090912]">
               <button
                 onClick={() => setAudioMixOpen((o) => !o)}
                 className="w-full flex items-center justify-between px-5 py-4"
@@ -1657,7 +1657,7 @@ export default function Studio() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </div>}
 
           </div>
 
