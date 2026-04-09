@@ -5,7 +5,7 @@ import {
   ChevronDown, Volume2, Download, Check, Lock,
   Mic2, Wand2, FileText, Zap, Flame, Play,
   SkipForward, Sliders, Radio, Guitar,
-  VolumeX, Volume1, ChevronRight, Crown, Dna,
+  VolumeX, Volume1, ChevronRight, Crown, Dna, RotateCcw,
 } from "lucide-react";
 import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
 import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
@@ -161,6 +161,32 @@ export default function Studio() {
         window.scrollTo({ top, behavior: "smooth" });
       }
     }, 120);
+  };
+
+  const handleClearAll = () => {
+    setDraft(null);
+    setStatus("idle");
+    setTopic("");
+    setGenre("Afrobeats");
+    setMood("Uplifting");
+    setSongLength("Standard");
+    setLanguageFlavor("English");
+    setDialectStyle("Auto");
+    setCustomFlavor("");
+    setDialectDepth("Balanced Native");
+    setClarityMode("Artist Real");
+    setBlendBalance("Balanced Mix");
+    setVoiceTexture("");
+    setStyle("");
+    setNotes("");
+    setCommercialMode(false);
+    setLyricalDepth("Balanced");
+    setHookRepeat("Medium");
+    setShowAdvanced(false);
+    setActiveSessionId(null);
+    setSeed(0);
+    setSaved(false);
+    setCopied(false);
   };
 
   useEffect(() => {
@@ -822,9 +848,19 @@ export default function Studio() {
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    Generate V3 Song
+                    Create Your Hit
                   </>
                 )}
+              </button>
+
+              {/* Start Fresh */}
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="w-full h-9 rounded-xl text-xs font-semibold text-white/35 hover:text-white/60 hover:bg-white/5 border border-transparent hover:border-white/8 transition-all flex items-center justify-center gap-2"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Start Fresh
               </button>
             </form>
 
@@ -1167,9 +1203,19 @@ export default function Studio() {
                         ) : (
                           <>
                             <Sparkles className="w-5 h-5" />
-                            Generate V3 Song
+                            Create Your Hit
                           </>
                         )}
+                      </button>
+
+                      {/* Start Fresh */}
+                      <button
+                        type="button"
+                        onClick={handleClearAll}
+                        className="w-full h-9 rounded-xl text-xs font-semibold text-white/35 hover:text-white/60 hover:bg-white/5 border border-transparent hover:border-white/8 transition-all flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        Start Fresh
                       </button>
 
                     </form>
@@ -1223,7 +1269,7 @@ export default function Studio() {
                     </div>
                     <h2 className="text-2xl font-black text-white mb-2">Your workspace is empty</h2>
                     <p className="text-sm text-white/35 max-w-xs leading-relaxed">
-                      Enter your song idea on the left and hit <span className="text-amber-400 font-semibold">Generate V3 Song</span> to start.
+                      Enter your song idea on the left and hit <span className="text-amber-400 font-semibold">Create Your Hit</span> to start.
                     </p>
                   </motion.div>
                 )}
