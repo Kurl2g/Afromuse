@@ -1073,6 +1073,155 @@ export default function Studio() {
                           ))}
                         </div>
                       </div>
+
+                      {/* Generation Blueprint */}
+                      {(draft.arrangementBlueprint || draft.sessionNotes || draft.productionNotes || draft.sonicIdentity || draft.vocalIdentity) && (
+                        <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-b from-violet-500/5 to-transparent overflow-hidden">
+                          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-violet-500/10">
+                            <Sliders className="w-3.5 h-3.5 text-violet-400" />
+                            <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest">Generation Blueprint</span>
+                          </div>
+                          <div className="p-5 space-y-5">
+
+                            {/* Production Notes */}
+                            {draft.productionNotes && (
+                              <div>
+                                <div className="flex items-center gap-1.5 mb-3">
+                                  <Zap className="w-3 h-3 text-amber-400" />
+                                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Production Notes</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {draft.productionNotes.key && (
+                                    <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 text-white/70">
+                                      <span className="text-white/35 font-medium">Key</span>
+                                      <span className="text-white/80 font-semibold">{draft.productionNotes.key}</span>
+                                    </span>
+                                  )}
+                                  {draft.productionNotes.bpm && (
+                                    <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 text-white/70">
+                                      <span className="text-white/35 font-medium">BPM</span>
+                                      <span className="text-white/80 font-semibold">{draft.productionNotes.bpm}</span>
+                                    </span>
+                                  )}
+                                  {draft.productionNotes.energy && (
+                                    <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 text-white/70">
+                                      <span className="text-white/35 font-medium">Energy</span>
+                                      <span className="text-white/80 font-semibold">{draft.productionNotes.energy}</span>
+                                    </span>
+                                  )}
+                                  {draft.productionNotes.hookStrength && (
+                                    <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-amber-500/8 border border-amber-500/15 text-white/70">
+                                      <span className="text-amber-400/60 font-medium">Hook</span>
+                                      <span className="text-amber-300 font-semibold">{draft.productionNotes.hookStrength}</span>
+                                    </span>
+                                  )}
+                                  {draft.productionNotes.lyricalDepth && (
+                                    <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 text-white/70">
+                                      <span className="text-white/35 font-medium">Depth</span>
+                                      <span className="text-white/80 font-semibold">{draft.productionNotes.lyricalDepth}</span>
+                                    </span>
+                                  )}
+                                </div>
+                                {(draft.productionNotes.arrangement || draft.productionNotes.melodyDirection) && (
+                                  <div className="mt-3 space-y-1.5">
+                                    {draft.productionNotes.arrangement && (
+                                      <p className="text-xs text-white/55 leading-relaxed">
+                                        <span className="text-white/30 font-semibold mr-1">Arrangement:</span>
+                                        {draft.productionNotes.arrangement}
+                                      </p>
+                                    )}
+                                    {draft.productionNotes.melodyDirection && (
+                                      <p className="text-xs text-white/55 leading-relaxed">
+                                        <span className="text-white/30 font-semibold mr-1">Melody:</span>
+                                        {draft.productionNotes.melodyDirection}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Sonic & Vocal Identity */}
+                            {(draft.sonicIdentity || draft.vocalIdentity) && (
+                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                {draft.sonicIdentity && (
+                                  <div className="rounded-xl border border-white/6 bg-white/3 p-3.5">
+                                    <div className="flex items-center gap-1.5 mb-2.5">
+                                      <Dna className="w-3 h-3 text-violet-400" />
+                                      <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest">Sonic Identity</span>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                      {draft.sonicIdentity.coreBounce && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Bounce: </span>{draft.sonicIdentity.coreBounce}
+                                        </p>
+                                      )}
+                                      {draft.sonicIdentity.atmosphere && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Atmosphere: </span>{draft.sonicIdentity.atmosphere}
+                                        </p>
+                                      )}
+                                      {draft.sonicIdentity.mainTexture && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Texture: </span>{draft.sonicIdentity.mainTexture}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                                {draft.vocalIdentity && (
+                                  <div className="rounded-xl border border-white/6 bg-white/3 p-3.5">
+                                    <div className="flex items-center gap-1.5 mb-2.5">
+                                      <Mic2 className="w-3 h-3 text-sky-400" />
+                                      <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Vocal Identity</span>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                      {draft.vocalIdentity.leadType && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Lead: </span>{draft.vocalIdentity.leadType}
+                                        </p>
+                                      )}
+                                      {draft.vocalIdentity.deliveryStyle && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Delivery: </span>{draft.vocalIdentity.deliveryStyle}
+                                        </p>
+                                      )}
+                                      {draft.vocalIdentity.emotionalTone && (
+                                        <p className="text-[11px] text-white/60 leading-relaxed">
+                                          <span className="text-white/30 font-semibold">Tone: </span>{draft.vocalIdentity.emotionalTone}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Arrangement Blueprint */}
+                            {draft.arrangementBlueprint && (
+                              <div>
+                                <div className="flex items-center gap-1.5 mb-2.5">
+                                  <Guitar className="w-3 h-3 text-violet-400" />
+                                  <span className="text-[10px] font-bold text-violet-400/80 uppercase tracking-widest">Arrangement Blueprint</span>
+                                </div>
+                                <p className="text-xs text-white/55 leading-relaxed whitespace-pre-line">{draft.arrangementBlueprint}</p>
+                              </div>
+                            )}
+
+                            {/* Session Notes */}
+                            {draft.sessionNotes && (
+                              <div className="rounded-xl border border-amber-500/12 bg-amber-500/4 p-3.5">
+                                <div className="flex items-center gap-1.5 mb-2">
+                                  <Sparkles className="w-3 h-3 text-amber-400" />
+                                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Session Brief</span>
+                                </div>
+                                <p className="text-xs text-white/60 leading-relaxed">{draft.sessionNotes}</p>
+                              </div>
+                            )}
+
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 )}
