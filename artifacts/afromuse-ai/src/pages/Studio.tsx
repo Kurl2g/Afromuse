@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Copy, Save, Loader2, Music, RefreshCw,
   ChevronDown, Volume2, Download, Check, Lock,
-  Mic2, Wand2, FileText, Zap, Flame, Play, Pause,
-  SkipForward, Repeat, Sliders, Radio, Guitar,
+  Mic2, Wand2, FileText, Zap, Flame, Play,
+  SkipForward, Sliders, Radio, Guitar,
   VolumeX, Volume1, ChevronRight, Crown, Dna,
 } from "lucide-react";
 import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
@@ -143,7 +143,6 @@ export default function Studio() {
   const [stemVolumes, setStemVolumes] = useState<Record<string, number>>({
     instrumental: 80, leadVocal: 90, harmony: 60, adlibs: 50, bass: 75, percussion: 85,
   });
-  const [isPlaying, setIsPlaying] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
@@ -1007,36 +1006,6 @@ export default function Studio() {
                           <p className="text-base font-semibold text-white/90 italic leading-relaxed">"{draft.keeperLine}"</p>
                         </div>
                       )}
-
-                      {/* Audio playback card */}
-                      <div className="rounded-2xl border border-white/8 bg-white/3 p-4">
-                        <div className="flex items-center gap-2 mb-3">
-                          <Radio className="w-3.5 h-3.5 text-white/30" />
-                          <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Beat Preview</span>
-                          <span className="ml-auto text-[10px] text-white/20">Coming with Audio Studio</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => setIsPlaying((p) => !p)}
-                              className="w-9 h-9 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center hover:bg-amber-500/25 transition-all"
-                            >
-                              {isPlaying ? <Pause className="w-4 h-4 text-amber-400" /> : <Play className="w-4 h-4 text-amber-400 translate-x-0.5" />}
-                            </button>
-                            <button className="w-7 h-7 rounded-full bg-white/4 flex items-center justify-center hover:bg-white/8 transition-all">
-                              <Repeat className="w-3 h-3 text-white/30" />
-                            </button>
-                          </div>
-                          <div className="flex-1 flex items-center gap-2">
-                            <span className="text-[10px] text-white/25 font-mono">0:00</span>
-                            <div className="flex-1 h-1 rounded-full bg-white/8 relative">
-                              <div className="absolute left-0 top-0 h-full w-0 rounded-full bg-amber-500/50" />
-                              <div className="absolute top-1/2 -translate-y-1/2 left-0 w-2.5 h-2.5 rounded-full bg-amber-500 border-2 border-amber-300/50 shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
-                            </div>
-                            <span className="text-[10px] text-white/25 font-mono">3:30</span>
-                          </div>
-                        </div>
-                      </div>
 
                       {/* Lyrics workspace */}
                       <div className="rounded-2xl border border-white/8 bg-gradient-to-b from-white/2 to-transparent overflow-hidden">
