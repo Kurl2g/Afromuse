@@ -144,6 +144,7 @@ export default function Studio() {
     instrumental: 80, leadVocal: 90, harmony: 60, adlibs: 50, bass: 75, percussion: 85,
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [audioMixOpen, setAudioMixOpen] = useState(false);
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
 
@@ -1214,10 +1215,149 @@ export default function Studio() {
                 </p>
               </div>
             )}
+
+            {/* ══ MOBILE AUDIO MIX PANEL (hidden on desktop) ══════════════ */}
+            <div className="lg:hidden border-t border-white/6 bg-[#090912]">
+              <button
+                onClick={() => setAudioMixOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-5 py-4"
+              >
+                <div className="flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-white/30" />
+                  <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Audio Mix & Output</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-white/30 transition-transform duration-300 ${audioMixOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {audioMixOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-6 space-y-6">
+
+                      {/* Output stats */}
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Zap className="w-3.5 h-3.5 text-white/25" />
+                          <span className="text-[10px] font-bold text-white/25 uppercase tracking-widest">Output</span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 mb-3">
+                          {[
+                            { label: "Key",    value: draft?.productionNotes?.key ?? "—" },
+                            { label: "BPM",    value: draft?.productionNotes?.bpm ?? "—" },
+                            { label: "Energy", value: draft?.productionNotes?.energy ?? "—" },
+                            { label: "Hook",   value: draft?.productionNotes?.hookStrength ?? "—" },
+                          ].map((item) => (
+                            <div key={item.label} className="rounded-xl bg-white/3 border border-white/6 px-2 py-2.5 text-center">
+                              <p className="text-[9px] font-bold text-white/25 uppercase tracking-widest mb-1">{item.label}</p>
+                              <p className="text-sm font-bold text-white/70 truncate">{item.value}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => { if (draft) handleSendToAudio("default"); else toast({ title: "No song yet", description: "Generate a song first.", variant: "destructive" }); }}
+                          className="w-full h-11 rounded-xl font-bold text-sm bg-gradient-to-r from-violet-600 to-violet-500 text-white hover:from-violet-500 hover:to-violet-400 transition-all shadow-[0_0_16px_rgba(139,92,246,0.25)] flex items-center justify-center gap-2"
+                        >
+                          <Play className="w-4 h-4" />
+                          Render Final Demo
+                        </button>
+                      </div>
+
+                      {/* Stem channels */}
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Sliders className="w-3.5 h-3.5 text-white/25" />
+                          <span className="text-[10px] font-bold text-white/25 uppercase tracking-widest">Stem Channels</span>
+                        </div>
+                        <div className="space-y-3">
+                          {STEMS.map((stem) => {
+                            const isMuted = mutedStems[stem.id];
+                            const vol = stemVolumes[stem.id] ?? 75;
+                            const colorClass = stemColorMap[stem.color] ?? "bg-white/8 border-white/10 text-white/50";
+                            return (
+                              <div key={stem.id} className="rounded-xl border border-white/6 bg-white/2 p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <span className={`text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-md border ${colorClass}`}>
+                                    {stem.label}
+                                  </span>
+                                  <button
+                                    onClick={() => toggleMute(stem.id)}
+                                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                                      isMuted ? "bg-red-500/20 border border-red-500/30" : "bg-white/5 border border-white/8 hover:bg-white/10"
+                                    }`}
+                                  >
+                                    {isMuted
+                                      ? <VolumeX className="w-4 h-4 text-red-400" />
+                                      : <Volume1 className="w-4 h-4 text-white/35" />
+                                    }
+                                  </button>
+                                </div>
+                                <input
+                                  type="range"
+                                  min={0}
+                                  max={100}
+                                  value={isMuted ? 0 : vol}
+                                  onChange={(e) => setStemVolumes((prev) => ({ ...prev, [stem.id]: Number(e.target.value) }))}
+                                  className="w-full h-2 rounded-full appearance-none bg-white/8 cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/60"
+                                />
+                                <div className="flex justify-between">
+                                  <span className="text-[10px] text-white/20">0</span>
+                                  <span className="text-[10px] text-white/40 font-mono font-semibold">{isMuted ? "MUTED" : `${vol}%`}</span>
+                                  <span className="text-[10px] text-white/20">100</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Artist DNA */}
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Dna className="w-3.5 h-3.5 text-violet-400/50" />
+                          <span className="text-[10px] font-bold text-white/25 uppercase tracking-widest">Artist DNA</span>
+                          {!hasAccess("Artist Pro") && <Lock className="w-3 h-3 text-white/15 ml-auto" />}
+                        </div>
+                        {hasAccess("Artist Pro") ? (
+                          <div className="space-y-2">
+                            <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
+                              <p className="text-xs text-violet-400 font-semibold mb-1">Style Active</p>
+                              <p className="text-xs text-white/40 leading-relaxed">Artist DNA is shaping every generation based on your style profile.</p>
+                            </div>
+                            <button className="w-full h-10 rounded-xl text-xs font-bold border border-violet-500/25 bg-violet-500/8 text-violet-400 hover:bg-violet-500/15 transition-all">
+                              Edit Artist DNA →
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowSubscriptionModal(true)}
+                            className="w-full rounded-xl border border-violet-500/20 bg-violet-500/5 p-4 text-left hover:border-violet-500/35 hover:bg-violet-500/8 transition-all group"
+                          >
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                              <Crown className="w-3.5 h-3.5 text-violet-400/60" />
+                              <p className="text-xs font-bold text-violet-400/60">Artist Pro Feature</p>
+                            </div>
+                            <p className="text-xs text-white/30 leading-relaxed">Train AfroMuse on your sound for personalized generations.</p>
+                            <p className="text-xs font-bold text-violet-400/50 mt-2 group-hover:text-violet-400 transition-colors">Unlock Artist DNA →</p>
+                          </button>
+                        )}
+                      </div>
+
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
           </div>
 
-          {/* ══ RIGHT SIDEBAR — AUDIO STACK ═══════════════════════════════ */}
-          <div className="w-64 shrink-0 border-l border-white/6 bg-[#090912] overflow-y-auto flex flex-col">
+          {/* ══ RIGHT SIDEBAR — AUDIO STACK (desktop only) ════════════════ */}
+          <div className="hidden lg:flex w-64 shrink-0 border-l border-white/6 bg-[#090912] overflow-y-auto flex-col">
 
             {/* Stems */}
             <div className="p-4 space-y-3">
