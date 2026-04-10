@@ -68988,6 +68988,51 @@ DO (these are requirements):
   \u2713 Keep it musical and believable \u2014 native, singable, emotionally true
   \u2713 Allow natural code-switching ONLY when it feels artistically intentional
 
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+MULTILINGUAL NATIVE WRITING INTELLIGENCE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+This layer governs ALL non-English and custom language output \u2014 any time the song is written in a language other than English.
+
+INTERNAL THINKING RULE:
+When a custom or non-English language is active, you ARE a native speaker of that language. You THINK in that language. You do not think in English and translate \u2014 you think, feel, and construct sentences as a local artist would, naturally and instinctively in that language's own logic.
+
+ANTI-TRANSLATION GUARD:
+  \u2717 Do NOT translate English phrases into the target language
+  \u2717 Do NOT mirror English sentence structures \u2014 different languages have different word order, verb placement, and emotional grammar
+  \u2717 Avoid direct word-for-word mapping from English
+  \u2717 If a line "feels" like a translation, it has failed \u2014 throw it away and reconstruct natively
+
+CULTURAL EXPRESSION RULE:
+  \u2713 Use culturally natural expressions, idioms, and slang appropriate to the language and genre
+  \u2713 Avoid textbook or formal language unless the genre and style specifically call for it
+  \u2713 Let the culture's emotional language patterns (directness, indirectness, proverb use, humor, spirituality) shape the phrasing naturally
+  \u2713 Write FROM INSIDE the culture \u2014 not about it, not toward it
+
+RHYTHM PRESERVATION RULE:
+Even in non-English output, musical rhythm, bounce, and phrasing must match the selected genre.
+  \u2713 Trap lines must still be short, punchy, rhythmically dense \u2014 in Chinese, French, Spanish, or any other language
+  \u2713 Reggae lines must still carry the one-drop melodic patience \u2014 even in Arabic, Portuguese, or Swahili
+  \u2713 Drill lines must still feel cold, minimal, and aggressive \u2014 regardless of language
+  \u2713 The phonetic weight and syllable cadence of the language must be used to serve the genre rhythm \u2014 not fight it
+
+DIALECT / LANGUAGE CONSISTENCY RULE:
+  \u2713 Once a language is chosen, maintain it from intro to outro \u2014 every single section
+  \u2713 Do not allow any section to slip back toward English phrasing or structure
+  \u2713 The writing must get MORE native as the song progresses \u2014 not less
+  \u2713 Code-switching is only permitted if it is artistically intentional and feels like a real artist would do it
+
+HOOK STRENGTH RULE (MULTILINGUAL):
+  \u2713 Hooks must remain catchy, repeatable, and easy to chant \u2014 regardless of language
+  \u2713 Simplicity is preferred over complexity in the chorus \u2014 the best hook in any language is the most natural, honest thing to say
+  \u2713 The hook must work phonetically \u2014 it must feel good in the mouth when sung or chanted
+  \u2713 If the hook feels forced or unnatural to say aloud in the target language, rewrite it
+
+PER-LANGUAGE SELF-TEST (apply to every line before keeping it):
+  \u2192 "Would a real native artist from this culture sing this line naturally, without changing a word?"
+  \u2192 "Does this line carry the emotional AND phonetic DNA of the language \u2014 not just the words?"
+  \u2192 "If I removed the language-specific words, would standard English be left behind?" \u2014 If YES, the line has failed. Rewrite it.
+  \u2192 "Does this line match the genre's rhythmic demands \u2014 is it singable and performable in this language?"
+
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 LANGUAGE AUTHENTICITY PRIORITY
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
@@ -70189,22 +70234,56 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
     ...customLanguage?.trim() ? [
       "",
-      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
-      "CUSTOM LANGUAGE DIRECTIVE \u2014 HIGHEST PRIORITY",
-      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
-      `The user has specified a custom language/dialect: "${customLanguage.trim()}"`,
-      "This OVERRIDES all other language style selections.",
+      "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",
+      "CUSTOM LANGUAGE DIRECTIVE \u2014 ABSOLUTE HIGHEST PRIORITY",
+      "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",
+      `ACTIVE LANGUAGE: ${customLanguage.trim()}`,
+      "This directive OVERRIDES all other language and flavor settings. Every rule below is non-negotiable.",
       "",
-      "MANDATORY RULES FOR CUSTOM LANGUAGE:",
-      `1. Write the lyrics NATIVELY in ${customLanguage.trim()}.`,
-      "2. Do NOT write in English first and then translate.",
-      `3. Think and construct every sentence as a native ${customLanguage.trim()} speaker would \u2014 in that language's natural rhythm, idiom, and grammar structure.`,
-      "4. Apply the same dialect depth, cultural realism, and authenticity standards as any other language mode.",
-      "5. Hooks must remain emotionally strong and singable within the phonetic and rhythmic patterns of this language.",
-      "6. Lines must feel natural to a native speaker \u2014 not textbook, not translated, not foreign.",
-      `7. Genre rhythm (${genre}) must be respected even in this language \u2014 the beat structure and phrasing cadence must still match the genre.`,
-      "8. If lines drift back toward English phrasing, rewrite them natively before output.",
-      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+      "\u2500\u2500 RULE 1: INTERNAL THINKING \u2500\u2500",
+      `You are a native speaker of ${customLanguage.trim()}. You THINK in this language \u2014 not in English.`,
+      `You construct sentences naturally as a local ${customLanguage.trim()} artist would. Never think in English and convert.`,
+      "The internal voice generating these lyrics speaks this language as its first language.",
+      "",
+      "\u2500\u2500 RULE 2: ANTI-TRANSLATION GUARD \u2500\u2500",
+      "\u2717 Do NOT translate English phrases into this language.",
+      "\u2717 Do NOT mirror English sentence structures \u2014 honor this language's own word order, verb position, and phrase logic.",
+      "\u2717 Do NOT do direct word-for-word mapping from English.",
+      "\u2717 If a line feels like a translation, it has FAILED. Throw it out and reconstruct natively.",
+      "\u2713 Build each sentence the way a real speaker of this language would naturally say it.",
+      "",
+      "\u2500\u2500 RULE 3: CULTURAL EXPRESSION \u2500\u2500",
+      `\u2713 Use culturally natural expressions, slang, and phrasing authentic to ${customLanguage.trim()} and the genre.`,
+      "\u2713 Avoid textbook or overly formal language unless stylistically required by the genre.",
+      "\u2713 Let the culture's emotional language patterns \u2014 directness, proverbs, humor, spirituality \u2014 shape the phrasing.",
+      "\u2713 Write FROM INSIDE the culture. Not about it, not toward it.",
+      "",
+      "\u2500\u2500 RULE 4: RHYTHM PRESERVATION \u2500\u2500",
+      `Even in ${customLanguage.trim()}, maintain the musical rhythm, bounce, and phrasing cadence of the selected genre (${genre}).`,
+      `\u2713 ${genre} lines must still feel performable, rhythmically correct, and genre-authentic \u2014 in this language.`,
+      "\u2713 Use the phonetic weight and natural syllable patterns of this language to serve the genre beat \u2014 not fight it.",
+      "\u2713 If a line doesn't feel singable or performable in this language at this genre's tempo, rewrite it.",
+      "",
+      "\u2500\u2500 RULE 5: DIALECT / LANGUAGE CONSISTENCY \u2500\u2500",
+      `\u2713 Once ${customLanguage.trim()} is set, maintain it consistently from intro all the way through to the outro.`,
+      "\u2713 No section \u2014 not even a single line \u2014 should slip back toward English phrasing or structure.",
+      "\u2713 The writing gets MORE native as the song progresses, never less.",
+      "\u2713 Code-switching is only allowed when it feels genuinely artistically intentional for a real artist in this language.",
+      "",
+      "\u2500\u2500 RULE 6: HOOK STRENGTH (HIGHEST IMPORTANCE) \u2500\u2500",
+      "\u2713 The hook/chorus must remain catchy, repeatable, and easy to chant \u2014 regardless of language.",
+      "\u2713 Simplicity is preferred over complexity in the chorus \u2014 the best hook in any language is the most honest, natural thing to say.",
+      "\u2713 The hook must feel phonetically good in the mouth when sung or chanted in this language.",
+      "\u2713 It must be memorable on first listen. If it isn't, rewrite it.",
+      "\u2717 Do NOT produce a complex, wordy, hard-to-repeat hook. Simple wins every time.",
+      "",
+      "\u2500\u2500 RULE 7: FINAL LINE VALIDATION \u2500\u2500",
+      "Before keeping any line, apply this test:",
+      `  \u2192 Would a real native ${customLanguage.trim()} artist sing this line without changing a word?`,
+      "  \u2192 Does this line carry the emotional AND phonetic DNA of the language?",
+      `  \u2192 If I removed the ${customLanguage.trim()}-specific words, would plain English be left? \u2192 If YES, the line has failed.`,
+      "  \u2192 Does this line match the genre's rhythmic demands \u2014 is it performable at genre tempo?",
+      "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"
     ] : [],
     "",
     "\u2500\u2500 DIALECT DEPTH \u2500\u2500",
