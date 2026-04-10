@@ -43,6 +43,14 @@ const GENRES = [
   { value: "Afro-fusion", label: "Afro-fusion" },
   { value: "Street Anthem", label: "Street Anthem" },
   { value: "Spiritual", label: "Spiritual / Gospel" },
+  { value: "Rap", label: "Rap" },
+  { value: "UK Drill", label: "UK Drill" },
+  { value: "Trap", label: "Trap" },
+  { value: "Hip-Hop", label: "Hip-Hop" },
+  { value: "Reggae", label: "Reggae" },
+  { value: "Dancehall-Drill", label: "Dancehall-Drill" },
+  { value: "Hyperpop", label: "Hyperpop" },
+  { value: "Blues", label: "Blues" },
 ];
 
 const MOODS = [
@@ -146,6 +154,7 @@ export default function Studio() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [audioMixOpen, setAudioMixOpen] = useState(false);
   const [mobileCreateOpen, setMobileCreateOpen] = useState(true);
+  const [customLanguage, setCustomLanguage] = useState("");
 
   const audioStudioRef = useRef<AudioStudioV2Handle>(null);
 
@@ -173,6 +182,7 @@ export default function Studio() {
     setLanguageFlavor("English");
     setDialectStyle("Auto");
     setCustomFlavor("");
+    setCustomLanguage("");
     setDialectDepth("Balanced Native");
     setClarityMode("Artist Real");
     setBlendBalance("Balanced Mix");
@@ -212,6 +222,7 @@ export default function Studio() {
         body: JSON.stringify({
           topic, genre, mood, style, notes, songLength,
           languageFlavor: apiLanguageFlavor, dialectStyle: apiDialectStyle, customFlavor,
+          customLanguage: customLanguage.trim() || undefined,
           dialectDepth, clarityMode, blendBalance: languageFlavor === "Mixed / Blend" ? blendBalance : undefined,
           voiceTexture: voiceTexture || undefined,
           commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
@@ -655,6 +666,21 @@ export default function Studio() {
                 </div>
               </div>
 
+              {/* Custom Language */}
+              <div>
+                <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Custom Language / Dialect <span className="normal-case font-normal text-white/25">(Optional)</span></label>
+                <input
+                  type="text"
+                  placeholder='e.g. Chinese, Sheng, Arabic street, French slang…'
+                  value={customLanguage}
+                  onChange={(e) => setCustomLanguage(e.target.value)}
+                  className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/15 transition-all"
+                />
+                {customLanguage.trim() && (
+                  <p className="text-[10px] text-amber-400/70 mt-1">Overrides Language Style above</p>
+                )}
+              </div>
+
               {/* Length */}
               <div>
                 <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Length</label>
@@ -1024,6 +1050,21 @@ export default function Studio() {
                             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
                           </div>
                         </div>
+                      </div>
+
+                      {/* Custom Language (mobile) */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Custom Language / Dialect <span className="normal-case font-normal text-white/25">(Optional)</span></label>
+                        <input
+                          type="text"
+                          placeholder='e.g. Chinese, Sheng, Arabic street, French slang…'
+                          value={customLanguage}
+                          onChange={(e) => setCustomLanguage(e.target.value)}
+                          className="w-full h-10 rounded-xl bg-[#111118] border border-white/8 px-3 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/15 transition-all"
+                        />
+                        {customLanguage.trim() && (
+                          <p className="text-[10px] text-amber-400/70 mt-1">Overrides Language Style above</p>
+                        )}
                       </div>
 
                       {/* Mood */}

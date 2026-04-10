@@ -49,6 +49,14 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Amapiano: space is the feature — fewer words, let the groove breathe, South African township soul, deep lifestyle references.
 - Dancehall: patois confidence, toast energy, rhythmic punch, strong masculine or feminine stance, every line lands hard.
 - Gospel/Spiritual: intimate rawness, real struggle meeting real faith, no platitudes — write like someone on their knees, not behind a pulpit.
+- Rap: confident, rhythmically dense, wordplay-driven, storytelling or braggadocio, bars that hit on the beat with internal rhyme schemes.
+- UK Drill: short, punchy, aggressive energy — minimal syllables, maximum menace — street-coded slang, cold delivery, dark imagery.
+- Trap: melodic bounce meets rhythmic bars — drawn-out syllables on the hook, ad-libs matter, lifestyle and emotion collide.
+- Hip-Hop: lyrically layered, culturally anchored, wordplay and metaphor, conscious or street, always technically sharp.
+- Reggae: one-drop rhythm in the phrasing, consciousness and spirituality, storytelling with patience, rootsy imagery, slower melodic pacing.
+- Dancehall-Drill: Patois-coded aggression fused with Drill energy — menacing but musical, rhythmic punch with a Jamaican DNA.
+- Hyperpop: chaotic, maximalist, heavily stylized — short lines, glitchy or distorted imagery, ironic or surreal emotional expression, fast-paced or fragmented hooks.
+- Blues: emotional depth and storytelling, slower pacing, call-and-response phrasing, real human struggle, gritty and lived-in language — write from pain, not poetry.
 - Language Flavor: honor it deeply. Pidgin, Patois, Yoruba, Zulu — these are not decorations, they are the heartbeat of the lyric.
 
 ══════════════════════════════════════════════
@@ -1366,6 +1374,7 @@ function buildUserPrompt(
     languageFlavor?: string;
     dialectStyle?: string;
     customFlavor?: string;
+    customLanguage?: string;
     dialectDepth?: string;
     clarityMode?: string;
     blendBalance?: string;
@@ -1385,6 +1394,7 @@ function buildUserPrompt(
     languageFlavor = "Global English",
     dialectStyle,
     customFlavor,
+    customLanguage,
     dialectDepth = "Balanced Native",
     clarityMode = "Artist Real",
     blendBalance,
@@ -1397,9 +1407,12 @@ function buildUserPrompt(
     performanceFeel = "Smooth",
   } = params;
 
-  const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim()
-    ? `Custom: ${customFlavor.trim()}`
-    : languageFlavor;
+  // customLanguage overrides languageFlavor entirely if provided
+  const effectiveFlavor = customLanguage?.trim()
+    ? customLanguage.trim()
+    : languageFlavor === "Custom" && customFlavor?.trim()
+      ? `Custom: ${customFlavor.trim()}`
+      : languageFlavor;
 
   // V2 hard structure rules — enforced for every generation
   const v2StructureRules = [
@@ -1441,6 +1454,7 @@ function buildUserPrompt(
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
+    ...(customLanguage?.trim() ? [`CUSTOM LANGUAGE OVERRIDE ACTIVE: ${customLanguage.trim()} — this is the PRIMARY writing language. All other language settings are secondary.`] : []),
     ...(dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} — apply the corresponding sub-style intelligence block fully`] : []),
     "",
     "────────────────────────────────────────",
@@ -1476,6 +1490,25 @@ function buildUserPrompt(
     "Language realism is more important than trying to sound \"deep.\"",
     "If a line feels fake, rewrite it.",
     "──────────────────────",
+    ...(customLanguage?.trim() ? [
+      "",
+      "════════════════════════════════════════",
+      "CUSTOM LANGUAGE DIRECTIVE — HIGHEST PRIORITY",
+      "════════════════════════════════════════",
+      `The user has specified a custom language/dialect: "${customLanguage.trim()}"`,
+      "This OVERRIDES all other language style selections.",
+      "",
+      "MANDATORY RULES FOR CUSTOM LANGUAGE:",
+      `1. Write the lyrics NATIVELY in ${customLanguage.trim()}.`,
+      "2. Do NOT write in English first and then translate.",
+      `3. Think and construct every sentence as a native ${customLanguage.trim()} speaker would — in that language's natural rhythm, idiom, and grammar structure.`,
+      "4. Apply the same dialect depth, cultural realism, and authenticity standards as any other language mode.",
+      "5. Hooks must remain emotionally strong and singable within the phonetic and rhythmic patterns of this language.",
+      "6. Lines must feel natural to a native speaker — not textbook, not translated, not foreign.",
+      `7. Genre rhythm (${genre}) must be respected even in this language — the beat structure and phrasing cadence must still match the genre.`,
+      "8. If lines drift back toward English phrasing, rewrite them natively before output.",
+      "════════════════════════════════════════",
+    ] : []),
     "",
     "── DIALECT DEPTH ──",
     ...( ({
@@ -1743,6 +1776,7 @@ function draftToLyricsText(draft: SongDraft): string {
 router.post("/generate-song", async (req, res) => {
   const {
     topic, genre, mood, style, notes, songLength, languageFlavor, dialectStyle, customFlavor,
+    customLanguage,
     dialectDepth, clarityMode, blendBalance, voiceTexture,
     commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
   } = req.body as {
@@ -1755,6 +1789,7 @@ router.post("/generate-song", async (req, res) => {
     languageFlavor?: string;
     dialectStyle?: string;
     customFlavor?: string;
+    customLanguage?: string;
     dialectDepth?: string;
     clarityMode?: string;
     blendBalance?: string;
@@ -1798,6 +1833,7 @@ router.post("/generate-song", async (req, res) => {
     languageFlavor: selectedFlavor,
     dialectStyle: dialectStyle && dialectStyle !== "Auto" ? dialectStyle : undefined,
     customFlavor,
+    customLanguage: customLanguage?.trim() || undefined,
     dialectDepth: dialectDepth ?? "Balanced Native",
     clarityMode: clarityMode ?? "Artist Real",
     blendBalance: blendBalance ?? undefined,

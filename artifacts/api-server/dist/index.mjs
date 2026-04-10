@@ -68809,6 +68809,14 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Amapiano: space is the feature \u2014 fewer words, let the groove breathe, South African township soul, deep lifestyle references.
 - Dancehall: patois confidence, toast energy, rhythmic punch, strong masculine or feminine stance, every line lands hard.
 - Gospel/Spiritual: intimate rawness, real struggle meeting real faith, no platitudes \u2014 write like someone on their knees, not behind a pulpit.
+- Rap: confident, rhythmically dense, wordplay-driven, storytelling or braggadocio, bars that hit on the beat with internal rhyme schemes.
+- UK Drill: short, punchy, aggressive energy \u2014 minimal syllables, maximum menace \u2014 street-coded slang, cold delivery, dark imagery.
+- Trap: melodic bounce meets rhythmic bars \u2014 drawn-out syllables on the hook, ad-libs matter, lifestyle and emotion collide.
+- Hip-Hop: lyrically layered, culturally anchored, wordplay and metaphor, conscious or street, always technically sharp.
+- Reggae: one-drop rhythm in the phrasing, consciousness and spirituality, storytelling with patience, rootsy imagery, slower melodic pacing.
+- Dancehall-Drill: Patois-coded aggression fused with Drill energy \u2014 menacing but musical, rhythmic punch with a Jamaican DNA.
+- Hyperpop: chaotic, maximalist, heavily stylized \u2014 short lines, glitchy or distorted imagery, ironic or surreal emotional expression, fast-paced or fragmented hooks.
+- Blues: emotional depth and storytelling, slower pacing, call-and-response phrasing, real human struggle, gritty and lived-in language \u2014 write from pain, not poetry.
 - Language Flavor: honor it deeply. Pidgin, Patois, Yoruba, Zulu \u2014 these are not decorations, they are the heartbeat of the lyric.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
@@ -70092,6 +70100,7 @@ function buildUserPrompt(params, strictMode = false) {
     languageFlavor = "Global English",
     dialectStyle,
     customFlavor,
+    customLanguage,
     dialectDepth = "Balanced Native",
     clarityMode = "Artist Real",
     blendBalance,
@@ -70103,7 +70112,7 @@ function buildUserPrompt(params, strictMode = false) {
     genderVoiceModel = "Random",
     performanceFeel = "Smooth"
   } = params;
-  const effectiveFlavor = languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
+  const effectiveFlavor = customLanguage?.trim() ? customLanguage.trim() : languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
   const v2StructureRules = [
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
     "V2 SONG STRUCTURE \u2014 ABSOLUTE HARD LAW",
@@ -70142,6 +70151,7 @@ function buildUserPrompt(params, strictMode = false) {
     `GENRE: ${genre}`,
     `MOOD: ${mood}`,
     `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
+    ...customLanguage?.trim() ? [`CUSTOM LANGUAGE OVERRIDE ACTIVE: ${customLanguage.trim()} \u2014 this is the PRIMARY writing language. All other language settings are secondary.`] : [],
     ...dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} \u2014 apply the corresponding sub-style intelligence block fully`] : [],
     "",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
@@ -70177,6 +70187,25 @@ function buildUserPrompt(params, strictMode = false) {
     'Language realism is more important than trying to sound "deep."',
     "If a line feels fake, rewrite it.",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    ...customLanguage?.trim() ? [
+      "",
+      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+      "CUSTOM LANGUAGE DIRECTIVE \u2014 HIGHEST PRIORITY",
+      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+      `The user has specified a custom language/dialect: "${customLanguage.trim()}"`,
+      "This OVERRIDES all other language style selections.",
+      "",
+      "MANDATORY RULES FOR CUSTOM LANGUAGE:",
+      `1. Write the lyrics NATIVELY in ${customLanguage.trim()}.`,
+      "2. Do NOT write in English first and then translate.",
+      `3. Think and construct every sentence as a native ${customLanguage.trim()} speaker would \u2014 in that language's natural rhythm, idiom, and grammar structure.`,
+      "4. Apply the same dialect depth, cultural realism, and authenticity standards as any other language mode.",
+      "5. Hooks must remain emotionally strong and singable within the phonetic and rhythmic patterns of this language.",
+      "6. Lines must feel natural to a native speaker \u2014 not textbook, not translated, not foreign.",
+      `7. Genre rhythm (${genre}) must be respected even in this language \u2014 the beat structure and phrasing cadence must still match the genre.`,
+      "8. If lines drift back toward English phrasing, rewrite them natively before output.",
+      "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    ] : [],
     "",
     "\u2500\u2500 DIALECT DEPTH \u2500\u2500",
     ...{
@@ -70408,6 +70437,7 @@ router2.post("/generate-song", async (req, res) => {
     languageFlavor,
     dialectStyle,
     customFlavor,
+    customLanguage,
     dialectDepth,
     clarityMode,
     blendBalance,
@@ -70447,6 +70477,7 @@ router2.post("/generate-song", async (req, res) => {
     languageFlavor: selectedFlavor,
     dialectStyle: dialectStyle && dialectStyle !== "Auto" ? dialectStyle : void 0,
     customFlavor,
+    customLanguage: customLanguage?.trim() || void 0,
     dialectDepth: dialectDepth ?? "Balanced Native",
     clarityMode: clarityMode ?? "Artist Real",
     blendBalance: blendBalance ?? void 0,
