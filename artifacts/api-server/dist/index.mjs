@@ -70964,6 +70964,39 @@ FINAL CHORUS \u2014 LANDS DIFFERENTLY
 \u2192 The listener should hear it differently now
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+HOOK VARIATION SYSTEM
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+The chorus must never feel identical each time it appears. It should feel like it is building \u2014 not looping.
+
+CHORUS 1 (after Verse 1) \u2014 INTRODUCE
+\u2192 Deliver the hook at full power for the first time
+\u2192 Listener hears it fresh \u2014 make every word land
+\u2192 8 lines as locked in the structure
+
+CHORUS 2 (after Verse 2) \u2014 DEEPEN
+\u2192 Same core hook, but carry the emotional weight of Verse 2 into it
+\u2192 Option: strip one line to create space and tension
+\u2192 Option: add a new response or tag line at the end that wasn't there before
+\u2192 The hook should feel heavier the second time \u2014 not identical
+
+FINAL CHORUS (after Bridge) \u2014 RELEASE
+\u2192 This is the payoff of the whole song
+\u2192 Option: let it build \u2014 add a line or repeat the hook's key phrase twice
+\u2192 Option: deliver it more stripped than before \u2014 fewer words, more silence between them
+\u2192 The listener has been through everything now \u2014 the chorus means more
+\u2192 If the words are exactly the same, the context must make them feel new
+
+TECHNIQUES \u2014 use at least one per chorus variation:
+\u2192 Strip a line: remove one line to create emotional space
+\u2192 Tag response: add a 1\u20132 word phrase or ad-lib echo at the end of a line
+\u2192 Emphasis shift: same words, but a different line feels like the emotional centre
+\u2192 Build repeat: repeat the hook's sharpest line once more before closing
+
+RULE \u2014 never copy-paste the chorus blindly:
+Each appearance must be a conscious choice. The song is evolving \u2014 the hook evolves with it.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 RHYME SCHEME GUIDE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 

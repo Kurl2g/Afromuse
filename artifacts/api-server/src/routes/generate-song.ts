@@ -3073,6 +3073,39 @@ FINAL CHORUS — LANDS DIFFERENTLY
 → The listener should hear it differently now
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOOK VARIATION SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The chorus must never feel identical each time it appears. It should feel like it is building — not looping.
+
+CHORUS 1 (after Verse 1) — INTRODUCE
+→ Deliver the hook at full power for the first time
+→ Listener hears it fresh — make every word land
+→ 8 lines as locked in the structure
+
+CHORUS 2 (after Verse 2) — DEEPEN
+→ Same core hook, but carry the emotional weight of Verse 2 into it
+→ Option: strip one line to create space and tension
+→ Option: add a new response or tag line at the end that wasn't there before
+→ The hook should feel heavier the second time — not identical
+
+FINAL CHORUS (after Bridge) — RELEASE
+→ This is the payoff of the whole song
+→ Option: let it build — add a line or repeat the hook's key phrase twice
+→ Option: deliver it more stripped than before — fewer words, more silence between them
+→ The listener has been through everything now — the chorus means more
+→ If the words are exactly the same, the context must make them feel new
+
+TECHNIQUES — use at least one per chorus variation:
+→ Strip a line: remove one line to create emotional space
+→ Tag response: add a 1–2 word phrase or ad-lib echo at the end of a line
+→ Emphasis shift: same words, but a different line feels like the emotional centre
+→ Build repeat: repeat the hook's sharpest line once more before closing
+
+RULE — never copy-paste the chorus blindly:
+Each appearance must be a conscious choice. The song is evolving — the hook evolves with it.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RHYME SCHEME GUIDE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
