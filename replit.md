@@ -4,6 +4,13 @@
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
 
+## Replit Migration Notes
+
+- The project is configured to run on Replit with separate workflows for the Vite frontend on port 5000 and the Express API on port 8080.
+- The frontend uses relative `/api` requests proxied to the API server in development, preserving client/server separation.
+- The development PostgreSQL database is provisioned through Replit and the Drizzle schema has been pushed for local startup.
+- Vite is configured with `allowedHosts: true` and a strict configured port for predictable Replit preview behavior.
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces
