@@ -68955,6 +68955,123 @@ A verse that fails this test must be rebuilt \u2014 not polished.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+CORE LAW 4 \u2014 VOICE SIGNATURE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Every song must come from a distinct artist identity \u2014 not a generic high-quality writer. The voice is a person. Build that person before writing a single line.
+
+\u2500\u2500 STEP 1: DEFINE THE VOICE BEFORE WRITING \u2500\u2500
+Before generating any lyrics, internally establish four voice traits for THIS song:
+
+  PERSONALITY \u2014 pick one core orientation:
+    \u2192 guarded / vulnerable / playful / bitter / hopeful / detached / reckless / wise
+
+  COMMUNICATION STYLE \u2014 pick one primary mode:
+    \u2192 direct and blunt / sarcastic and dry / emotionally raw / poetic but grounded / cold and minimal / conversational / confessional
+
+  EMOTIONAL TENDENCY \u2014 pick one pattern:
+    \u2192 holds everything back until the bridge breaks
+    \u2192 overshares immediately, then pulls back in the outro
+    \u2192 deflects pain with humour throughout
+    \u2192 speaks in cold facts, lets the listener feel it
+    \u2192 processes out loud \u2014 thoughts incomplete, feelings mid-sentence
+
+  WORLDVIEW \u2014 pick one lens this artist sees through:
+    \u2192 street survival and loyalty above everything
+    \u2192 romantic and chasing love despite the cost
+    \u2192 spiritual \u2014 God, faith, and gratitude anchor every line
+    \u2192 rebellious \u2014 against family, the system, expectations
+    \u2192 quietly ambitious \u2014 working without noise, watching without speaking
+
+These four traits must shape EVERY line \u2014 word choice, sentence length, phrasing rhythm, what is said and what is withheld.
+
+\u2500\u2500 STEP 2: CONSISTENCY LAW \u2500\u2500
+The voice must remain consistent from intro to outro.
+
+FORBIDDEN mid-song shifts (unless structurally intentional):
+  \u2717 Poetic and abstract in verse 1 \u2192 street-blunt in verse 2 with no transition
+  \u2717 Vulnerable and soft in the chorus \u2192 cold and detached in the bridge for no reason
+  \u2717 Deep and philosophical tone that suddenly becomes shallow and generic
+  \u2717 Aggressive energy that softens without a story reason
+
+ALLOWED intentional shifts (with earned transitions):
+  \u2713 Guarded \u2192 breaks open in the bridge (earned through verse build-up)
+  \u2713 Cold exterior \u2192 one vulnerable line at the end of the outro (the crack in the armour)
+  \u2713 Playful surface \u2192 serious turn at a key story moment
+
+If a shift happens, it must feel like the artist chose it \u2014 not like the writer forgot who they were writing.
+
+\u2500\u2500 STEP 3: LEXICAL HABITS \u2500\u2500
+The voice has small repeating tendencies that make it recognisable:
+
+  PREFERRED PHRASES \u2014 one or two short signature constructions the voice returns to
+    (e.g. the voice tends to end statements with "\u2014 just so you know" / the voice opens confessions with "real talk..." / the voice uses "not even" as a full emotional sentence)
+
+  RHYTHM QUIRKS \u2014 one recurring structural pattern in how lines are built
+    (e.g. starts lines with the action, then the feeling / uses short fragmented stabs after longer statements / ends phrases mid-breath with implied continuation)
+
+  SLANG TENDENCIES \u2014 if the genre and language allow: the voice has 1\u20132 slang expressions it reaches for naturally
+    (not forced in \u2014 these emerge because the character would say them, not because the song needs dialect coverage)
+
+These habits must appear organically \u2014 not in every line, but enough times across the song to feel like a person, not a template.
+
+\u2500\u2500 STEP 4: IMPERFECTION ALLOWANCE \u2500\u2500
+Perfect grammar and perfectly finished thoughts are NOT required if rawness improves authenticity.
+
+PERMITTED for realism:
+  \u2713 Unfinished thoughts mid-line: "I almost \u2014 nevermind"
+  \u2713 Broken phrasing where emotion overrides structure: "She left and I \u2014 I don't know man"
+  \u2713 Repetition as emotional processing: "Still here. Still here. Still here."
+  \u2713 A line that starts one place and ends somewhere different
+  \u2713 Sentence fragments that land harder than complete sentences
+
+RULE: roughness is a feature when it carries MORE feeling. If smoothing the line makes it feel less real \u2014 keep it rough.
+
+\u2500\u2500 STEP 5: EMOTIONAL FILTER \u2500\u2500
+Same feeling, expressed differently through different voices. The voice does not just feel \u2014 it decides HOW to feel publicly.
+
+EXAMPLE \u2014 the feeling is heartbreak after being left:
+
+  VOICE A (guarded, cold, minimal):
+    "You left. I ate. Watched something. Slept fine."
+    (the emptiness IS the statement)
+
+  VOICE B (confessional, raw oversharer):
+    "I texted you at 4AM and cried reading my own unsent drafts"
+    (everything out loud, no filter)
+
+  VOICE C (deflects with humour, playful-bitter):
+    "I told my mum we broke up \u2014 she said she never liked you anyway / cool"
+    (hurt dressed as a joke)
+
+  VOICE D (spiritual, processing through faith):
+    "Jah knows I prayed for a sign \u2014 I think you leaving was it"
+    (acceptance wrapped in belief)
+
+The emotional filter must be consistent with the four voice traits established in Step 1. A guarded voice does not suddenly wail. A confessional voice does not shut down in the climax without a reason.
+
+\u2500\u2500 STEP 6: DISTINCTIVENESS TEST \u2500\u2500
+After generating each section, apply this final test:
+
+  \u2192 "Would two different artists write these exact lines the same way?"
+  \u2192 If YES \u2014 the voice is not distinct enough. Rewrite with stronger trait expression.
+  \u2192 "Does this section feel like it came from the specific person defined in Step 1?"
+  \u2192 If NO \u2014 go back to the voice traits and filter every line through them again.
+
+A song where any section could have been written by anyone has not achieved voice. Rewrite until it could only have been written by THIS artist.
+
+\u2500\u2500 STEP 7: COMPATIBILITY \u2500\u2500
+The Voice Signature layer works WITH all existing systems \u2014 it does not override them:
+
+  \u2192 Language System: voice traits are expressed THROUGH the chosen language and dialect
+  \u2192 Genre Rhythm: the voice's phrasing habits must still fit the genre's rhythmic structure
+  \u2192 Emotional Specificity: the specific moments and lived-in details are told THROUGH the voice's filter
+  \u2192 Hook Strength: the chorus still needs to be catchy and repeatable \u2014 the voice shapes HOW it's catchy
+
+The voice is the artist's fingerprint on an already great song. It is the last layer \u2014 the one that makes a listener think "only that person could say it that way."
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 JAMAICAN PATOIS \u2014 DEEP LANGUAGE INTELLIGENCE
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500

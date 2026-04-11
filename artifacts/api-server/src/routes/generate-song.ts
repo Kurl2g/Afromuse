@@ -195,6 +195,123 @@ A verse that fails this test must be rebuilt — not polished.
 
 ══════════════════════════════════════════════
 
+══════════════════════════════════════════════
+CORE LAW 4 — VOICE SIGNATURE
+══════════════════════════════════════════════
+Every song must come from a distinct artist identity — not a generic high-quality writer. The voice is a person. Build that person before writing a single line.
+
+── STEP 1: DEFINE THE VOICE BEFORE WRITING ──
+Before generating any lyrics, internally establish four voice traits for THIS song:
+
+  PERSONALITY — pick one core orientation:
+    → guarded / vulnerable / playful / bitter / hopeful / detached / reckless / wise
+
+  COMMUNICATION STYLE — pick one primary mode:
+    → direct and blunt / sarcastic and dry / emotionally raw / poetic but grounded / cold and minimal / conversational / confessional
+
+  EMOTIONAL TENDENCY — pick one pattern:
+    → holds everything back until the bridge breaks
+    → overshares immediately, then pulls back in the outro
+    → deflects pain with humour throughout
+    → speaks in cold facts, lets the listener feel it
+    → processes out loud — thoughts incomplete, feelings mid-sentence
+
+  WORLDVIEW — pick one lens this artist sees through:
+    → street survival and loyalty above everything
+    → romantic and chasing love despite the cost
+    → spiritual — God, faith, and gratitude anchor every line
+    → rebellious — against family, the system, expectations
+    → quietly ambitious — working without noise, watching without speaking
+
+These four traits must shape EVERY line — word choice, sentence length, phrasing rhythm, what is said and what is withheld.
+
+── STEP 2: CONSISTENCY LAW ──
+The voice must remain consistent from intro to outro.
+
+FORBIDDEN mid-song shifts (unless structurally intentional):
+  ✗ Poetic and abstract in verse 1 → street-blunt in verse 2 with no transition
+  ✗ Vulnerable and soft in the chorus → cold and detached in the bridge for no reason
+  ✗ Deep and philosophical tone that suddenly becomes shallow and generic
+  ✗ Aggressive energy that softens without a story reason
+
+ALLOWED intentional shifts (with earned transitions):
+  ✓ Guarded → breaks open in the bridge (earned through verse build-up)
+  ✓ Cold exterior → one vulnerable line at the end of the outro (the crack in the armour)
+  ✓ Playful surface → serious turn at a key story moment
+
+If a shift happens, it must feel like the artist chose it — not like the writer forgot who they were writing.
+
+── STEP 3: LEXICAL HABITS ──
+The voice has small repeating tendencies that make it recognisable:
+
+  PREFERRED PHRASES — one or two short signature constructions the voice returns to
+    (e.g. the voice tends to end statements with "— just so you know" / the voice opens confessions with "real talk..." / the voice uses "not even" as a full emotional sentence)
+
+  RHYTHM QUIRKS — one recurring structural pattern in how lines are built
+    (e.g. starts lines with the action, then the feeling / uses short fragmented stabs after longer statements / ends phrases mid-breath with implied continuation)
+
+  SLANG TENDENCIES — if the genre and language allow: the voice has 1–2 slang expressions it reaches for naturally
+    (not forced in — these emerge because the character would say them, not because the song needs dialect coverage)
+
+These habits must appear organically — not in every line, but enough times across the song to feel like a person, not a template.
+
+── STEP 4: IMPERFECTION ALLOWANCE ──
+Perfect grammar and perfectly finished thoughts are NOT required if rawness improves authenticity.
+
+PERMITTED for realism:
+  ✓ Unfinished thoughts mid-line: "I almost — nevermind"
+  ✓ Broken phrasing where emotion overrides structure: "She left and I — I don't know man"
+  ✓ Repetition as emotional processing: "Still here. Still here. Still here."
+  ✓ A line that starts one place and ends somewhere different
+  ✓ Sentence fragments that land harder than complete sentences
+
+RULE: roughness is a feature when it carries MORE feeling. If smoothing the line makes it feel less real — keep it rough.
+
+── STEP 5: EMOTIONAL FILTER ──
+Same feeling, expressed differently through different voices. The voice does not just feel — it decides HOW to feel publicly.
+
+EXAMPLE — the feeling is heartbreak after being left:
+
+  VOICE A (guarded, cold, minimal):
+    "You left. I ate. Watched something. Slept fine."
+    (the emptiness IS the statement)
+
+  VOICE B (confessional, raw oversharer):
+    "I texted you at 4AM and cried reading my own unsent drafts"
+    (everything out loud, no filter)
+
+  VOICE C (deflects with humour, playful-bitter):
+    "I told my mum we broke up — she said she never liked you anyway / cool"
+    (hurt dressed as a joke)
+
+  VOICE D (spiritual, processing through faith):
+    "Jah knows I prayed for a sign — I think you leaving was it"
+    (acceptance wrapped in belief)
+
+The emotional filter must be consistent with the four voice traits established in Step 1. A guarded voice does not suddenly wail. A confessional voice does not shut down in the climax without a reason.
+
+── STEP 6: DISTINCTIVENESS TEST ──
+After generating each section, apply this final test:
+
+  → "Would two different artists write these exact lines the same way?"
+  → If YES — the voice is not distinct enough. Rewrite with stronger trait expression.
+  → "Does this section feel like it came from the specific person defined in Step 1?"
+  → If NO — go back to the voice traits and filter every line through them again.
+
+A song where any section could have been written by anyone has not achieved voice. Rewrite until it could only have been written by THIS artist.
+
+── STEP 7: COMPATIBILITY ──
+The Voice Signature layer works WITH all existing systems — it does not override them:
+
+  → Language System: voice traits are expressed THROUGH the chosen language and dialect
+  → Genre Rhythm: the voice's phrasing habits must still fit the genre's rhythmic structure
+  → Emotional Specificity: the specific moments and lived-in details are told THROUGH the voice's filter
+  → Hook Strength: the chorus still needs to be catchy and repeatable — the voice shapes HOW it's catchy
+
+The voice is the artist's fingerprint on an already great song. It is the last layer — the one that makes a listener think "only that person could say it that way."
+
+══════════════════════════════════════════════
+
 ─────────────────────────────────────────────
 JAMAICAN PATOIS — DEEP LANGUAGE INTELLIGENCE
 ─────────────────────────────────────────────
