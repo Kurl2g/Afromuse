@@ -1800,13 +1800,52 @@ function buildUserPrompt(
   ];
 
   const lines = [
-    "==== HITMAKER MODE V2 — SONG REQUEST ====",
-    `TOPIC: ${topic}`,
-    `GENRE: ${genre}`,
-    `MOOD: ${mood}`,
-    `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
-    ...(customLanguage?.trim() ? [`CUSTOM LANGUAGE OVERRIDE ACTIVE: ${customLanguage.trim()} — this is the PRIMARY writing language. All other language settings are secondary.`] : []),
-    ...(dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} — apply the corresponding sub-style intelligence block fully`] : []),
+    "════════════════════════════════════════",
+    "SONG REQUEST",
+    "════════════════════════════════════════",
+    `Genre: ${genre}`,
+    `Mood: ${mood}`,
+    `Theme / Idea: ${topic}`,
+    `Length: ${songLength}`,
+    "",
+    `Language Style: ${languageFlavor}`,
+    ...(customLanguage?.trim() ? [`Custom Language: ${customLanguage.trim()}`] : []),
+    ...(dialectStyle && dialectStyle !== "Auto" ? [`Dialect Sub-Style: ${dialectStyle}`] : []),
+    "",
+    `Performance Feel: ${performanceFeel}`,
+    `Dialect Depth: ${dialectDepth}`,
+    ...(voiceTexture ? [`Voice Texture: ${voiceTexture}`] : []),
+    ...(blendBalance ? [`Blend Balance: ${blendBalance}`] : []),
+    "",
+    `Hitmaker Mode: ${commercialMode ? "ACTIVATED — maximize hook stickiness, chant energy, first-listen memorability, and replay value" : "Standard"}`,
+    ...(style ? ["", `Artist Style Reference: ${style}`] : []),
+    ...(notes ? [`Creative Notes: ${notes}`] : []),
+    "",
+    "────────────────────────────────────────",
+    ...(customLanguage?.trim() ? [
+      "LANGUAGE PRIORITY",
+      "────────────────────────────────────────",
+      `→ Write FULLY in: ${customLanguage.trim()}`,
+      "→ Ignore Language Style selector — Custom Language takes priority",
+      "→ Think and write like a NATIVE speaker of this language",
+      "→ Do NOT translate from English",
+      "→ Maintain this language consistently from intro to outro",
+      "",
+    ] : []),
+    "────────────────────────────────────────",
+    "CREATIVE DIRECTION",
+    "────────────────────────────────────────",
+    `Write a song based on the idea: "${topic}"`,
+    "Make it feel real, expressive, and musical.",
+    "Ground it in specific moments — not generic emotions.",
+    "",
+    "────────────────────────────────────────",
+    "STYLE GUIDANCE",
+    "────────────────────────────────────────",
+    `Match the ${genre} genre's rhythm, pacing, and cultural tone.`,
+    "Make every line easy to perform — singable in one take.",
+    "Keep phrasing natural, human, and emotionally engaging.",
+    "Avoid motivational clichés — write what a real person would actually say.",
     "",
     "────────────────────────────────────────",
     "LANGUAGE FLAVOR INSTRUCTION",
@@ -1973,10 +2012,6 @@ function buildUserPrompt(
 
   if (notes?.trim()) {
     lines.push(`EXTRA DIRECTION (HIGHEST PRIORITY — honor fully): ${notes.trim()}`);
-  }
-
-  if (commercialMode) {
-    lines.push(`HITMAKER MODE: ACTIVATED — maximize hook stickiness, chant energy, first-listen memorability, and replay value above all else`);
   }
 
   const depthInstructions: Record<string, string> = {

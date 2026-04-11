@@ -70497,13 +70497,52 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"
   ];
   const lines = [
-    "==== HITMAKER MODE V2 \u2014 SONG REQUEST ====",
-    `TOPIC: ${topic}`,
-    `GENRE: ${genre}`,
-    `MOOD: ${mood}`,
-    `LANGUAGE / FLAVOR: ${effectiveFlavor}`,
-    ...customLanguage?.trim() ? [`CUSTOM LANGUAGE OVERRIDE ACTIVE: ${customLanguage.trim()} \u2014 this is the PRIMARY writing language. All other language settings are secondary.`] : [],
-    ...dialectStyle ? [`WRITING STYLE / DIALECT SUB-STYLE: ${dialectStyle} \u2014 apply the corresponding sub-style intelligence block fully`] : [],
+    "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+    "SONG REQUEST",
+    "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+    `Genre: ${genre}`,
+    `Mood: ${mood}`,
+    `Theme / Idea: ${topic}`,
+    `Length: ${songLength}`,
+    "",
+    `Language Style: ${languageFlavor}`,
+    ...customLanguage?.trim() ? [`Custom Language: ${customLanguage.trim()}`] : [],
+    ...dialectStyle && dialectStyle !== "Auto" ? [`Dialect Sub-Style: ${dialectStyle}`] : [],
+    "",
+    `Performance Feel: ${performanceFeel}`,
+    `Dialect Depth: ${dialectDepth}`,
+    ...voiceTexture ? [`Voice Texture: ${voiceTexture}`] : [],
+    ...blendBalance ? [`Blend Balance: ${blendBalance}`] : [],
+    "",
+    `Hitmaker Mode: ${commercialMode ? "ACTIVATED \u2014 maximize hook stickiness, chant energy, first-listen memorability, and replay value" : "Standard"}`,
+    ...style ? ["", `Artist Style Reference: ${style}`] : [],
+    ...notes ? [`Creative Notes: ${notes}`] : [],
+    "",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    ...customLanguage?.trim() ? [
+      "LANGUAGE PRIORITY",
+      "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+      `\u2192 Write FULLY in: ${customLanguage.trim()}`,
+      "\u2192 Ignore Language Style selector \u2014 Custom Language takes priority",
+      "\u2192 Think and write like a NATIVE speaker of this language",
+      "\u2192 Do NOT translate from English",
+      "\u2192 Maintain this language consistently from intro to outro",
+      ""
+    ] : [],
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "CREATIVE DIRECTION",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    `Write a song based on the idea: "${topic}"`,
+    "Make it feel real, expressive, and musical.",
+    "Ground it in specific moments \u2014 not generic emotions.",
+    "",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "STYLE GUIDANCE",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    `Match the ${genre} genre's rhythm, pacing, and cultural tone.`,
+    "Make every line easy to perform \u2014 singable in one take.",
+    "Keep phrasing natural, human, and emotionally engaging.",
+    "Avoid motivational clich\xE9s \u2014 write what a real person would actually say.",
     "",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
     "LANGUAGE FLAVOR INSTRUCTION",
@@ -70668,9 +70707,6 @@ function buildUserPrompt(params, strictMode = false) {
   }
   if (notes?.trim()) {
     lines.push(`EXTRA DIRECTION (HIGHEST PRIORITY \u2014 honor fully): ${notes.trim()}`);
-  }
-  if (commercialMode) {
-    lines.push(`HITMAKER MODE: ACTIVATED \u2014 maximize hook stickiness, chant energy, first-listen memorability, and replay value above all else`);
   }
   const depthInstructions = {
     Simple: "LYRICAL DEPTH: SIMPLE \u2014 clean phrasing, minimal metaphor, prioritize singability and hook clarity",
