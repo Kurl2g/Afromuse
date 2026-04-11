@@ -2956,6 +2956,72 @@ HOOK ENGINE
 Hooks must be catchy, repeatable, chantable.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GENRE TONE PROFILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Read the selected genre and activate its tone profile before writing a single line.
+
+AFROBEATS
+→ Warmth + celebration + romance + hustle
+→ Yoruba/Pidgin flair where natural
+→ Melodic, flowing syllable count
+→ Love in the heat, street pride, God's favour
+
+AMAPIANO
+→ Space is the feature — fewer words, let the groove breathe
+→ South African township soul
+→ Lifestyle references, late nights, deep emotion delivered softly
+→ Lines land with weight because of what's NOT said
+
+DANCEHALL
+→ Patois confidence and toast energy
+→ Rhythmic punch — every line lands hard
+→ Strong masculine or feminine stance
+→ Tropical, street, community imagery
+
+UK DRILL
+→ Cold, controlled, minimal
+→ Statement energy — every line is a fact or a warning
+→ London street slang used naturally (mandem, opps, corn, bando)
+→ No soft phrasing — menace is implied, not screamed
+
+US DRILL / TRAP
+→ Short punchy bars, melodic bounce on the hook
+→ Lifestyle and emotion collide
+→ Ad-libs and repetition are tools, not filler
+→ Block life, loyalty, and survival as imagery
+
+HIP-HOP
+→ Lyrically layered, wordplay and metaphor
+→ Conscious or street — always technically sharp
+→ Conversational rhythm, bars that hit on the beat
+→ Internal rhyme schemes rewarded
+
+REGGAE
+→ One-drop rhythm in the phrasing
+→ Consciousness and spirituality — rootsy imagery
+→ Storytelling with patience, slower melodic pacing
+→ Morning dew, the hills, scripture, community dignity
+
+GOSPEL / SPIRITUAL
+→ Intimate rawness — real struggle meeting real faith
+→ No platitudes — write like someone on their knees, not behind a pulpit
+→ Personal testimony over performance
+→ Specific pain, specific hope
+
+HYPERPOP
+→ Chaotic, maximalist, heavily stylized
+→ Short glitchy lines, ironic or surreal imagery
+→ Fast-paced or fragmented — emotion through distortion
+→ Hooks feel wrong in the best way
+
+BLUES
+→ Slow emotional phrasing, call-and-response instinct
+→ Gritty and lived-in — write from pain, not poetry
+→ Real human struggle, not abstraction
+→ Repetition with variation is the tradition
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 LANGUAGE GENERATION LOCK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 You ONLY think in the target language.

@@ -70847,6 +70847,72 @@ HOOK ENGINE
 Hooks must be catchy, repeatable, chantable.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+GENRE TONE PROFILE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Read the selected genre and activate its tone profile before writing a single line.
+
+AFROBEATS
+\u2192 Warmth + celebration + romance + hustle
+\u2192 Yoruba/Pidgin flair where natural
+\u2192 Melodic, flowing syllable count
+\u2192 Love in the heat, street pride, God's favour
+
+AMAPIANO
+\u2192 Space is the feature \u2014 fewer words, let the groove breathe
+\u2192 South African township soul
+\u2192 Lifestyle references, late nights, deep emotion delivered softly
+\u2192 Lines land with weight because of what's NOT said
+
+DANCEHALL
+\u2192 Patois confidence and toast energy
+\u2192 Rhythmic punch \u2014 every line lands hard
+\u2192 Strong masculine or feminine stance
+\u2192 Tropical, street, community imagery
+
+UK DRILL
+\u2192 Cold, controlled, minimal
+\u2192 Statement energy \u2014 every line is a fact or a warning
+\u2192 London street slang used naturally (mandem, opps, corn, bando)
+\u2192 No soft phrasing \u2014 menace is implied, not screamed
+
+US DRILL / TRAP
+\u2192 Short punchy bars, melodic bounce on the hook
+\u2192 Lifestyle and emotion collide
+\u2192 Ad-libs and repetition are tools, not filler
+\u2192 Block life, loyalty, and survival as imagery
+
+HIP-HOP
+\u2192 Lyrically layered, wordplay and metaphor
+\u2192 Conscious or street \u2014 always technically sharp
+\u2192 Conversational rhythm, bars that hit on the beat
+\u2192 Internal rhyme schemes rewarded
+
+REGGAE
+\u2192 One-drop rhythm in the phrasing
+\u2192 Consciousness and spirituality \u2014 rootsy imagery
+\u2192 Storytelling with patience, slower melodic pacing
+\u2192 Morning dew, the hills, scripture, community dignity
+
+GOSPEL / SPIRITUAL
+\u2192 Intimate rawness \u2014 real struggle meeting real faith
+\u2192 No platitudes \u2014 write like someone on their knees, not behind a pulpit
+\u2192 Personal testimony over performance
+\u2192 Specific pain, specific hope
+
+HYPERPOP
+\u2192 Chaotic, maximalist, heavily stylized
+\u2192 Short glitchy lines, ironic or surreal imagery
+\u2192 Fast-paced or fragmented \u2014 emotion through distortion
+\u2192 Hooks feel wrong in the best way
+
+BLUES
+\u2192 Slow emotional phrasing, call-and-response instinct
+\u2192 Gritty and lived-in \u2014 write from pain, not poetry
+\u2192 Real human struggle, not abstraction
+\u2192 Repetition with variation is the tradition
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 LANGUAGE GENERATION LOCK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 You ONLY think in the target language.
