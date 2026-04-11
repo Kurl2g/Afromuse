@@ -69187,18 +69187,25 @@ After generating the first draft \u2014 silently run this auto-improve pass:
   \u2192 Bridge must reveal something new or strip the song to its raw truth
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
-CHORUS ENGINE V13 \u2014 FLEXIBLE BUILDER
+CHORUS ENGINE V15 \u2014 8-LINE BUILDER (HARD LAW)
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
-Once the winning hook is selected, expand it according to the active Diversity Engine chorus length pattern:
+Every chorus is EXACTLY 8 lines. No more. No less. This is non-negotiable.
 
-REPETITION MODE: repeat heavily.
-STORY MODE: keep the hook light and let verses dominate.
-CHAOS MODE: use broken/irregular phrasing.
-MINIMAL MODE: use very few words and let space matter.
-MAXIMAL MODE: dense, layered, imagistic chorus.
+The 8-line structure is:
+  Line 1     \u2192 Main hook (the crowd's core phrase)
+  Line 2     \u2192 Reinforcement (same meaning, slight twist)
+  Lines 3\u20134  \u2192 Emotional expansion (deepen the idea)
+  Lines 5\u20136  \u2192 Variation + bounce lines (rhythmic shift, energy push)
+  Lines 7\u20138  \u2192 Final hook impact (close with power or crowd-call)
 
-Do NOT force every chorus into the same 8-line structure.
+The chorus MUST:
+\u2192 Be chantable \u2014 a crowd must be able to repeat it naturally
+\u2192 Repeat the core phrase from Line 1 at least once more across Lines 2\u20138
+\u2192 Sound like crowd energy \u2014 not a solo performance
+
+IMPORTANT: The exact same 8-line chorus appears THREE times in the song.
+Write it once, output it once into the "hook" field. The arrangement engine handles the repeats.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 REPLAY TRIGGER SYSTEM (MINIMUM 2 REQUIRED)
@@ -69252,12 +69259,30 @@ You ONLY think in the target language. Before writing each line: form the idea i
 If structure feels like English \u2192 REWRITE.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
-STRUCTURE DIVERSITY LOCK (HIGHEST PRIORITY)
+AFROMUSE V15 \u2014 STRUCTURE LAW (NON-NEGOTIABLE)
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
-You MUST follow the active Diversity Engine arrangement order and section line targets in the user prompt.
-Do NOT default to intro \u2192 verse \u2192 chorus \u2192 verse \u2192 chorus \u2192 bridge \u2192 chorus.
-Unused sections must be empty arrays [] so the app can render the draft safely.
+EVERY song MUST follow this exact arrangement \u2014 NO EXCEPTIONS:
+
+  Intro       \u2192 2\u20134 lines
+  Chorus      \u2192 8 lines (8 bars)
+  Verse 1     \u2192 8 lines (8 bars)
+  Chorus      \u2192 8 lines (SAME chorus \u2014 do NOT rewrite it)
+  Verse 2     \u2192 8 lines (8 bars, DIFFERENT content from Verse 1)
+  Chorus      \u2192 8 lines (SAME chorus again)
+  Bridge      \u2192 4 lines (emotional shift \u2014 NOT a mini-chorus)
+  Outro       \u2192 4\u20138 lines (wind down or final hook statement)
+
+LINE COUNT IS HARD LAW:
+\u2192 Intro = 2\u20134 lines (no more, no less)
+\u2192 Chorus = exactly 8 lines EVERY time it appears
+\u2192 Verse 1 = exactly 8 lines
+\u2192 Verse 2 = exactly 8 lines (different story from Verse 1)
+\u2192 Bridge = exactly 4 lines
+\u2192 Outro = 4\u20138 lines
+
+DO NOT change structure. DO NOT skip sections. DO NOT add extra sections.
+Unused sections must be empty arrays [] so the app renders safely.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 TRUE DIVERSITY ENGINE \u2014 CORE RULES (V16)
@@ -69279,11 +69304,47 @@ HOOK INTELLIGENCE BY DNA MODE:
 \u2192 MINIMAL: 1\u20132 short lines, high emotional weight per word
 \u2192 MAXIMAL: dense, layered, imagistic \u2014 full emotional picture
 
-LANGUAGE CONTROL (anti-translated-feel):
-\u2192 Keep phrases SHORT and NATURAL
-\u2192 Avoid over-explaining \u2014 trust the listener
-\u2192 Write RHYTHM-FIRST (feel the beat before the sentence)
-\u2192 Mix local dialect + English ONLY when it flows musically \u2014 never force it
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+V15 FLOW ENGINE (MANDATORY)
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Every line MUST:
+\u2192 Be SHORT \u2014 6 to 10 syllables maximum per line
+\u2192 Have BOUNCE \u2014 feel like a Drill or Afrobeats rhythm pattern
+\u2192 Sound like SPOKEN STREET TWI \u2014 not translated, not textbook
+
+\u274C BAD (AI/translation feel \u2014 too long, too formal):
+  "Y\u025Bn nsa ahy\u025B ase, y\u025Bn ankasa na y\u025Bb\u025Bsan"
+
+\u2705 GOOD (natural, short, musical):
+  "Y\u025Bn nsa ahy\u025B ase"
+  "Y\u025Bn ankasa y\u025B rise"
+
+If a line feels like a full sentence or reads like a translation \u2192 BREAK IT DOWN. Shorten it. Make it bounce.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+V15 LANGUAGE CONTROL \u2014 HYBRID STREET MODE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+DO NOT force full Twi grammar. Use HYBRID STREET MODE:
+
+Mix these three naturally:
+  \u2192 Twi for emotion (feels real, culturally grounded)
+  \u2192 English for punchlines (clear, global, sharp)
+  \u2192 Slang for rhythm (gives the line bounce and authenticity)
+
+GOOD hybrid examples:
+  "Nyame b\u025Bkyer\u025B me way"
+  "M'ani so, I no fit fall"
+  "Y\u025Bn da so rise, no delay"
+
+RULES:
+\u2192 Do NOT use full Twi grammar if it sounds stiff or translated
+\u2192 Do NOT force Twi into a line if it disrupts the flow
+\u2192 English punchlines at the END of a line hit harder
+\u2192 Slang words are rhythmic filler \u2014 they keep bounce alive
+\u2192 Write RHYTHM-FIRST \u2014 feel the beat before the sentence
+\u2192 Keep phrases SHORT and NATURAL \u2014 avoid over-explaining
 
 PERFORMANCE TYPE ALIGNMENT:
 The song's writing, energy, and hook style must match the assigned Performance Type.
@@ -69294,14 +69355,20 @@ The song's writing, energy, and hook style must match the assigned Performance T
 \u2192 Spiritual Anthem: devotional, communal, rising energy, crowd-chant friendly
 \u2192 Experimental / Niche: artistic risk, unconventional structure, non-commercial appeal
 
-ANTI-SAMENESS HARD BLOCK:
-The following are FORBIDDEN if they match the previous song:
-\u274C Same chorus length
-\u274C Same hook rhythm pattern  
-\u274C Same emotional tone
-\u274C Same structure shape
-\u274C Same repetition style
-If detected \u2192 rewrite automatically before output.
+V15 UNIQUENESS ENGINE \u2014 CONTROLLED VARIATION:
+
+To create diversity between songs, ONLY vary these elements:
+\u2705 Theme (pain / money / God / hustle / love / celebration)
+\u2705 Perspective (first person / reflection / prayer / declaration)
+\u2705 Energy level (calm / aggressive / emotional / triumphant)
+\u2705 Hook phrase (the actual words and imagery of the chorus)
+
+NEVER change these \u2014 they are LOCKED for every song:
+\u{1F512} Structure (Intro \u2192 Chorus \u2192 Verse 1 \u2192 Chorus \u2192 Verse 2 \u2192 Chorus \u2192 Bridge \u2192 Outro)
+\u{1F512} Line count (Chorus = 8, Verses = 8, Bridge = 4, Intro = 2\u20134)
+\u{1F512} Rhythm pattern (6\u201310 syllables, bounce-driven, Afrobeats/Drill feel)
+
+Every song feels DIFFERENT because of theme, perspective, energy, and hook \u2014 NOT because the structure breaks.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 V14 \u2014 GLOBAL HIT ENGINE

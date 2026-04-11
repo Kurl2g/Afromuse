@@ -454,12 +454,12 @@ export default function Studio() {
       if (lines?.length) sections.push({ id, label, lines });
     };
     push("intro", "Intro", draft.intro);
-    push("hook-1", "Hook", draft.hook);
+    push("hook-1", "Chorus", draft.hook);
     push("verse1", "Verse 1", draft.verse1);
-    push("hook-2", "Hook", draft.hook);
+    push("hook-2", "Chorus", draft.hook);
     push("verse2", "Verse 2", draft.verse2);
+    push("hook-3", "Chorus", draft.hook);
     push("bridge", bridgeLabel, draft.bridge);
-    push("hook-3", "Hook", draft.hook);
     push("outro", "Outro", draft.outro);
     return sections;
   })() : [];
@@ -1956,12 +1956,14 @@ export default function Studio() {
                             <div key={section.id}>
                               <div className="flex items-center gap-2 mb-2.5">
                                 <span className={`text-[10px] font-black tracking-widest uppercase px-2.5 py-0.5 rounded-md border ${
-                                  section.label === "Hook"
+                                  section.label === "Chorus"
                                     ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
                                     : section.label.startsWith("Verse")
                                     ? "bg-violet-500/10 border-violet-500/20 text-violet-400"
                                     : section.label === "Bridge" || section.label === "Break"
                                     ? "bg-sky-500/10 border-sky-500/20 text-sky-400"
+                                    : section.label === "Intro"
+                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                                     : "bg-white/6 border-white/8 text-white/35"
                                 }`}>
                                   {section.label}
