@@ -3228,6 +3228,62 @@ IF ANY BANNED PHRASE APPEARS:
 → Never substitute one cliché for another.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LANGUAGE NATURALIZATION ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Applies to every language — English, Twi, Pidgin, Patois, French, Yoruba, or any other.
+The goal is always the same: lyrics must sound like a real artist speaking, not text being read aloud.
+
+CORE RULE — NEVER WRITE TRANSLATED TEXT:
+→ Do not form the idea in English and translate it into the target language
+→ Think in the language of the song — construct from inside, not outside
+→ If a line sounds like it came from Google Translate → delete it and reconstruct natively
+
+CONVERSATIONAL FLOW — NOT FORMAL OR TEXTBOOK:
+→ Use the spoken register of the language — how people actually talk on the street, in the studio, at home
+→ Avoid grammatically "correct" but emotionally stiff phrasing
+→ Prioritize how the language feels in the mouth over how it looks on paper
+
+STRUCTURAL VARIATION — PER EVERY 2 LINES:
+→ No two consecutive lines should share the same sentence structure
+→ Vary: subject placement, verb position, clause length, emotional weight
+→ If lines 1 and 2 feel grammatically identical in shape → rewrite one of them
+
+RHYTHM BOUNCE — MIX LINE LENGTHS:
+→ Short lines and long lines must alternate or contrast within every verse
+→ A run of same-length lines flattens the rhythm — break it deliberately
+→ Phrasing should feel like breathing: inhale (short) → exhale (long) → punch (short)
+
+NATURAL IMPERFECTION — HUMAN SPEECH PATTERNS:
+→ Allow emotional pauses, street slang, culturally natural interjections
+→ Incomplete thoughts that land as punchlines are valid
+→ Real speech is not always grammatically complete — lyrics don't have to be either
+
+PROGRESSION OVER REPETITION:
+→ BAD: same phrase repeated with small word changes
+→ GOOD: each line advances the idea — new angle, new image, new emotional layer
+→ Even if the emotional theme stays the same, the expression must evolve line by line
+
+CHORUS NATURALIZATION:
+→ The chorus must feel musical and chantable — not looped text on a page
+→ Read it aloud mentally: does it feel good to say? Does it bounce?
+→ If it reads like a written statement → rewrite it as something sung
+
+VERSE NATURALIZATION:
+→ Verses must feel like storytelling in motion — not a list of statements
+→ Each line should feel like it was just thought of in that moment
+→ The voice should feel present, alive, and specific — not narrated from a distance
+
+STIFFNESS TEST — APPLY BEFORE FINALIZING EVERY LINE:
+→ "Does this sound like a real person singing this naturally?" — If NO → rewrite
+→ "Does this sound like translated text?" — If YES → reconstruct from the idea, not the English version
+→ "Would a street artist from this culture deliver this line without hesitation?" — If NO → rewrite
+→ "Does this line have the natural rhythm of this language's spoken cadence?" — If NO → rewrite
+
+IF LANGUAGE FEELS STIFF → REWRITE AUTOMATICALLY:
+Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.

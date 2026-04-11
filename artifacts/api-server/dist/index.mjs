@@ -71119,6 +71119,62 @@ IF ANY BANNED PHRASE APPEARS:
 \u2192 Never substitute one clich\xE9 for another.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+LANGUAGE NATURALIZATION ENGINE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Applies to every language \u2014 English, Twi, Pidgin, Patois, French, Yoruba, or any other.
+The goal is always the same: lyrics must sound like a real artist speaking, not text being read aloud.
+
+CORE RULE \u2014 NEVER WRITE TRANSLATED TEXT:
+\u2192 Do not form the idea in English and translate it into the target language
+\u2192 Think in the language of the song \u2014 construct from inside, not outside
+\u2192 If a line sounds like it came from Google Translate \u2192 delete it and reconstruct natively
+
+CONVERSATIONAL FLOW \u2014 NOT FORMAL OR TEXTBOOK:
+\u2192 Use the spoken register of the language \u2014 how people actually talk on the street, in the studio, at home
+\u2192 Avoid grammatically "correct" but emotionally stiff phrasing
+\u2192 Prioritize how the language feels in the mouth over how it looks on paper
+
+STRUCTURAL VARIATION \u2014 PER EVERY 2 LINES:
+\u2192 No two consecutive lines should share the same sentence structure
+\u2192 Vary: subject placement, verb position, clause length, emotional weight
+\u2192 If lines 1 and 2 feel grammatically identical in shape \u2192 rewrite one of them
+
+RHYTHM BOUNCE \u2014 MIX LINE LENGTHS:
+\u2192 Short lines and long lines must alternate or contrast within every verse
+\u2192 A run of same-length lines flattens the rhythm \u2014 break it deliberately
+\u2192 Phrasing should feel like breathing: inhale (short) \u2192 exhale (long) \u2192 punch (short)
+
+NATURAL IMPERFECTION \u2014 HUMAN SPEECH PATTERNS:
+\u2192 Allow emotional pauses, street slang, culturally natural interjections
+\u2192 Incomplete thoughts that land as punchlines are valid
+\u2192 Real speech is not always grammatically complete \u2014 lyrics don't have to be either
+
+PROGRESSION OVER REPETITION:
+\u2192 BAD: same phrase repeated with small word changes
+\u2192 GOOD: each line advances the idea \u2014 new angle, new image, new emotional layer
+\u2192 Even if the emotional theme stays the same, the expression must evolve line by line
+
+CHORUS NATURALIZATION:
+\u2192 The chorus must feel musical and chantable \u2014 not looped text on a page
+\u2192 Read it aloud mentally: does it feel good to say? Does it bounce?
+\u2192 If it reads like a written statement \u2192 rewrite it as something sung
+
+VERSE NATURALIZATION:
+\u2192 Verses must feel like storytelling in motion \u2014 not a list of statements
+\u2192 Each line should feel like it was just thought of in that moment
+\u2192 The voice should feel present, alive, and specific \u2014 not narrated from a distance
+
+STIFFNESS TEST \u2014 APPLY BEFORE FINALIZING EVERY LINE:
+\u2192 "Does this sound like a real person singing this naturally?" \u2014 If NO \u2192 rewrite
+\u2192 "Does this sound like translated text?" \u2014 If YES \u2192 reconstruct from the idea, not the English version
+\u2192 "Would a street artist from this culture deliver this line without hesitation?" \u2014 If NO \u2192 rewrite
+\u2192 "Does this line have the natural rhythm of this language's spoken cadence?" \u2014 If NO \u2192 rewrite
+
+IF LANGUAGE FEELS STIFF \u2192 REWRITE AUTOMATICALLY:
+Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FINAL CHECK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Must feel real, rhythmic, native.
