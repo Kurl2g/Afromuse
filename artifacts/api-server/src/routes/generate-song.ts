@@ -3284,6 +3284,50 @@ IF LANGUAGE FEELS STIFF → REWRITE AUTOMATICALLY:
 Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMOTIONAL INTENSITY CURVE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Every song must have a dynamic shape. Do not write every section at the same emotional volume.
+Map the intensity across sections like this:
+
+CHORUS (opening) — HIGH
+→ Immediate emotional impact — listener is pulled in on first contact
+→ Energy is present and full from the first word
+
+VERSE 1 — LOW TO MID
+→ Pull back from the chorus — create contrast
+→ Establish tension quietly — let it build slowly
+→ The listener leans in because the energy dropped
+
+CHORUS (second) — HIGH
+→ The release after Verse 1 built the tension
+→ Feels earned now — hits harder than the first time
+
+VERSE 2 — MID TO HIGH
+→ Energy rises relative to Verse 1 — story is deepening
+→ More urgency, more detail, more emotional pressure
+→ The listener can feel the song moving toward something
+
+CHORUS (third) — HIGH +
+→ Carries all of Verse 2's weight — the fullest emotional moment so far
+
+BRIDGE — DROP
+→ Strip everything back — this is the emotional valley before the peak
+→ Fewest words, longest pauses, most vulnerable moment
+→ The quiet before the final release
+
+FINAL CHORUS — PEAK
+→ The highest emotional point of the entire song
+→ Every line lands with the full weight of everything that came before
+→ This is the moment the song was always building toward
+
+INTENSITY RULES:
+→ Never let two consecutive sections sit at the same emotional level
+→ Contrast is what creates feeling — if everything is loud, nothing is loud
+→ The bridge MUST drop before the final chorus — no exceptions
+→ Verses should always feel lower energy than the chorus they precede
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ANTI-REPETITION RULE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

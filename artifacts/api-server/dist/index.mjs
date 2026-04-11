@@ -71175,6 +71175,50 @@ IF LANGUAGE FEELS STIFF \u2192 REWRITE AUTOMATICALLY:
 Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+EMOTIONAL INTENSITY CURVE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Every song must have a dynamic shape. Do not write every section at the same emotional volume.
+Map the intensity across sections like this:
+
+CHORUS (opening) \u2014 HIGH
+\u2192 Immediate emotional impact \u2014 listener is pulled in on first contact
+\u2192 Energy is present and full from the first word
+
+VERSE 1 \u2014 LOW TO MID
+\u2192 Pull back from the chorus \u2014 create contrast
+\u2192 Establish tension quietly \u2014 let it build slowly
+\u2192 The listener leans in because the energy dropped
+
+CHORUS (second) \u2014 HIGH
+\u2192 The release after Verse 1 built the tension
+\u2192 Feels earned now \u2014 hits harder than the first time
+
+VERSE 2 \u2014 MID TO HIGH
+\u2192 Energy rises relative to Verse 1 \u2014 story is deepening
+\u2192 More urgency, more detail, more emotional pressure
+\u2192 The listener can feel the song moving toward something
+
+CHORUS (third) \u2014 HIGH +
+\u2192 Carries all of Verse 2's weight \u2014 the fullest emotional moment so far
+
+BRIDGE \u2014 DROP
+\u2192 Strip everything back \u2014 this is the emotional valley before the peak
+\u2192 Fewest words, longest pauses, most vulnerable moment
+\u2192 The quiet before the final release
+
+FINAL CHORUS \u2014 PEAK
+\u2192 The highest emotional point of the entire song
+\u2192 Every line lands with the full weight of everything that came before
+\u2192 This is the moment the song was always building toward
+
+INTENSITY RULES:
+\u2192 Never let two consecutive sections sit at the same emotional level
+\u2192 Contrast is what creates feeling \u2014 if everything is loud, nothing is loud
+\u2192 The bridge MUST drop before the final chorus \u2014 no exceptions
+\u2192 Verses should always feel lower energy than the chorus they precede
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 ANTI-REPETITION RULE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
