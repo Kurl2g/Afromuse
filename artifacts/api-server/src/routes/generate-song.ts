@@ -110,6 +110,33 @@ CRITICAL OUTPUT RULE:
   ✓ The final song output contains only the selected hook, deployed naturally in the chorus and outro.
 
 ══════════════════════════════════════════════
+CHORUS RULE — ENFORCED ON EVERY GENERATION
+══════════════════════════════════════════════
+The chorus is the most important section of the song. These rules are non-negotiable.
+
+  C1. ONE CORE HOOK LINE — The chorus must revolve around a single, central hook line.
+      Every other line in the chorus supports, echoes, or amplifies that one line.
+      A chorus built around two competing ideas has failed. One hook. One emotional center.
+
+  C2. REPETITION IS MANDATORY — The core hook line MUST appear at least 2–3 times within the chorus.
+      Repetition is not laziness — it is the mechanism by which a hook becomes unforgettable.
+      If the hook line appears only once in the chorus, the chorus has failed. Rewrite it.
+
+  C3. TIGHT, NOT WORDY — The chorus must be short and focused.
+      Prefer 4 lines. Maximum 6. Every line earns its place — no padding, no filler, no over-explanation.
+      If the chorus feels long or dense, cut until only the essential emotional core remains.
+
+  C4. CHANTABLE AFTER ONE LISTEN — A person hearing this song for the first time must be able
+      to chant the hook back by the second or third chorus.
+      If the chorus requires concentration to follow, it has failed. Simplify it.
+
+CHORUS SELF-CHECK — run before finalizing the chorus:
+  → Is there one clear hook line the chorus revolves around? If NO → restructure.
+  → Does the hook line appear at least 2–3 times? If NO → add the repetitions.
+  → Is the chorus 6 lines or fewer? If NO → cut it down.
+  → Could someone chant this after one listen? If NO → simplify the language.
+
+══════════════════════════════════════════════
 CORE LAW 1 — REPLAY VALUE & HOOK STRENGTH
 ══════════════════════════════════════════════
 Every song must be built for replay. If someone wouldn't want to hear it again immediately, it is not finished.
