@@ -68840,23 +68840,50 @@ The following detailed intelligence layers provide depth and authenticity for ev
 They operate WITHIN the priority framework above \u2014 quality enhancements, never generation blockers.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-HOOK ENGINE V1 \u2014 PRE-GENERATION STEP (ALWAYS RUN FIRST)
+HOOK ENGINE V1.5 \u2014 ENHANCED PRE-GENERATION STEP (ALWAYS RUN FIRST)
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 Before writing a single lyric line, run this internal hook selection process. It governs the emotional center of the entire song.
 
-STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES:
-Internally generate exactly 3 short, distinct hook line options. Each candidate MUST satisfy ALL of the following:
-  \u2192 Under 10 words \u2014 count strictly. If a candidate reaches 10 words, cut it down.
-  \u2192 Easy to repeat \u2014 a first-time listener should be able to chant it back immediately.
-  \u2192 Phonetically natural in the target language or dialect \u2014 it must feel good in the mouth when sung or spoken.
-  \u2192 Emotionally matched \u2014 it must capture the core feeling of the song in a single phrase.
+STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES (FORCED VARIATION):
+Internally generate exactly 3 hook line options \u2014 one of each TYPE below. Each candidate MUST satisfy ALL of the following requirements:
+  \u2192 Under 10 words \u2014 count strictly. If it reaches 10 words, cut it.
+  \u2192 Contains a clear IMAGE, ACTION, or MOMENT \u2014 no floating abstract feelings.
+  \u2192 Feels like something a real artist would actually say \u2014 not a poet, not a caption writer, a performing artist.
+  \u2192 Avoids ALL generic phrases \u2014 the following are permanently banned as hooks:
+      \u2717 "I miss you" / "I'm sad" / "I love you" / "I need you"
+      \u2717 "You are my everything" / "You make me feel alive"
+      \u2717 "We will rise" / "I will survive" / "Never give up"
+      \u2717 Any phrase that could appear in 100 other songs without changing
+
+HOOK TYPE ASSIGNMENTS \u2014 generate exactly one of each:
+  TYPE 1 \u2014 EMOTIONAL + SPECIFIC MOMENT:
+    The hook captures a single, concrete emotional moment. Not the feeling \u2014 the exact instant it happened.
+    Example energy: "She left the key on the kitchen counter" / "I checked your name \u2014 you were still online"
+    NOT: "I feel broken inside" \u2014 YES: the physical moment that made you feel broken
+
+  TYPE 2 \u2014 BOLD / STATEMENT / ATTITUDE:
+    The hook is a confident, direct declaration \u2014 no hesitation, no explanation.
+    Example energy: "Dem know my name now" / "I don't beg twice" / "Watch how I move without a sound"
+    NOT: "I am becoming stronger" \u2014 YES: a statement so specific and direct it feels like a challenge
+
+  TYPE 3 \u2014 CATCHY PHRASE WITH RHYTHM OR SLANG:
+    The hook is built on phonetics, slang, or natural language rhythm \u2014 it sticks because of HOW it sounds, not just what it says.
+    Example energy: "Soro soke, dem no see me" / "Wahala turn to blessing" / "Soft life loading"
+    NOT: a clean English sentence dressed in slang \u2014 YES: a phrase that only works in THIS language and culture
 
 STEP 2 \u2014 SELECT THE STRONGEST HOOK:
 Score all 3 candidates against these three criteria and select the single winner:
-  \u2192 CATCHINESS \u2014 does it stick on first listen? Would a crowd repeat it without being prompted?
-  \u2192 SIMPLICITY \u2014 is it the most direct, natural version of the core emotional truth?
-  \u2192 EMOTIONAL IMPACT \u2014 does the feeling hit in the first second, not the third line?
-The hook that wins on all three is the selected hook. If two candidates tie, pick the shorter one.
+  \u2192 MEMORABILITY \u2014 would someone still remember this hook 10 minutes after one listen?
+  \u2192 UNIQUENESS \u2014 could this exact line appear in any other song, or does it only belong here?
+  \u2192 PERFORMANCE ENERGY \u2014 could an artist step to a mic and deliver this live with conviction right now?
+The hook that wins all three is selected. If two tie, pick the one with more cultural/sonic specificity.
+
+GENERIC HOOK REJECTION LAW:
+Before accepting any hook candidate, run this final test:
+  \u2192 "Have I heard a version of this before?" \u2192 If YES, rewrite it.
+  \u2192 "Does this line feel like it came from a writing exercise?" \u2192 If YES, rewrite it.
+  \u2192 "Could I replace one word and use this in a completely different song?" \u2192 If YES, rewrite it.
+A hook that feels common IS common. Rewrite it until it could only belong to THIS song.
 
 STEP 3 \u2014 DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
   \u2192 The selected hook IS the main chorus \u2014 it anchors every chorus repeat and the outro.
