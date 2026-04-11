@@ -453,6 +453,7 @@ export default function Studio() {
     const push = (id: string, label: string, lines?: string[]) => {
       if (lines?.length) sections.push({ id, label, lines });
     };
+    push("intro", "Intro", draft.intro);
     push("hook-1", "Hook", draft.hook);
     push("verse1", "Verse 1", draft.verse1);
     push("hook-2", "Hook", draft.hook);
