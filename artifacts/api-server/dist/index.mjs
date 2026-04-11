@@ -68846,7 +68846,9 @@ Before writing a single lyric line, run this internal hook selection process. It
 
 STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES (FORCED DIVERSITY):
 Internally generate exactly 3 hook line options \u2014 one of each STYLE below. Each candidate MUST satisfy ALL of the following:
-  \u2192 Under 10 words \u2014 count strictly. If it reaches 10 words, cut it.
+  \u2192 Under 14 words per line \u2014 count strictly. If it reaches 14 words, cut it. (Repeat Anchor lines are exempt \u2014 they are intentionally shorter.)
+  \u2192 Locked to ONE emotional driver \u2014 every hook must serve exactly one of: PAIN | LOVE | FAITH | HUSTLE | VICTORY.
+      Hooks that try to carry two emotional drivers split the listener's attention and lose both. Choose one. Own it completely.
   \u2192 Rhythmically smooth when spoken out loud \u2014 say it mentally; if it stumbles, rewrite it.
   \u2192 Contains strong phonetic bounce \u2014 repeating sounds, vowel patterns, or consonant clusters that create natural musicality.
   \u2192 Includes a clear moment, action, or striking phrase \u2014 no floating emotional states.
@@ -68904,16 +68906,72 @@ Before finalizing the selected hook, run this test:
   \u2192 "Could I swap one word and use this in a completely different song?" \u2192 If YES, rewrite it.
 A hook that feels common IS common. Rewrite it until it could only belong to THIS song.
 
-STEP 5 \u2014 DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
-  \u2192 The selected hook IS the main chorus \u2014 it anchors every chorus repeat and the outro.
+STEP 5 \u2014 BUILD THE HOOK ARCHITECTURE (3-LAYER STRUCTURE):
+Once the strongest hook candidate is selected, construct it using this 3-layer internal architecture:
+
+  LAYER 1 \u2014 IDENTITY LINE (core emotional truth):
+    The anchor statement. Declares the song's emotional center directly.
+    Must capture the single emotional driver (PAIN / LOVE / FAITH / HUSTLE / VICTORY) in one clear, resonant line.
+    Under 14 words. This is the line the listener remembers first.
+    Example: "I built this with my bare hands \u2014 nobody gave me nothing"
+
+  LAYER 2 \u2014 EMOTIONAL SHIFT LINE (adds depth or contradiction):
+    Deepens or complicates the Identity Line \u2014 introduces tension, vulnerability, contrast, or irony.
+    It does not repeat the Identity Line. It responds to it, adding a second dimension.
+    Under 14 words. This is the line that makes the hook feel human, not sloganed.
+    Example: "Still I wake up every morning like it's already won"
+
+  LAYER 3 \u2014 REPEAT ANCHOR (short chantable phrase):
+    The shortest element. 2\u20136 words. Built for repetition, crowd delivery, and viral clip use.
+    Distills the entire hook down to its most essential, phonetically satisfying form.
+    No word limit applies \u2014 length is governed by chantability, not a count.
+    This is the line that gets looped, screamed at shows, and posted as captions.
+    Example: "Bare hands. Bare hands."
+
+ARCHITECTURE RULES:
+  \u2192 The 3 layers work together as the complete hook unit \u2014 Identity \u2192 Shift \u2192 Anchor.
+  \u2192 The Repeat Anchor is what repeats 2\u20134 times in the chorus (per Chorus Structure V2).
+  \u2192 The Identity and Shift Lines frame the anchor; the Anchor is the loop.
+
+STEP 6 \u2014 HOOK EVOLUTION ACROSS CHORUS REPETITIONS:
+The hook does NOT appear identically every time the chorus returns. It must evolve with the song's emotional arc:
+
+  CHORUS 1 (Introduction) \u2014 deliver the hook fresh. The listener hears it for the first time.
+      Priority: clarity and impact. The Identity Line and Anchor land clean.
+
+  CHORUS 2 (Deepening) \u2014 the hook has been earned by the first verse. It can now land harder.
+      Slight vocal variation, adjusted emotional weight, or a small lyrical echo from the verse.
+      The Anchor remains consistent \u2014 the Identity or Shift Line may deepen.
+
+  CHORUS 3+ (Resolution or climax) \u2014 the hook has the full emotional journey behind it.
+      It can strip back (more vulnerable) or push forward (more triumphant), depending on the arc.
+      The Anchor is the constant. Everything around it can shift in weight and delivery.
+
+EVOLUTION LAW:
+  \u2192 The Repeat Anchor (Layer 3) stays consistent across all choruses \u2014 it is the throughline.
+  \u2192 The Identity and Shift Lines may evolve in wording, weight, or perspective as the song progresses.
+  \u2192 Evolution is emotional, not arbitrary \u2014 each change must serve the song's arc.
+
+HOOK FALLBACK RULE \u2014 NEVER RETURN AN EMPTY OR WEAK HOOK:
+If the topic, prompt, or input is thin, vague, or emotionally underpowered \u2014 do NOT generate a weak hook.
+Instead, run this recovery process:
+  1. Identify the most emotionally loaded word or phrase in the topic/prompt.
+  2. Build a verse line around that word \u2014 even if only 1\u20132 lines long.
+  3. Compress that verse line into chant form \u2014 strip it to its phonetic core.
+  4. That compressed phrase becomes the Repeat Anchor.
+  5. Build the Identity and Shift Lines outward from the Anchor.
+A weak input produces a compressed, chantable hook. An empty hook is never acceptable output.
+
+STEP 7 \u2014 DEPLOY THE HOOK AS THE SONG'S ANCHOR:
+  \u2192 The selected and architected hook IS the main chorus \u2014 it anchors every chorus repeat and the outro.
   \u2192 Every verse, intro, and bridge must be written to build toward or away from this hook.
-  \u2192 The hook appears verbatim (or as a direct, intentional reprise) each time the chorus returns.
-  \u2192 Do NOT dilute or rewrite the hook mid-song \u2014 it must remain consistent across all appearances.
+  \u2192 The Repeat Anchor (Layer 3) is consistent across all chorus appearances.
+  \u2192 The Identity and Shift Lines evolve in emotional weight as the song progresses.
 
 CRITICAL OUTPUT RULE:
-  \u2717 Never output the 3 candidate hooks. This process is entirely internal.
-  \u2717 Never reference, number, or mention the selection process in the song output.
-  \u2713 The final song output contains only the selected hook, deployed naturally in the chorus and outro.
+  \u2717 Never output the 3 candidate hooks or the 3-layer architecture. This process is entirely internal.
+  \u2717 Never reference, number, or mention the selection or construction process in the song output.
+  \u2713 The final song output contains only the deployed hook, expressed naturally in the chorus and outro.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 PHONETIC FLOW RULE \u2014 APPLIED TO EVERY HOOK
