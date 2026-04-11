@@ -68765,6 +68765,123 @@ function trackUsage(feature, metadata) {
 
 // src/routes/generate-song.ts
 var router2 = (0, import_express2.Router)();
+var lastDiversitySignature = {};
+var diversityProfiles = [
+  {
+    dnaMode: "REPETITION MODE",
+    emotionalLens: "Power",
+    arrangementOrder: ["hook", "verse1", "hook", "verse2", "hook", "outro"],
+    hookStructure: "chant-driven repeated anchor, minimal verse change, crowd-response phrasing",
+    chorusLengthPattern: "short repeated 4-line hook",
+    energyCurve: "instant high impact \u2192 controlled dip \u2192 repeated high impact",
+    urgencyLevel: "public, loud, direct",
+    artistMindset: "an artist leading a crowd chant with no over-explaining",
+    sectionLineTargets: { hook: [4], verse1: [8], verse2: [8], outro: [2, 4] }
+  },
+  {
+    dnaMode: "STORY MODE",
+    emotionalLens: "Reflection",
+    arrangementOrder: ["verse1", "verse2", "hook", "bridge", "hook", "outro"],
+    hookStructure: "light hook, verse carries the song, no repetition dominance",
+    chorusLengthPattern: "light 4-line chorus",
+    energyCurve: "slow narrative climb \u2192 late emotional release \u2192 quiet landing",
+    urgencyLevel: "private, patient, confessional",
+    artistMindset: "a storyteller letting the verses do the heavy lifting",
+    sectionLineTargets: { verse1: [12, 16], verse2: [12, 16], hook: [4], bridge: [4], outro: [2, 4] }
+  },
+  {
+    dnaMode: "CHAOS MODE",
+    emotionalLens: "Confusion",
+    arrangementOrder: ["hook", "hook", "verse1", "bridge", "verse2", "hook"],
+    hookStructure: "broken phrasing, irregular hook returns, unpredictable flow",
+    chorusLengthPattern: "uneven 6-line hook",
+    energyCurve: "spike \u2192 fracture \u2192 drop out \u2192 sudden return",
+    urgencyLevel: "restless, unstable, sharp turns",
+    artistMindset: "an artist thinking out loud while the beat keeps shifting under them",
+    sectionLineTargets: { hook: [6], verse1: [8, 12], bridge: [4], verse2: [8], outro: [] }
+  },
+  {
+    dnaMode: "MINIMAL MODE",
+    emotionalLens: "Pain",
+    arrangementOrder: ["intro", "hook", "verse1", "hook", "outro"],
+    hookStructure: "few words, silence matters, emotional weight per word",
+    chorusLengthPattern: "minimal 2-to-4-line hook",
+    energyCurve: "low pressure \u2192 exposed center \u2192 quiet aftershock",
+    urgencyLevel: "intimate, sparse, wounded",
+    artistMindset: "an artist saying less because each word costs something",
+    sectionLineTargets: { intro: [2], hook: [2, 4], verse1: [8], verse2: [], bridge: [], outro: [2] }
+  },
+  {
+    dnaMode: "MAXIMAL MODE",
+    emotionalLens: "Defiance",
+    arrangementOrder: ["verse1", "hook", "verse2", "bridge", "hook", "outro"],
+    hookStructure: "dense lyrical hook with layered meaning and heavy imagery",
+    chorusLengthPattern: "full 8-line chorus",
+    energyCurve: "dense build \u2192 heavy peak \u2192 wider final statement",
+    urgencyLevel: "urgent, loaded, cinematic",
+    artistMindset: "an artist unloading a complete worldview in one record",
+    sectionLineTargets: { verse1: [16], hook: [8], verse2: [16], bridge: [4], outro: [4] }
+  }
+];
+var emotionalLensPool = ["Pain", "Power", "Reflection", "Survival", "Celebration", "Confusion", "Faith", "Defiance"];
+function pickRandomItem(items, reject) {
+  const available = reject ? items.filter((item) => !reject(item)) : items;
+  const pool2 = available.length > 0 ? available : items;
+  return pool2[Math.floor(Math.random() * pool2.length)];
+}
+function createDiversityProfile() {
+  const base = pickRandomItem(
+    diversityProfiles,
+    (profile2) => profile2.hookStructure === lastDiversitySignature.hookStructure || profile2.chorusLengthPattern === lastDiversitySignature.chorusLengthPattern || profile2.energyCurve === lastDiversitySignature.energyCurve
+  );
+  const emotionalLens = pickRandomItem(emotionalLensPool, (lens) => lens === lastDiversitySignature.emotionalLens);
+  const profile = { ...base, emotionalLens };
+  lastDiversitySignature = {
+    hookStructure: profile.hookStructure,
+    emotionalLens: profile.emotionalLens,
+    chorusLengthPattern: profile.chorusLengthPattern,
+    energyCurve: profile.energyCurve
+  };
+  return profile;
+}
+function formatSectionTargets(profile) {
+  return ["intro", "hook", "verse1", "verse2", "bridge", "outro"].map((section) => {
+    const target = profile.sectionLineTargets[section];
+    if (!target || target.length === 0) return `${section}: [] empty / not used in this arrangement`;
+    return `${section}: ${target.join(" or ")} lines`;
+  }).join("\n");
+}
+function buildDiversityDirective(profile) {
+  return [
+    "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
+    "AFROMUSE DIVERSITY ENGINE \u2014 REAL FIX V2",
+    "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
+    "This profile was randomly assigned before writing. It overrides any default song-shape instincts.",
+    `DNA MODE: ${profile.dnaMode}`,
+    `EMOTIONAL LENS: ${profile.emotionalLens}`,
+    `ARTIST MINDSET: ${profile.artistMindset}`,
+    `URGENCY LEVEL: ${profile.urgencyLevel}`,
+    `HOOK STRUCTURE: ${profile.hookStructure}`,
+    `CHORUS LENGTH PATTERN: ${profile.chorusLengthPattern}`,
+    `ENERGY CURVE: ${profile.energyCurve}`,
+    `ARRANGEMENT ORDER: ${profile.arrangementOrder.join(" \u2192 ")}`,
+    "",
+    "HARD ANTI-REPEAT RULE:",
+    "Do NOT write the default intro \u2192 verse \u2192 chorus \u2192 verse \u2192 chorus \u2192 bridge \u2192 chorus shape.",
+    "Do NOT use the same hook structure, emotional tone, chorus length pattern, or energy curve as a generic AfroMuse output.",
+    "The song must feel like a different person: different artist mood, different mindset, different urgency level.",
+    "Use ONE emotional lens only. Do not blend pain + power + faith + motivation into the same emotional soup.",
+    "",
+    "SECTION TARGETS:",
+    formatSectionTargets(profile),
+    "",
+    "OUTPUT COMPATIBILITY:",
+    "Return all section keys: intro, hook, verse1, verse2, bridge, outro.",
+    "If a section is not used by this arrangement, return it as an empty array [].",
+    "Also include diversityReport with dnaMode, emotionalLens, arrangementOrder, hookStructure, chorusLengthPattern, energyCurve, urgencyLevel, and artistMindset.",
+    "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"
+  ];
+}
 var SYSTEM_PROMPT = `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 AFROMUSE MASTER ENGINE V13 \u2014 VIRAL HIT GENERATOR
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
@@ -68912,17 +69029,18 @@ After generating the first draft \u2014 silently run this auto-improve pass:
   \u2192 Bridge must reveal something new or strip the song to its raw truth
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
-CHORUS ENGINE V13 \u2014 AUTO 8-LINE BUILDER
+CHORUS ENGINE V13 \u2014 FLEXIBLE BUILDER
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
-Once the winning hook is selected, expand it using this exact 8-line structure:
+Once the winning hook is selected, expand it according to the active Diversity Engine chorus length pattern:
 
-Line 1\u20132: Hook repetition (selected hook, slight variation allowed)
-Line 3\u20134: Emotional expansion (deepen the feeling \u2014 why this matters)
-Line 5\u20136: Rhythm bounce (short, punchy chant lines \u2014 maximum crowd energy)
-Line 7\u20138: Final hook impact (land it \u2014 strongest, most memorable close)
+REPETITION MODE: repeat heavily.
+STORY MODE: keep the hook light and let verses dominate.
+CHAOS MODE: use broken/irregular phrasing.
+MINIMAL MODE: use very few words and let space matter.
+MAXIMAL MODE: dense, layered, imagistic chorus.
 
-This is the CHORUS LAW. No deviations. No exceptions.
+Do NOT force every chorus into the same 8-line structure.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 REPLAY TRIGGER SYSTEM (MINIMUM 2 REQUIRED)
@@ -68976,19 +69094,12 @@ You ONLY think in the target language. Before writing each line: form the idea i
 If structure feels like English \u2192 REWRITE.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
-STRUCTURE LOCK (HIGHEST PRIORITY)
+STRUCTURE DIVERSITY LOCK (HIGHEST PRIORITY)
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
-You MUST follow EXACTLY:
-[ CHORUS ] 8 lines
-[ VERSE 1 ] 8 lines
-[ CHORUS ]
-[ VERSE 2 ] 8 lines
-[ CHORUS ]
-[ BRIDGE ] 4\u20136 lines
-[ FINAL CHORUS ] 8 lines
-
-DO NOT write fewer or more lines. Count before output.
+You MUST follow the active Diversity Engine arrangement order and section line targets in the user prompt.
+Do NOT default to intro \u2192 verse \u2192 chorus \u2192 verse \u2192 chorus \u2192 bridge \u2192 chorus.
+Unused sections must be empty arrays [] so the app can render the draft safely.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 V14 \u2014 GLOBAL HIT ENGINE
@@ -69146,6 +69257,16 @@ Score honestly. If the song is only a niche hit, say so.
   uniquenessScore: integer 0\u2013100 (honest: how different does this feel from a template?)
   chorusLineCount: integer (the actual number of lines in this song's chorus)
   identityReasoning: short string \u2014 why this identity was chosen for this topic/mood/genre
+
+"diversityReport" object:
+  dnaMode: "REPETITION MODE" or "STORY MODE" or "CHAOS MODE" or "MINIMAL MODE" or "MAXIMAL MODE"
+  emotionalLens: "Pain" or "Power" or "Reflection" or "Survival" or "Celebration" or "Confusion" or "Faith" or "Defiance"
+  arrangementOrder: array of section keys in the actual song order
+  hookStructure: string
+  chorusLengthPattern: string
+  energyCurve: string
+  urgencyLevel: string
+  artistMindset: string
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 OUTPUT
@@ -69920,39 +70041,22 @@ function buildUserPrompt(params, strictMode = false) {
     hookRepeat = "Medium",
     lyricsSource = "Studio Lyrics",
     genderVoiceModel = "Random",
-    performanceFeel = "Smooth"
+    performanceFeel = "Smooth",
+    diversityProfile
   } = params;
   const effectiveFlavor = customLanguage?.trim() ? customLanguage.trim() : languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
   const v2StructureRules = [
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
-    "V2 SONG STRUCTURE \u2014 ABSOLUTE HARD LAW",
+    "V2 SONG STRUCTURE \u2014 DIVERSITY-AWARE LAW",
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501",
-    "Every generation MUST follow this structure. No deviations. No exceptions.",
-    "",
-    "\u2726 INTRO: EXACTLY 2 or 4 lines \u2014 atmosphere and tension only \u2014 NO hook delivery \u2014 NOT a chorus \u2014 NOT a verse",
-    "  \u2192 The intro sets the sonic world. It is a whisper, a cinematic teaser. It must NEVER carry the keeper line.",
-    "  \u2192 If you reach 4 intro lines, STOP. Do not write a 5th intro line under any circumstance.",
-    "",
-    "\u2726 VERSE 1: EXACTLY 8, 12, or 16 lines (multiples of 4 only) \u2014 deep storytelling \u2014 build emotional world",
-    "  \u2192 Write in clean 4-bar groups. Each group must push the story forward.",
-    "",
-    "\u2726 CHORUS: EXACTLY 4, 6, or 8 lines \u2014 main keeper line MUST appear here \u2014 highest energy, strongest replay",
-    "  \u2192 This is the emotional peak. The listener must feel a clear LIFT when it arrives.",
-    "  \u2192 If 6 lines: 4 core hook lines + 2 chant/tag lines.",
-    "",
-    "\u2726 VERSE 2: EXACTLY same line count as Verse 1 \u2014 new angle, deeper emotional territory \u2014 never repeat Verse 1",
-    "",
-    "\u2726 BRIDGE: EXACTLY 4 lines \u2014 NO MORE, NO LESS \u2014 reflective turn or emotional intensifier \u2014 HARD LAW",
-    "  \u2192 Count the bridge lines before writing them. Count again after. If not exactly 4 \u2192 rewrite immediately.",
-    "  \u2192 Bridge must NOT be a mini-chorus. Must NOT repeat chorus lines. Must NOT exceed 4 lines.",
-    "",
-    "\u2726 OUTRO: EXACTLY 2 or 4 lines \u2014 emotional fade and close \u2014 main keeper line MUST appear here",
-    "  \u2192 Label this section ONLY as 'Outro.' Never use 'Outro / Final Chorus' or slash labels.",
-    "  \u2192 The outro closes and lands. It does not relaunch or wander.",
+    "Every generation MUST follow the assigned Diversity Engine arrangement, not the old default shape.",
+    "The section arrays are compatibility containers. The actual song order is arrangementOrder.",
+    "Unused compatibility containers must be empty arrays [].",
+    "Active section line counts must match SECTION TARGETS from the Diversity Engine block.",
     "",
     "STRUCTURE VALIDATOR \u2014 MANDATORY BEFORE OUTPUT:",
-    "Count lines in EVERY section. If ANY count is wrong \u2192 rewrite that section before returning output.",
-    "Intro \u2260 2 or 4? Rewrite. Verse \u2260 8/12/16? Rewrite. Chorus \u2260 4/6/8? Rewrite. Bridge \u2260 4? Rewrite. Outro \u2260 2 or 4? Rewrite.",
+    "Count lines in EVERY active section. If ANY active count is wrong \u2192 rewrite that section before returning output.",
+    "If a section is not in arrangementOrder, return [] for that section unless the Diversity Engine explicitly gives it a line target.",
     "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"
   ];
   const lines = [
@@ -69977,6 +70081,9 @@ function buildUserPrompt(params, strictMode = false) {
     `Hook Intensity: ${hitmakerMode ? "HIGH \u2014 prioritize viral, repeatable hook" : "NORMAL"}`,
     ...style ? ["", `Artist Style Reference: ${style}`] : [],
     ...notes ? [`Creative Notes: ${notes}`] : [],
+    "",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    ...buildDiversityDirective(diversityProfile),
     "",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
     ...customLanguage?.trim() ? [
@@ -70210,13 +70317,13 @@ function buildUserPrompt(params, strictMode = false) {
     `\u2713 CONSISTENCY ENFORCEMENT: the dialect standard must hold from the first intro line to the last outro line. If ANY section drifts toward English-first construction, rewrite it before returning the output.`,
     `\u2713 HOOK SIMPLICITY: the best hook is the simplest, most honest, most natural version of what this song is feeling \u2014 not the most poetic or complex. If the hook sounds over-written, simplify it.`,
     "\u2713 KEEPER LINE: silently generate 1 MAIN KEEPER LINE + 2 BACKUP KEEPER LINES before writing",
-    "\u2713 MAIN KEEPER LINE: must appear in BOTH the Chorus (hook) AND the Outro \u2014 this is non-negotiable",
-    "\u2713 INTRO DISCIPLINE: intro is atmospheric only \u2014 it must NOT deliver the hook \u2014 if the intro could be mistaken for a chorus, rewrite it",
+    "\u2713 MAIN KEEPER LINE: must appear in the hook and in the final active section of the assigned Diversity arrangement",
+    "\u2713 INTRO DISCIPLINE: if intro is active, it is atmospheric only \u2014 if intro is inactive, return intro: []",
     "\u2713 TITLE: derive from the keeper line \u2014 1 to 5 words, emotionally sharp, commercially credible",
     "\u2713 HOOK ENFORCER: before finalizing chorus, run 5 checks \u2014 (1) would fans scream this live? (2) is it caption-worthy? (3) is it simple and memorable? (4) does it match verse emotion? (5) is it unique? \u2014 if any NO \u2192 rewrite",
     "\u2713 VERSE QUALITY: every 4-bar group must advance the story \u2014 no filler, no repeated imagery from Verse 1 to Verse 2",
-    "\u2713 BRIDGE LAW: exactly 4 lines, no exceptions \u2014 reflective or intensifying \u2014 turns the emotional direction of the record",
-    "\u2713 OUTRO LABEL: label as 'Outro' only \u2014 never 'Outro / Final Chorus' \u2014 write as a closer, not a launcher",
+    "\u2713 BRIDGE LAW: if bridge is active, exactly 4 lines \u2014 if inactive, bridge: []",
+    "\u2713 OUTRO LABEL: if outro is active, label as 'Outro' only \u2014 if inactive, outro: []",
     "\u2713 NATURALNESS: reject any line that sounds robotic, formal, or AI-generated \u2014 every line must be singable by a real artist in one take",
     "\u2713 TIGHTNESS: fewer, stronger lines \u2014 every line must earn its place \u2014 simpler and more direct always beats longer and more elaborate",
     "\u2713 SING IT, DON'T EXPLAIN IT: never over-explain feelings \u2014 embody them in short, direct, recordable lines \u2014 no essays disguised as lyrics",
@@ -70229,7 +70336,8 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2713 FIRST DRAFT QUALITY MANDATE: all rules verified \u2014 output must already feel artist-ready before any humanize or enhancement pass",
     "\u2713 V13 HOOK AUTO-REWRITE: generate 3 hook variants (A=Viral ultra-short chantable, B=Emotional deeper musical, C=Drill aggressive punchy) \u2014 score all 3 using viral factors \u2014 select winner \u2014 use winner in chorus",
     "\u2713 V13 VIRALITY ENGINE: score each hook on 5 factors (chantability 0-20, tiktokFit 0-20, repetitionPower 0-20, emotionalPunch 0-20, beatSync 0-20) \u2014 total 0-100 \u2014 pick highest scorer",
-    "\u2713 V13 CHORUS ENGINE: 8 lines exactly \u2014 Lines 1\u20132: selected hook repetition, Lines 3\u20134: emotional expansion, Lines 5\u20136: short punchy rhythm bounce, Lines 7\u20138: final hook impact",
+    `\u2713 DIVERSITY ENGINE ACTIVE: ${diversityProfile.dnaMode} / ${diversityProfile.emotionalLens} / ${diversityProfile.chorusLengthPattern} / ${diversityProfile.energyCurve}`,
+    "\u2713 V13 CHORUS ENGINE: chorus length and repeat behavior must follow the assigned Diversity Engine chorus length pattern \u2014 do not force 8 lines unless MAXIMAL MODE assigned it",
     "\u2713 V13 VERSE INTELLIGENCE: setup \u2192 pressure build \u2192 emotional turn moment \u2192 resolution \u2014 emotion shifts every 4 lines \u2014 mandatory turn moment per verse",
     "\u2713 V13 AUTO-IMPROVER: fix chorus (sentences\u2192hooks), fix verses (no repetition, emotional movement), fix bridge (mandatory emotional shift \u2014 NOT a mini-chorus)",
     "\u2713 V13 LANGUAGE FLOW: NO repeated full sentence structures \u2014 vary rhythm every 1\u20132 lines \u2014 broken phrasing, partial repetition, natural speech rhythm",
@@ -70251,7 +70359,7 @@ function buildUserPrompt(params, strictMode = false) {
     "\u2713 V14 LANGUAGE GLOBALIZATION: eliminate AI sentence stacking \u2014 balance local dialect + English naturally \u2014 rhythm-first phrasing \u2014 output must sound like a real artist, not a translation engine",
     "\u2713 V14 MARKET NOTES: brief note for each market (uk, us, afro, tiktok) explaining fit or what needs adjustment",
     "\u2713 V14 GLOBAL SCORE: calculate overall globalScore 0-100 from average of platform scores and market fit",
-    "\u2713 OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), globalReleaseReport (globalScore, ukFit, usFit, afroFit, tiktokFit, platformScores, hitPositioning, hookHitsAt, hookTimingPass, commercialVersion, marketNotes), songIdentityReport (selectedIdentity, hookStyle, replayType, uniquenessScore, chorusLineCount, identityReasoning), hitPrediction",
+    "\u2713 OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, diversityReport, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), globalReleaseReport (globalScore, ukFit, usFit, afroFit, tiktokFit, platformScores, hitPositioning, hookHitsAt, hookTimingPass, commercialVersion, marketNotes), songIdentityReport (selectedIdentity, hookStyle, replayType, uniquenessScore, chorusLineCount, identityReasoning), hitPrediction",
     "",
     "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
     "FINAL LANGUAGE ENFORCEMENT",
@@ -70276,39 +70384,22 @@ function buildUserPrompt(params, strictMode = false) {
   }
   return lines.join("\n");
 }
-var VALID_INTRO_COUNTS = /* @__PURE__ */ new Set([2, 4]);
-var VALID_VERSE_COUNTS = /* @__PURE__ */ new Set([8, 12, 16]);
-var VALID_HOOK_COUNTS = /* @__PURE__ */ new Set([4, 6, 8]);
-var VALID_OUTRO_COUNTS = /* @__PURE__ */ new Set([2, 4, 8]);
-var BRIDGE_COUNT = 4;
-function validateStructure(draft) {
+function validateStructure(draft, profile) {
   const failures = [];
-  const introLen = Array.isArray(draft.intro) ? draft.intro.length : -1;
-  if (!VALID_INTRO_COUNTS.has(introLen)) {
-    failures.push(`intro has ${introLen} lines \u2014 must be exactly 2 or 4`);
-  }
-  const verse1Len = Array.isArray(draft.verse1) ? draft.verse1.length : -1;
-  if (!VALID_VERSE_COUNTS.has(verse1Len)) {
-    failures.push(`verse1 has ${verse1Len} lines \u2014 must be 8, 12, or 16`);
-  }
-  const hookLen = Array.isArray(draft.hook) ? draft.hook.length : -1;
-  if (!VALID_HOOK_COUNTS.has(hookLen)) {
-    failures.push(`hook/chorus has ${hookLen} lines \u2014 must be 4, 6, or 8`);
-  }
-  const verse2Len = Array.isArray(draft.verse2) ? draft.verse2.length : -1;
-  if (!VALID_VERSE_COUNTS.has(verse2Len)) {
-    failures.push(`verse2 has ${verse2Len} lines \u2014 must be 8, 12, or 16`);
-  }
-  if (verse1Len > 0 && verse2Len > 0 && verse1Len !== verse2Len) {
-    failures.push(`verse1 (${verse1Len} lines) and verse2 (${verse2Len} lines) must have the same line count`);
-  }
-  const bridgeLen = Array.isArray(draft.bridge) ? draft.bridge.length : -1;
-  if (bridgeLen !== BRIDGE_COUNT) {
-    failures.push(`bridge has ${bridgeLen} lines \u2014 must be exactly 4`);
-  }
-  const outroLen = Array.isArray(draft.outro) ? draft.outro.length : -1;
-  if (!VALID_OUTRO_COUNTS.has(outroLen)) {
-    failures.push(`outro has ${outroLen} lines \u2014 must be 2, 4, or 8`);
+  const sections = ["intro", "hook", "verse1", "verse2", "bridge", "outro"];
+  for (const section of sections) {
+    const value = draft[section];
+    const len = Array.isArray(value) ? value.length : -1;
+    const targets = profile.sectionLineTargets[section] ?? [];
+    if (targets.length === 0) {
+      if (Array.isArray(value) && value.length > 0) {
+        failures.push(`${section} has ${len} lines \u2014 this Diversity Engine arrangement requires an empty array`);
+      }
+      continue;
+    }
+    if (!targets.includes(len)) {
+      failures.push(`${section} has ${len} lines \u2014 expected ${targets.join(" or ")} for ${profile.dnaMode}`);
+    }
   }
   return { valid: failures.length === 0, failures };
 }
@@ -70317,18 +70408,23 @@ var LLAMA_70B_FLOW_MODEL = { id: "meta/llama-3.3-70b-instruct", name: "Llama-3.3
 var MAVERICK_FLOW_BACKUP = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick", temperature: 0.78 };
 function draftToLyricsText(draft) {
   const sections = [];
-  if (Array.isArray(draft.intro)) sections.push(`[Intro]
-${draft.intro.join("\n")}`);
-  if (Array.isArray(draft.verse1)) sections.push(`[Verse 1]
-${draft.verse1.join("\n")}`);
-  if (Array.isArray(draft.hook)) sections.push(`[Chorus]
-${draft.hook.join("\n")}`);
-  if (Array.isArray(draft.verse2)) sections.push(`[Verse 2]
-${draft.verse2.join("\n")}`);
-  if (Array.isArray(draft.bridge)) sections.push(`[Bridge]
-${draft.bridge.join("\n")}`);
-  if (Array.isArray(draft.outro)) sections.push(`[Outro]
-${draft.outro.join("\n")}`);
+  const order = Array.isArray(draft.diversityReport) ? [] : draft.diversityReport?.arrangementOrder;
+  const sectionMap = {
+    intro: { label: "Intro", lines: draft.intro },
+    hook: { label: "Chorus", lines: draft.hook },
+    verse1: { label: "Verse 1", lines: draft.verse1 },
+    verse2: { label: "Verse 2", lines: draft.verse2 },
+    bridge: { label: "Bridge / Break", lines: draft.bridge },
+    outro: { label: "Outro", lines: draft.outro }
+  };
+  const keys = order?.length ? order : ["intro", "verse1", "hook", "verse2", "bridge", "outro"];
+  for (const key of keys) {
+    const section = sectionMap[key];
+    if (Array.isArray(section.lines) && section.lines.length > 0) {
+      sections.push(`[${section.label}]
+${section.lines.join("\n")}`);
+    }
+  }
   return sections.join("\n\n");
 }
 router2.post("/generate-song", async (req, res) => {
@@ -70373,6 +70469,7 @@ router2.post("/generate-song", async (req, res) => {
   const selectedRepeat = hookRepeat ?? "Medium";
   const selectedGender = genderVoiceModel ?? "Random";
   const selectedFeel = performanceFeel ?? "Smooth";
+  const diversityProfile = createDiversityProfile();
   const promptParams = {
     topic,
     genre: selectedGenre,
@@ -70394,15 +70491,9 @@ router2.post("/generate-song", async (req, res) => {
     hookRepeat: selectedRepeat,
     lyricsSource: lyricsSource ?? "Studio Lyrics",
     genderVoiceModel: selectedGender,
-    performanceFeel: selectedFeel
+    performanceFeel: selectedFeel,
+    diversityProfile
   };
-  const userPrompt = buildUserPrompt({
-    idea: req.body.idea,
-    genre: req.body.genre,
-    mood: req.body.mood,
-    language: req.body.language,
-    customLanguage: req.body.customLanguage
-  });
   const ai = new OpenAI({
     apiKey,
     baseURL: "https://integrate.api.nvidia.com/v1"
@@ -70416,13 +70507,13 @@ router2.post("/generate-song", async (req, res) => {
       return null;
     }
   };
-  const callLyricsModel = async (model, userPrompt2) => {
+  const callLyricsModel = async (model, userPrompt) => {
     try {
       const response = await ai.chat.completions.create({
         model: model.id,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: userPrompt2 }
+          { role: "user", content: userPrompt }
         ],
         temperature: model.temperature,
         top_p: 0.95,
@@ -70430,7 +70521,7 @@ router2.post("/generate-song", async (req, res) => {
       });
       const raw = response.choices[0]?.message?.content ?? "";
       const draft = parseJson(raw);
-      const validation = draft ? validateStructure(draft) : { valid: false, failures: ["parse error"] };
+      const validation = draft ? validateStructure(draft, diversityProfile) : { valid: false, failures: ["parse error"] };
       return { model: model.name, draft, validation };
     } catch (err) {
       logger.warn({ model: model.name, err }, "Lyrics model call failed");
@@ -70480,9 +70571,9 @@ router2.post("/generate-song", async (req, res) => {
     return await tryFlow(MAVERICK_FLOW_BACKUP);
   };
   try {
-    const userPrompt2 = buildUserPrompt(promptParams, false);
+    const userPrompt = buildUserPrompt(promptParams, false);
     logger.info("Starting Llama-4-Maverick lyrics generation (round 1)");
-    const result1 = await callLyricsModel(LLAMA_MAVERICK_MODEL, userPrompt2);
+    const result1 = await callLyricsModel(LLAMA_MAVERICK_MODEL, userPrompt);
     let finalLyricsDraft = null;
     if (result1.validation.valid) {
       logger.info({ model: result1.model }, "Llama-4-Maverick passed structure validation (round 1)");
@@ -70512,7 +70603,17 @@ router2.post("/generate-song", async (req, res) => {
     }
     const mergedDraft = {
       ...finalLyricsDraft,
-      ...flowData ?? {}
+      ...flowData ?? {},
+      diversityReport: {
+        dnaMode: diversityProfile.dnaMode,
+        emotionalLens: diversityProfile.emotionalLens,
+        arrangementOrder: diversityProfile.arrangementOrder,
+        hookStructure: diversityProfile.hookStructure,
+        chorusLengthPattern: diversityProfile.chorusLengthPattern,
+        energyCurve: diversityProfile.energyCurve,
+        urgencyLevel: diversityProfile.urgencyLevel,
+        artistMindset: diversityProfile.artistMindset
+      }
     };
     res.json({ draft: mergedDraft });
   } catch (err) {

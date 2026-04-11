@@ -441,14 +441,28 @@ export default function Studio() {
     orange: "bg-orange-500/20 border-orange-500/30 text-orange-400",
   };
 
-  const LYRICS_SECTIONS = draft ? [
-    ...(draft.intro?.length ? [{ label: "Intro", lines: draft.intro }] : []),
-    { label: "Hook", lines: draft.hook },
-    { label: "Verse 1", lines: draft.verse1 },
-    ...(draft.verse2?.length ? [{ label: "Verse 2", lines: draft.verse2 }] : []),
-    ...(draft.bridge?.length ? [{ label: "Bridge", lines: draft.bridge }] : []),
-    ...(draft.outro?.length ? [{ label: "Outro", lines: draft.outro }] : []),
-  ] : [];
+  const LYRICS_SECTIONS = draft ? (() => {
+    const sectionMap: Record<string, { label: string; lines?: string[] }> = {
+      intro: { label: "Intro", lines: draft.intro },
+      hook: { label: "Hook", lines: draft.hook },
+      verse1: { label: "Verse 1", lines: draft.verse1 },
+      verse2: { label: "Verse 2", lines: draft.verse2 },
+      bridge: { label: draft.diversityReport?.dnaMode === "CHAOS MODE" ? "Break" : "Bridge", lines: draft.bridge },
+      outro: { label: "Outro", lines: draft.outro },
+    };
+    const order = draft.diversityReport?.arrangementOrder;
+    return (order?.length
+      ? order.map((key) => sectionMap[key])
+      : [
+          ...(draft.intro?.length ? [sectionMap.intro] : []),
+          sectionMap.hook,
+          sectionMap.verse1,
+          ...(draft.verse2?.length ? [sectionMap.verse2] : []),
+          ...(draft.bridge?.length ? [sectionMap.bridge] : []),
+          ...(draft.outro?.length ? [sectionMap.outro] : []),
+        ]
+    ).filter((section): section is { label: string; lines: string[] } => Boolean(section?.lines?.length));
+  })() : [];
 
   return (
     <div className="min-h-screen bg-[#080810] text-white overflow-x-hidden">
@@ -1450,6 +1464,34 @@ export default function Studio() {
                             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Keeper Line</span>
                           </div>
                           <p className="text-base font-semibold text-white/90 italic leading-relaxed">"{draft.keeperLine}"</p>
+                        </div>
+                      )}
+
+                      {draft.diversityReport && (
+                        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-5 py-4">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Dna className="w-3.5 h-3.5 text-cyan-300" />
+                            <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">Diversity Engine</span>
+                          </div>
+                          <div className="grid md:grid-cols-4 gap-2 mb-3">
+                            {draft.diversityReport.dnaMode && (
+                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.dnaMode}</span>
+                            )}
+                            {draft.diversityReport.emotionalLens && (
+                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">Lens: {draft.diversityReport.emotionalLens}</span>
+                            )}
+                            {draft.diversityReport.chorusLengthPattern && (
+                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.chorusLengthPattern}</span>
+                            )}
+                            {draft.diversityReport.urgencyLevel && (
+                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.urgencyLevel}</span>
+                            )}
+                          </div>
+                          {draft.diversityReport.arrangementOrder?.length && (
+                            <p className="text-xs text-white/45 leading-relaxed">
+                              Arrangement: {draft.diversityReport.arrangementOrder.join(" → ")}
+                            </p>
+                          )}
                         </div>
                       )}
 

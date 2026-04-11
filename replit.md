@@ -11,6 +11,13 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - The development PostgreSQL database is provisioned through Replit and the Drizzle schema has been pushed for local startup.
 - Vite is configured with `allowedHosts: true` and a strict configured port for predictable Replit preview behavior.
 
+## AfroMuse Diversity Engine V2
+
+- Song generation now assigns a random DNA mode on each request: Repetition, Story, Chaos, Minimal, or Maximal.
+- The backend tracks the previous generation in memory and avoids repeating the same hook structure, emotional lens, chorus length pattern, or energy curve consecutively.
+- The old fixed song shape is no longer enforced; the prompt now sends an explicit `arrangementOrder` and line targets per section.
+- Generated drafts include a `diversityReport`, and the frontend lyric display plus clipboard export follow the generated arrangement order.
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces
