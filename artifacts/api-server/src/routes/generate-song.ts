@@ -3328,6 +3328,38 @@ INTENSITY RULES:
 → Verses should always feel lower energy than the chorus they precede
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LINE QUALITY SCORING SYSTEM (SILENT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before keeping any line, silently score it across four dimensions.
+If it fails any one of them → rewrite before moving on.
+
+1. SHARPNESS — does the line cut?
+→ PASS: the line makes an impact on its own — it could be quoted
+→ FAIL: the line is vague, filler, or could appear in any song on any topic
+→ If FAIL: make it more specific, more direct, more precise
+
+2. SPECIFICITY — does it contain a real detail?
+→ PASS: names a moment, place, action, time, sensory detail, or feeling with precision
+→ FAIL: states an emotion or situation in abstract or general terms
+→ If FAIL: ground it — add the time, the place, the thing that was seen or heard
+
+3. SINGABILITY — does it flow on beat?
+→ PASS: can be performed naturally in one breath without rushing or stumbling
+→ FAIL: too long, grammatically stiff, or awkward to say aloud at speed
+→ If FAIL: cut words, restructure, or break across two lines
+
+4. ORIGINALITY — could this line be in 100 other songs?
+→ PASS: the phrasing is fresh — it belongs to THIS song and THIS moment
+→ FAIL: it is a stock phrase, a familiar construction, or a generic observation
+→ If FAIL: find the specific angle that makes this thought unique to this song
+
+SCORING THRESHOLD:
+→ A line must PASS all four dimensions to be kept
+→ One FAIL = mandatory rewrite — not optional, not a suggestion
+→ Do not move to the next line until the current line passes all four
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ANTI-REPETITION RULE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

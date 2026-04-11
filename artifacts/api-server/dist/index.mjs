@@ -71219,6 +71219,38 @@ INTENSITY RULES:
 \u2192 Verses should always feel lower energy than the chorus they precede
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+LINE QUALITY SCORING SYSTEM (SILENT)
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Before keeping any line, silently score it across four dimensions.
+If it fails any one of them \u2192 rewrite before moving on.
+
+1. SHARPNESS \u2014 does the line cut?
+\u2192 PASS: the line makes an impact on its own \u2014 it could be quoted
+\u2192 FAIL: the line is vague, filler, or could appear in any song on any topic
+\u2192 If FAIL: make it more specific, more direct, more precise
+
+2. SPECIFICITY \u2014 does it contain a real detail?
+\u2192 PASS: names a moment, place, action, time, sensory detail, or feeling with precision
+\u2192 FAIL: states an emotion or situation in abstract or general terms
+\u2192 If FAIL: ground it \u2014 add the time, the place, the thing that was seen or heard
+
+3. SINGABILITY \u2014 does it flow on beat?
+\u2192 PASS: can be performed naturally in one breath without rushing or stumbling
+\u2192 FAIL: too long, grammatically stiff, or awkward to say aloud at speed
+\u2192 If FAIL: cut words, restructure, or break across two lines
+
+4. ORIGINALITY \u2014 could this line be in 100 other songs?
+\u2192 PASS: the phrasing is fresh \u2014 it belongs to THIS song and THIS moment
+\u2192 FAIL: it is a stock phrase, a familiar construction, or a generic observation
+\u2192 If FAIL: find the specific angle that makes this thought unique to this song
+
+SCORING THRESHOLD:
+\u2192 A line must PASS all four dimensions to be kept
+\u2192 One FAIL = mandatory rewrite \u2014 not optional, not a suggestion
+\u2192 Do not move to the next line until the current line passes all four
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 ANTI-REPETITION RULE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
