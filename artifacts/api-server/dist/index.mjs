@@ -71207,6 +71207,22 @@ STIFFNESS TEST \u2014 APPLY BEFORE FINALIZING EVERY LINE:
 IF LANGUAGE FEELS STIFF \u2192 REWRITE AUTOMATICALLY:
 Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
 
+TWI FLOW NATURALIZATION (activates when language is Twi or Ghanaian):
+\u2192 Avoid repetitive spiritual filler phrases \u2014 do not loop the same phrase with minor changes
+\u2192 Use conversational Twi structure, not formal or ceremonial repetition
+\u2192 Prioritize meaning over word recycling \u2014 each line must say something new
+\u2192 Allow emotional storytelling instead of mantra-style looping
+
+BANNED PATTERN IN TWI \u2014 never repeat the same phrase block across consecutive lines:
+\u2717 "Y\u025Bn nsa ahy\u025B ase" repeated more than once in any section
+
+REQUIRED VARIATION \u2014 when returning to a similar idea, rephrase it completely:
+\u2192 Instead of repeating: use variations like:
+   "y\u025Bn gyidi na \u025Bk\u0254 so" (our faith keeps moving)
+   "y\u025Bn nsa mu d\u0254m no k\u0254 anim" (the work of our hands advances)
+   "y\u025Bn akwantu no nni awie\u025B" (our journey has no end)
+\u2192 Each return to a theme must come from a new angle \u2014 new image, new verb, new emotional position
+
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 EMOTIONAL INTENSITY CURVE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
