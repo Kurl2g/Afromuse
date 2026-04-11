@@ -55,6 +55,15 @@ export interface SongDraft {
     verdict?: string;
     suggestion?: string | null;
   };
+  // V15 Song Identity Engine fields
+  songIdentityReport?: {
+    selectedIdentity?: string;
+    hookStyle?: string;
+    replayType?: string;
+    uniquenessScore?: number | string;
+    chorusLineCount?: number | string;
+    identityReasoning?: string;
+  };
   // V14 Global Hit Engine fields
   globalReleaseReport?: {
     globalScore?: number | string;

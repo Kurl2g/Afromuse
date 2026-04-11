@@ -25,17 +25,18 @@ type GenerationStatus = "idle" | "generating" | "done";
 type StudioTab = "lyric" | "audio" | "release";
 
 const generatingSteps = [
+  "Selecting song identity...",
+  "Shaping chorus for identity type...",
   "Finding your keeper line...",
   "Generating hook variants A, B, C...",
-  "Scoring viral factors...",
-  "Selecting strongest hook...",
+  "Running hook quality checks...",
   "Building verse story arcs...",
   "Running auto-improver pass...",
   "Testing hook globalization...",
   "Scoring platform markets...",
   "Running A&R + streaming engine...",
   "Positioning for global markets...",
-  "Finalising V14 draft...",
+  "Finalising V15 draft...",
 ];
 
 const GENRES = [
@@ -1639,6 +1640,86 @@ export default function Studio() {
                                     </p>
                                   )}
                                 </div>
+                              </div>
+                            )}
+
+                          </div>
+                        </div>
+                      )}
+
+                      {/* V15 Song Identity Report */}
+                      {draft.songIdentityReport && (
+                        <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-b from-orange-500/5 to-transparent overflow-hidden">
+                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-orange-500/10">
+                            <div className="flex items-center gap-2">
+                              <Wand2 className="w-3.5 h-3.5 text-orange-400" />
+                              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Song Identity Engine — V15</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {draft.songIdentityReport.selectedIdentity && (
+                                <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                                  draft.songIdentityReport.selectedIdentity === "SPIRITUAL"
+                                    ? "bg-violet-500/15 border-violet-500/30 text-violet-400"
+                                    : draft.songIdentityReport.selectedIdentity === "DRILL"
+                                    ? "bg-slate-500/20 border-slate-400/30 text-slate-300"
+                                    : draft.songIdentityReport.selectedIdentity === "EMOTIONAL"
+                                    ? "bg-pink-500/15 border-pink-500/30 text-pink-400"
+                                    : draft.songIdentityReport.selectedIdentity === "HUSTLE"
+                                    ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+                                    : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                }`}>
+                                  {draft.songIdentityReport.selectedIdentity === "SPIRITUAL" ? "Worship Anthem" :
+                                   draft.songIdentityReport.selectedIdentity === "DRILL" ? "Street Banger" :
+                                   draft.songIdentityReport.selectedIdentity === "EMOTIONAL" ? "Story Song" :
+                                   draft.songIdentityReport.selectedIdentity === "HUSTLE" ? "Money Anthem" :
+                                   draft.songIdentityReport.selectedIdentity === "STADIUM" ? "Stadium Chant" :
+                                   draft.songIdentityReport.selectedIdentity}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="p-5 space-y-4">
+
+                            {/* Key Stats Row */}
+                            <div className="grid grid-cols-4 gap-2">
+                              {draft.songIdentityReport.uniquenessScore !== undefined && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Unique</span>
+                                  <span className={`text-2xl font-black leading-none ${
+                                    Number(draft.songIdentityReport.uniquenessScore) >= 85 ? "text-emerald-400" :
+                                    Number(draft.songIdentityReport.uniquenessScore) >= 65 ? "text-yellow-400" :
+                                    "text-orange-400"
+                                  }`}>{draft.songIdentityReport.uniquenessScore}</span>
+                                  <span className="text-[8px] text-white/20">/100</span>
+                                </div>
+                              )}
+                              {draft.songIdentityReport.chorusLineCount !== undefined && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Chorus</span>
+                                  <span className="text-2xl font-black leading-none text-orange-400">{draft.songIdentityReport.chorusLineCount}</span>
+                                  <span className="text-[8px] text-white/20">lines</span>
+                                </div>
+                              )}
+                              {draft.songIdentityReport.hookStyle && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Hook</span>
+                                  <span className="text-[11px] font-black leading-tight text-center text-orange-300 capitalize">{draft.songIdentityReport.hookStyle}</span>
+                                </div>
+                              )}
+                              {draft.songIdentityReport.replayType && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Replay</span>
+                                  <span className="text-[11px] font-black leading-tight text-center text-amber-300 capitalize">{draft.songIdentityReport.replayType}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Identity Reasoning */}
+                            {draft.songIdentityReport.identityReasoning && (
+                              <div className="rounded-xl border border-orange-500/10 bg-orange-500/4 px-4 py-3">
+                                <p className="text-[9px] font-bold text-orange-400/60 uppercase tracking-widest mb-1.5">Why This Identity</p>
+                                <p className="text-[11px] text-white/60 leading-relaxed">{draft.songIdentityReport.identityReasoning}</p>
                               </div>
                             )}
 

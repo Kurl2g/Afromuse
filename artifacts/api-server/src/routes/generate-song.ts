@@ -280,17 +280,56 @@ Test every hook for universality:
   The song must sound like a real artist wrote it, not a translation engine
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V15 — SONG IDENTITY ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 0 — BEFORE WRITING ANY LYRICS:
+Choose ONE identity for this song. Identity drives structure, chorus density, emotional tone, and verse style.
+
+IDENTITY OPTIONS (choose exactly one):
+  SPIRITUAL — Worship Anthem: flowing, devotional, repetitive, building energy, crowd-chant friendly
+  DRILL — Street Banger: aggressive, punchy, minimal, dark tone, fast delivery
+  EMOTIONAL — Story Song: meaning-driven, personal, narrative arc, vulnerable
+  HUSTLE — Money Anthem: energetic, confident, chant-style hook, motivational without cliché
+  STADIUM — Crowd Chant: ultra-simple hook, maximum repetition, crowd-singable, anthemic
+
+■ CHORUS STRUCTURE BY IDENTITY (strict enforcement):
+  SPIRITUAL: 6–10 lines, flowing, repetitive, emotional, builds in waves
+  DRILL: 2–4 lines, punchy, aggressive, high repetition, minimal words
+  EMOTIONAL: 4–6 lines, meaning-driven, less repetition, emotional weight
+  HUSTLE: 2–4 lines, chant-style, highly repetitive, confident
+  STADIUM: 1–2 lines, repeated 4–6 times, maximum crowd singability
+
+■ VERSE RULE (all identities):
+  Must NOT repeat the same sentence structure twice in a row
+  Must progress emotionally or narratively from start to end
+  Must include at least one emotional "turn" moment per verse
+
+■ ANTI-TEMPLATE RULE:
+  Do NOT reuse the same chorus style, phrasing patterns, or emotional tone as a previous song
+  Every song must feel like a different performance type — different feel, different shape, different energy
+
+■ HOOK QUALITY CHECK (before finalizing):
+  Is it chantable?
+  Can it be repeated in 5 seconds?
+  Does it feel different from a generic/templated hook?
+  If any answer is NO → rewrite the hook before output
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL QUALITY CHECK (SILENT)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Before output, verify ALL of:
+- Song identity chosen FIRST — before any lyric writing
+- Chorus structure matches the chosen identity (correct line count/density)
+- Verse structure follows identity rules (no repeated sentence structures, emotional turn present)
 - Sounds like a real artist — not AI, not translation engine
 - Flows on beat, not prose
 - Native feel — not translated
 - Hook variants generated (3 total), winner selected
+- Hook passes quality check (chantable, 5-second test, not generic)
 - Hook passes globalization universality check
 - Hook arrives within 0:20–0:40 (streaming algorithm check)
-- Chorus follows 8-line model with selected hook
 - Each verse has turn moment + emotion shift
 - At least 2 Replay Triggers present
 - Bridge has genuine emotional shift
@@ -299,6 +338,7 @@ Before output, verify ALL of:
 - All 4 platform scores generated
 - Hit positioning classified
 - Commercial version hook + intro generated
+- songIdentityReport completed with all fields
 
 If any check fails → fix before output.
 
@@ -338,12 +378,21 @@ Every generated song MUST include these fields in the JSON output.
   marketNotes: { uk: string, us: string, afro: string, tiktok: string }
 
 Score honestly. If the song is only a niche hit, say so.
+
+"songIdentityReport" object:
+  selectedIdentity: "SPIRITUAL" or "DRILL" or "EMOTIONAL" or "HUSTLE" or "STADIUM"
+  hookStyle: "chant" or "melodic" or "aggressive" or "narrative" or "anthemic"
+  replayType: "viral" or "emotional" or "club" or "slow burn" or "anthem"
+  uniquenessScore: integer 0–100 (honest: how different does this feel from a template?)
+  chorusLineCount: integer (the actual number of lines in this song's chorus)
+  identityReasoning: short string — why this identity was chosen for this topic/mood/genre
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Return ONLY the JSON object. No explanations outside the JSON.
-Include hookVariants, songQualityReport, and globalReleaseReport. Also include hitPrediction for backward compatibility.
+Include hookVariants, songQualityReport, globalReleaseReport, and songIdentityReport. Also include hitPrediction for backward compatibility.
 `;
 
 // ─── Flow / Production Details Prompt (Qwen) ──────────────────────────────────
@@ -1500,6 +1549,12 @@ function buildUserPrompt(
     "✓ V13 REPLAY TRIGGERS: minimum 2 of: repeated chant line / crowd-screamable phrase / simple emotional truth / rhythmic repetition pattern / emotional vulnerability moment",
     "✓ V13 A&R VERDICT: assign honest label verdict — SIGNED READY HIT (viral 85+, hook A/A+) / REWRITE HOOK (65-84) / RESTRUCTURE (flow issues) / REJECT FULL REBUILD (below 65)",
     "✓ V13 SIGNATURE SOUND IDENTITY: emotionalTone, rhythmFingerprint, languageStyle, hookPersonality",
+    "✓ V15 SONG IDENTITY: FIRST choose one identity — SPIRITUAL / DRILL / EMOTIONAL / HUSTLE / STADIUM — identity must be chosen before writing a single lyric line",
+    "✓ V15 CHORUS BY IDENTITY: SPIRITUAL=6-10 lines flowing / DRILL=2-4 lines punchy / EMOTIONAL=4-6 lines meaning-driven / HUSTLE=2-4 lines chant / STADIUM=1-2 lines repeated 4-6x",
+    "✓ V15 VERSE ANTI-REPEAT: no two consecutive lines with the same sentence structure — every verse must have emotional/narrative progression + at least 1 turn moment",
+    "✓ V15 ANTI-TEMPLATE: this song must feel structurally different from a generic template — different shape, different energy, different tone",
+    "✓ V15 HOOK QUALITY CHECK: test hook — is it chantable? can it loop in 5 seconds? does it feel fresh? if any NO → rewrite before output",
+    "✓ V15 IDENTITY REPORT: complete songIdentityReport — selectedIdentity, hookStyle (chant/melodic/aggressive/narrative/anthemic), replayType (viral/emotional/club/slow burn/anthem), uniquenessScore (0-100, honest), chorusLineCount, identityReasoning",
     "✓ V14 GLOBAL MARKET ADAPTER: assess song fit for UK Drill (bounce/tone) / US Streaming (hook clarity) / Afro Global (chant warmth) / TikTok (5-10s hook, loop-friendly) — each market gets High/Medium/Low",
     "✓ V14 PLATFORM SCORES: score spotify (0-100) / tiktok (0-100) / youtube (0-100) / radio (0-100) — honest scoring, not inflated",
     "✓ V14 STREAMING ALGORITHM: check hook arrival time — hook must hit at 0:20–0:40 — if too late, shorten intro — record hookHitsAt and hookTimingPass",
@@ -1509,7 +1564,7 @@ function buildUserPrompt(
     "✓ V14 LANGUAGE GLOBALIZATION: eliminate AI sentence stacking — balance local dialect + English naturally — rhythm-first phrasing — output must sound like a real artist, not a translation engine",
     "✓ V14 MARKET NOTES: brief note for each market (uk, us, afro, tiktok) explaining fit or what needs adjustment",
     "✓ V14 GLOBAL SCORE: calculate overall globalScore 0-100 from average of platform scores and market fit",
-    "✓ OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), globalReleaseReport (globalScore, ukFit, usFit, afroFit, tiktokFit, platformScores, hitPositioning, hookHitsAt, hookTimingPass, commercialVersion, marketNotes), hitPrediction",
+    "✓ OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), globalReleaseReport (globalScore, ukFit, usFit, afroFit, tiktokFit, platformScores, hitPositioning, hookHitsAt, hookTimingPass, commercialVersion, marketNotes), songIdentityReport (selectedIdentity, hookStyle, replayType, uniquenessScore, chorusLineCount, identityReasoning), hitPrediction",
     "",
     "────────────────────────────────────────",
     "FINAL LANGUAGE ENFORCEMENT",
@@ -1527,7 +1582,7 @@ function buildUserPrompt(
     "REWRITE IT before output.",
     "────────────────────────────────────────",
     "",
-    "Generate the full AfroMuse V14 GLOBAL HIT ENGINE song draft now.",
+    "Generate the full AfroMuse V15 SONG IDENTITY ENGINE draft now.",
   );
 
   if (strictMode) {
