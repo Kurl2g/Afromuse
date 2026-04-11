@@ -1040,6 +1040,21 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
   return [];
 }
 
+const STRICT_RETRY_ADDENDUM = [
+  "────────────────────────────────────────",
+  "STRICT RETRY MODE — STRUCTURE FAILURE DETECTED",
+  "────────────────────────────────────────",
+  "Your previous output failed structure validation. This is your final attempt.",
+  "You MUST follow these rules exactly or the song will be rejected:",
+  "  • verse1 and verse2 MUST have the same line count — exactly 8, 12, or 16 lines each",
+  "  • hook MUST be exactly 8 lines (2 hook repeat + 2 expansion + 2 bounce + 2 impact)",
+  "  • intro and outro: 2–4 lines each",
+  "  • bridge: 4–8 lines",
+  "  • Output ONLY a single valid JSON object — no markdown, no code fences, no text outside the JSON",
+  "  • All required fields MUST be present: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants, songQualityReport, hitPrediction",
+  "Count every line carefully before submitting. Failure to comply means the generation fails entirely.",
+].join("\n");
+
 function buildUserPrompt(
   params: {
     topic: string;

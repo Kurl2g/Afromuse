@@ -69767,6 +69767,20 @@ function getDialectBlock(effectiveFlavor, dialectStyle) {
   }
   return [];
 }
+var STRICT_RETRY_ADDENDUM = [
+  "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+  "STRICT RETRY MODE \u2014 STRUCTURE FAILURE DETECTED",
+  "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+  "Your previous output failed structure validation. This is your final attempt.",
+  "You MUST follow these rules exactly or the song will be rejected:",
+  "  \u2022 verse1 and verse2 MUST have the same line count \u2014 exactly 8, 12, or 16 lines each",
+  "  \u2022 hook MUST be exactly 8 lines (2 hook repeat + 2 expansion + 2 bounce + 2 impact)",
+  "  \u2022 intro and outro: 2\u20134 lines each",
+  "  \u2022 bridge: 4\u20138 lines",
+  "  \u2022 Output ONLY a single valid JSON object \u2014 no markdown, no code fences, no text outside the JSON",
+  "  \u2022 All required fields MUST be present: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants, songQualityReport, hitPrediction",
+  "Count every line carefully before submitting. Failure to comply means the generation fails entirely."
+].join("\n");
 function buildUserPrompt(params, strictMode = false) {
   const {
     topic,
