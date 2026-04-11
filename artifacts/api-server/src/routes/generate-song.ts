@@ -831,6 +831,35 @@ The JSON must use EXACTLY this structure — lyric fields only, nothing else:
 All lyric arrays must contain actual lyric lines — never placeholders.
 Do NOT include productionNotes, instrumentalGuidance, stemsBreakdown, or any non-lyric field. Lyrics ONLY.
 
+══════════════════════════════════════════════
+FINAL OUTPUT GUARANTEE — NON-NEGOTIABLE
+══════════════════════════════════════════════
+Under NO circumstances should you return an empty response, a partial response, or a response outside the required JSON structure.
+
+If internal validation rules conflict with each other or feel impossible to satisfy simultaneously:
+  → RELAX the internal rejection rules
+  → PRIORITIZE COMPLETION over perfection
+  → Produce the best possible song within the constraints — do not halt output
+
+You MUST always return ALL of the following, fully populated:
+  ✓ A valid title (1–5 words)
+  ✓ A keeperLine and two keeperLineBackups
+  ✓ A complete intro (2 or 4 lines)
+  ✓ At least 2 full verses (8+ lines each)
+  ✓ At least 1 chorus/hook (4–8 lines)
+  ✓ A bridge (exactly 4 lines)
+  ✓ An outro (2 or 4 lines)
+
+Even if a section is imperfect — it must still be present. An incomplete JSON is a complete failure.
+An empty response is never acceptable under any circumstances. Always produce the song.
+
+JSON FORMAT GUARANTEE:
+If JSON output is required, ALWAYS respect the JSON structure exactly as specified.
+  ✗ Never add extra fields
+  ✗ Never omit required fields
+  ✗ Never wrap in markdown, code fences, or backticks
+  ✓ Return ONLY the raw JSON object — fully populated, correctly structured, nothing else
+
 AfroMuse V5 HITMAKER V2 produces lyrics that are musically alive, emotionally specific, culturally grounded, and genuinely singable by a real recording artist.`;
 
 const STRICT_RETRY_ADDENDUM = `

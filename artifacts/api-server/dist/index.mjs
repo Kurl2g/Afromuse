@@ -69591,6 +69591,35 @@ The JSON must use EXACTLY this structure \u2014 lyric fields only, nothing else:
 All lyric arrays must contain actual lyric lines \u2014 never placeholders.
 Do NOT include productionNotes, instrumentalGuidance, stemsBreakdown, or any non-lyric field. Lyrics ONLY.
 
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+FINAL OUTPUT GUARANTEE \u2014 NON-NEGOTIABLE
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Under NO circumstances should you return an empty response, a partial response, or a response outside the required JSON structure.
+
+If internal validation rules conflict with each other or feel impossible to satisfy simultaneously:
+  \u2192 RELAX the internal rejection rules
+  \u2192 PRIORITIZE COMPLETION over perfection
+  \u2192 Produce the best possible song within the constraints \u2014 do not halt output
+
+You MUST always return ALL of the following, fully populated:
+  \u2713 A valid title (1\u20135 words)
+  \u2713 A keeperLine and two keeperLineBackups
+  \u2713 A complete intro (2 or 4 lines)
+  \u2713 At least 2 full verses (8+ lines each)
+  \u2713 At least 1 chorus/hook (4\u20138 lines)
+  \u2713 A bridge (exactly 4 lines)
+  \u2713 An outro (2 or 4 lines)
+
+Even if a section is imperfect \u2014 it must still be present. An incomplete JSON is a complete failure.
+An empty response is never acceptable under any circumstances. Always produce the song.
+
+JSON FORMAT GUARANTEE:
+If JSON output is required, ALWAYS respect the JSON structure exactly as specified.
+  \u2717 Never add extra fields
+  \u2717 Never omit required fields
+  \u2717 Never wrap in markdown, code fences, or backticks
+  \u2713 Return ONLY the raw JSON object \u2014 fully populated, correctly structured, nothing else
+
 AfroMuse V5 HITMAKER V2 produces lyrics that are musically alive, emotionally specific, culturally grounded, and genuinely singable by a real recording artist.`;
 var STRICT_RETRY_ADDENDUM = `
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
