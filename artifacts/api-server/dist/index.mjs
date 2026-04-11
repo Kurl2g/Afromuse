@@ -68867,6 +68867,94 @@ The best hooks are NOT the most complex or poetic lines. They are the most natur
   RIGHT approach: "what is the simplest, most honest thing someone in this situation would say \u2014 say that"
 Over-written hooks always underperform. Simple, sticky, emotionally direct hooks always win.
 
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+CORE LAW 3 \u2014 EMOTIONAL SPECIFICITY & LIVED-IN DETAIL
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Generic lyrics are a production failure. Every verse must feel like it came from a specific person's real life \u2014 not a template about that life.
+
+\u2500\u2500 NO GENERIC EMOTIONS \u2500\u2500
+Vague emotional statements are BANNED. They fail the line test automatically.
+
+BANNED \u2014 if these appear, the line must be rewritten:
+  \u2717 "I feel pain" \u2192 REJECTED (says nothing \u2014 pain about what, when, where?)
+  \u2717 "life is hard" \u2192 REJECTED (universal nothing statement \u2014 what specific hard thing?)
+  \u2717 "I miss you" \u2192 REJECTED (too broad \u2014 what exactly do you miss? when does it hit hardest?)
+  \u2717 "I was heartbroken" \u2192 REJECTED (told, not shown \u2014 what did heartbroken look like?)
+  \u2717 "never give up" \u2192 REJECTED (motivational poster, not a lyric)
+  \u2717 "I will rise" \u2192 REJECTED (too abstract \u2014 rise from what, to what, how?)
+  \u2717 "they doubted me" \u2192 REJECTED (unless immediately followed by a specific, earned, fresh image)
+
+REQUIRED replacement logic \u2014 convert every generic emotion into:
+  \u2713 A specific moment: what was happening at the exact moment this feeling hit?
+  \u2713 A concrete detail: what did the person see, touch, hear, check, or do?
+  \u2713 A time or place: 2AM, the kitchen, a WhatsApp message, a street corner, a name
+  \u2713 An action that carries the feeling: checking the phone, staring at the ceiling, leaving the money on the table
+
+\u2500\u2500 MICRO-STORY INSERTION (MANDATORY PER VERSE) \u2500\u2500
+Every verse MUST contain at least one concrete anchoring moment:
+  \u2192 A real or realistic place (the corridor, his yard, the bus stop)
+  \u2192 A specific time (3AM, Sunday morning, the week she left)
+  \u2192 A physical action (she packed the bag, I deleted the number, he counted the change)
+  \u2192 A sensory detail (the smell of rain, the blue light of the phone screen, the silence after the door closed)
+
+This is not optional. A verse without at least one anchoring detail has failed.
+
+\u2500\u2500 SHOW, DON'T TELL \u2014 THE CORE LAW \u2500\u2500
+Abstract feelings must always be converted to visible human moments.
+
+REJECTED (telling):         REQUIRED (showing):
+"I was heartbroken"     \u2192   "I check your last seen at 2AM, still nothing"
+"I feel alone"          \u2192   "I cooked for two, then ate alone again"
+"I miss her"            \u2192   "Her hoodie still on the chair \u2014 I can't move it"
+"I was struggling"      \u2192   "I counted the coins before the shop, prayed it's enough"
+"They doubted me"       \u2192   "They walked past me at the audition \u2014 I remember every face"
+"I'm in love"           \u2192   "I laughed at something she said three days ago \u2014 still laughing"
+
+The showing version is ALWAYS the correct version. Rewrite any telling line before output.
+
+\u2500\u2500 CULTURAL DETAIL MATCHING \u2500\u2500
+The concrete details and imagery must match the cultural world of the language:
+  \u2192 Patois/Caribbean \u2192 include yard life, sound system, street corners, tropical heat, community, gospel radio, the market
+  \u2192 Nigerian/Pidgin \u2192 include the hustle, family pressure, Lagos traffic, NEPA light, God's favour, the village, street food
+  \u2192 Chinese \u2192 include culturally resonant imagery: late-night noodles, the last train, WeChat messages, family obligation, city lights, exam pressure, silence at the dinner table
+  \u2192 Drill/UK/US \u2192 include the block, the trap phone, court dates, loyalty tests, watching the door, the quiet before something happens
+  \u2192 Reggae \u2192 include morning dew, the hills, scripture references, poverty with dignity, the community, market day, the elder's words
+  \u2192 Afrobeats \u2192 include Lagos or Accra energy, love in the heat, the club but also the street, family pride, God's blessing wrapped in slang
+
+If the lyric could be set anywhere in the world \u2014 it is not specific enough. Anchor it.
+
+\u2500\u2500 HOOK STRENGTH \u2014 EMOTIONAL PUNCH LAW \u2500\u2500
+Hooks must be:
+  \u2713 Simple \u2014 one strong idea, said naturally
+  \u2713 Repeatable \u2014 easy to chant, easy to remember after one listen
+  \u2713 Emotionally sharp \u2014 the feeling hits on the first line, not the last
+  \u2713 Specific enough to feel personal \u2014 even if it's universal in theme, the phrasing must feel lived-in
+
+Avoid over-explaining. The best hook says one thing so well that nothing else needs to be said.
+A hook that takes 3 lines to communicate one feeling has failed. Cut it to its essential truth.
+
+\u2500\u2500 MOTIVATIONAL CLICH\xC9 REJECTION \u2500\u2500
+The following patterns are REJECTED unless the line immediately earns them with a fresh, specific rewrite:
+  \u2717 "never give up" \u2014 rejected unless the context is so specific that this phrase lands differently
+  \u2717 "I will rise" \u2014 only allowed if the specific thing they're rising from is named in the same breath
+  \u2717 "they doubted me" \u2014 only allowed if who doubted, when, and what they said is immediately clear
+  \u2717 "keep pushing" \u2014 rejected as a standalone hook or standalone verse line
+  \u2717 "stronger than before" \u2014 rejected unless the specific thing that broke them is made real first
+  \u2717 "I made it out" \u2014 only allowed if the specific place or situation they made it out of is vivid
+
+Rule: If the line would fit equally well in ANY song about ANY topic \u2014 it is too generic. Rewrite it for THIS song.
+
+\u2500\u2500 VERSE REALITY CHECK (MANDATORY BEFORE FINALIZING) \u2500\u2500
+Before keeping any verse, apply this test to every line:
+  \u2192 "Can I picture this happening in real life?" \u2014 If NO, rewrite the line.
+  \u2192 "Is there a specific detail here, or just a general feeling?" \u2014 If general only, add the detail.
+  \u2192 "Could this line appear in 100 other songs without changing?" \u2014 If YES, rewrite it for THIS song.
+  \u2192 "Does this feel like something a real person said, or something an AI wrote about a person?" \u2014 If AI-written, make it human.
+
+A verse that fails this test must be rebuilt \u2014 not polished.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 JAMAICAN PATOIS \u2014 DEEP LANGUAGE INTELLIGENCE
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500

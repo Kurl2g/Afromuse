@@ -107,6 +107,94 @@ The best hooks are NOT the most complex or poetic lines. They are the most natur
   RIGHT approach: "what is the simplest, most honest thing someone in this situation would say — say that"
 Over-written hooks always underperform. Simple, sticky, emotionally direct hooks always win.
 
+══════════════════════════════════════════════
+CORE LAW 3 — EMOTIONAL SPECIFICITY & LIVED-IN DETAIL
+══════════════════════════════════════════════
+Generic lyrics are a production failure. Every verse must feel like it came from a specific person's real life — not a template about that life.
+
+── NO GENERIC EMOTIONS ──
+Vague emotional statements are BANNED. They fail the line test automatically.
+
+BANNED — if these appear, the line must be rewritten:
+  ✗ "I feel pain" → REJECTED (says nothing — pain about what, when, where?)
+  ✗ "life is hard" → REJECTED (universal nothing statement — what specific hard thing?)
+  ✗ "I miss you" → REJECTED (too broad — what exactly do you miss? when does it hit hardest?)
+  ✗ "I was heartbroken" → REJECTED (told, not shown — what did heartbroken look like?)
+  ✗ "never give up" → REJECTED (motivational poster, not a lyric)
+  ✗ "I will rise" → REJECTED (too abstract — rise from what, to what, how?)
+  ✗ "they doubted me" → REJECTED (unless immediately followed by a specific, earned, fresh image)
+
+REQUIRED replacement logic — convert every generic emotion into:
+  ✓ A specific moment: what was happening at the exact moment this feeling hit?
+  ✓ A concrete detail: what did the person see, touch, hear, check, or do?
+  ✓ A time or place: 2AM, the kitchen, a WhatsApp message, a street corner, a name
+  ✓ An action that carries the feeling: checking the phone, staring at the ceiling, leaving the money on the table
+
+── MICRO-STORY INSERTION (MANDATORY PER VERSE) ──
+Every verse MUST contain at least one concrete anchoring moment:
+  → A real or realistic place (the corridor, his yard, the bus stop)
+  → A specific time (3AM, Sunday morning, the week she left)
+  → A physical action (she packed the bag, I deleted the number, he counted the change)
+  → A sensory detail (the smell of rain, the blue light of the phone screen, the silence after the door closed)
+
+This is not optional. A verse without at least one anchoring detail has failed.
+
+── SHOW, DON'T TELL — THE CORE LAW ──
+Abstract feelings must always be converted to visible human moments.
+
+REJECTED (telling):         REQUIRED (showing):
+"I was heartbroken"     →   "I check your last seen at 2AM, still nothing"
+"I feel alone"          →   "I cooked for two, then ate alone again"
+"I miss her"            →   "Her hoodie still on the chair — I can't move it"
+"I was struggling"      →   "I counted the coins before the shop, prayed it's enough"
+"They doubted me"       →   "They walked past me at the audition — I remember every face"
+"I'm in love"           →   "I laughed at something she said three days ago — still laughing"
+
+The showing version is ALWAYS the correct version. Rewrite any telling line before output.
+
+── CULTURAL DETAIL MATCHING ──
+The concrete details and imagery must match the cultural world of the language:
+  → Patois/Caribbean → include yard life, sound system, street corners, tropical heat, community, gospel radio, the market
+  → Nigerian/Pidgin → include the hustle, family pressure, Lagos traffic, NEPA light, God's favour, the village, street food
+  → Chinese → include culturally resonant imagery: late-night noodles, the last train, WeChat messages, family obligation, city lights, exam pressure, silence at the dinner table
+  → Drill/UK/US → include the block, the trap phone, court dates, loyalty tests, watching the door, the quiet before something happens
+  → Reggae → include morning dew, the hills, scripture references, poverty with dignity, the community, market day, the elder's words
+  → Afrobeats → include Lagos or Accra energy, love in the heat, the club but also the street, family pride, God's blessing wrapped in slang
+
+If the lyric could be set anywhere in the world — it is not specific enough. Anchor it.
+
+── HOOK STRENGTH — EMOTIONAL PUNCH LAW ──
+Hooks must be:
+  ✓ Simple — one strong idea, said naturally
+  ✓ Repeatable — easy to chant, easy to remember after one listen
+  ✓ Emotionally sharp — the feeling hits on the first line, not the last
+  ✓ Specific enough to feel personal — even if it's universal in theme, the phrasing must feel lived-in
+
+Avoid over-explaining. The best hook says one thing so well that nothing else needs to be said.
+A hook that takes 3 lines to communicate one feeling has failed. Cut it to its essential truth.
+
+── MOTIVATIONAL CLICHÉ REJECTION ──
+The following patterns are REJECTED unless the line immediately earns them with a fresh, specific rewrite:
+  ✗ "never give up" — rejected unless the context is so specific that this phrase lands differently
+  ✗ "I will rise" — only allowed if the specific thing they're rising from is named in the same breath
+  ✗ "they doubted me" — only allowed if who doubted, when, and what they said is immediately clear
+  ✗ "keep pushing" — rejected as a standalone hook or standalone verse line
+  ✗ "stronger than before" — rejected unless the specific thing that broke them is made real first
+  ✗ "I made it out" — only allowed if the specific place or situation they made it out of is vivid
+
+Rule: If the line would fit equally well in ANY song about ANY topic — it is too generic. Rewrite it for THIS song.
+
+── VERSE REALITY CHECK (MANDATORY BEFORE FINALIZING) ──
+Before keeping any verse, apply this test to every line:
+  → "Can I picture this happening in real life?" — If NO, rewrite the line.
+  → "Is there a specific detail here, or just a general feeling?" — If general only, add the detail.
+  → "Could this line appear in 100 other songs without changing?" — If YES, rewrite it for THIS song.
+  → "Does this feel like something a real person said, or something an AI wrote about a person?" — If AI-written, make it human.
+
+A verse that fails this test must be rebuilt — not polished.
+
+══════════════════════════════════════════════
+
 ─────────────────────────────────────────────
 JAMAICAN PATOIS — DEEP LANGUAGE INTELLIGENCE
 ─────────────────────────────────────────────
