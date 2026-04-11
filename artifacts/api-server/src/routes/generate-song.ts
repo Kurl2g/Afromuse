@@ -6,18 +6,30 @@ import { requireAuth, attachPlanFromDb, requireFeature } from "../access/middlew
 const router = Router();
 
 type DnaMode = "REPETITION MODE" | "STORY MODE" | "CHAOS MODE" | "MINIMAL MODE" | "MAXIMAL MODE";
-type EmotionalLens = "Pain" | "Power" | "Reflection" | "Survival" | "Celebration" | "Confusion" | "Faith" | "Defiance";
+type EmotionalLens = "Pain" | "Faith" | "Power" | "Struggle" | "Celebration" | "Reflection" | "Defiance" | "Loneliness";
+type EnergyLevel = "Low" | "Medium" | "High";
+type PerformanceType = "Club Banger" | "TikTok Viral" | "Emotional Replay" | "Street Anthem" | "Spiritual Anthem" | "Experimental / Niche";
 type SectionKey = "intro" | "hook" | "verse1" | "verse2" | "bridge" | "outro";
+
+interface ProductionVariation {
+  bpmRange: string;
+  drumStyle: string;
+  melodyType: string;
+  bouncePattern: string;
+}
 
 interface DiversityProfile {
   dnaMode: DnaMode;
   emotionalLens: EmotionalLens;
+  energyLevel: EnergyLevel;
   arrangementOrder: SectionKey[];
   hookStructure: string;
   chorusLengthPattern: string;
   energyCurve: string;
   urgencyLevel: string;
   artistMindset: string;
+  productionVariation: ProductionVariation;
+  performanceType: PerformanceType;
   sectionLineTargets: Partial<Record<SectionKey, number[]>>;
 }
 
@@ -26,67 +38,167 @@ let lastDiversitySignature: {
   emotionalLens?: EmotionalLens;
   chorusLengthPattern?: string;
   energyCurve?: string;
+  energyLevel?: EnergyLevel;
+  performanceType?: PerformanceType;
+  arrangementKey?: string;
 } = {};
 
 const diversityProfiles: DiversityProfile[] = [
   {
     dnaMode: "REPETITION MODE",
     emotionalLens: "Power",
+    energyLevel: "High",
     arrangementOrder: ["hook", "verse1", "hook", "verse2", "hook", "outro"],
     hookStructure: "chant-driven repeated anchor, minimal verse change, crowd-response phrasing",
     chorusLengthPattern: "short repeated 4-line hook",
     energyCurve: "instant high impact → controlled dip → repeated high impact",
     urgencyLevel: "public, loud, direct",
     artistMindset: "an artist leading a crowd chant with no over-explaining",
+    productionVariation: {
+      bpmRange: "fast (128–140 BPM)",
+      drumStyle: "afro drum",
+      melodyType: "synth-driven",
+      bouncePattern: "straight",
+    },
+    performanceType: "Club Banger",
     sectionLineTargets: { hook: [4], verse1: [8], verse2: [8], outro: [2, 4] },
   },
   {
     dnaMode: "STORY MODE",
     emotionalLens: "Reflection",
+    energyLevel: "Medium",
     arrangementOrder: ["verse1", "verse2", "hook", "bridge", "hook", "outro"],
     hookStructure: "light hook, verse carries the song, no repetition dominance",
     chorusLengthPattern: "light 4-line chorus",
     energyCurve: "slow narrative climb → late emotional release → quiet landing",
     urgencyLevel: "private, patient, confessional",
     artistMindset: "a storyteller letting the verses do the heavy lifting",
+    productionVariation: {
+      bpmRange: "mid (88–100 BPM)",
+      drumStyle: "minimal",
+      melodyType: "piano-led",
+      bouncePattern: "swing",
+    },
+    performanceType: "Emotional Replay",
     sectionLineTargets: { verse1: [12, 16], verse2: [12, 16], hook: [4], bridge: [4], outro: [2, 4] },
   },
   {
     dnaMode: "CHAOS MODE",
-    emotionalLens: "Confusion",
+    emotionalLens: "Defiance",
+    energyLevel: "High",
     arrangementOrder: ["hook", "hook", "verse1", "bridge", "verse2", "hook"],
     hookStructure: "broken phrasing, irregular hook returns, unpredictable flow",
     chorusLengthPattern: "uneven 6-line hook",
     energyCurve: "spike → fracture → drop out → sudden return",
     urgencyLevel: "restless, unstable, sharp turns",
     artistMindset: "an artist thinking out loud while the beat keeps shifting under them",
+    productionVariation: {
+      bpmRange: "fast (140–160 BPM)",
+      drumStyle: "drill",
+      melodyType: "synth-driven",
+      bouncePattern: "broken",
+    },
+    performanceType: "Street Anthem",
     sectionLineTargets: { hook: [6], verse1: [8, 12], bridge: [4], verse2: [8], outro: [] },
   },
   {
     dnaMode: "MINIMAL MODE",
     emotionalLens: "Pain",
+    energyLevel: "Low",
     arrangementOrder: ["intro", "hook", "verse1", "hook", "outro"],
     hookStructure: "few words, silence matters, emotional weight per word",
     chorusLengthPattern: "minimal 2-to-4-line hook",
     energyCurve: "low pressure → exposed center → quiet aftershock",
     urgencyLevel: "intimate, sparse, wounded",
     artistMindset: "an artist saying less because each word costs something",
+    productionVariation: {
+      bpmRange: "slow (60–78 BPM)",
+      drumStyle: "no drums / sparse percussion",
+      melodyType: "vocal-driven",
+      bouncePattern: "swing",
+    },
+    performanceType: "Emotional Replay",
     sectionLineTargets: { intro: [2], hook: [2, 4], verse1: [8], verse2: [], bridge: [], outro: [2] },
   },
   {
     dnaMode: "MAXIMAL MODE",
-    emotionalLens: "Defiance",
+    emotionalLens: "Faith",
+    energyLevel: "Medium",
     arrangementOrder: ["verse1", "hook", "verse2", "bridge", "hook", "outro"],
     hookStructure: "dense lyrical hook with layered meaning and heavy imagery",
     chorusLengthPattern: "full 8-line chorus",
     energyCurve: "dense build → heavy peak → wider final statement",
     urgencyLevel: "urgent, loaded, cinematic",
     artistMindset: "an artist unloading a complete worldview in one record",
+    productionVariation: {
+      bpmRange: "mid (100–118 BPM)",
+      drumStyle: "afro drum",
+      melodyType: "pads-and-piano layered",
+      bouncePattern: "swing",
+    },
+    performanceType: "Spiritual Anthem",
     sectionLineTargets: { verse1: [16], hook: [8], verse2: [16], bridge: [4], outro: [4] },
+  },
+  {
+    dnaMode: "MINIMAL MODE",
+    emotionalLens: "Loneliness",
+    energyLevel: "Low",
+    arrangementOrder: ["intro", "verse1", "hook", "verse2", "outro"],
+    hookStructure: "short, raw, aching — feels like the artist is singing to themselves",
+    chorusLengthPattern: "bare 2-line hook with space after each line",
+    energyCurve: "quiet opening → subdued rise → hollow landing",
+    urgencyLevel: "inward, fragile, unresolved",
+    artistMindset: "someone who just realized they are completely alone",
+    productionVariation: {
+      bpmRange: "slow (64–76 BPM)",
+      drumStyle: "no drums",
+      melodyType: "vocal-driven with pads",
+      bouncePattern: "swing",
+    },
+    performanceType: "Emotional Replay",
+    sectionLineTargets: { intro: [2, 4], verse1: [8], hook: [2], verse2: [8], outro: [2, 4] },
+  },
+  {
+    dnaMode: "STORY MODE",
+    emotionalLens: "Struggle",
+    energyLevel: "Medium",
+    arrangementOrder: ["intro", "hook", "verse1", "hook", "verse2", "bridge", "hook"],
+    hookStructure: "resilient anthem-style, simple but carries weight — screams survival",
+    chorusLengthPattern: "4-to-6 line hook, emotionally driven",
+    energyCurve: "quiet start → pressure mounting → explosive hook release → reflective bridge → final declaration",
+    urgencyLevel: "grounded, real, earned",
+    artistMindset: "a person who has been through it and is still standing",
+    productionVariation: {
+      bpmRange: "mid (90–108 BPM)",
+      drumStyle: "afro drum",
+      melodyType: "guitar and pads",
+      bouncePattern: "swing",
+    },
+    performanceType: "Street Anthem",
+    sectionLineTargets: { intro: [2], hook: [4, 6], verse1: [8, 12], verse2: [8, 12], bridge: [4], outro: [] },
+  },
+  {
+    dnaMode: "REPETITION MODE",
+    emotionalLens: "Celebration",
+    energyLevel: "High",
+    arrangementOrder: ["hook", "verse1", "hook", "verse2", "hook", "bridge", "hook"],
+    hookStructure: "pure party energy — ultra-chantable, crowd-friendly, instant repeat",
+    chorusLengthPattern: "4-line hook repeated heavily",
+    energyCurve: "big open → sustained high → crowd drop → biggest hook at the end",
+    urgencyLevel: "joyful, communal, infectious",
+    artistMindset: "an artist who just made it and is celebrating with everyone around them",
+    productionVariation: {
+      bpmRange: "fast (120–138 BPM)",
+      drumStyle: "afro drum",
+      melodyType: "synth and piano combo",
+      bouncePattern: "straight",
+    },
+    performanceType: "TikTok Viral",
+    sectionLineTargets: { hook: [4], verse1: [8], verse2: [8], bridge: [2, 4], outro: [] },
   },
 ];
 
-const emotionalLensPool: EmotionalLens[] = ["Pain", "Power", "Reflection", "Survival", "Celebration", "Confusion", "Faith", "Defiance"];
+const emotionalLensPool: EmotionalLens[] = ["Pain", "Faith", "Power", "Struggle", "Celebration", "Reflection", "Defiance", "Loneliness"];
 
 function pickRandomItem<T>(items: T[], reject?: (item: T) => boolean): T {
   const available = reject ? items.filter((item) => !reject(item)) : items;
@@ -100,15 +212,23 @@ function createDiversityProfile(): DiversityProfile {
     (profile) =>
       profile.hookStructure === lastDiversitySignature.hookStructure ||
       profile.chorusLengthPattern === lastDiversitySignature.chorusLengthPattern ||
-      profile.energyCurve === lastDiversitySignature.energyCurve,
+      profile.energyCurve === lastDiversitySignature.energyCurve ||
+      profile.energyLevel === lastDiversitySignature.energyLevel ||
+      profile.arrangementOrder.join("→") === lastDiversitySignature.arrangementKey,
   );
-  const emotionalLens = pickRandomItem(emotionalLensPool, (lens) => lens === lastDiversitySignature.emotionalLens);
+  const emotionalLens = pickRandomItem(
+    emotionalLensPool,
+    (lens) => lens === lastDiversitySignature.emotionalLens,
+  );
   const profile = { ...base, emotionalLens };
   lastDiversitySignature = {
     hookStructure: profile.hookStructure,
     emotionalLens: profile.emotionalLens,
     chorusLengthPattern: profile.chorusLengthPattern,
     energyCurve: profile.energyCurve,
+    energyLevel: profile.energyLevel,
+    performanceType: profile.performanceType,
+    arrangementKey: profile.arrangementOrder.join("→"),
   };
   return profile;
 }
@@ -126,31 +246,72 @@ function formatSectionTargets(profile: DiversityProfile): string {
 function buildDiversityDirective(profile: DiversityProfile): string[] {
   return [
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-    "AFROMUSE DIVERSITY ENGINE — REAL FIX V2",
+    "AFROMUSE TRUE DIVERSITY ENGINE — FINAL SYSTEM",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-    "This profile was randomly assigned before writing. It overrides any default song-shape instincts.",
-    `DNA MODE: ${profile.dnaMode}`,
-    `EMOTIONAL LENS: ${profile.emotionalLens}`,
+    "CORE RULE: Every song must feel like it was made by a DIFFERENT version of the artist.",
+    "If it feels similar to a previous output → it must be rewritten automatically.",
+    "",
+    "This full DNA profile was randomly selected BEFORE writing. It overrides all default song-shape instincts.",
+    "",
+    "— STEP 1: RANDOMLY SELECTED DNA —",
+    `A. DNA MODE: ${profile.dnaMode}`,
+    `B. EMOTIONAL LENS: ${profile.emotionalLens}`,
+    `   ❗ Do NOT mix emotional lenses. Use this ONE lens only.`,
+    `C. ENERGY LEVEL: ${profile.energyLevel}`,
+    `   Low = calm, intimate | Medium = balanced | High = aggressive / loud`,
+    `D. STRUCTURE TYPE: ${profile.arrangementOrder.join(" → ")}`,
+    "",
+    "— STEP 2: HARD CONSTRAINTS (ANTI-SAMENESS RULES) —",
+    "❌ FORBIDDEN — if any of these match the previous song, the output must be rewritten:",
+    "  → same chorus length as last song",
+    "  → same hook rhythm pattern",
+    "  → same emotional tone",
+    "  → same structure twice in a row",
+    "  → same repetition style",
+    "",
+    "— STEP 3: HOOK CREATION RULES —",
+    "Hook must match the active DNA mode:",
+    "  REPETITION → 1–3 lines, repeated chant",
+    "  STORY → 4–6 lines, meaningful narrative",
+    "  CHAOS → irregular phrasing, unpredictable",
+    "  MINIMAL → 1–2 short lines only",
+    "  MAXIMAL → layered, expressive, dense",
+    `Active hook structure: ${profile.hookStructure}`,
+    `Chorus length pattern: ${profile.chorusLengthPattern}`,
+    "",
+    "— STEP 4: VERSE RULES —",
+    "  → Each 2 lines must introduce a NEW idea or shift — no holding the same thought",
+    "  → No line rewording repetition (same idea rephrased slightly = forbidden)",
+    "  → Flow must change at least once per verse",
+    "",
+    "— STEP 5: LANGUAGE CONTROL —",
+    "  → Keep phrases SHORT and NATURAL",
+    "  → Avoid over-explaining",
+    "  → Use RHYTHM-FIRST writing — not sentence-first",
+    "  → Mix local dialect and English ONLY if it flows musically",
+    "",
+    "— STEP 6: PRODUCTION VARIATION (MANDATORY) —",
+    "This song MUST use these production parameters:",
+    `  BPM Range: ${profile.productionVariation.bpmRange}`,
+    `  Drum Style: ${profile.productionVariation.drumStyle}`,
+    `  Melody Type: ${profile.productionVariation.melodyType}`,
+    `  Bounce Pattern: ${profile.productionVariation.bouncePattern}`,
+    "",
+    "— ADDITIONAL DNA —",
     `ARTIST MINDSET: ${profile.artistMindset}`,
     `URGENCY LEVEL: ${profile.urgencyLevel}`,
-    `HOOK STRUCTURE: ${profile.hookStructure}`,
-    `CHORUS LENGTH PATTERN: ${profile.chorusLengthPattern}`,
     `ENERGY CURVE: ${profile.energyCurve}`,
-    `ARRANGEMENT ORDER: ${profile.arrangementOrder.join(" → ")}`,
-    "",
-    "HARD ANTI-REPEAT RULE:",
-    "Do NOT write the default intro → verse → chorus → verse → chorus → bridge → chorus shape.",
-    "Do NOT use the same hook structure, emotional tone, chorus length pattern, or energy curve as a generic AfroMuse output.",
-    "The song must feel like a different person: different artist mood, different mindset, different urgency level.",
-    "Use ONE emotional lens only. Do not blend pain + power + faith + motivation into the same emotional soup.",
+    `PERFORMANCE TYPE: ${profile.performanceType}`,
     "",
     "SECTION TARGETS:",
     formatSectionTargets(profile),
     "",
-    "OUTPUT COMPATIBILITY:",
+    "— STEP 7: OUTPUT REQUIREMENTS —",
     "Return all section keys: intro, hook, verse1, verse2, bridge, outro.",
     "If a section is not used by this arrangement, return it as an empty array [].",
-    "Also include diversityReport with dnaMode, emotionalLens, arrangementOrder, hookStructure, chorusLengthPattern, energyCurve, urgencyLevel, and artistMindset.",
+    "Include diversityReport with ALL fields: dnaMode, emotionalLens, energyLevel, arrangementOrder,",
+    "hookStructure, chorusLengthPattern, energyCurve, urgencyLevel, artistMindset, productionVariation, performanceType.",
+    "Include trueVariationCheck with 1–2 lines explaining what makes THIS song DIFFERENT from the previous one.",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
   ];
 }
@@ -375,6 +536,50 @@ Do NOT default to intro → verse → chorus → verse → chorus → bridge →
 Unused sections must be empty arrays [] so the app can render the draft safely.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRUE DIVERSITY ENGINE — CORE RULES (V16)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CORE RULE: Every song must feel like it was made by a DIFFERENT version of the artist.
+If it feels similar to a previous output → rewrite it automatically.
+
+VERSE INTELLIGENCE UPGRADE:
+→ Each pair of lines (every 2 lines) must introduce a NEW idea or emotional shift
+→ No line rewording repetition — same idea slightly rephrased = forbidden
+→ Flow must change at least once per verse (rhythm break, delivery shift, or perspective change)
+→ Maintain ONE emotional lens throughout — do NOT blend Pain + Power + Faith into one song
+
+HOOK INTELLIGENCE BY DNA MODE:
+→ REPETITION: 1–3 lines, chant-heavy, loopable
+→ STORY: 4–6 lines, meaningful narrative progression
+→ CHAOS: irregular phrasing, broken structure, unpredictable
+→ MINIMAL: 1–2 short lines, high emotional weight per word
+→ MAXIMAL: dense, layered, imagistic — full emotional picture
+
+LANGUAGE CONTROL (anti-translated-feel):
+→ Keep phrases SHORT and NATURAL
+→ Avoid over-explaining — trust the listener
+→ Write RHYTHM-FIRST (feel the beat before the sentence)
+→ Mix local dialect + English ONLY when it flows musically — never force it
+
+PERFORMANCE TYPE ALIGNMENT:
+The song's writing, energy, and hook style must match the assigned Performance Type.
+→ Club Banger: maximum energy, crowd-friendly, peak time feel
+→ TikTok Viral: ultra-short hook loop, instant recognition, 5-second test passes
+→ Emotional Replay: vulnerability, personal story, rewatchable depth
+→ Street Anthem: grounded, real, earned emotion — nothing polished-feeling
+→ Spiritual Anthem: devotional, communal, rising energy, crowd-chant friendly
+→ Experimental / Niche: artistic risk, unconventional structure, non-commercial appeal
+
+ANTI-SAMENESS HARD BLOCK:
+The following are FORBIDDEN if they match the previous song:
+❌ Same chorus length
+❌ Same hook rhythm pattern  
+❌ Same emotional tone
+❌ Same structure shape
+❌ Same repetition style
+If detected → rewrite automatically before output.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 V14 — GLOBAL HIT ENGINE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -533,20 +738,27 @@ Score honestly. If the song is only a niche hit, say so.
 
 "diversityReport" object:
   dnaMode: "REPETITION MODE" or "STORY MODE" or "CHAOS MODE" or "MINIMAL MODE" or "MAXIMAL MODE"
-  emotionalLens: "Pain" or "Power" or "Reflection" or "Survival" or "Celebration" or "Confusion" or "Faith" or "Defiance"
+  emotionalLens: "Pain" or "Faith" or "Power" or "Struggle" or "Celebration" or "Reflection" or "Defiance" or "Loneliness"
+  energyLevel: "Low" or "Medium" or "High"
   arrangementOrder: array of section keys in the actual song order
   hookStructure: string
   chorusLengthPattern: string
   energyCurve: string
   urgencyLevel: string
   artistMindset: string
+  productionVariation: { bpmRange: string, drumStyle: string, melodyType: string, bouncePattern: string }
+  performanceType: "Club Banger" or "TikTok Viral" or "Emotional Replay" or "Street Anthem" or "Spiritual Anthem" or "Experimental / Niche"
+
+"trueVariationCheck" object:
+  whatMakesThisDifferent: string — 1–2 lines explaining what makes THIS song genuinely different from the previous one (different DNA mode, emotional lens, structure, energy, performance type)
+  antiSamenessPass: true or false — did this song pass all 5 anti-sameness checks?
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Return ONLY the JSON object. No explanations outside the JSON.
-Include hookVariants, songQualityReport, globalReleaseReport, and songIdentityReport. Also include hitPrediction for backward compatibility.
+Include hookVariants, songQualityReport, globalReleaseReport, songIdentityReport, diversityReport, and trueVariationCheck. Also include hitPrediction for backward compatibility.
 `;
 
 // ─── Flow / Production Details Prompt (Qwen) ──────────────────────────────────
