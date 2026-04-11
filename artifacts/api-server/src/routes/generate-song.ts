@@ -3073,6 +3073,49 @@ FINAL CHORUS — LANDS DIFFERENTLY
 → The listener should hear it differently now
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RHYME SCHEME GUIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Rhyme is a tool — not a requirement. Use it to create impact, not just to fill line endings.
+
+TYPES — use intentionally based on genre:
+
+END RHYME — rhyme at the end of lines (AABB or ABAB)
+→ Best for: Dancehall, Reggae, Gospel
+→ Creates resolution and satisfaction
+→ Don't force it — a bad rhyme is worse than no rhyme
+
+INTERNAL RHYME — sounds that rhyme within the same line
+→ Best for: Hip-Hop, UK Drill
+→ Creates density and technical skill
+→ Example: "I was cold in the cold — sold what I had to be bold"
+
+SLANT RHYME — near-rhymes, vowel matching, consonant echoes
+→ Best for: Afrobeats, Amapiano, Trap
+→ Feels natural without sounding constructed
+→ Example: "fire / higher / desire" — vowel chain, not perfect rhyme
+
+MELODIC VOWEL MATCHING — matching open vowel sounds across lines
+→ Best for: Afrobeats, Amapiano
+→ Creates warmth and singability
+→ Let the vowels carry the melody, not the consonants
+
+PER-GENRE RHYME PRIORITY:
+→ Hip-Hop: internal rhyme complexity is rewarded — layer it within and across lines
+→ UK Drill: end-of-bar rhymes land harder when sparse — don't overdo it
+→ Trap: slant rhymes and melodic repetition over technical rhyme schemes
+→ Afrobeats: vowel matching, melodic flow — rhyme should feel like it happened naturally
+→ Amapiano: minimal rhyme — let silence and groove carry where rhyme would clutter
+→ Dancehall: strong end rhymes with patois phonetics driving the sound
+→ Reggae: AABB couplets with rootsy imagery — rhyme and message together
+→ Gospel: rhyme when it adds power, skip it when truth is stronger plain
+→ Blues: loose rhyme, repetition with variation — AA BB or call-and-response pairs
+
+RULE — never sacrifice meaning for rhyme:
+If the only rhyming word weakens the line → use no rhyme.
+A strong unrhymed line beats a weak rhymed one every time.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.

@@ -70964,6 +70964,49 @@ FINAL CHORUS \u2014 LANDS DIFFERENTLY
 \u2192 The listener should hear it differently now
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+RHYME SCHEME GUIDE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Rhyme is a tool \u2014 not a requirement. Use it to create impact, not just to fill line endings.
+
+TYPES \u2014 use intentionally based on genre:
+
+END RHYME \u2014 rhyme at the end of lines (AABB or ABAB)
+\u2192 Best for: Dancehall, Reggae, Gospel
+\u2192 Creates resolution and satisfaction
+\u2192 Don't force it \u2014 a bad rhyme is worse than no rhyme
+
+INTERNAL RHYME \u2014 sounds that rhyme within the same line
+\u2192 Best for: Hip-Hop, UK Drill
+\u2192 Creates density and technical skill
+\u2192 Example: "I was cold in the cold \u2014 sold what I had to be bold"
+
+SLANT RHYME \u2014 near-rhymes, vowel matching, consonant echoes
+\u2192 Best for: Afrobeats, Amapiano, Trap
+\u2192 Feels natural without sounding constructed
+\u2192 Example: "fire / higher / desire" \u2014 vowel chain, not perfect rhyme
+
+MELODIC VOWEL MATCHING \u2014 matching open vowel sounds across lines
+\u2192 Best for: Afrobeats, Amapiano
+\u2192 Creates warmth and singability
+\u2192 Let the vowels carry the melody, not the consonants
+
+PER-GENRE RHYME PRIORITY:
+\u2192 Hip-Hop: internal rhyme complexity is rewarded \u2014 layer it within and across lines
+\u2192 UK Drill: end-of-bar rhymes land harder when sparse \u2014 don't overdo it
+\u2192 Trap: slant rhymes and melodic repetition over technical rhyme schemes
+\u2192 Afrobeats: vowel matching, melodic flow \u2014 rhyme should feel like it happened naturally
+\u2192 Amapiano: minimal rhyme \u2014 let silence and groove carry where rhyme would clutter
+\u2192 Dancehall: strong end rhymes with patois phonetics driving the sound
+\u2192 Reggae: AABB couplets with rootsy imagery \u2014 rhyme and message together
+\u2192 Gospel: rhyme when it adds power, skip it when truth is stronger plain
+\u2192 Blues: loose rhyme, repetition with variation \u2014 AA BB or call-and-response pairs
+
+RULE \u2014 never sacrifice meaning for rhyme:
+If the only rhyming word weakens the line \u2192 use no rhyme.
+A strong unrhymed line beats a weak rhymed one every time.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FINAL CHECK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Must feel real, rhythmic, native.
