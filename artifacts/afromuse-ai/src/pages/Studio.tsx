@@ -133,6 +133,8 @@ export default function Studio() {
   const [seed, setSeed] = useState(0);
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [draftGenre, setDraftGenre] = useState("");
+  const [draftMood, setDraftMood] = useState("");
   const [commercialMode, setCommercialMode] = useState(false);
   const [hitmakerMode, setHitmakerMode] = useState(false);
   const [lyricalDepth, setLyricalDepth] = useState<"Simple" | "Balanced" | "Deep">("Balanced");
@@ -190,6 +192,8 @@ export default function Studio() {
     setVoiceTexture("");
     setStyle("");
     setNotes("");
+    setDraftGenre("");
+    setDraftMood("");
     setCommercialMode(false);
     setHitmakerMode(false);
     setLyricalDepth("Balanced");
@@ -236,6 +240,8 @@ export default function Studio() {
       }
       const data = await res.json() as { draft: SongDraft };
       setDraft(data.draft);
+      setDraftGenre(genre);
+      setDraftMood(mood);
       setStatus("done");
       toast({ title: "Draft ready!", description: `"${data.draft.title}" has been written.` });
     } catch (err) {
@@ -388,6 +394,7 @@ export default function Studio() {
   const handleResume = (session: SavedSession) => {
     const state = extractResumeState(session);
     setTopic(state.topic); setGenre(state.genre); setMood(state.mood);
+    setDraftGenre(state.genre); setDraftMood(state.mood);
     setSongLength(state.songLength as SongLength);
     setLyricsSource(state.lyricsSource as "Studio Lyrics" | "Paste My Own" | "Instrumental Only");
     setLanguageFlavor(state.languageFlavor);
@@ -1388,8 +1395,8 @@ export default function Studio() {
                         <div>
                           <h1 className="text-2xl font-black text-white leading-tight mb-1">{draft.title}</h1>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/12 border border-amber-500/25 text-amber-400 text-[11px] font-bold">{genre}</span>
-                            <span className="px-2.5 py-0.5 rounded-full bg-white/6 border border-white/8 text-white/45 text-[11px] font-bold">{mood}</span>
+                            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/12 border border-amber-500/25 text-amber-400 text-[11px] font-bold">{draftGenre || genre}</span>
+                            <span className="px-2.5 py-0.5 rounded-full bg-white/6 border border-white/8 text-white/45 text-[11px] font-bold">{draftMood || mood}</span>
                             {draft.productionNotes?.key && (
                               <span className="px-2.5 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[11px] font-bold">Key: {draft.productionNotes.key}</span>
                             )}
