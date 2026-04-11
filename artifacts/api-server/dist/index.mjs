@@ -70808,6 +70808,27 @@ CORE LAW 4 \u2014 NO REPETITION
 Each verse must introduce new ideas.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+CORE LAW 5 \u2014 ANTI-LOOP & PROGRESSION
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+DO NOT reuse the same line or phrase more than twice in a section.
+
+Each section must EVOLVE:
+- Add new wording
+- Add new perspective
+- Add new imagery
+
+If multiple lines say the same thing \u2192 REWRITE them differently.
+
+Repetition is ONLY allowed in hooks, but must vary slightly each time.
+
+Bad example:
+Same sentence repeated with minor changes
+
+Good example:
+Each line pushes the idea forward
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 HOOK ENGINE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Hooks must be catchy, repeatable, chantable.

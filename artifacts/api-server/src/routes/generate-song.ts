@@ -2917,6 +2917,27 @@ CORE LAW 4 — NO REPETITION
 Each verse must introduce new ideas.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CORE LAW 5 — ANTI-LOOP & PROGRESSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DO NOT reuse the same line or phrase more than twice in a section.
+
+Each section must EVOLVE:
+- Add new wording
+- Add new perspective
+- Add new imagery
+
+If multiple lines say the same thing → REWRITE them differently.
+
+Repetition is ONLY allowed in hooks, but must vary slightly each time.
+
+Bad example:
+Same sentence repeated with minor changes
+
+Good example:
+Each line pushes the idea forward
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HOOK ENGINE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Hooks must be catchy, repeatable, chantable.
