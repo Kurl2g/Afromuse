@@ -134,6 +134,7 @@ export default function Studio() {
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
   const [commercialMode, setCommercialMode] = useState(false);
+  const [hitmakerMode, setHitmakerMode] = useState(false);
   const [lyricalDepth, setLyricalDepth] = useState<"Simple" | "Balanced" | "Deep">("Balanced");
   const [hookRepeat, setHookRepeat] = useState<"Low" | "Medium" | "High">("Medium");
   const [lyricsSource, setLyricsSource] = useState<"Studio Lyrics" | "Paste My Own" | "Instrumental Only">("Studio Lyrics");
@@ -190,6 +191,7 @@ export default function Studio() {
     setStyle("");
     setNotes("");
     setCommercialMode(false);
+    setHitmakerMode(false);
     setLyricalDepth("Balanced");
     setHookRepeat("Medium");
     setShowAdvanced(false);
@@ -225,7 +227,7 @@ export default function Studio() {
           customLanguage: customLanguage.trim() || undefined,
           dialectDepth, clarityMode, blendBalance: languageFlavor === "Mixed / Blend" ? blendBalance : undefined,
           voiceTexture: voiceTexture || undefined,
-          commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
+          commercialMode, hitmakerMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
         }),
       });
       if (!res.ok) {
@@ -777,6 +779,31 @@ export default function Studio() {
                       </div>
                     </div>
 
+                    {/* Hook Intensity */}
+                    <div>
+                      <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Hook Intensity</label>
+                      <div className="grid grid-cols-2 gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setHitmakerMode(false)}
+                          className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                            !hitmakerMode
+                              ? "bg-white/10 border-white/20 text-white/80"
+                              : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                          }`}
+                        >Normal</button>
+                        <button
+                          type="button"
+                          onClick={() => setHitmakerMode(true)}
+                          className={`h-8 rounded-lg text-[11px] font-bold transition-all border ${
+                            hitmakerMode
+                              ? "bg-orange-500/20 border-orange-500/50 text-orange-400"
+                              : "bg-white/3 border-white/6 text-white/30 hover:text-white/55 hover:border-white/15"
+                          }`}
+                        >⚡ Viral</button>
+                      </div>
+                    </div>
+
                     {/* Gender / Voice Model */}
                     <div>
                       <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Gender / Voice Model</label>
@@ -1164,6 +1191,17 @@ export default function Studio() {
                                     className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${hookRepeat === v ? "bg-amber-500/15 border-amber-500/40 text-amber-400" : "bg-white/3 border-white/6 text-white/30"}`}
                                   >{v}</button>
                                 ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Hook Intensity</label>
+                              <div className="grid grid-cols-2 gap-1.5">
+                                <button type="button" onClick={() => setHitmakerMode(false)}
+                                  className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${!hitmakerMode ? "bg-white/10 border-white/20 text-white/80" : "bg-white/3 border-white/6 text-white/30"}`}
+                                >Normal</button>
+                                <button type="button" onClick={() => setHitmakerMode(true)}
+                                  className={`h-9 rounded-xl text-[11px] font-bold transition-all border ${hitmakerMode ? "bg-orange-500/20 border-orange-500/50 text-orange-400" : "bg-white/3 border-white/6 text-white/30"}`}
+                                >⚡ Viral</button>
                               </div>
                             </div>
                             <div>

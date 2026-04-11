@@ -1788,6 +1788,7 @@ function buildUserPrompt(
     blendBalance?: string;
     voiceTexture?: string;
     commercialMode?: boolean;
+    hitmakerMode?: boolean;
     lyricalDepth?: string;
     hookRepeat?: string;
     lyricsSource?: string;
@@ -1808,6 +1809,7 @@ function buildUserPrompt(
     blendBalance,
     voiceTexture,
     commercialMode = false,
+    hitmakerMode = false,
     lyricalDepth = "Balanced",
     hookRepeat = "Medium",
     lyricsSource = "Studio Lyrics",
@@ -1875,6 +1877,7 @@ function buildUserPrompt(
     ...(blendBalance ? [`Blend Balance: ${blendBalance}`] : []),
     "",
     `Hitmaker Mode: ${commercialMode ? "ACTIVATED — maximize hook stickiness, chant energy, first-listen memorability, and replay value" : "Standard"}`,
+    `Hook Intensity: ${hitmakerMode ? "HIGH — prioritize viral, repeatable hook" : "NORMAL"}`,
     ...(style ? ["", `Artist Style Reference: ${style}`] : []),
     ...(notes ? [`Creative Notes: ${notes}`] : []),
     "",
@@ -2255,7 +2258,7 @@ router.post("/generate-song", async (req, res) => {
     topic, genre, mood, style, notes, songLength, languageFlavor, dialectStyle, customFlavor,
     customLanguage,
     dialectDepth, clarityMode, blendBalance, voiceTexture,
-    commercialMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
+    commercialMode, hitmakerMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
   } = req.body as {
     topic?: string;
     genre?: string;
@@ -2272,6 +2275,7 @@ router.post("/generate-song", async (req, res) => {
     blendBalance?: string;
     voiceTexture?: string;
     commercialMode?: boolean;
+    hitmakerMode?: boolean;
     lyricalDepth?: string;
     hookRepeat?: string;
     lyricsSource?: string;
@@ -2316,6 +2320,7 @@ router.post("/generate-song", async (req, res) => {
     blendBalance: blendBalance ?? undefined,
     voiceTexture: voiceTexture ?? undefined,
     commercialMode: commercialMode === true,
+    hitmakerMode: hitmakerMode === true,
     lyricalDepth: selectedDepth,
     hookRepeat: selectedRepeat,
     lyricsSource: lyricsSource ?? "Studio Lyrics",
