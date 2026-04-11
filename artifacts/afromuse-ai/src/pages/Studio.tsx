@@ -142,7 +142,7 @@ export default function Studio() {
   const [v15Open, setV15Open] = useState(false);
   const [v14Open, setV14Open] = useState(false);
   const [diversityOpen, setDiversityOpen] = useState(false);
-  const [lyricsOpen, setLyricsOpen] = useState(false);
+
   const [draftGenre, setDraftGenre] = useState("");
   const [draftMood, setDraftMood] = useState("");
   const [commercialMode, setCommercialMode] = useState(false);
@@ -256,7 +256,6 @@ export default function Studio() {
       setV13Open(false);
       setV15Open(false);
       setV14Open(false);
-      setLyricsOpen(false);
       setStatus("done");
       toast({ title: "Draft ready!", description: `"${data.draft.title}" has been written.` });
     } catch (err) {
@@ -449,26 +448,19 @@ export default function Studio() {
   };
 
   const LYRICS_SECTIONS = draft ? (() => {
-    const sectionMap: Record<string, { label: string; lines?: string[] }> = {
-      intro: { label: "Intro", lines: draft.intro },
-      hook: { label: "Hook", lines: draft.hook },
-      verse1: { label: "Verse 1", lines: draft.verse1 },
-      verse2: { label: "Verse 2", lines: draft.verse2 },
-      bridge: { label: draft.diversityReport?.dnaMode === "CHAOS MODE" ? "Break" : "Bridge", lines: draft.bridge },
-      outro: { label: "Outro", lines: draft.outro },
+    const bridgeLabel = draft.diversityReport?.dnaMode === "CHAOS MODE" ? "Break" : "Bridge";
+    const sections: { id: string; label: string; lines: string[] }[] = [];
+    const push = (id: string, label: string, lines?: string[]) => {
+      if (lines?.length) sections.push({ id, label, lines });
     };
-    const order = draft.diversityReport?.arrangementOrder;
-    return (order?.length
-      ? order.map((key) => sectionMap[key])
-      : [
-          ...(draft.intro?.length ? [sectionMap.intro] : []),
-          sectionMap.hook,
-          sectionMap.verse1,
-          ...(draft.verse2?.length ? [sectionMap.verse2] : []),
-          ...(draft.bridge?.length ? [sectionMap.bridge] : []),
-          ...(draft.outro?.length ? [sectionMap.outro] : []),
-        ]
-    ).filter((section): section is { label: string; lines: string[] } => Boolean(section?.lines?.length));
+    push("hook-1", "Hook", draft.hook);
+    push("verse1", "Verse 1", draft.verse1);
+    push("hook-2", "Hook", draft.hook);
+    push("verse2", "Verse 2", draft.verse2);
+    push("bridge", bridgeLabel, draft.bridge);
+    push("hook-3", "Hook", draft.hook);
+    push("outro", "Outro", draft.outro);
+    return sections;
   })() : [];
 
   return (
@@ -1954,26 +1946,20 @@ export default function Studio() {
 
                       {/* Lyrics workspace */}
                       <div className="rounded-2xl border border-white/8 bg-gradient-to-b from-white/2 to-transparent overflow-hidden">
-                        <button
-                          onClick={() => setLyricsOpen((o) => !o)}
-                          className="w-full flex items-center justify-between px-5 py-3.5 border-b border-white/5 hover:bg-white/3 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-3.5 h-3.5 text-white/30" />
-                            <span className="text-[10px] font-bold text-white/35 uppercase tracking-widest">Lyrics Workspace</span>
-                          </div>
-                          <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${lyricsOpen ? "rotate-180" : ""}`} />
-                        </button>
-                        {lyricsOpen && <div className="p-5 space-y-6">
+                        <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/5">
+                          <FileText className="w-3.5 h-3.5 text-white/30" />
+                          <span className="text-[10px] font-bold text-white/35 uppercase tracking-widest">Lyrics Workspace</span>
+                        </div>
+                        <div className="p-5 space-y-6">
                           {LYRICS_SECTIONS.map((section) => (
-                            <div key={section.label}>
+                            <div key={section.id}>
                               <div className="flex items-center gap-2 mb-2.5">
                                 <span className={`text-[10px] font-black tracking-widest uppercase px-2.5 py-0.5 rounded-md border ${
                                   section.label === "Hook"
                                     ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
                                     : section.label.startsWith("Verse")
                                     ? "bg-violet-500/10 border-violet-500/20 text-violet-400"
-                                    : section.label === "Bridge"
+                                    : section.label === "Bridge" || section.label === "Break"
                                     ? "bg-sky-500/10 border-sky-500/20 text-sky-400"
                                     : "bg-white/6 border-white/8 text-white/35"
                                 }`}>
@@ -1991,7 +1977,7 @@ export default function Studio() {
                               </div>
                             </div>
                           ))}
-                        </div>}
+                        </div>
                       </div>
 
                       {/* Generation Blueprint */}
