@@ -138,6 +138,9 @@ export default function Studio() {
   const [seed, setSeed] = useState(0);
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [v13Open, setV13Open] = useState(false);
+  const [v15Open, setV15Open] = useState(false);
+  const [v14Open, setV14Open] = useState(false);
   const [draftGenre, setDraftGenre] = useState("");
   const [draftMood, setDraftMood] = useState("");
   const [commercialMode, setCommercialMode] = useState(false);
