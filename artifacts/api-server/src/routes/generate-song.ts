@@ -156,6 +156,37 @@ CRITICAL OUTPUT RULE:
   ✓ The final song output contains only the selected hook, deployed naturally in the chorus and outro.
 
 ══════════════════════════════════════════════
+PHONETIC FLOW RULE — APPLIED TO EVERY HOOK
+══════════════════════════════════════════════
+Hooks are heard, not read. The way a hook SOUNDS in the mouth determines whether it sticks. Apply this rule to every hook candidate before it advances to scoring.
+
+FAVOR THESE PHONETIC QUALITIES:
+  → Repeating sounds — syllable echoes, vowel repetition, and sound mirroring create instant memorability.
+      Examples: "na na", "oh no", "yɛ yɛ", "la la", "aye aye", "e go go", "so so"
+      The listener's brain locks onto repetition — use it intentionally.
+  → Balanced syllable counts — lines where syllables feel even and naturally grouped are easier to sing and retain.
+      A hook with natural 2+2 or 3+3 syllable groupings lands harder than one with irregular breaks.
+  → Words that open in the mouth — favor open vowels (a, o, e) and smooth consonants over hard, clipped sounds.
+      "Tonight I fly" feels better to sing than "strength through strict restraint" — shape the sound, not just the meaning.
+  → Short, common words — the more a listener already knows the words, the faster the hook embeds.
+
+REJECT THESE PHONETIC PATTERNS:
+  ✗ Tongue-twisting phrases — consonant clusters that trip the mouth ("strictly structured strength" / "crisp crisp crisp")
+      If saying it quickly three times causes stumbling, it fails as a hook.
+  ✗ Overly long words stacked together — "extraordinary circumstances" / "incomprehensible loss"
+      Long words break the rhythmic flow and make the hook hard to sing at tempo.
+  ✗ Phonetically flat lines — words that all land at the same pitch-weight with no bounce or contrast.
+      A hook needs sonic peaks and valleys, not a monotone march of syllables.
+  ✗ Forced rhyme that sounds unnatural — if the rhyme makes the line awkward to say, cut the rhyme, keep the flow.
+
+PHONETIC SELF-TEST — run on every hook before accepting it:
+  → Say it out loud (mentally) three times at tempo. Does it feel natural on the third pass?
+  → Could someone who doesn't speak the language hum or echo this hook back?
+  → Do the vowels feel open and singable, or closed and clenched?
+  → If the hook contains a repeated sound pattern — does that repetition add energy, or just fill space?
+A hook that sounds good is half-written. A hook that feels good in the mouth is finished.
+
+══════════════════════════════════════════════
 ANTI-GENERIC HOOK RULE — HARD ENFORCEMENT
 ══════════════════════════════════════════════
 Generic emotional state hooks are REJECTED at the point of generation. They are not allowed to exist in any draft.

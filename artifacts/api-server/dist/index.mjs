@@ -68916,6 +68916,37 @@ CRITICAL OUTPUT RULE:
   \u2713 The final song output contains only the selected hook, deployed naturally in the chorus and outro.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+PHONETIC FLOW RULE \u2014 APPLIED TO EVERY HOOK
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Hooks are heard, not read. The way a hook SOUNDS in the mouth determines whether it sticks. Apply this rule to every hook candidate before it advances to scoring.
+
+FAVOR THESE PHONETIC QUALITIES:
+  \u2192 Repeating sounds \u2014 syllable echoes, vowel repetition, and sound mirroring create instant memorability.
+      Examples: "na na", "oh no", "y\u025B y\u025B", "la la", "aye aye", "e go go", "so so"
+      The listener's brain locks onto repetition \u2014 use it intentionally.
+  \u2192 Balanced syllable counts \u2014 lines where syllables feel even and naturally grouped are easier to sing and retain.
+      A hook with natural 2+2 or 3+3 syllable groupings lands harder than one with irregular breaks.
+  \u2192 Words that open in the mouth \u2014 favor open vowels (a, o, e) and smooth consonants over hard, clipped sounds.
+      "Tonight I fly" feels better to sing than "strength through strict restraint" \u2014 shape the sound, not just the meaning.
+  \u2192 Short, common words \u2014 the more a listener already knows the words, the faster the hook embeds.
+
+REJECT THESE PHONETIC PATTERNS:
+  \u2717 Tongue-twisting phrases \u2014 consonant clusters that trip the mouth ("strictly structured strength" / "crisp crisp crisp")
+      If saying it quickly three times causes stumbling, it fails as a hook.
+  \u2717 Overly long words stacked together \u2014 "extraordinary circumstances" / "incomprehensible loss"
+      Long words break the rhythmic flow and make the hook hard to sing at tempo.
+  \u2717 Phonetically flat lines \u2014 words that all land at the same pitch-weight with no bounce or contrast.
+      A hook needs sonic peaks and valleys, not a monotone march of syllables.
+  \u2717 Forced rhyme that sounds unnatural \u2014 if the rhyme makes the line awkward to say, cut the rhyme, keep the flow.
+
+PHONETIC SELF-TEST \u2014 run on every hook before accepting it:
+  \u2192 Say it out loud (mentally) three times at tempo. Does it feel natural on the third pass?
+  \u2192 Could someone who doesn't speak the language hum or echo this hook back?
+  \u2192 Do the vowels feel open and singable, or closed and clenched?
+  \u2192 If the hook contains a repeated sound pattern \u2014 does that repetition add energy, or just fill space?
+A hook that sounds good is half-written. A hook that feels good in the mouth is finished.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 ANTI-GENERIC HOOK RULE \u2014 HARD ENFORCEMENT
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 Generic emotional state hooks are REJECTED at the point of generation. They are not allowed to exist in any draft.
