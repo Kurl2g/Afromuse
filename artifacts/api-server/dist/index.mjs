@@ -71261,6 +71261,35 @@ Maximum 2 similar phrases per section.
 Each bar must add new meaning, emotion, or imagery.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+CLOSING LINE LAW
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+The last line of every section is the most important line of that section.
+
+It must be the sharpest, most quotable, most emotionally complete line in the block.
+Sections must not trail off \u2014 they must land.
+
+VERSE CLOSE:
+\u2192 The final line of every verse must create momentum toward the chorus
+\u2192 It should feel like a door opening \u2014 not a sentence ending
+\u2192 If the last line could be removed without loss \u2192 it is not sharp enough \u2014 rewrite it
+
+CHORUS CLOSE:
+\u2192 The final line of the chorus is the one the listener carries out of the song
+\u2192 It must be the most emotionally concentrated line in the hook
+\u2192 Short, clear, and impossible to forget
+
+BRIDGE CLOSE:
+\u2192 The last line of the bridge is the hinge of the whole song
+\u2192 It must feel like the moment everything shifts \u2014 a revelation, a release, a turn
+\u2192 One line. Maximum weight. No filler after it.
+
+SELF-CHECK \u2014 apply to every closing line:
+\u2192 "Is this the best line in the section?" \u2014 If NO \u2192 rewrite it until it is
+\u2192 "Would a listener remember this line after one play?" \u2014 If NO \u2192 sharpen it
+\u2192 "Does this line make what comes next feel inevitable?" \u2014 If NO \u2192 restructure
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FINAL CHECK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Must feel real, rhythmic, native.

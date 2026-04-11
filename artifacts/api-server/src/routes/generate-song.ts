@@ -3370,6 +3370,35 @@ Maximum 2 similar phrases per section.
 Each bar must add new meaning, emotion, or imagery.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CLOSING LINE LAW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The last line of every section is the most important line of that section.
+
+It must be the sharpest, most quotable, most emotionally complete line in the block.
+Sections must not trail off — they must land.
+
+VERSE CLOSE:
+→ The final line of every verse must create momentum toward the chorus
+→ It should feel like a door opening — not a sentence ending
+→ If the last line could be removed without loss → it is not sharp enough — rewrite it
+
+CHORUS CLOSE:
+→ The final line of the chorus is the one the listener carries out of the song
+→ It must be the most emotionally concentrated line in the hook
+→ Short, clear, and impossible to forget
+
+BRIDGE CLOSE:
+→ The last line of the bridge is the hinge of the whole song
+→ It must feel like the moment everything shifts — a revelation, a release, a turn
+→ One line. Maximum weight. No filler after it.
+
+SELF-CHECK — apply to every closing line:
+→ "Is this the best line in the section?" — If NO → rewrite it until it is
+→ "Would a listener remember this line after one play?" — If NO → sharpen it
+→ "Does this line make what comes next feel inevitable?" — If NO → restructure
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.
