@@ -187,6 +187,38 @@ PHONETIC SELF-TEST — run on every hook before accepting it:
 A hook that sounds good is half-written. A hook that feels good in the mouth is finished.
 
 ══════════════════════════════════════════════
+VIRAL LOOP RULE — APPLIED TO EVERY HOOK
+══════════════════════════════════════════════
+A hook lives or dies in its first 10 seconds. Apply this rule to every hook candidate before finalizing.
+
+THE THREE VIRAL REQUIREMENTS:
+  → CLIP-READY — the hook must work as a standalone 10-second audio loop with zero context.
+      Pull it out of the song entirely. Play it cold, with no intro, no verse before it.
+      Does it still land? Does it still make sense emotionally and musically?
+      If it needs the verse to set it up before it works → it is NOT a hook. Rewrite it.
+
+  → IMMEDIATE IMPACT — the hook must hit on the first word, not the third line.
+      There is no build-up allowance inside a hook. The very first syllable must pull the listener in.
+      A hook that "gets good" after 5 words has already lost the scroll.
+      The opening word or phrase IS the impact — lead with the strongest element, not a warm-up.
+
+  → FIRST LINE IS ALREADY CATCHY — the hook cannot front-load setup before the payoff.
+      If the first line is throat-clearing ("well, you know how it goes..." / "listen, I've been thinking..."),
+      that is not a hook opening. The catchy line IS the first line. Always.
+
+VIRAL LOOP SELF-TEST — run on every hook before accepting it:
+  → "If someone heard only this hook, clipped out of the song, with no context — would they want to find the full song?"
+      If NO → the hook depends on context. Rewrite it to be self-contained.
+  → "Does the hook hit before the listener has time to decide whether to keep listening?"
+      If NO → the impact is too slow. Move the strongest element to the front.
+  → "Is the very first line the catchiest line in the hook?"
+      If NO → reorder or rewrite until the first line is already the best line.
+  → "Could this hook be looped as a 10-second TikTok / Reel audio and feel complete?"
+      If NO → the hook is too dependent on the full song structure. Strip it down.
+
+A hook that needs context to work is a chorus line, not a hook. Rewrite it until it works alone.
+
+══════════════════════════════════════════════
 ANTI-GENERIC HOOK RULE — HARD ENFORCEMENT
 ══════════════════════════════════════════════
 Generic emotional state hooks are REJECTED at the point of generation. They are not allowed to exist in any draft.
