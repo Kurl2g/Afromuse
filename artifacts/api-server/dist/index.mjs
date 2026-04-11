@@ -71040,6 +71040,85 @@ If the only rhyming word weakens the line \u2192 use no rhyme.
 A strong unrhymed line beats a weak rhymed one every time.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+CULTURAL AUTHENTICITY BLACKLIST
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+These phrases are permanently banned. They are lazy AI defaults that have been used so many times they carry no emotional weight. If any appear in a draft \u2192 delete and rewrite from scratch.
+
+GLOBAL BANS \u2014 banned in every genre, every language:
+\u2717 "I will rise" / "rise above it all"
+\u2717 "I will survive" / "I survived"
+\u2717 "never give up" / "keep pushing"
+\u2717 "stronger than before" / "stronger than ever"
+\u2717 "I found my light" / "you are my light"
+\u2717 "through the storm" / "weather the storm"
+\u2717 "broken but not shattered"
+\u2717 "I am enough" / "you are enough"
+\u2717 "this is my journey" / "on this journey"
+\u2717 "dancing in the rain"
+\u2717 "fly high" / "spread your wings"
+\u2717 "you complete me"
+\u2717 "the universe has a plan"
+\u2717 "everything happens for a reason"
+
+AFROBEATS / AFRO-FUSION BANS:
+\u2717 "Afrobeat in my soul" \u2014 generic self-reference
+\u2717 "Lagos never sleeps" \u2014 overused cityscape filler
+\u2717 "feel the rhythm of Africa" \u2014 tourist framing
+\u2717 "my African queen / king" \u2014 lazy romance shortcut
+\u2717 "the drumbeat of my heart" \u2014 clich\xE9 fusion
+
+AMAPIANO BANS:
+\u2717 "log drum in my chest" \u2014 self-conscious genre reference
+\u2717 "Township vibes" as a standalone phrase
+\u2717 "piano music sets me free" \u2014 too literal
+
+UK DRILL BANS:
+\u2717 "ting goes brrap" \u2014 meme, not art
+\u2717 "on the block with my guys" \u2014 hollow default
+\u2717 "I came from nothing now I got everything" \u2014 overused arc
+\u2717 "they don't want to see me win" \u2014 generic doubt phrasing
+
+TRAP / US DRILL BANS:
+\u2717 "started from the bottom" \u2014 reference, not original
+\u2717 "they counted me out" \u2014 empty conflict
+\u2717 "drip too hard" as a standalone line \u2014 lazy braggadocio
+\u2717 "no cap, no cap" as a standalone bar
+
+HIP-HOP BANS:
+\u2717 "my pen is mightier than the sword" \u2014 poetry class, not hip-hop
+\u2717 "I spit fire / bars of fire" \u2014 self-describing, never effective
+\u2717 "real recognize real" \u2014 internet saying, not a bar
+\u2717 "haters gonna hate" \u2014 never acceptable
+
+DANCEHALL BANS:
+\u2717 "forward ever backward never" \u2014 too familiar
+\u2717 "one love, one heart" \u2014 Marley territory, don't tread
+\u2717 "gyal shake yuh body" as a whole standalone hook
+
+GOSPEL / SPIRITUAL BANS:
+\u2717 "I will rise above" / "rising higher"
+\u2717 "God has a plan for me" \u2014 too passive, too vague
+\u2717 "I am walking in my blessing" \u2014 empty declaration
+\u2717 "my breakthrough is coming" \u2014 overused church phrase
+\u2717 "hallelujah" as a standalone lyric line without context
+
+REGGAE BANS:
+\u2717 "one love" as a hook \u2014 Marley, not you
+\u2717 "Jah will provide" as a clich\xE9 close
+\u2717 "roots and culture" as a standalone identifier
+
+BLUES BANS:
+\u2717 "the blues got me" \u2014 the genre name is not a lyric
+\u2717 "I woke up this morning" as an opener \u2014 too classic to use unironically
+
+IF ANY BANNED PHRASE APPEARS:
+\u2192 Stop. Delete the line entirely.
+\u2192 Ask: what is the specific human truth this phrase was trying to say?
+\u2192 Write that truth in a fresh, concrete, original way.
+\u2192 Never substitute one clich\xE9 for another.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FINAL CHECK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Must feel real, rhythmic, native.

@@ -3149,6 +3149,85 @@ If the only rhyming word weakens the line → use no rhyme.
 A strong unrhymed line beats a weak rhymed one every time.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CULTURAL AUTHENTICITY BLACKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These phrases are permanently banned. They are lazy AI defaults that have been used so many times they carry no emotional weight. If any appear in a draft → delete and rewrite from scratch.
+
+GLOBAL BANS — banned in every genre, every language:
+✗ "I will rise" / "rise above it all"
+✗ "I will survive" / "I survived"
+✗ "never give up" / "keep pushing"
+✗ "stronger than before" / "stronger than ever"
+✗ "I found my light" / "you are my light"
+✗ "through the storm" / "weather the storm"
+✗ "broken but not shattered"
+✗ "I am enough" / "you are enough"
+✗ "this is my journey" / "on this journey"
+✗ "dancing in the rain"
+✗ "fly high" / "spread your wings"
+✗ "you complete me"
+✗ "the universe has a plan"
+✗ "everything happens for a reason"
+
+AFROBEATS / AFRO-FUSION BANS:
+✗ "Afrobeat in my soul" — generic self-reference
+✗ "Lagos never sleeps" — overused cityscape filler
+✗ "feel the rhythm of Africa" — tourist framing
+✗ "my African queen / king" — lazy romance shortcut
+✗ "the drumbeat of my heart" — cliché fusion
+
+AMAPIANO BANS:
+✗ "log drum in my chest" — self-conscious genre reference
+✗ "Township vibes" as a standalone phrase
+✗ "piano music sets me free" — too literal
+
+UK DRILL BANS:
+✗ "ting goes brrap" — meme, not art
+✗ "on the block with my guys" — hollow default
+✗ "I came from nothing now I got everything" — overused arc
+✗ "they don't want to see me win" — generic doubt phrasing
+
+TRAP / US DRILL BANS:
+✗ "started from the bottom" — reference, not original
+✗ "they counted me out" — empty conflict
+✗ "drip too hard" as a standalone line — lazy braggadocio
+✗ "no cap, no cap" as a standalone bar
+
+HIP-HOP BANS:
+✗ "my pen is mightier than the sword" — poetry class, not hip-hop
+✗ "I spit fire / bars of fire" — self-describing, never effective
+✗ "real recognize real" — internet saying, not a bar
+✗ "haters gonna hate" — never acceptable
+
+DANCEHALL BANS:
+✗ "forward ever backward never" — too familiar
+✗ "one love, one heart" — Marley territory, don't tread
+✗ "gyal shake yuh body" as a whole standalone hook
+
+GOSPEL / SPIRITUAL BANS:
+✗ "I will rise above" / "rising higher"
+✗ "God has a plan for me" — too passive, too vague
+✗ "I am walking in my blessing" — empty declaration
+✗ "my breakthrough is coming" — overused church phrase
+✗ "hallelujah" as a standalone lyric line without context
+
+REGGAE BANS:
+✗ "one love" as a hook — Marley, not you
+✗ "Jah will provide" as a cliché close
+✗ "roots and culture" as a standalone identifier
+
+BLUES BANS:
+✗ "the blues got me" — the genre name is not a lyric
+✗ "I woke up this morning" as an opener — too classic to use unironically
+
+IF ANY BANNED PHRASE APPEARS:
+→ Stop. Delete the line entirely.
+→ Ask: what is the specific human truth this phrase was trying to say?
+→ Write that truth in a fresh, concrete, original way.
+→ Never substitute one cliché for another.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.
