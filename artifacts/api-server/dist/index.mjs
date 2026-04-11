@@ -68840,52 +68840,71 @@ The following detailed intelligence layers provide depth and authenticity for ev
 They operate WITHIN the priority framework above \u2014 quality enhancements, never generation blockers.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-HOOK ENGINE V1.5 \u2014 ENHANCED PRE-GENERATION STEP (ALWAYS RUN FIRST)
+HOOK ENGINE V2 \u2014 MELODY + VIRAL READY (ALWAYS RUN FIRST)
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-Before writing a single lyric line, run this internal hook selection process. It governs the emotional center of the entire song.
+Before writing a single lyric line, run this internal hook selection process. It governs the melodic center, rhythm, and viral potential of the entire song.
 
-STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES (FORCED VARIATION):
-Internally generate exactly 3 hook line options \u2014 one of each TYPE below. Each candidate MUST satisfy ALL of the following requirements:
+STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES (FORCED DIVERSITY):
+Internally generate exactly 3 hook line options \u2014 one of each STYLE below. Each candidate MUST satisfy ALL of the following:
   \u2192 Under 10 words \u2014 count strictly. If it reaches 10 words, cut it.
-  \u2192 Contains a clear IMAGE, ACTION, or MOMENT \u2014 no floating abstract feelings.
-  \u2192 Feels like something a real artist would actually say \u2014 not a poet, not a caption writer, a performing artist.
-  \u2192 Avoids ALL generic phrases \u2014 the following are permanently banned as hooks:
+  \u2192 Rhythmically smooth when spoken out loud \u2014 say it mentally; if it stumbles, rewrite it.
+  \u2192 Contains strong phonetic bounce \u2014 repeating sounds, vowel patterns, or consonant clusters that create natural musicality.
+  \u2192 Includes a clear moment, action, or striking phrase \u2014 no floating emotional states.
+  \u2192 Avoids ALL generic phrases \u2014 the following are permanently banned:
       \u2717 "I miss you" / "I'm sad" / "I love you" / "I need you"
       \u2717 "You are my everything" / "You make me feel alive"
       \u2717 "We will rise" / "I will survive" / "Never give up"
-      \u2717 Any phrase that could appear in 100 other songs without changing
+      \u2717 Any phrase that could appear unchanged in 100 other songs
 
-HOOK TYPE ASSIGNMENTS \u2014 generate exactly one of each:
-  TYPE 1 \u2014 EMOTIONAL + SPECIFIC MOMENT:
-    The hook captures a single, concrete emotional moment. Not the feeling \u2014 the exact instant it happened.
-    Example energy: "She left the key on the kitchen counter" / "I checked your name \u2014 you were still online"
-    NOT: "I feel broken inside" \u2014 YES: the physical moment that made you feel broken
+HOOK STYLE ASSIGNMENTS \u2014 generate exactly one of each:
+  STYLE 1 \u2014 MELODIC EMOTIONAL HOOK (smooth + repeatable):
+    Built for singing, not rapping. Flows like water \u2014 no hard syllable stacks.
+    The emotional core is carried by the melody shape, not just the words.
+    Example energy: "Still dey wait for your call in the rain" / "She never told me she was leaving slow"
+    Test: could a vocalist use this as a warm-up riff? If yes, it has the right shape.
 
-  TYPE 2 \u2014 BOLD / STATEMENT / ATTITUDE:
-    The hook is a confident, direct declaration \u2014 no hesitation, no explanation.
-    Example energy: "Dem know my name now" / "I don't beg twice" / "Watch how I move without a sound"
-    NOT: "I am becoming stronger" \u2014 YES: a statement so specific and direct it feels like a challenge
+  STYLE 2 \u2014 RHYTHMIC / CHANT HOOK (percussive, punchy):
+    Built for crowds. Short, staccato, phonetically explosive.
+    Each syllable lands like a beat hit \u2014 the hook IS the rhythm pattern.
+    Example energy: "Soro soke, dem no see me" / "Wahala turn to blessing" / "Dem know my name now"
+    Test: could 500 people chant this at a show after hearing it once? If yes, it works.
 
-  TYPE 3 \u2014 CATCHY PHRASE WITH RHYTHM OR SLANG:
-    The hook is built on phonetics, slang, or natural language rhythm \u2014 it sticks because of HOW it sounds, not just what it says.
-    Example energy: "Soro soke, dem no see me" / "Wahala turn to blessing" / "Soft life loading"
-    NOT: a clean English sentence dressed in slang \u2014 YES: a phrase that only works in THIS language and culture
+  STYLE 3 \u2014 CALL & RESPONSE HOOK (interactive feel):
+    Built with a natural gap \u2014 the first half invites, the second half answers.
+    The listener feels like they are completing the line rather than just hearing it.
+    Example energy: "You say you love me \u2014 [show me then]" / "I don't beg twice \u2014 [you know that]"
+    Test: does the hook feel like half of a conversation? If yes, it has the right dynamic.
 
-STEP 2 \u2014 SELECT THE STRONGEST HOOK:
-Score all 3 candidates against these three criteria and select the single winner:
-  \u2192 MEMORABILITY \u2014 would someone still remember this hook 10 minutes after one listen?
-  \u2192 UNIQUENESS \u2014 could this exact line appear in any other song, or does it only belong here?
-  \u2192 PERFORMANCE ENERGY \u2014 could an artist step to a mic and deliver this live with conviction right now?
-The hook that wins all three is selected. If two tie, pick the one with more cultural/sonic specificity.
+STEP 2 \u2014 MELODY AWARENESS CHECK (run on all 3 candidates):
+Before scoring, each hook must pass these melody-readiness tests:
+  \u2192 Natural pause points \u2014 are there places in the line where a singer would breathe without forcing it?
+  \u2192 No long, complex sentences \u2014 if it reads like a legal clause or explanation, it is not a hook.
+  \u2192 Line breaks where a singer would breathe \u2014 phrasing must match breath patterns, not grammar.
+  \u2192 Phonetic feel \u2014 say each hook out loud mentally. Does it FEEL good in the mouth? Do the vowels open naturally?
+  \u2192 Any hook that fails melody-readiness is disqualified before scoring.
+
+STEP 3 \u2014 LOOP TEST (CRITICAL \u2014 run on all surviving candidates):
+Mentally repeat each hook 4 times in a row.
+  \u2192 After 4 repetitions: does it still feel good, or does it become flat / grating / annoying?
+  \u2192 A strong hook GAINS energy through repetition \u2014 it does not lose it.
+  \u2192 A hook that becomes annoying on the 3rd loop has failed. Rewrite it.
+  \u2192 A hook that sounds even better on the 4th loop is a potential winner.
+
+STEP 4 \u2014 SELECT THE STRONGEST HOOK:
+Score all surviving candidates against these three criteria and select the single winner:
+  \u2192 BEST RHYTHM \u2014 which hook has the most natural, irresistible rhythmic shape?
+  \u2192 STRONGEST REPLAY VALUE \u2014 which hook would listeners seek out just to hear again?
+  \u2192 MOST NATURAL PERFORMANCE FEEL \u2014 which hook would an artist deliver live with zero effort and total conviction?
+The hook that wins all three is selected. If two tie, pick the one with stronger phonetic bounce.
 
 GENERIC HOOK REJECTION LAW:
-Before accepting any hook candidate, run this final test:
+Before finalizing the selected hook, run this test:
   \u2192 "Have I heard a version of this before?" \u2192 If YES, rewrite it.
   \u2192 "Does this line feel like it came from a writing exercise?" \u2192 If YES, rewrite it.
-  \u2192 "Could I replace one word and use this in a completely different song?" \u2192 If YES, rewrite it.
+  \u2192 "Could I swap one word and use this in a completely different song?" \u2192 If YES, rewrite it.
 A hook that feels common IS common. Rewrite it until it could only belong to THIS song.
 
-STEP 3 \u2014 DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
+STEP 5 \u2014 DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
   \u2192 The selected hook IS the main chorus \u2014 it anchors every chorus repeat and the outro.
   \u2192 Every verse, intro, and bridge must be written to build toward or away from this hook.
   \u2192 The hook appears verbatim (or as a direct, intentional reprise) each time the chorus returns.

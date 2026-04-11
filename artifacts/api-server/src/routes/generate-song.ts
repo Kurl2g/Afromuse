@@ -80,52 +80,71 @@ The following detailed intelligence layers provide depth and authenticity for ev
 They operate WITHIN the priority framework above — quality enhancements, never generation blockers.
 
 ══════════════════════════════════════════════
-HOOK ENGINE V1.5 — ENHANCED PRE-GENERATION STEP (ALWAYS RUN FIRST)
+HOOK ENGINE V2 — MELODY + VIRAL READY (ALWAYS RUN FIRST)
 ══════════════════════════════════════════════
-Before writing a single lyric line, run this internal hook selection process. It governs the emotional center of the entire song.
+Before writing a single lyric line, run this internal hook selection process. It governs the melodic center, rhythm, and viral potential of the entire song.
 
-STEP 1 — GENERATE 3 CANDIDATE HOOK LINES (FORCED VARIATION):
-Internally generate exactly 3 hook line options — one of each TYPE below. Each candidate MUST satisfy ALL of the following requirements:
+STEP 1 — GENERATE 3 CANDIDATE HOOK LINES (FORCED DIVERSITY):
+Internally generate exactly 3 hook line options — one of each STYLE below. Each candidate MUST satisfy ALL of the following:
   → Under 10 words — count strictly. If it reaches 10 words, cut it.
-  → Contains a clear IMAGE, ACTION, or MOMENT — no floating abstract feelings.
-  → Feels like something a real artist would actually say — not a poet, not a caption writer, a performing artist.
-  → Avoids ALL generic phrases — the following are permanently banned as hooks:
+  → Rhythmically smooth when spoken out loud — say it mentally; if it stumbles, rewrite it.
+  → Contains strong phonetic bounce — repeating sounds, vowel patterns, or consonant clusters that create natural musicality.
+  → Includes a clear moment, action, or striking phrase — no floating emotional states.
+  → Avoids ALL generic phrases — the following are permanently banned:
       ✗ "I miss you" / "I'm sad" / "I love you" / "I need you"
       ✗ "You are my everything" / "You make me feel alive"
       ✗ "We will rise" / "I will survive" / "Never give up"
-      ✗ Any phrase that could appear in 100 other songs without changing
+      ✗ Any phrase that could appear unchanged in 100 other songs
 
-HOOK TYPE ASSIGNMENTS — generate exactly one of each:
-  TYPE 1 — EMOTIONAL + SPECIFIC MOMENT:
-    The hook captures a single, concrete emotional moment. Not the feeling — the exact instant it happened.
-    Example energy: "She left the key on the kitchen counter" / "I checked your name — you were still online"
-    NOT: "I feel broken inside" — YES: the physical moment that made you feel broken
+HOOK STYLE ASSIGNMENTS — generate exactly one of each:
+  STYLE 1 — MELODIC EMOTIONAL HOOK (smooth + repeatable):
+    Built for singing, not rapping. Flows like water — no hard syllable stacks.
+    The emotional core is carried by the melody shape, not just the words.
+    Example energy: "Still dey wait for your call in the rain" / "She never told me she was leaving slow"
+    Test: could a vocalist use this as a warm-up riff? If yes, it has the right shape.
 
-  TYPE 2 — BOLD / STATEMENT / ATTITUDE:
-    The hook is a confident, direct declaration — no hesitation, no explanation.
-    Example energy: "Dem know my name now" / "I don't beg twice" / "Watch how I move without a sound"
-    NOT: "I am becoming stronger" — YES: a statement so specific and direct it feels like a challenge
+  STYLE 2 — RHYTHMIC / CHANT HOOK (percussive, punchy):
+    Built for crowds. Short, staccato, phonetically explosive.
+    Each syllable lands like a beat hit — the hook IS the rhythm pattern.
+    Example energy: "Soro soke, dem no see me" / "Wahala turn to blessing" / "Dem know my name now"
+    Test: could 500 people chant this at a show after hearing it once? If yes, it works.
 
-  TYPE 3 — CATCHY PHRASE WITH RHYTHM OR SLANG:
-    The hook is built on phonetics, slang, or natural language rhythm — it sticks because of HOW it sounds, not just what it says.
-    Example energy: "Soro soke, dem no see me" / "Wahala turn to blessing" / "Soft life loading"
-    NOT: a clean English sentence dressed in slang — YES: a phrase that only works in THIS language and culture
+  STYLE 3 — CALL & RESPONSE HOOK (interactive feel):
+    Built with a natural gap — the first half invites, the second half answers.
+    The listener feels like they are completing the line rather than just hearing it.
+    Example energy: "You say you love me — [show me then]" / "I don't beg twice — [you know that]"
+    Test: does the hook feel like half of a conversation? If yes, it has the right dynamic.
 
-STEP 2 — SELECT THE STRONGEST HOOK:
-Score all 3 candidates against these three criteria and select the single winner:
-  → MEMORABILITY — would someone still remember this hook 10 minutes after one listen?
-  → UNIQUENESS — could this exact line appear in any other song, or does it only belong here?
-  → PERFORMANCE ENERGY — could an artist step to a mic and deliver this live with conviction right now?
-The hook that wins all three is selected. If two tie, pick the one with more cultural/sonic specificity.
+STEP 2 — MELODY AWARENESS CHECK (run on all 3 candidates):
+Before scoring, each hook must pass these melody-readiness tests:
+  → Natural pause points — are there places in the line where a singer would breathe without forcing it?
+  → No long, complex sentences — if it reads like a legal clause or explanation, it is not a hook.
+  → Line breaks where a singer would breathe — phrasing must match breath patterns, not grammar.
+  → Phonetic feel — say each hook out loud mentally. Does it FEEL good in the mouth? Do the vowels open naturally?
+  → Any hook that fails melody-readiness is disqualified before scoring.
+
+STEP 3 — LOOP TEST (CRITICAL — run on all surviving candidates):
+Mentally repeat each hook 4 times in a row.
+  → After 4 repetitions: does it still feel good, or does it become flat / grating / annoying?
+  → A strong hook GAINS energy through repetition — it does not lose it.
+  → A hook that becomes annoying on the 3rd loop has failed. Rewrite it.
+  → A hook that sounds even better on the 4th loop is a potential winner.
+
+STEP 4 — SELECT THE STRONGEST HOOK:
+Score all surviving candidates against these three criteria and select the single winner:
+  → BEST RHYTHM — which hook has the most natural, irresistible rhythmic shape?
+  → STRONGEST REPLAY VALUE — which hook would listeners seek out just to hear again?
+  → MOST NATURAL PERFORMANCE FEEL — which hook would an artist deliver live with zero effort and total conviction?
+The hook that wins all three is selected. If two tie, pick the one with stronger phonetic bounce.
 
 GENERIC HOOK REJECTION LAW:
-Before accepting any hook candidate, run this final test:
+Before finalizing the selected hook, run this test:
   → "Have I heard a version of this before?" → If YES, rewrite it.
   → "Does this line feel like it came from a writing exercise?" → If YES, rewrite it.
-  → "Could I replace one word and use this in a completely different song?" → If YES, rewrite it.
+  → "Could I swap one word and use this in a completely different song?" → If YES, rewrite it.
 A hook that feels common IS common. Rewrite it until it could only belong to THIS song.
 
-STEP 3 — DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
+STEP 5 — DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
   → The selected hook IS the main chorus — it anchors every chorus repeat and the outro.
   → Every verse, intro, and bridge must be written to build toward or away from this hook.
   → The hook appears verbatim (or as a direct, intentional reprise) each time the chorus returns.
