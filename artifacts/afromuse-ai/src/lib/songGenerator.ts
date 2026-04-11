@@ -46,6 +46,15 @@ export interface SongDraft {
     deliveryStyle?: string;
     emotionalTone?: string;
   };
+  // V12 Hit Predictor fields
+  hitPrediction?: {
+    hookStrength?: string;
+    replayValue?: string;
+    emotionalDepth?: string;
+    viralPotential?: number | string;
+    verdict?: string;
+    suggestion?: string | null;
+  };
 }
 
 function pick<T>(arr: T[], seed: number, offset = 0): T {

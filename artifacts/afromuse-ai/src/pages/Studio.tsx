@@ -27,10 +27,12 @@ type StudioTab = "lyric" | "audio" | "release";
 const generatingSteps = [
   "Finding your keeper line...",
   "Engineering the hook...",
+  "Scoring hook strength A–F...",
   "Building your verses...",
   "Running the tightness filter...",
   "Shaping the bridge...",
-  "Running quality check...",
+  "Counting replay triggers...",
+  "Running Hit Predictor V12...",
   "Finalising your draft...",
 ];
 
@@ -1442,6 +1444,89 @@ export default function Studio() {
                             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Keeper Line</span>
                           </div>
                           <p className="text-base font-semibold text-white/90 italic leading-relaxed">"{draft.keeperLine}"</p>
+                        </div>
+                      )}
+
+                      {/* V12 Hit Predictor */}
+                      {draft.hitPrediction && (
+                        <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden">
+                          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-emerald-500/10">
+                            <Flame className="w-3.5 h-3.5 text-emerald-400" />
+                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Hit Predictor — V12</span>
+                          </div>
+                          <div className="p-5">
+                            <div className="grid grid-cols-2 gap-3 mb-4 sm:grid-cols-4">
+                              {/* Hook Strength */}
+                              {draft.hitPrediction.hookStrength && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Hook</span>
+                                  <span className={`text-2xl font-black leading-none ${
+                                    draft.hitPrediction.hookStrength.startsWith("A") ? "text-emerald-400" :
+                                    draft.hitPrediction.hookStrength === "B" ? "text-yellow-400" :
+                                    draft.hitPrediction.hookStrength === "C" ? "text-orange-400" :
+                                    "text-red-400"
+                                  }`}>{draft.hitPrediction.hookStrength}</span>
+                                </div>
+                              )}
+                              {/* Replay Value */}
+                              {draft.hitPrediction.replayValue && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Replay</span>
+                                  <span className={`text-sm font-black leading-none ${
+                                    draft.hitPrediction.replayValue === "High" ? "text-emerald-400" :
+                                    draft.hitPrediction.replayValue === "Medium" ? "text-yellow-400" :
+                                    "text-orange-400"
+                                  }`}>{draft.hitPrediction.replayValue}</span>
+                                </div>
+                              )}
+                              {/* Emotional Depth */}
+                              {draft.hitPrediction.emotionalDepth && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Emotion</span>
+                                  <span className={`text-sm font-black leading-none ${
+                                    draft.hitPrediction.emotionalDepth === "High" ? "text-violet-400" :
+                                    draft.hitPrediction.emotionalDepth === "Medium" ? "text-sky-400" :
+                                    "text-white/50"
+                                  }`}>{draft.hitPrediction.emotionalDepth}</span>
+                                </div>
+                              )}
+                              {/* Viral Potential */}
+                              {draft.hitPrediction.viralPotential !== undefined && (
+                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Viral</span>
+                                  <span className={`text-2xl font-black leading-none ${
+                                    Number(draft.hitPrediction.viralPotential) >= 75 ? "text-emerald-400" :
+                                    Number(draft.hitPrediction.viralPotential) >= 50 ? "text-yellow-400" :
+                                    "text-orange-400"
+                                  }`}>{draft.hitPrediction.viralPotential}%</span>
+                                </div>
+                              )}
+                            </div>
+                            {/* Verdict */}
+                            {draft.hitPrediction.verdict && (
+                              <div className={`rounded-xl px-4 py-2.5 flex items-center gap-2 mb-3 ${
+                                draft.hitPrediction.verdict === "Studio Ready"
+                                  ? "bg-emerald-500/10 border border-emerald-500/20"
+                                  : draft.hitPrediction.verdict === "Needs Hook Fix"
+                                  ? "bg-amber-500/10 border border-amber-500/20"
+                                  : "bg-sky-500/10 border border-sky-500/20"
+                              }`}>
+                                <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mr-1">Verdict</span>
+                                <span className={`text-xs font-bold ${
+                                  draft.hitPrediction.verdict === "Studio Ready" ? "text-emerald-400" :
+                                  draft.hitPrediction.verdict === "Needs Hook Fix" ? "text-amber-400" :
+                                  "text-sky-400"
+                                }`}>{draft.hitPrediction.verdict}</span>
+                              </div>
+                            )}
+                            {/* Suggestion */}
+                            {draft.hitPrediction.suggestion && (
+                              <p className="text-[11px] text-white/50 leading-relaxed italic">
+                                <span className="text-white/25 font-semibold not-italic mr-1">Tip:</span>
+                                {draft.hitPrediction.suggestion}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       )}
 
