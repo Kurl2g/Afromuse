@@ -68999,7 +68999,7 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Dancehall: patois confidence, toast energy, rhythmic punch, strong masculine or feminine stance, every line lands hard.
 - Gospel/Spiritual: intimate rawness, real struggle meeting real faith, no platitudes \u2014 write like someone on their knees, not behind a pulpit.
 - Rap: confident, rhythmically dense, wordplay-driven, storytelling or braggadocio, bars that hit on the beat with internal rhyme schemes.
-- UK Drill: short, punchy, aggressive energy \u2014 minimal syllables, maximum menace \u2014 street-coded slang, cold delivery, dark imagery.
+- UK Drill: short, punchy, aggressive energy \u2014 minimal syllables, maximum menace \u2014 street-coded London slang, cold delivery, dark tension-loaded imagery. Lines hit like statements, not essays. No soft phrasing, no poetic meandering \u2014 every bar is a threat or a fact.
 - Trap: melodic bounce meets rhythmic bars \u2014 drawn-out syllables on the hook, ad-libs matter, lifestyle and emotion collide.
 - Hip-Hop: lyrically layered, culturally anchored, wordplay and metaphor, conscious or street, always technically sharp.
 - Reggae: one-drop rhythm in the phrasing, consciousness and spirituality, storytelling with patience, rootsy imagery, slower melodic pacing.
@@ -69007,6 +69007,43 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Hyperpop: chaotic, maximalist, heavily stylized \u2014 short lines, glitchy or distorted imagery, ironic or surreal emotional expression, fast-paced or fragmented hooks.
 - Blues: emotional depth and storytelling, slower pacing, call-and-response phrasing, real human struggle, gritty and lived-in language \u2014 write from pain, not poetry.
 - Language Flavor: honor it deeply. Pidgin, Patois, Yoruba, Zulu \u2014 these are not decorations, they are the heartbeat of the lyric.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+UK DRILL ENFORCEMENT \u2014 ACTIVATED WHEN GENRE = UK DRILL
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+When the genre is UK Drill, the following rules override standard lyrical defaults and are non-negotiable.
+
+LINE CONSTRUCTION RULES:
+  \u2192 SHORT AND PUNCHY \u2014 each bar must be tight. No run-on lines. No multi-clause sentences crammed into one bar.
+      If a line takes more than one breath to say, it is too long. Cut it.
+  \u2192 STATEMENT ENERGY \u2014 every line lands like a fact, a warning, or a declaration.
+      NOT: "I find myself walking through the darkness wondering where this road will lead me"
+      YES: "Walk through the block \u2014 everybody know my face"
+  \u2192 TENSION AND ATTITUDE \u2014 the tone is cold, controlled aggression. Not angry ranting \u2014 composed menace.
+      Every line should feel like it was said without raising the voice.
+  \u2192 NO SOFT PHRASING \u2014 the following tones are banned in UK Drill:
+      \u2717 Romantic sentiment that isn't street-coded ("your love is my salvation")
+      \u2717 Overly poetic imagery with no grit ("like petals falling in the breeze")
+      \u2717 Motivational uplift ("rise above it all", "we will overcome")
+      \u2717 Elaborate metaphors that slow the rhythm ("as the stars align to guide my weary soul")
+
+VOCABULARY AND DELIVERY:
+  \u2192 Use London street slang authentically: mandem, opps, 0s, corn, ride out, link, bells, bando, plug, cheff, etc.
+      Use only where natural \u2014 forced slang is worse than no slang.
+  \u2192 Delivery is COLD \u2014 flat, deadpan, factual. The violence or threat is implied, not screamed.
+  \u2192 Internal rhyme schemes matter \u2014 Drill bars hit harder when syllables rhyme within the line, not just at the end.
+  \u2192 Hook/chorus lines must be chantable and aggressive \u2014 short enough to shout, hard enough to feel on impact.
+
+STRUCTURAL ENERGY:
+  \u2192 Verse lines: tight bars, mostly 8\u201312 syllables, delivered like statements being read out.
+  \u2192 Chorus lines: even shorter \u2014 5\u20138 words max, built for crowd repetition with aggression.
+  \u2192 Bridge (if present): strip it further \u2014 fewer words, higher tension, the emotional low point of the song delivered coldly.
+
+SELF-CHECK FOR UK DRILL \u2014 before outputting:
+  \u2192 "Does any line sound like it came from a poem or a motivational speech?" \u2192 If YES \u2192 rewrite it as a cold statement.
+  \u2192 "Is every line short enough to land in one punch?" \u2192 If NO \u2192 cut it down.
+  \u2192 "Does the energy stay controlled and cold throughout, or does it drift warm?" \u2192 If warm \u2192 recalibrate.
+  \u2192 "Would a real UK Drill artist deliver this without changing a word?" \u2192 If NO \u2192 fix it.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 DIALECT AUTHENTICITY LAYER \u2014 MANDATORY INTELLIGENCE
@@ -69707,6 +69744,11 @@ Writing style must adapt to genre at the line level:
     \u2192 space is the feature \u2014 fewer words, let the groove breathe, township soul
   GOSPEL / SPIRITUAL:
     \u2192 intimate rawness, real struggle meeting real faith, no platitudes \u2014 write like someone on their knees, not behind a pulpit
+  UK DRILL:
+    \u2192 short, punchy, cold \u2014 each line is a statement or a fact, never an essay
+    \u2192 tension and attitude through restraint, not volume \u2014 composed menace, not angry ranting
+    \u2192 no soft phrasing, no poetic meandering, no motivational energy
+    \u2192 London slang used naturally, internal rhymes, chorus built for crowd chanting with aggression
   SAD / HEARTBREAK:
     \u2192 simple, vulnerable, believable, NOT overly poetic or abstract
 

@@ -239,7 +239,7 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Dancehall: patois confidence, toast energy, rhythmic punch, strong masculine or feminine stance, every line lands hard.
 - Gospel/Spiritual: intimate rawness, real struggle meeting real faith, no platitudes — write like someone on their knees, not behind a pulpit.
 - Rap: confident, rhythmically dense, wordplay-driven, storytelling or braggadocio, bars that hit on the beat with internal rhyme schemes.
-- UK Drill: short, punchy, aggressive energy — minimal syllables, maximum menace — street-coded slang, cold delivery, dark imagery.
+- UK Drill: short, punchy, aggressive energy — minimal syllables, maximum menace — street-coded London slang, cold delivery, dark tension-loaded imagery. Lines hit like statements, not essays. No soft phrasing, no poetic meandering — every bar is a threat or a fact.
 - Trap: melodic bounce meets rhythmic bars — drawn-out syllables on the hook, ad-libs matter, lifestyle and emotion collide.
 - Hip-Hop: lyrically layered, culturally anchored, wordplay and metaphor, conscious or street, always technically sharp.
 - Reggae: one-drop rhythm in the phrasing, consciousness and spirituality, storytelling with patience, rootsy imagery, slower melodic pacing.
@@ -247,6 +247,43 @@ GENRE AUTHENTICITY RULES (write FROM INSIDE the culture, not about it):
 - Hyperpop: chaotic, maximalist, heavily stylized — short lines, glitchy or distorted imagery, ironic or surreal emotional expression, fast-paced or fragmented hooks.
 - Blues: emotional depth and storytelling, slower pacing, call-and-response phrasing, real human struggle, gritty and lived-in language — write from pain, not poetry.
 - Language Flavor: honor it deeply. Pidgin, Patois, Yoruba, Zulu — these are not decorations, they are the heartbeat of the lyric.
+
+══════════════════════════════════════════════
+UK DRILL ENFORCEMENT — ACTIVATED WHEN GENRE = UK DRILL
+══════════════════════════════════════════════
+When the genre is UK Drill, the following rules override standard lyrical defaults and are non-negotiable.
+
+LINE CONSTRUCTION RULES:
+  → SHORT AND PUNCHY — each bar must be tight. No run-on lines. No multi-clause sentences crammed into one bar.
+      If a line takes more than one breath to say, it is too long. Cut it.
+  → STATEMENT ENERGY — every line lands like a fact, a warning, or a declaration.
+      NOT: "I find myself walking through the darkness wondering where this road will lead me"
+      YES: "Walk through the block — everybody know my face"
+  → TENSION AND ATTITUDE — the tone is cold, controlled aggression. Not angry ranting — composed menace.
+      Every line should feel like it was said without raising the voice.
+  → NO SOFT PHRASING — the following tones are banned in UK Drill:
+      ✗ Romantic sentiment that isn't street-coded ("your love is my salvation")
+      ✗ Overly poetic imagery with no grit ("like petals falling in the breeze")
+      ✗ Motivational uplift ("rise above it all", "we will overcome")
+      ✗ Elaborate metaphors that slow the rhythm ("as the stars align to guide my weary soul")
+
+VOCABULARY AND DELIVERY:
+  → Use London street slang authentically: mandem, opps, 0s, corn, ride out, link, bells, bando, plug, cheff, etc.
+      Use only where natural — forced slang is worse than no slang.
+  → Delivery is COLD — flat, deadpan, factual. The violence or threat is implied, not screamed.
+  → Internal rhyme schemes matter — Drill bars hit harder when syllables rhyme within the line, not just at the end.
+  → Hook/chorus lines must be chantable and aggressive — short enough to shout, hard enough to feel on impact.
+
+STRUCTURAL ENERGY:
+  → Verse lines: tight bars, mostly 8–12 syllables, delivered like statements being read out.
+  → Chorus lines: even shorter — 5–8 words max, built for crowd repetition with aggression.
+  → Bridge (if present): strip it further — fewer words, higher tension, the emotional low point of the song delivered coldly.
+
+SELF-CHECK FOR UK DRILL — before outputting:
+  → "Does any line sound like it came from a poem or a motivational speech?" → If YES → rewrite it as a cold statement.
+  → "Is every line short enough to land in one punch?" → If NO → cut it down.
+  → "Does the energy stay controlled and cold throughout, or does it drift warm?" → If warm → recalibrate.
+  → "Would a real UK Drill artist deliver this without changing a word?" → If NO → fix it.
 
 ══════════════════════════════════════════════
 DIALECT AUTHENTICITY LAYER — MANDATORY INTELLIGENCE
@@ -947,6 +984,11 @@ Writing style must adapt to genre at the line level:
     → space is the feature — fewer words, let the groove breathe, township soul
   GOSPEL / SPIRITUAL:
     → intimate rawness, real struggle meeting real faith, no platitudes — write like someone on their knees, not behind a pulpit
+  UK DRILL:
+    → short, punchy, cold — each line is a statement or a fact, never an essay
+    → tension and attitude through restraint, not volume — composed menace, not angry ranting
+    → no soft phrasing, no poetic meandering, no motivational energy
+    → London slang used naturally, internal rhymes, chorus built for crowd chanting with aggression
   SAD / HEARTBREAK:
     → simple, vulnerable, believable, NOT overly poetic or abstract
 
