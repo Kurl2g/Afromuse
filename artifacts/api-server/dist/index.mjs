@@ -69012,31 +69012,43 @@ ENFORCEMENT TEST \u2014 before finalizing any hook, ask:
 A great hook never announces the emotion. It puts the listener INSIDE the moment so they feel it themselves.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-CHORUS RULE \u2014 ENFORCED ON EVERY GENERATION
+CHORUS STRUCTURE V2 \u2014 ENFORCED ON EVERY GENERATION
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 The chorus is the most important section of the song. These rules are non-negotiable.
 
-  C1. ONE CORE HOOK LINE \u2014 The chorus must revolve around a single, central hook line.
-      Every other line in the chorus supports, echoes, or amplifies that one line.
-      A chorus built around two competing ideas has failed. One hook. One emotional center.
+  C1. ANCHOR LINE FIRST \u2014 The chorus opens with the main hook line. No setup, no lead-in.
+      The hook IS the first line. The listener lands directly on the strongest moment.
 
-  C2. REPETITION IS MANDATORY \u2014 The core hook line MUST appear at least 2\u20133 times within the chorus.
+  C2. REPEAT THE ANCHOR 2\u20134 TIMES \u2014 The hook line must repeat 2 to 4 times within the chorus.
       Repetition is not laziness \u2014 it is the mechanism by which a hook becomes unforgettable.
-      If the hook line appears only once in the chorus, the chorus has failed. Rewrite it.
+      Fewer than 2 repeats: the hook never embeds. More than 4: it starts to lose impact.
+      Hit the range. Stay in it.
 
-  C3. TIGHT, NOT WORDY \u2014 The chorus must be short and focused.
-      Prefer 4 lines. Maximum 6. Every line earns its place \u2014 no padding, no filler, no over-explanation.
-      If the chorus feels long or dense, cut until only the essential emotional core remains.
+  C3. ONE SUPPORTING LINE MAXIMUM \u2014 If variation is needed, add no more than ONE supporting line.
+      That line echoes, amplifies, or gives breath to the anchor \u2014 it does not introduce a new idea.
+      Two competing ideas in a chorus = no anchor = no hook. One idea. One emotional center.
 
-  C4. CHANTABLE AFTER ONE LISTEN \u2014 A person hearing this song for the first time must be able
+  C4. TIGHT AND PERFORMANCE-READY \u2014 The chorus must be short, focused, and deliverable live.
+      Preferred structure: 4 lines (anchor \xD7 3 + 1 supporting). Absolute maximum: 6 lines.
+      Every line earns its place. No padding, no over-explanation, no filler.
+      If the chorus feels long or dense \u2192 cut until only the core remains.
+
+  C5. CHANTABLE AFTER ONE LISTEN \u2014 A person hearing this song for the first time must be able
       to chant the hook back by the second or third chorus.
       If the chorus requires concentration to follow, it has failed. Simplify it.
 
-CHORUS SELF-CHECK \u2014 run before finalizing the chorus:
-  \u2192 Is there one clear hook line the chorus revolves around? If NO \u2192 restructure.
-  \u2192 Does the hook line appear at least 2\u20133 times? If NO \u2192 add the repetitions.
+DO NOT:
+  \u2717 Overwrite the chorus with extra lines that dilute the anchor
+  \u2717 Add new emotional ideas that compete with the hook
+  \u2717 Treat the chorus like a second verse \u2014 it is a loop, not a story
+
+CHORUS SELF-CHECK \u2014 run before finalizing:
+  \u2192 Does the chorus open directly with the hook line? If NO \u2192 restructure.
+  \u2192 Does the hook line repeat 2\u20134 times? If NO \u2192 adjust the repetitions.
+  \u2192 Is there at most 1 supporting line? If NO \u2192 cut every extra line.
   \u2192 Is the chorus 6 lines or fewer? If NO \u2192 cut it down.
   \u2192 Could someone chant this after one listen? If NO \u2192 simplify the language.
+  \u2192 Does the chorus feel performance-ready \u2014 tight, live, crowd-deliverable? If NO \u2192 tighten it.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 CORE LAW 1 \u2014 REPLAY VALUE & HOOK STRENGTH

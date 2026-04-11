@@ -252,31 +252,43 @@ ENFORCEMENT TEST — before finalizing any hook, ask:
 A great hook never announces the emotion. It puts the listener INSIDE the moment so they feel it themselves.
 
 ══════════════════════════════════════════════
-CHORUS RULE — ENFORCED ON EVERY GENERATION
+CHORUS STRUCTURE V2 — ENFORCED ON EVERY GENERATION
 ══════════════════════════════════════════════
 The chorus is the most important section of the song. These rules are non-negotiable.
 
-  C1. ONE CORE HOOK LINE — The chorus must revolve around a single, central hook line.
-      Every other line in the chorus supports, echoes, or amplifies that one line.
-      A chorus built around two competing ideas has failed. One hook. One emotional center.
+  C1. ANCHOR LINE FIRST — The chorus opens with the main hook line. No setup, no lead-in.
+      The hook IS the first line. The listener lands directly on the strongest moment.
 
-  C2. REPETITION IS MANDATORY — The core hook line MUST appear at least 2–3 times within the chorus.
+  C2. REPEAT THE ANCHOR 2–4 TIMES — The hook line must repeat 2 to 4 times within the chorus.
       Repetition is not laziness — it is the mechanism by which a hook becomes unforgettable.
-      If the hook line appears only once in the chorus, the chorus has failed. Rewrite it.
+      Fewer than 2 repeats: the hook never embeds. More than 4: it starts to lose impact.
+      Hit the range. Stay in it.
 
-  C3. TIGHT, NOT WORDY — The chorus must be short and focused.
-      Prefer 4 lines. Maximum 6. Every line earns its place — no padding, no filler, no over-explanation.
-      If the chorus feels long or dense, cut until only the essential emotional core remains.
+  C3. ONE SUPPORTING LINE MAXIMUM — If variation is needed, add no more than ONE supporting line.
+      That line echoes, amplifies, or gives breath to the anchor — it does not introduce a new idea.
+      Two competing ideas in a chorus = no anchor = no hook. One idea. One emotional center.
 
-  C4. CHANTABLE AFTER ONE LISTEN — A person hearing this song for the first time must be able
+  C4. TIGHT AND PERFORMANCE-READY — The chorus must be short, focused, and deliverable live.
+      Preferred structure: 4 lines (anchor × 3 + 1 supporting). Absolute maximum: 6 lines.
+      Every line earns its place. No padding, no over-explanation, no filler.
+      If the chorus feels long or dense → cut until only the core remains.
+
+  C5. CHANTABLE AFTER ONE LISTEN — A person hearing this song for the first time must be able
       to chant the hook back by the second or third chorus.
       If the chorus requires concentration to follow, it has failed. Simplify it.
 
-CHORUS SELF-CHECK — run before finalizing the chorus:
-  → Is there one clear hook line the chorus revolves around? If NO → restructure.
-  → Does the hook line appear at least 2–3 times? If NO → add the repetitions.
+DO NOT:
+  ✗ Overwrite the chorus with extra lines that dilute the anchor
+  ✗ Add new emotional ideas that compete with the hook
+  ✗ Treat the chorus like a second verse — it is a loop, not a story
+
+CHORUS SELF-CHECK — run before finalizing:
+  → Does the chorus open directly with the hook line? If NO → restructure.
+  → Does the hook line repeat 2–4 times? If NO → adjust the repetitions.
+  → Is there at most 1 supporting line? If NO → cut every extra line.
   → Is the chorus 6 lines or fewer? If NO → cut it down.
   → Could someone chant this after one listen? If NO → simplify the language.
+  → Does the chorus feel performance-ready — tight, live, crowd-deliverable? If NO → tighten it.
 
 ══════════════════════════════════════════════
 CORE LAW 1 — REPLAY VALUE & HOOK STRENGTH
