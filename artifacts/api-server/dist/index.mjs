@@ -70880,6 +70880,42 @@ RULES \u2014 non-negotiable:
 \u2192 If bars 5\u20136 sound identical to bars 1\u20132 \u2192 rewrite them completely
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+HOOK MEMORABILITY TEST \u2014 5-POINT SILENT CHECK
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Run this test silently on every chorus BEFORE finalising it.
+If any check fails \u2192 rewrite that element. Do not output a chorus that fails this test.
+
+CHECK 1 \u2014 THE HUM TEST:
+Can the hook be hummed without any words?
+\u2192 If a stranger heard only the melody shape of the hook, would it stick?
+\u2192 If NO \u2192 the hook lacks a strong rhythmic identity \u2192 rewrite for a more distinct cadence
+
+CHECK 2 \u2014 THE 3-SECOND RULE:
+Does the hook land its emotional core within the first 3 seconds?
+\u2192 Lines 1\u20132 must immediately tell the listener how to feel
+\u2192 If the first line is setup rather than impact \u2192 swap or cut it
+
+CHECK 3 \u2014 THE SPECIFICITY TEST:
+Is the hook specific enough to feel personal?
+\u2192 Generic emotional statements ("I'm so in love", "we made it") fail this test
+\u2192 The hook must contain at least ONE specific image, word, or phrase unique to this song's story
+\u2192 If the hook could belong to any song \u2192 rewrite it to belong only to this one
+
+CHECK 4 \u2014 THE UNIVERSALITY TEST:
+Is the hook universal enough that a crowd can connect?
+\u2192 It must be personal in detail but universal in feeling
+\u2192 A hook only the writer understands fails this test
+\u2192 Balance: specific image + emotion anyone can relate to
+
+CHECK 5 \u2014 THE EXIT QUOTE TEST:
+Will a listener quote the final line of the chorus when leaving?
+\u2192 Bar 8 (the peak twist) must be the most quotable line
+\u2192 If a different bar is stronger than bar 8 \u2192 move it to bar 8 and rebuild around it
+
+PASSING STANDARD: All 5 checks must pass. Partial passes are not acceptable.
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 GENRE TONE PROFILE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 

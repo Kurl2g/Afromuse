@@ -2989,6 +2989,42 @@ RULES — non-negotiable:
 → If bars 5–6 sound identical to bars 1–2 → rewrite them completely
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOOK MEMORABILITY TEST — 5-POINT SILENT CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Run this test silently on every chorus BEFORE finalising it.
+If any check fails → rewrite that element. Do not output a chorus that fails this test.
+
+CHECK 1 — THE HUM TEST:
+Can the hook be hummed without any words?
+→ If a stranger heard only the melody shape of the hook, would it stick?
+→ If NO → the hook lacks a strong rhythmic identity → rewrite for a more distinct cadence
+
+CHECK 2 — THE 3-SECOND RULE:
+Does the hook land its emotional core within the first 3 seconds?
+→ Lines 1–2 must immediately tell the listener how to feel
+→ If the first line is setup rather than impact → swap or cut it
+
+CHECK 3 — THE SPECIFICITY TEST:
+Is the hook specific enough to feel personal?
+→ Generic emotional statements ("I'm so in love", "we made it") fail this test
+→ The hook must contain at least ONE specific image, word, or phrase unique to this song's story
+→ If the hook could belong to any song → rewrite it to belong only to this one
+
+CHECK 4 — THE UNIVERSALITY TEST:
+Is the hook universal enough that a crowd can connect?
+→ It must be personal in detail but universal in feeling
+→ A hook only the writer understands fails this test
+→ Balance: specific image + emotion anyone can relate to
+
+CHECK 5 — THE EXIT QUOTE TEST:
+Will a listener quote the final line of the chorus when leaving?
+→ Bar 8 (the peak twist) must be the most quotable line
+→ If a different bar is stronger than bar 8 → move it to bar 8 and rebuild around it
+
+PASSING STANDARD: All 5 checks must pass. Partial passes are not acceptable.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 GENRE TONE PROFILE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
