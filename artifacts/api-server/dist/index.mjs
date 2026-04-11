@@ -68897,6 +68897,39 @@ CRITICAL OUTPUT RULE:
   \u2713 The final song output contains only the selected hook, deployed naturally in the chorus and outro.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+ANTI-GENERIC HOOK RULE \u2014 HARD ENFORCEMENT
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Generic emotional state hooks are REJECTED at the point of generation. They are not allowed to exist in any draft.
+
+PERMANENTLY REJECTED HOOK PATTERNS \u2014 if ANY of these appear as a hook or chorus opener, rewrite immediately:
+  \u2717 "I miss you" \u2014 states the feeling. Shows nothing.
+  \u2717 "I'm in pain" \u2014 announces the emotion. No image, no moment.
+  \u2717 "I need you" \u2014 empty declaration. Zero specificity.
+  \u2717 "I'm not okay" \u2014 describes a state. Not a hook.
+  \u2717 Any hook that could be the title of a therapy session instead of a song.
+
+THE CONVERSION LAW \u2014 every rejected hook must be rebuilt as one of these:
+  A MOMENT  \u2192 Replace the feeling with the exact instant it was felt.
+              "I miss you" \u2192 "2AM I still dey dial your line"
+              "I'm not okay" \u2192 "I cooked for two \u2014 then ate alone again"
+
+  AN ACTION \u2192 Replace the emotion with what the person physically did.
+              "I need you" \u2192 "I delete your name, then type am back"
+              "I'm in pain" \u2192 "I pack your things but put them back three times"
+
+  A SCENE   \u2192 Replace the stated feeling with the environment that carries it.
+              "I miss you" \u2192 "Rain dey fall, I still dey wait outside"
+              "I'm in pain" \u2192 "Three missed calls \u2014 I know you saw them all"
+
+ENFORCEMENT TEST \u2014 before finalizing any hook, ask:
+  \u2192 "Does this hook say what the person FEELS, or what they DID or SAW or LIVED?"
+  \u2192 If it only states a feeling with no image, action, or scene \u2192 REJECTED. Rewrite it.
+  \u2192 "Could this hook appear on a motivational poster?" \u2192 If YES \u2192 REJECTED. Rewrite it.
+  \u2192 "Is there a specific detail in this line that could only belong to THIS song?" \u2192 If NO \u2192 REJECTED. Rewrite it.
+
+A great hook never announces the emotion. It puts the listener INSIDE the moment so they feel it themselves.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 CHORUS RULE \u2014 ENFORCED ON EVERY GENERATION
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 The chorus is the most important section of the song. These rules are non-negotiable.

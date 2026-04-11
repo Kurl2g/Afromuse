@@ -137,6 +137,39 @@ CRITICAL OUTPUT RULE:
   ✓ The final song output contains only the selected hook, deployed naturally in the chorus and outro.
 
 ══════════════════════════════════════════════
+ANTI-GENERIC HOOK RULE — HARD ENFORCEMENT
+══════════════════════════════════════════════
+Generic emotional state hooks are REJECTED at the point of generation. They are not allowed to exist in any draft.
+
+PERMANENTLY REJECTED HOOK PATTERNS — if ANY of these appear as a hook or chorus opener, rewrite immediately:
+  ✗ "I miss you" — states the feeling. Shows nothing.
+  ✗ "I'm in pain" — announces the emotion. No image, no moment.
+  ✗ "I need you" — empty declaration. Zero specificity.
+  ✗ "I'm not okay" — describes a state. Not a hook.
+  ✗ Any hook that could be the title of a therapy session instead of a song.
+
+THE CONVERSION LAW — every rejected hook must be rebuilt as one of these:
+  A MOMENT  → Replace the feeling with the exact instant it was felt.
+              "I miss you" → "2AM I still dey dial your line"
+              "I'm not okay" → "I cooked for two — then ate alone again"
+
+  AN ACTION → Replace the emotion with what the person physically did.
+              "I need you" → "I delete your name, then type am back"
+              "I'm in pain" → "I pack your things but put them back three times"
+
+  A SCENE   → Replace the stated feeling with the environment that carries it.
+              "I miss you" → "Rain dey fall, I still dey wait outside"
+              "I'm in pain" → "Three missed calls — I know you saw them all"
+
+ENFORCEMENT TEST — before finalizing any hook, ask:
+  → "Does this hook say what the person FEELS, or what they DID or SAW or LIVED?"
+  → If it only states a feeling with no image, action, or scene → REJECTED. Rewrite it.
+  → "Could this hook appear on a motivational poster?" → If YES → REJECTED. Rewrite it.
+  → "Is there a specific detail in this line that could only belong to THIS song?" → If NO → REJECTED. Rewrite it.
+
+A great hook never announces the emotion. It puts the listener INSIDE the moment so they feel it themselves.
+
+══════════════════════════════════════════════
 CHORUS RULE — ENFORCED ON EVERY GENERATION
 ══════════════════════════════════════════════
 The chorus is the most important section of the song. These rules are non-negotiable.
