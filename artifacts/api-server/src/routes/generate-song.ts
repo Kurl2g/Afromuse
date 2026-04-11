@@ -231,24 +231,79 @@ You MUST follow EXACTLY:
 DO NOT write fewer or more lines. Count before output.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V14 — GLOBAL HIT ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Every song is now treated as a release campaign across 4 global markets.
+
+■ GLOBAL MARKET ADAPTER
+After writing the song, assess each market:
+  UK Drill — heavier bounce, darker tone, punchy slang rhythm, no over-explaining
+  US Streaming — clearer hook repetition, simpler wording, radio-friendly phrasing
+  Afro/Global — rhythmic warmth, chant-heavy hooks, spiritual/emotional blend, danceable groove
+  TikTok/Short-form — 5–10 second hook segment, extreme repetition, instant recognizability, loop-friendly structure
+
+■ PLATFORM OPTIMIZATION ENGINE
+Score the song on 4 platforms (0–100 each):
+  spotify — first 30-second retention, skip-rate resistance, replay loop probability
+  tiktok — loop strength, hook catchiness for short-form
+  youtube — replay value, watch-through probability
+  radio — clean hook, radio-friendly phrasing, mainstream appeal
+
+■ STREAMING ALGORITHM ENGINE
+  Hook MUST arrive within 0:20–0:40
+  If the hook arrives too late, auto-rewrite the intro to shorten it
+  Assess hookHitsAt (e.g. "0:28") and hookTimingPass (true/false)
+
+■ HIT POSITIONING SYSTEM
+Classify the song honestly:
+  "MAINSTREAM HIT" — global appeal, simple hook, high replay
+  "NICHE HIT" — strong in one specific market (e.g. Drill / Gospel / Afro)
+  "VIRAL ONLY" — TikTok strong, weak streaming depth
+  "NON-COMMERCIAL ART" — expressive but low market fit
+
+■ DUAL VERSION GENERATOR
+  Artist Version = full emotional structure (already the main song)
+  Commercial Version = simplified hook + shortened intro for streaming optimization
+  Generate the commercial version's hook and intro only (not a full rewrite) — stored in "commercialVersion"
+
+■ HOOK GLOBALIZATION FIX
+Test every hook for universality:
+  Can non-local listeners feel the emotion without understanding every word?
+  Is the rhythm stronger than the language dependency?
+  Is it too verbose, too culturally locked, or too language-dependent?
+  If any test fails → rework the hook before output
+
+■ LANGUAGE GLOBALIZATION ENGINE
+  Reduce AI sentence stacking
+  Balance local dialect and English naturally — rhythm-first phrasing
+  The song must sound like a real artist wrote it, not a translation engine
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL QUALITY CHECK (SILENT)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Before output, verify ALL of:
-- Sounds like a real artist
+- Sounds like a real artist — not AI, not translation engine
 - Flows on beat, not prose
 - Native feel — not translated
 - Hook variants generated (3 total), winner selected
-- Chorus follows V13 8-line model with selected hook
+- Hook passes globalization universality check
+- Hook arrives within 0:20–0:40 (streaming algorithm check)
+- Chorus follows 8-line model with selected hook
 - Each verse has turn moment + emotion shift
 - At least 2 Replay Triggers present
 - Bridge has genuine emotional shift
 - Auto-improver pass done on chorus, verses, bridge
+- All 4 markets assessed (UK / US / Afro / TikTok)
+- All 4 platform scores generated
+- Hit positioning classified
+- Commercial version hook + intro generated
 
 If any check fails → fix before output.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-OUTPUT — V13 SONG QUALITY REPORT (MANDATORY)
+OUTPUT — V14 GLOBAL HIT ENGINE REPORT (MANDATORY)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Every generated song MUST include these fields in the JSON output.
@@ -269,13 +324,26 @@ Every generated song MUST include these fields in the JSON output.
   viralFactors: { chantability: 0–20, tiktokFit: 0–20, repetitionPower: 0–20, emotionalPunch: 0–20, beatSync: 0–20 }
   signatureSoundIdentity: { emotionalTone: string, rhythmFingerprint: string, languageStyle: string, hookPersonality: string }
 
-Score honestly. If the hook is weak, say so.
+"globalReleaseReport" object:
+  globalScore: integer 0–100
+  ukFit: "High" or "Medium" or "Low"
+  usFit: "High" or "Medium" or "Low"
+  afroFit: "High" or "Medium" or "Low"
+  tiktokFit: "High" or "Medium" or "Low"
+  platformScores: { spotify: 0–100, tiktok: 0–100, youtube: 0–100, radio: 0–100 }
+  hitPositioning: "MAINSTREAM HIT" or "NICHE HIT" or "VIRAL ONLY" or "NON-COMMERCIAL ART"
+  hookHitsAt: string (e.g. "0:28")
+  hookTimingPass: true or false
+  commercialVersion: { hook: string, intro: string[] }
+  marketNotes: { uk: string, us: string, afro: string, tiktok: string }
+
+Score honestly. If the song is only a niche hit, say so.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Return ONLY the JSON object. No explanations outside the JSON.
-Include hookVariants and songQualityReport. Also include hitPrediction for backward compatibility.
+Include hookVariants, songQualityReport, and globalReleaseReport. Also include hitPrediction for backward compatibility.
 `;
 
 // ─── Flow / Production Details Prompt (Qwen) ──────────────────────────────────
@@ -1051,7 +1119,7 @@ const STRICT_RETRY_ADDENDUM = [
   "  • intro and outro: 2–4 lines each",
   "  • bridge: 4–8 lines",
   "  • Output ONLY a single valid JSON object — no markdown, no code fences, no text outside the JSON",
-  "  • All required fields MUST be present: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants, songQualityReport, hitPrediction",
+  "  • All required fields MUST be present: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants, songQualityReport, globalReleaseReport, hitPrediction",
   "Count every line carefully before submitting. Failure to comply means the generation fails entirely.",
 ].join("\n");
 
@@ -1432,7 +1500,16 @@ function buildUserPrompt(
     "✓ V13 REPLAY TRIGGERS: minimum 2 of: repeated chant line / crowd-screamable phrase / simple emotional truth / rhythmic repetition pattern / emotional vulnerability moment",
     "✓ V13 A&R VERDICT: assign honest label verdict — SIGNED READY HIT (viral 85+, hook A/A+) / REWRITE HOOK (65-84) / RESTRUCTURE (flow issues) / REJECT FULL REBUILD (below 65)",
     "✓ V13 SIGNATURE SOUND IDENTITY: emotionalTone, rhythmFingerprint, languageStyle, hookPersonality",
-    "✓ OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), hitPrediction",
+    "✓ V14 GLOBAL MARKET ADAPTER: assess song fit for UK Drill (bounce/tone) / US Streaming (hook clarity) / Afro Global (chant warmth) / TikTok (5-10s hook, loop-friendly) — each market gets High/Medium/Low",
+    "✓ V14 PLATFORM SCORES: score spotify (0-100) / tiktok (0-100) / youtube (0-100) / radio (0-100) — honest scoring, not inflated",
+    "✓ V14 STREAMING ALGORITHM: check hook arrival time — hook must hit at 0:20–0:40 — if too late, shorten intro — record hookHitsAt and hookTimingPass",
+    "✓ V14 HIT POSITIONING: classify as MAINSTREAM HIT / NICHE HIT / VIRAL ONLY / NON-COMMERCIAL ART — honest classification",
+    "✓ V14 DUAL VERSION: generate commercialVersion object with simplified hook + shortened intro for streaming — do NOT rewrite the full song",
+    "✓ V14 HOOK GLOBALIZATION: test hook universality — non-local listeners must feel the emotion — rhythm must be stronger than language dependency — rework if too culturally locked",
+    "✓ V14 LANGUAGE GLOBALIZATION: eliminate AI sentence stacking — balance local dialect + English naturally — rhythm-first phrasing — output must sound like a real artist, not a translation engine",
+    "✓ V14 MARKET NOTES: brief note for each market (uk, us, afro, tiktok) explaining fit or what needs adjustment",
+    "✓ V14 GLOBAL SCORE: calculate overall globalScore 0-100 from average of platform scores and market fit",
+    "✓ OUTPUT: JSON must include ALL of: title, keeperLine, keeperLineBackups, intro, verse1, hook, verse2, bridge, outro, hookVariants (variantA/B/C, selectedVariant, selectedHook), songQualityReport (hookTypeUsed, viralScore, replayPotential, fixNeeded, arVerdict, viralFactors, signatureSoundIdentity), globalReleaseReport (globalScore, ukFit, usFit, afroFit, tiktokFit, platformScores, hitPositioning, hookHitsAt, hookTimingPass, commercialVersion, marketNotes), hitPrediction",
     "",
     "────────────────────────────────────────",
     "FINAL LANGUAGE ENFORCEMENT",
@@ -1450,7 +1527,7 @@ function buildUserPrompt(
     "REWRITE IT before output.",
     "────────────────────────────────────────",
     "",
-    "Generate the full AfroMuse V13 VIRAL HIT GENERATOR song draft now.",
+    "Generate the full AfroMuse V14 GLOBAL HIT ENGINE song draft now.",
   );
 
   if (strictMode) {

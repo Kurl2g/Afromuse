@@ -5,7 +5,7 @@ import {
   ChevronDown, Volume2, Download, Check, Lock,
   Mic2, Wand2, FileText, Zap, Flame, Play,
   SkipForward, Sliders, Radio, Guitar,
-  VolumeX, Volume1, ChevronRight, Crown, Dna, RotateCcw,
+  VolumeX, Volume1, ChevronRight, Crown, Dna, RotateCcw, Globe,
 } from "lucide-react";
 import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
 import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
@@ -31,9 +31,11 @@ const generatingSteps = [
   "Selecting strongest hook...",
   "Building verse story arcs...",
   "Running auto-improver pass...",
-  "Counting replay triggers...",
-  "Running A&R verdict engine...",
-  "Finalising V13 draft...",
+  "Testing hook globalization...",
+  "Scoring platform markets...",
+  "Running A&R + streaming engine...",
+  "Positioning for global markets...",
+  "Finalising V14 draft...",
 ];
 
 const GENRES = [
@@ -1637,6 +1639,155 @@ export default function Studio() {
                                     </p>
                                   )}
                                 </div>
+                              </div>
+                            )}
+
+                          </div>
+                        </div>
+                      )}
+
+                      {/* V14 Global Release Report */}
+                      {draft.globalReleaseReport && (
+                        <div className="rounded-2xl border border-sky-500/20 bg-gradient-to-b from-sky-500/5 to-transparent overflow-hidden">
+                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-sky-500/10">
+                            <div className="flex items-center gap-2">
+                              <Globe className="w-3.5 h-3.5 text-sky-400" />
+                              <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Global Release Report — V14</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {draft.globalReleaseReport.hookTimingPass !== undefined && (
+                                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
+                                  draft.globalReleaseReport.hookTimingPass
+                                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                    : "bg-red-500/15 border-red-500/30 text-red-400"
+                                }`}>
+                                  Hook {draft.globalReleaseReport.hookHitsAt ?? ""} {draft.globalReleaseReport.hookTimingPass ? "✓" : "late"}
+                                </span>
+                              )}
+                              {draft.globalReleaseReport.hitPositioning && (
+                                <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                                  draft.globalReleaseReport.hitPositioning.includes("MAINSTREAM")
+                                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                    : draft.globalReleaseReport.hitPositioning.includes("NICHE")
+                                    ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+                                    : draft.globalReleaseReport.hitPositioning.includes("VIRAL")
+                                    ? "bg-sky-500/15 border-sky-500/30 text-sky-400"
+                                    : "bg-white/8 border-white/10 text-white/40"
+                                }`}>
+                                  {draft.globalReleaseReport.hitPositioning.replace("NON-COMMERCIAL ART", "ART ONLY")}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="p-5 space-y-4">
+
+                            {/* Global Score + Market Fits */}
+                            <div className="grid grid-cols-5 gap-2">
+                              {draft.globalReleaseReport.globalScore !== undefined && (
+                                <div className="col-span-1 rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Global</span>
+                                  <span className={`text-2xl font-black leading-none ${
+                                    Number(draft.globalReleaseReport.globalScore) >= 85 ? "text-emerald-400" :
+                                    Number(draft.globalReleaseReport.globalScore) >= 65 ? "text-yellow-400" :
+                                    "text-orange-400"
+                                  }`}>{draft.globalReleaseReport.globalScore}</span>
+                                  <span className="text-[8px] text-white/20">/100</span>
+                                </div>
+                              )}
+                              {[
+                                { key: "ukFit", label: "🇬🇧 UK", icon: "" },
+                                { key: "usFit", label: "🇺🇸 US", icon: "" },
+                                { key: "afroFit", label: "🌍 Afro", icon: "" },
+                                { key: "tiktokFit", label: "📱 TikTok", icon: "" },
+                              ].map(({ key, label }) => {
+                                const val = (draft.globalReleaseReport as Record<string, unknown>)?.[key] as string | undefined;
+                                return (
+                                  <div key={key} className="rounded-xl bg-white/4 border border-white/8 px-2 py-3 flex flex-col items-center gap-1">
+                                    <span className="text-[9px] font-bold text-white/30 text-center leading-tight">{label}</span>
+                                    <span className={`text-xs font-black leading-none ${
+                                      val === "High" ? "text-emerald-400" :
+                                      val === "Medium" ? "text-yellow-400" :
+                                      val === "Low" ? "text-orange-400" :
+                                      "text-white/25"
+                                    }`}>{val ?? "—"}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Platform Scores */}
+                            {draft.globalReleaseReport.platformScores && (
+                              <div>
+                                <div className="flex items-center gap-1.5 mb-2.5">
+                                  <Radio className="w-3 h-3 text-sky-400" />
+                                  <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Platform Scores</span>
+                                </div>
+                                <div className="space-y-1.5">
+                                  {[
+                                    { key: "spotify", label: "Spotify", icon: "🟢" },
+                                    { key: "tiktok", label: "TikTok", icon: "📱" },
+                                    { key: "youtube", label: "YouTube", icon: "🔴" },
+                                    { key: "radio", label: "Radio", icon: "📻" },
+                                  ].map(({ key, label, icon }) => {
+                                    const val = Number((draft.globalReleaseReport?.platformScores as Record<string, unknown>)?.[key] ?? 0);
+                                    return (
+                                      <div key={key} className="flex items-center gap-2.5">
+                                        <span className="text-[10px] w-3.5">{icon}</span>
+                                        <span className="text-[10px] text-white/40 w-14 shrink-0">{label}</span>
+                                        <div className="flex-1 h-1.5 rounded-full bg-white/8 overflow-hidden">
+                                          <div
+                                            className={`h-full rounded-full ${val >= 80 ? "bg-emerald-500" : val >= 65 ? "bg-yellow-500" : "bg-orange-500"}`}
+                                            style={{ width: `${val}%` }}
+                                          />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-white/50 w-6 text-right">{val}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Commercial Version Hook */}
+                            {draft.globalReleaseReport.commercialVersion?.hook && (
+                              <div className="rounded-xl border border-amber-500/15 bg-amber-500/4 p-3.5">
+                                <div className="flex items-center gap-1.5 mb-2">
+                                  <Zap className="w-3 h-3 text-amber-400" />
+                                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Commercial Version Hook</span>
+                                </div>
+                                <p className="text-xs text-white/75 italic leading-relaxed">"{draft.globalReleaseReport.commercialVersion.hook}"</p>
+                                {draft.globalReleaseReport.commercialVersion.intro && draft.globalReleaseReport.commercialVersion.intro.length > 0 && (
+                                  <div className="mt-2 pt-2 border-t border-white/5">
+                                    <span className="text-[9px] text-white/25 uppercase tracking-widest font-bold">Commercial Intro</span>
+                                    <div className="mt-1 space-y-0.5">
+                                      {draft.globalReleaseReport.commercialVersion.intro.map((line: string, i: number) => (
+                                        <p key={i} className="text-[11px] text-white/55 italic">"{line}"</p>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Market Notes */}
+                            {draft.globalReleaseReport.marketNotes && (
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  { key: "uk", label: "🇬🇧 UK Drill" },
+                                  { key: "us", label: "🇺🇸 US Streaming" },
+                                  { key: "afro", label: "🌍 Afro Global" },
+                                  { key: "tiktok", label: "📱 TikTok" },
+                                ].map(({ key, label }) => {
+                                  const note = (draft.globalReleaseReport?.marketNotes as Record<string, unknown>)?.[key] as string | undefined;
+                                  if (!note) return null;
+                                  return (
+                                    <div key={key} className="rounded-xl bg-white/3 border border-white/6 p-2.5">
+                                      <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest mb-1">{label}</p>
+                                      <p className="text-[11px] text-white/55 leading-snug">{note}</p>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             )}
 

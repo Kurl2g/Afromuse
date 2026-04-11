@@ -55,6 +55,33 @@ export interface SongDraft {
     verdict?: string;
     suggestion?: string | null;
   };
+  // V14 Global Hit Engine fields
+  globalReleaseReport?: {
+    globalScore?: number | string;
+    ukFit?: string;
+    usFit?: string;
+    afroFit?: string;
+    tiktokFit?: string;
+    platformScores?: {
+      spotify?: number | string;
+      tiktok?: number | string;
+      youtube?: number | string;
+      radio?: number | string;
+    };
+    hitPositioning?: string;
+    hookHitsAt?: string;
+    hookTimingPass?: boolean;
+    commercialVersion?: {
+      hook?: string;
+      intro?: string[];
+    };
+    marketNotes?: {
+      uk?: string;
+      us?: string;
+      afro?: string;
+      tiktok?: string;
+    };
+  };
   // V13 Viral Hit Generator fields
   hookVariants?: {
     variantA?: string;
