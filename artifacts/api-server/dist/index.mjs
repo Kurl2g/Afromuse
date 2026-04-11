@@ -69198,6 +69198,49 @@ SELF-CHECK FOR UK DRILL \u2014 before outputting:
   \u2192 "Would a real UK Drill artist deliver this without changing a word?" \u2192 If NO \u2192 fix it.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+RHYTHM-HEAVY GENRES \u2014 LINE LENGTH & BOUNCE ENFORCEMENT
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Applies to: Drill (UK & US), Trap, Hip-Hop.
+When ANY of these genres are selected, the following rules override default line construction and are non-negotiable.
+
+CORE PRINCIPLE \u2014 SHORT LINES CREATE RHYTHM:
+  Longer lines kill bounce. In rhythm-heavy genres, the SPACE between lines is part of the beat.
+  Every line must land cleanly on a bar. If it spills into the next beat \u2014 it is too long. Cut it.
+
+LINE LENGTH RULES:
+  \u2192 Verse lines: 6\u201310 words maximum. Count every word. If you hit 11 \u2014 cut the line.
+  \u2192 Chorus lines: 4\u20138 words. Built to be shouted, repeated, tattooed in memory.
+  \u2192 Bridge lines: even shorter \u2014 strip it to its sharpest idea. Fewer words, more weight.
+  \u2192 No multi-clause lines. One idea per line. If two things are being said \u2014 break it into two lines.
+
+THE BOUNCE PATTERN \u2014 APPLY PER 4-LINE BLOCK:
+Break every 4 bars using this internal rhythm structure:
+  Line 1 \u2014 SHORT: a tight setup or statement (6\u20138 words max)
+  Line 2 \u2014 SHORT: continues or mirrors the first, stays minimal
+  Line 3 \u2014 PUNCHLINE: the hardest-hitting line of the block \u2014 still short, but this is the line that lands
+  Line 4 \u2014 RESPONSE: a reaction, callback, or twist to the punchline \u2014 can be a single phrase
+
+  EXAMPLE STRUCTURE (rhythm shape only \u2014 not content):
+    "Came up from nothing" \u2190 short setup
+    "Pocket was empty" \u2190 short mirror
+    "Now they all want a seat at my table" \u2190 punchline
+    "Table got no room" \u2190 cold response
+
+  This 4-line bounce creates musical tension and release. Every verse MUST use this rhythm shape.
+
+WHAT TO AVOID \u2014 LINE KILLERS:
+  \u2717 Long flowing sentences that read like a paragraph \u2014 they flatten the beat
+  \u2717 Three-clause lines crammed together \u2014 one idea per line, always
+  \u2717 Over-explaining \u2014 trust the punchline to land; don't follow it with commentary
+  \u2717 Connector words as standalone rhythm fillers ("and then", "because I", "but still I") \u2014 unless they land with punch
+
+SELF-CHECK BEFORE OUTPUT (Drill / Trap / Hip-Hop):
+  \u2192 "Could I perform this bar in one breath without rushing?" \u2014 If NO \u2192 shorten it
+  \u2192 "Does every 4-line block have a clear punchline moment?" \u2014 If NO \u2192 restructure
+  \u2192 "Do the short lines create bounce and anticipation before the punchline lands?" \u2014 If NO \u2192 rewrite the setup
+  \u2192 "Are any two ideas crammed into one line that deserve their own bar?" \u2014 If YES \u2192 split them
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 DIALECT AUTHENTICITY LAYER \u2014 MANDATORY INTELLIGENCE
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 When writing in Jamaican Patois OR West African Pidgin, this layer governs ALL lyrical output. These are DISTINCT language systems \u2014 not interchangeable, not a shared "broken English" mode.
