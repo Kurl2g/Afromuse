@@ -2938,6 +2938,19 @@ Good example:
 Each line pushes the idea forward
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FLOW VARIATION RULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Do NOT keep all lines the same length.
+
+Mix:
+- short lines
+- medium lines
+- punchline endings
+
+Every 3–4 lines must introduce a shift in rhythm or phrasing.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 HOOK ENGINE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Hooks must be catchy, repeatable, chantable.
