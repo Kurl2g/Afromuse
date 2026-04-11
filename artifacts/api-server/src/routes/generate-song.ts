@@ -3284,6 +3284,16 @@ IF LANGUAGE FEELS STIFF → REWRITE AUTOMATICALLY:
 Do not output stiff lyrics. Rewrite until the line flows like spoken music. Stiffness is a failure state, not an acceptable compromise.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ANTI-REPETITION RULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+No line should feel like a duplicate of the previous line.
+
+Maximum 2 similar phrases per section.
+
+Each bar must add new meaning, emotion, or imagery.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.
