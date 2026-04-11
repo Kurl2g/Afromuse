@@ -3039,6 +3039,40 @@ STRUCTURE LOCK
 [ FINAL CHORUS ] → 8 lines  
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VERSE STORYTELLING ARC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Every song must follow a narrative arc across its sections. Do not write each section in isolation — they must connect and build.
+
+VERSE 1 — SET THE SCENE
+→ Establish who, where, and what is happening
+→ Ground the listener in a specific moment or situation
+→ Introduce the emotional tension without resolving it
+→ End on a line that makes the chorus feel inevitable
+
+CHORUS — EMOTIONAL PEAK
+→ The distilled feeling of the whole song
+→ Not a summary — the highest point of emotion
+→ Must feel earned after Verse 1
+
+VERSE 2 — ESCALATE OR REVEAL
+→ Do NOT repeat Verse 1's ideas or imagery
+→ Push the story forward: what happened next? what changed? what was discovered?
+→ Reveal a consequence, a deeper truth, or a shift in perspective
+→ The listener should feel the story has moved — not circled back
+
+BRIDGE — THE EMOTIONAL TURN
+→ This is the breaking point or breakthrough of the song
+→ Strip everything back — fewest words, highest emotional weight
+→ Introduce a new angle, a confession, a contradiction, or a release
+→ Should feel like the song exhaling after holding its breath
+
+FINAL CHORUS — LANDS DIFFERENTLY
+→ Same words as the chorus, but they now carry the weight of everything that happened
+→ If the chorus is repeated exactly — it must feel transformed by context
+→ The listener should hear it differently now
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FINAL CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Must feel real, rhythmic, native.

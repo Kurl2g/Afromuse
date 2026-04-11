@@ -70930,6 +70930,40 @@ STRUCTURE LOCK
 [ FINAL CHORUS ] \u2192 8 lines  
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+VERSE STORYTELLING ARC
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+Every song must follow a narrative arc across its sections. Do not write each section in isolation \u2014 they must connect and build.
+
+VERSE 1 \u2014 SET THE SCENE
+\u2192 Establish who, where, and what is happening
+\u2192 Ground the listener in a specific moment or situation
+\u2192 Introduce the emotional tension without resolving it
+\u2192 End on a line that makes the chorus feel inevitable
+
+CHORUS \u2014 EMOTIONAL PEAK
+\u2192 The distilled feeling of the whole song
+\u2192 Not a summary \u2014 the highest point of emotion
+\u2192 Must feel earned after Verse 1
+
+VERSE 2 \u2014 ESCALATE OR REVEAL
+\u2192 Do NOT repeat Verse 1's ideas or imagery
+\u2192 Push the story forward: what happened next? what changed? what was discovered?
+\u2192 Reveal a consequence, a deeper truth, or a shift in perspective
+\u2192 The listener should feel the story has moved \u2014 not circled back
+
+BRIDGE \u2014 THE EMOTIONAL TURN
+\u2192 This is the breaking point or breakthrough of the song
+\u2192 Strip everything back \u2014 fewest words, highest emotional weight
+\u2192 Introduce a new angle, a confession, a contradiction, or a release
+\u2192 Should feel like the song exhaling after holding its breath
+
+FINAL CHORUS \u2014 LANDS DIFFERENTLY
+\u2192 Same words as the chorus, but they now carry the weight of everything that happened
+\u2192 If the chorus is repeated exactly \u2014 it must feel transformed by context
+\u2192 The listener should hear it differently now
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FINAL CHECK
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 Must feel real, rhythmic, native.
