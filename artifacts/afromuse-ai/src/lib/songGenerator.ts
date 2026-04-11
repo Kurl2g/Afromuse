@@ -46,7 +46,7 @@ export interface SongDraft {
     deliveryStyle?: string;
     emotionalTone?: string;
   };
-  // V12 Hit Predictor fields
+  // V12 Hit Predictor fields (kept for backward compat)
   hitPrediction?: {
     hookStrength?: string;
     replayValue?: string;
@@ -54,6 +54,34 @@ export interface SongDraft {
     viralPotential?: number | string;
     verdict?: string;
     suggestion?: string | null;
+  };
+  // V13 Viral Hit Generator fields
+  hookVariants?: {
+    variantA?: string;
+    variantB?: string;
+    variantC?: string;
+    selectedVariant?: string;
+    selectedHook?: string;
+  };
+  songQualityReport?: {
+    hookTypeUsed?: string;
+    viralScore?: number | string;
+    replayPotential?: string;
+    fixNeeded?: boolean;
+    arVerdict?: string;
+    viralFactors?: {
+      chantability?: number | string;
+      tiktokFit?: number | string;
+      repetitionPower?: number | string;
+      emotionalPunch?: number | string;
+      beatSync?: number | string;
+    };
+    signatureSoundIdentity?: {
+      emotionalTone?: string;
+      rhythmFingerprint?: string;
+      languageStyle?: string;
+      hookPersonality?: string;
+    };
   };
 }
 

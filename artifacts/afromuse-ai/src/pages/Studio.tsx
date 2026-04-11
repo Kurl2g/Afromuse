@@ -26,14 +26,14 @@ type StudioTab = "lyric" | "audio" | "release";
 
 const generatingSteps = [
   "Finding your keeper line...",
-  "Engineering the hook...",
-  "Scoring hook strength A–F...",
-  "Building your verses...",
-  "Running the tightness filter...",
-  "Shaping the bridge...",
+  "Generating hook variants A, B, C...",
+  "Scoring viral factors...",
+  "Selecting strongest hook...",
+  "Building verse story arcs...",
+  "Running auto-improver pass...",
   "Counting replay triggers...",
-  "Running Hit Predictor V12...",
-  "Finalising your draft...",
+  "Running A&R verdict engine...",
+  "Finalising V13 draft...",
 ];
 
 const GENRES = [
@@ -1447,85 +1447,199 @@ export default function Studio() {
                         </div>
                       )}
 
-                      {/* V12 Hit Predictor */}
-                      {draft.hitPrediction && (
+                      {/* V13 Viral Hit Generator — Song Quality Report */}
+                      {(draft.songQualityReport || draft.hookVariants || draft.hitPrediction) && (
                         <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden">
-                          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-emerald-500/10">
-                            <Flame className="w-3.5 h-3.5 text-emerald-400" />
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Hit Predictor — V12</span>
-                          </div>
-                          <div className="p-5">
-                            <div className="grid grid-cols-2 gap-3 mb-4 sm:grid-cols-4">
-                              {/* Hook Strength */}
-                              {draft.hitPrediction.hookStrength && (
-                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
-                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Hook</span>
-                                  <span className={`text-2xl font-black leading-none ${
-                                    draft.hitPrediction.hookStrength.startsWith("A") ? "text-emerald-400" :
-                                    draft.hitPrediction.hookStrength === "B" ? "text-yellow-400" :
-                                    draft.hitPrediction.hookStrength === "C" ? "text-orange-400" :
-                                    "text-red-400"
-                                  }`}>{draft.hitPrediction.hookStrength}</span>
-                                </div>
-                              )}
-                              {/* Replay Value */}
-                              {draft.hitPrediction.replayValue && (
-                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
-                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Replay</span>
-                                  <span className={`text-sm font-black leading-none ${
-                                    draft.hitPrediction.replayValue === "High" ? "text-emerald-400" :
-                                    draft.hitPrediction.replayValue === "Medium" ? "text-yellow-400" :
-                                    "text-orange-400"
-                                  }`}>{draft.hitPrediction.replayValue}</span>
-                                </div>
-                              )}
-                              {/* Emotional Depth */}
-                              {draft.hitPrediction.emotionalDepth && (
-                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
-                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Emotion</span>
-                                  <span className={`text-sm font-black leading-none ${
-                                    draft.hitPrediction.emotionalDepth === "High" ? "text-violet-400" :
-                                    draft.hitPrediction.emotionalDepth === "Medium" ? "text-sky-400" :
-                                    "text-white/50"
-                                  }`}>{draft.hitPrediction.emotionalDepth}</span>
-                                </div>
-                              )}
-                              {/* Viral Potential */}
-                              {draft.hitPrediction.viralPotential !== undefined && (
-                                <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
-                                  <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Viral</span>
-                                  <span className={`text-2xl font-black leading-none ${
-                                    Number(draft.hitPrediction.viralPotential) >= 75 ? "text-emerald-400" :
-                                    Number(draft.hitPrediction.viralPotential) >= 50 ? "text-yellow-400" :
-                                    "text-orange-400"
-                                  }`}>{draft.hitPrediction.viralPotential}%</span>
-                                </div>
-                              )}
+                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-emerald-500/10">
+                            <div className="flex items-center gap-2">
+                              <Flame className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Viral Hit Generator — V13</span>
                             </div>
-                            {/* Verdict */}
-                            {draft.hitPrediction.verdict && (
-                              <div className={`rounded-xl px-4 py-2.5 flex items-center gap-2 mb-3 ${
-                                draft.hitPrediction.verdict === "Studio Ready"
-                                  ? "bg-emerald-500/10 border border-emerald-500/20"
-                                  : draft.hitPrediction.verdict === "Needs Hook Fix"
-                                  ? "bg-amber-500/10 border border-amber-500/20"
-                                  : "bg-sky-500/10 border border-sky-500/20"
+                            {draft.songQualityReport?.arVerdict && (
+                              <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                                draft.songQualityReport.arVerdict.includes("SIGNED")
+                                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                  : draft.songQualityReport.arVerdict.includes("REWRITE")
+                                  ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+                                  : draft.songQualityReport.arVerdict.includes("RESTRUCTURE")
+                                  ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
+                                  : "bg-red-500/15 border-red-500/30 text-red-400"
                               }`}>
-                                <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mr-1">Verdict</span>
-                                <span className={`text-xs font-bold ${
-                                  draft.hitPrediction.verdict === "Studio Ready" ? "text-emerald-400" :
-                                  draft.hitPrediction.verdict === "Needs Hook Fix" ? "text-amber-400" :
-                                  "text-sky-400"
-                                }`}>{draft.hitPrediction.verdict}</span>
+                                {draft.songQualityReport.arVerdict.includes("SIGNED") ? "SIGNED" :
+                                 draft.songQualityReport.arVerdict.includes("REWRITE") ? "REWRITE HOOK" :
+                                 draft.songQualityReport.arVerdict.includes("RESTRUCTURE") ? "RESTRUCTURE" : "REJECT"}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="p-5 space-y-4">
+
+                            {/* Viral Score + Key Metrics Row */}
+                            {draft.songQualityReport && (
+                              <div className="grid grid-cols-3 gap-2">
+                                {draft.songQualityReport.viralScore !== undefined && (
+                                  <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                    <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Viral Score</span>
+                                    <span className={`text-2xl font-black leading-none ${
+                                      Number(draft.songQualityReport.viralScore) >= 90 ? "text-emerald-400" :
+                                      Number(draft.songQualityReport.viralScore) >= 75 ? "text-yellow-400" :
+                                      "text-orange-400"
+                                    }`}>{draft.songQualityReport.viralScore}</span>
+                                    <span className="text-[8px] text-white/20">/100</span>
+                                  </div>
+                                )}
+                                {draft.songQualityReport.replayPotential && (
+                                  <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                    <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Replay</span>
+                                    <span className={`text-sm font-black leading-none text-center ${
+                                      draft.songQualityReport.replayPotential === "Extreme" ? "text-emerald-400" :
+                                      draft.songQualityReport.replayPotential === "High" ? "text-emerald-400" :
+                                      draft.songQualityReport.replayPotential === "Medium" ? "text-yellow-400" :
+                                      "text-orange-400"
+                                    }`}>{draft.songQualityReport.replayPotential}</span>
+                                  </div>
+                                )}
+                                {draft.songQualityReport.hookTypeUsed && (
+                                  <div className="rounded-xl bg-white/4 border border-white/8 px-3 py-3 flex flex-col items-center gap-1">
+                                    <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Hook Type</span>
+                                    <span className={`text-2xl font-black leading-none ${
+                                      draft.songQualityReport.hookTypeUsed === "A" ? "text-red-400" :
+                                      draft.songQualityReport.hookTypeUsed === "B" ? "text-violet-400" :
+                                      "text-sky-400"
+                                    }`}>{draft.songQualityReport.hookTypeUsed}</span>
+                                    <span className="text-[8px] text-white/20">
+                                      {draft.songQualityReport.hookTypeUsed === "A" ? "Viral" :
+                                       draft.songQualityReport.hookTypeUsed === "B" ? "Emotional" : "Drill"}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
                             )}
-                            {/* Suggestion */}
-                            {draft.hitPrediction.suggestion && (
-                              <p className="text-[11px] text-white/50 leading-relaxed italic">
-                                <span className="text-white/25 font-semibold not-italic mr-1">Tip:</span>
-                                {draft.hitPrediction.suggestion}
-                              </p>
+
+                            {/* Hook Variants */}
+                            {draft.hookVariants && (draft.hookVariants.variantA || draft.hookVariants.variantB || draft.hookVariants.variantC) && (
+                              <div>
+                                <div className="flex items-center gap-1.5 mb-2.5">
+                                  <Mic2 className="w-3 h-3 text-amber-400" />
+                                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Hook Variants</span>
+                                </div>
+                                <div className="space-y-2">
+                                  {draft.hookVariants.variantA && (
+                                    <div className={`rounded-xl px-3.5 py-2.5 border ${
+                                      draft.hookVariants.selectedVariant === "A"
+                                        ? "bg-red-500/10 border-red-500/25"
+                                        : "bg-white/3 border-white/6"
+                                    }`}>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-[9px] font-black text-red-400 uppercase tracking-widest">A — Viral</span>
+                                        {draft.hookVariants.selectedVariant === "A" && (
+                                          <span className="text-[8px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded-full font-bold">Selected</span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs text-white/75 italic">"{draft.hookVariants.variantA}"</p>
+                                    </div>
+                                  )}
+                                  {draft.hookVariants.variantB && (
+                                    <div className={`rounded-xl px-3.5 py-2.5 border ${
+                                      draft.hookVariants.selectedVariant === "B"
+                                        ? "bg-violet-500/10 border-violet-500/25"
+                                        : "bg-white/3 border-white/6"
+                                    }`}>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-[9px] font-black text-violet-400 uppercase tracking-widest">B — Emotional</span>
+                                        {draft.hookVariants.selectedVariant === "B" && (
+                                          <span className="text-[8px] bg-violet-500/20 text-violet-400 border border-violet-500/30 px-1.5 py-0.5 rounded-full font-bold">Selected</span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs text-white/75 italic">"{draft.hookVariants.variantB}"</p>
+                                    </div>
+                                  )}
+                                  {draft.hookVariants.variantC && (
+                                    <div className={`rounded-xl px-3.5 py-2.5 border ${
+                                      draft.hookVariants.selectedVariant === "C"
+                                        ? "bg-sky-500/10 border-sky-500/25"
+                                        : "bg-white/3 border-white/6"
+                                    }`}>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-[9px] font-black text-sky-400 uppercase tracking-widest">C — Drill Energy</span>
+                                        {draft.hookVariants.selectedVariant === "C" && (
+                                          <span className="text-[8px] bg-sky-500/20 text-sky-400 border border-sky-500/30 px-1.5 py-0.5 rounded-full font-bold">Selected</span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs text-white/75 italic">"{draft.hookVariants.variantC}"</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             )}
+
+                            {/* Viral Factors Breakdown */}
+                            {draft.songQualityReport?.viralFactors && (
+                              <div>
+                                <div className="flex items-center gap-1.5 mb-2.5">
+                                  <Zap className="w-3 h-3 text-sky-400" />
+                                  <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Viral Factors</span>
+                                </div>
+                                <div className="space-y-1.5">
+                                  {[
+                                    { key: "chantability", label: "Chantability", icon: "🎤" },
+                                    { key: "tiktokFit", label: "TikTok Fit", icon: "📱" },
+                                    { key: "repetitionPower", label: "Repetition Power", icon: "🔁" },
+                                    { key: "emotionalPunch", label: "Emotional Punch", icon: "😮" },
+                                    { key: "beatSync", label: "Beat Sync", icon: "🎵" },
+                                  ].map(({ key, label, icon }) => {
+                                    const val = Number((draft.songQualityReport?.viralFactors as Record<string, unknown>)?.[key] ?? 0);
+                                    const pct = Math.round((val / 20) * 100);
+                                    return (
+                                      <div key={key} className="flex items-center gap-2.5">
+                                        <span className="text-[10px] w-3.5">{icon}</span>
+                                        <span className="text-[10px] text-white/40 w-24 shrink-0">{label}</span>
+                                        <div className="flex-1 h-1.5 rounded-full bg-white/8 overflow-hidden">
+                                          <div
+                                            className={`h-full rounded-full ${pct >= 75 ? "bg-emerald-500" : pct >= 50 ? "bg-yellow-500" : "bg-orange-500"}`}
+                                            style={{ width: `${pct}%` }}
+                                          />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-white/50 w-5 text-right">{val}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Signature Sound Identity */}
+                            {draft.songQualityReport?.signatureSoundIdentity && (
+                              <div className="rounded-xl border border-violet-500/15 bg-violet-500/4 p-3.5">
+                                <div className="flex items-center gap-1.5 mb-2.5">
+                                  <Dna className="w-3 h-3 text-violet-400" />
+                                  <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest">Signature Sound Identity</span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                  {draft.songQualityReport.signatureSoundIdentity.emotionalTone && (
+                                    <p className="text-[11px] text-white/60 col-span-1">
+                                      <span className="text-white/30 font-semibold">Tone: </span>{draft.songQualityReport.signatureSoundIdentity.emotionalTone}
+                                    </p>
+                                  )}
+                                  {draft.songQualityReport.signatureSoundIdentity.languageStyle && (
+                                    <p className="text-[11px] text-white/60 col-span-1">
+                                      <span className="text-white/30 font-semibold">Language: </span>{draft.songQualityReport.signatureSoundIdentity.languageStyle}
+                                    </p>
+                                  )}
+                                  {draft.songQualityReport.signatureSoundIdentity.rhythmFingerprint && (
+                                    <p className="text-[11px] text-white/60 col-span-2">
+                                      <span className="text-white/30 font-semibold">Rhythm: </span>{draft.songQualityReport.signatureSoundIdentity.rhythmFingerprint}
+                                    </p>
+                                  )}
+                                  {draft.songQualityReport.signatureSoundIdentity.hookPersonality && (
+                                    <p className="text-[11px] text-white/60 col-span-2">
+                                      <span className="text-white/30 font-semibold">Hook DNA: </span>{draft.songQualityReport.signatureSoundIdentity.hookPersonality}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
                           </div>
                         </div>
                       )}
