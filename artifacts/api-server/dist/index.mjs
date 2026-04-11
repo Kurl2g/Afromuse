@@ -69152,6 +69152,20 @@ Below 75 = Needs rewrite
 
 The winner is whichever variant has the highest total score.
 
+\u26A0\uFE0F SCORING INTEGRITY RULES \u2014 MANDATORY:
+\u2192 Scores MUST reflect the ACTUAL quality of THIS specific song. Do NOT assign safe, averaged, or generic numbers.
+\u2192 Every song will have different strengths and weaknesses. A MINIMAL MODE / Loneliness song will have very different scores than a REPETITION MODE / Club Banger.
+\u2192 Scores MUST vary meaningfully between songs \u2014 never assign the same viral factors or platform scores twice.
+\u2192 If a hook is weak \u2192 chantability must be below 12. If it's strong \u2192 it should be 16\u201320.
+\u2192 If a song is niche or experimental \u2192 TikTok Fit and Radio scores should be LOW (40\u201360), not inflated.
+\u2192 STORY MODE songs naturally score lower on Chantability and higher on Emotional Punch.
+\u2192 REPETITION MODE songs naturally score higher on Chantability and Repetition Power but lower on Emotional Punch.
+\u2192 MINIMAL MODE songs score high on Emotional Punch, low on TikTok Fit and Chantability.
+\u2192 CHAOS MODE songs score high on Experimental appeal but low on Beat Sync and Radio.
+\u2192 MAXIMAL MODE songs score high on Emotional Punch but may score lower on TikTok Fit.
+\u2192 Platform scores: spotify, tiktok, youtube, radio MUST each reflect what that specific platform rewards \u2014 they will rarely all be close to the same number.
+\u2192 Do NOT give 85 across the board. Real A&R scoring is specific, uneven, and honest.
+
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 FULL SONG AUTO-IMPROVER V13
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501

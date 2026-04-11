@@ -141,6 +141,8 @@ export default function Studio() {
   const [v13Open, setV13Open] = useState(false);
   const [v15Open, setV15Open] = useState(false);
   const [v14Open, setV14Open] = useState(false);
+  const [diversityOpen, setDiversityOpen] = useState(false);
+  const [lyricsOpen, setLyricsOpen] = useState(false);
   const [draftGenre, setDraftGenre] = useState("");
   const [draftMood, setDraftMood] = useState("");
   const [commercialMode, setCommercialMode] = useState(false);
@@ -250,6 +252,11 @@ export default function Studio() {
       setDraft(data.draft);
       setDraftGenre(genre);
       setDraftMood(mood);
+      setDiversityOpen(false);
+      setV13Open(false);
+      setV15Open(false);
+      setV14Open(false);
+      setLyricsOpen(false);
       setStatus("done");
       toast({ title: "Draft ready!", description: `"${data.draft.title}" has been written.` });
     } catch (err) {
@@ -1468,29 +1475,39 @@ export default function Studio() {
                       )}
 
                       {draft.diversityReport && (
-                        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-5 py-4">
-                          <div className="flex items-center gap-2 mb-3">
-                            <Dna className="w-3.5 h-3.5 text-cyan-300" />
-                            <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">Diversity Engine</span>
-                          </div>
-                          <div className="grid md:grid-cols-4 gap-2 mb-3">
-                            {draft.diversityReport.dnaMode && (
-                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.dnaMode}</span>
-                            )}
-                            {draft.diversityReport.emotionalLens && (
-                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">Lens: {draft.diversityReport.emotionalLens}</span>
-                            )}
-                            {draft.diversityReport.chorusLengthPattern && (
-                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.chorusLengthPattern}</span>
-                            )}
-                            {draft.diversityReport.urgencyLevel && (
-                              <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.urgencyLevel}</span>
-                            )}
-                          </div>
-                          {draft.diversityReport.arrangementOrder?.length && (
-                            <p className="text-xs text-white/45 leading-relaxed">
-                              Arrangement: {draft.diversityReport.arrangementOrder.join(" → ")}
-                            </p>
+                        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 overflow-hidden">
+                          <button
+                            onClick={() => setDiversityOpen((o) => !o)}
+                            className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-cyan-500/5 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Dna className="w-3.5 h-3.5 text-cyan-300" />
+                              <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">True Diversity Engine</span>
+                            </div>
+                            <ChevronDown className={`w-3.5 h-3.5 text-cyan-400/60 transition-transform duration-200 ${diversityOpen ? "rotate-180" : ""}`} />
+                          </button>
+                          {diversityOpen && (
+                            <div className="px-5 pb-4 space-y-3">
+                              <div className="grid md:grid-cols-4 gap-2">
+                                {draft.diversityReport.dnaMode && (
+                                  <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.dnaMode}</span>
+                                )}
+                                {draft.diversityReport.emotionalLens && (
+                                  <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">Lens: {draft.diversityReport.emotionalLens}</span>
+                                )}
+                                {draft.diversityReport.chorusLengthPattern && (
+                                  <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.chorusLengthPattern}</span>
+                                )}
+                                {draft.diversityReport.urgencyLevel && (
+                                  <span className="px-3 py-2 rounded-xl bg-white/5 border border-white/8 text-xs text-white/75">{draft.diversityReport.urgencyLevel}</span>
+                                )}
+                              </div>
+                              {draft.diversityReport.arrangementOrder?.length && (
+                                <p className="text-xs text-white/45 leading-relaxed">
+                                  Arrangement: {draft.diversityReport.arrangementOrder.join(" → ")}
+                                </p>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}
@@ -1498,29 +1515,35 @@ export default function Studio() {
                       {/* V13 Viral Hit Generator — Song Quality Report */}
                       {(draft.songQualityReport || draft.hookVariants || draft.hitPrediction) && (
                         <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden">
-                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-emerald-500/10">
+                          <button
+                            onClick={() => setV13Open((o) => !o)}
+                            className="w-full flex items-center justify-between px-5 py-3.5 border-b border-emerald-500/10 hover:bg-emerald-500/5 transition-colors"
+                          >
                             <div className="flex items-center gap-2">
                               <Flame className="w-3.5 h-3.5 text-emerald-400" />
                               <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Viral Hit Generator — V13</span>
                             </div>
-                            {draft.songQualityReport?.arVerdict && (
-                              <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
-                                draft.songQualityReport.arVerdict.includes("SIGNED")
-                                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                                  : draft.songQualityReport.arVerdict.includes("REWRITE")
-                                  ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
-                                  : draft.songQualityReport.arVerdict.includes("RESTRUCTURE")
-                                  ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
-                                  : "bg-red-500/15 border-red-500/30 text-red-400"
-                              }`}>
-                                {draft.songQualityReport.arVerdict.includes("SIGNED") ? "SIGNED" :
-                                 draft.songQualityReport.arVerdict.includes("REWRITE") ? "REWRITE HOOK" :
-                                 draft.songQualityReport.arVerdict.includes("RESTRUCTURE") ? "RESTRUCTURE" : "REJECT"}
-                              </span>
-                            )}
-                          </div>
+                            <div className="flex items-center gap-2">
+                              {draft.songQualityReport?.arVerdict && (
+                                <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                                  draft.songQualityReport.arVerdict.includes("SIGNED")
+                                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                    : draft.songQualityReport.arVerdict.includes("REWRITE")
+                                    ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+                                    : draft.songQualityReport.arVerdict.includes("RESTRUCTURE")
+                                    ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
+                                    : "bg-red-500/15 border-red-500/30 text-red-400"
+                                }`}>
+                                  {draft.songQualityReport.arVerdict.includes("SIGNED") ? "SIGNED" :
+                                   draft.songQualityReport.arVerdict.includes("REWRITE") ? "REWRITE HOOK" :
+                                   draft.songQualityReport.arVerdict.includes("RESTRUCTURE") ? "RESTRUCTURE" : "REJECT"}
+                                </span>
+                              )}
+                              <ChevronDown className={`w-3.5 h-3.5 text-emerald-400/60 transition-transform duration-200 ${v13Open ? "rotate-180" : ""}`} />
+                            </div>
+                          </button>
 
-                          <div className="p-5 space-y-4">
+                          {v13Open && <div className="p-5 space-y-4">
 
                             {/* Viral Score + Key Metrics Row */}
                             {draft.songQualityReport && (
@@ -1688,14 +1711,17 @@ export default function Studio() {
                               </div>
                             )}
 
-                          </div>
+                          </div>}
                         </div>
                       )}
 
                       {/* V15 Song Identity Report */}
                       {draft.songIdentityReport && (
                         <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-b from-orange-500/5 to-transparent overflow-hidden">
-                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-orange-500/10">
+                          <button
+                            onClick={() => setV15Open((o) => !o)}
+                            className="w-full flex items-center justify-between px-5 py-3.5 border-b border-orange-500/10 hover:bg-orange-500/5 transition-colors"
+                          >
                             <div className="flex items-center gap-2">
                               <Wand2 className="w-3.5 h-3.5 text-orange-400" />
                               <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Song Identity Engine — V15</span>
@@ -1721,10 +1747,11 @@ export default function Studio() {
                                    draft.songIdentityReport.selectedIdentity}
                                 </span>
                               )}
+                              <ChevronDown className={`w-3.5 h-3.5 text-orange-400/60 transition-transform duration-200 ${v15Open ? "rotate-180" : ""}`} />
                             </div>
-                          </div>
+                          </button>
 
-                          <div className="p-5 space-y-4">
+                          {v15Open && <div className="p-5 space-y-4">
 
                             {/* Key Stats Row */}
                             <div className="grid grid-cols-4 gap-2">
@@ -1768,14 +1795,17 @@ export default function Studio() {
                               </div>
                             )}
 
-                          </div>
+                          </div>}
                         </div>
                       )}
 
                       {/* V14 Global Release Report */}
                       {draft.globalReleaseReport && (
                         <div className="rounded-2xl border border-sky-500/20 bg-gradient-to-b from-sky-500/5 to-transparent overflow-hidden">
-                          <div className="flex items-center justify-between px-5 py-3.5 border-b border-sky-500/10">
+                          <button
+                            onClick={() => setV14Open((o) => !o)}
+                            className="w-full flex items-center justify-between px-5 py-3.5 border-b border-sky-500/10 hover:bg-sky-500/5 transition-colors"
+                          >
                             <div className="flex items-center gap-2">
                               <Globe className="w-3.5 h-3.5 text-sky-400" />
                               <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Global Release Report — V14</span>
@@ -1803,10 +1833,11 @@ export default function Studio() {
                                   {draft.globalReleaseReport.hitPositioning.replace("NON-COMMERCIAL ART", "ART ONLY")}
                                 </span>
                               )}
+                              <ChevronDown className={`w-3.5 h-3.5 text-sky-400/60 transition-transform duration-200 ${v14Open ? "rotate-180" : ""}`} />
                             </div>
-                          </div>
+                          </button>
 
-                          <div className="p-5 space-y-4">
+                          {v14Open && <div className="p-5 space-y-4">
 
                             {/* Global Score + Market Fits */}
                             <div className="grid grid-cols-5 gap-2">
@@ -1917,17 +1948,23 @@ export default function Studio() {
                               </div>
                             )}
 
-                          </div>
+                          </div>}
                         </div>
                       )}
 
                       {/* Lyrics workspace */}
                       <div className="rounded-2xl border border-white/8 bg-gradient-to-b from-white/2 to-transparent overflow-hidden">
-                        <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/5">
-                          <FileText className="w-3.5 h-3.5 text-white/30" />
-                          <span className="text-[10px] font-bold text-white/35 uppercase tracking-widest">Lyrics Workspace</span>
-                        </div>
-                        <div className="p-5 space-y-6">
+                        <button
+                          onClick={() => setLyricsOpen((o) => !o)}
+                          className="w-full flex items-center justify-between px-5 py-3.5 border-b border-white/5 hover:bg-white/3 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-3.5 h-3.5 text-white/30" />
+                            <span className="text-[10px] font-bold text-white/35 uppercase tracking-widest">Lyrics Workspace</span>
+                          </div>
+                          <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform duration-200 ${lyricsOpen ? "rotate-180" : ""}`} />
+                        </button>
+                        {lyricsOpen && <div className="p-5 space-y-6">
                           {LYRICS_SECTIONS.map((section) => (
                             <div key={section.label}>
                               <div className="flex items-center gap-2 mb-2.5">
@@ -1954,7 +1991,7 @@ export default function Studio() {
                               </div>
                             </div>
                           ))}
-                        </div>
+                        </div>}
                       </div>
 
                       {/* Generation Blueprint */}
