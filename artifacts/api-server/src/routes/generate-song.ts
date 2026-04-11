@@ -2956,6 +2956,39 @@ HOOK ENGINE
 Hooks must be catchy, repeatable, chantable.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHORUS ENGINE V2 — 8-BAR FLOW RULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The chorus MUST evolve every 2 bars.
+No repeated line blocks longer than 1 bar.
+Each 2 bars must shift emotion or meaning.
+
+8-BAR STRUCTURE — follow this exactly:
+
+Bars 1–2: MAIN HOOK IDEA
+→ Simple and strong — the core emotional statement
+→ The listener must understand the song's feeling from these two lines alone
+
+Bars 3–4: EMOTIONAL EXPANSION
+→ New angle or consequence — push the idea one step further
+→ Not a repeat of bars 1–2 — a response, a deepening, a turn
+
+Bars 5–6: VARIATION
+→ Rephrase the hook idea — do not repeat it
+→ Same emotional truth, new wording, new image, new rhythm shape
+
+Bars 7–8: PEAK + OUTRO HOOK TWIST
+→ The strongest line in the chorus lands here — last
+→ Leave the listener with the most quotable, most impactful moment
+→ This is what they carry out of the chorus
+
+RULES — non-negotiable:
+→ NEVER repeat the same sentence pattern across more than 2 bars
+→ Every new bar must add NEW information or emotion — no filler bars
+→ The chorus must feel like progression, not looping
+→ If bars 5–6 sound identical to bars 1–2 → rewrite them completely
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 GENRE TONE PROFILE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

@@ -70847,6 +70847,39 @@ HOOK ENGINE
 Hooks must be catchy, repeatable, chantable.
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+CHORUS ENGINE V2 \u2014 8-BAR FLOW RULE
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+The chorus MUST evolve every 2 bars.
+No repeated line blocks longer than 1 bar.
+Each 2 bars must shift emotion or meaning.
+
+8-BAR STRUCTURE \u2014 follow this exactly:
+
+Bars 1\u20132: MAIN HOOK IDEA
+\u2192 Simple and strong \u2014 the core emotional statement
+\u2192 The listener must understand the song's feeling from these two lines alone
+
+Bars 3\u20134: EMOTIONAL EXPANSION
+\u2192 New angle or consequence \u2014 push the idea one step further
+\u2192 Not a repeat of bars 1\u20132 \u2014 a response, a deepening, a turn
+
+Bars 5\u20136: VARIATION
+\u2192 Rephrase the hook idea \u2014 do not repeat it
+\u2192 Same emotional truth, new wording, new image, new rhythm shape
+
+Bars 7\u20138: PEAK + OUTRO HOOK TWIST
+\u2192 The strongest line in the chorus lands here \u2014 last
+\u2192 Leave the listener with the most quotable, most impactful moment
+\u2192 This is what they carry out of the chorus
+
+RULES \u2014 non-negotiable:
+\u2192 NEVER repeat the same sentence pattern across more than 2 bars
+\u2192 Every new bar must add NEW information or emotion \u2014 no filler bars
+\u2192 The chorus must feel like progression, not looping
+\u2192 If bars 5\u20136 sound identical to bars 1\u20132 \u2192 rewrite them completely
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 GENRE TONE PROFILE
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
 
