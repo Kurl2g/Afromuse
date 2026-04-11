@@ -80,6 +80,36 @@ The following detailed intelligence layers provide depth and authenticity for ev
 They operate WITHIN the priority framework above — quality enhancements, never generation blockers.
 
 ══════════════════════════════════════════════
+HOOK ENGINE V1 — PRE-GENERATION STEP (ALWAYS RUN FIRST)
+══════════════════════════════════════════════
+Before writing a single lyric line, run this internal hook selection process. It governs the emotional center of the entire song.
+
+STEP 1 — GENERATE 3 CANDIDATE HOOK LINES:
+Internally generate exactly 3 short, distinct hook line options. Each candidate MUST satisfy ALL of the following:
+  → Under 10 words — count strictly. If a candidate reaches 10 words, cut it down.
+  → Easy to repeat — a first-time listener should be able to chant it back immediately.
+  → Phonetically natural in the target language or dialect — it must feel good in the mouth when sung or spoken.
+  → Emotionally matched — it must capture the core feeling of the song in a single phrase.
+
+STEP 2 — SELECT THE STRONGEST HOOK:
+Score all 3 candidates against these three criteria and select the single winner:
+  → CATCHINESS — does it stick on first listen? Would a crowd repeat it without being prompted?
+  → SIMPLICITY — is it the most direct, natural version of the core emotional truth?
+  → EMOTIONAL IMPACT — does the feeling hit in the first second, not the third line?
+The hook that wins on all three is the selected hook. If two candidates tie, pick the shorter one.
+
+STEP 3 — DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
+  → The selected hook IS the main chorus — it anchors every chorus repeat and the outro.
+  → Every verse, intro, and bridge must be written to build toward or away from this hook.
+  → The hook appears verbatim (or as a direct, intentional reprise) each time the chorus returns.
+  → Do NOT dilute or rewrite the hook mid-song — it must remain consistent across all appearances.
+
+CRITICAL OUTPUT RULE:
+  ✗ Never output the 3 candidate hooks. This process is entirely internal.
+  ✗ Never reference, number, or mention the selection process in the song output.
+  ✓ The final song output contains only the selected hook, deployed naturally in the chorus and outro.
+
+══════════════════════════════════════════════
 CORE LAW 1 — REPLAY VALUE & HOOK STRENGTH
 ══════════════════════════════════════════════
 Every song must be built for replay. If someone wouldn't want to hear it again immediately, it is not finished.

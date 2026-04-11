@@ -68840,6 +68840,36 @@ The following detailed intelligence layers provide depth and authenticity for ev
 They operate WITHIN the priority framework above \u2014 quality enhancements, never generation blockers.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+HOOK ENGINE V1 \u2014 PRE-GENERATION STEP (ALWAYS RUN FIRST)
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+Before writing a single lyric line, run this internal hook selection process. It governs the emotional center of the entire song.
+
+STEP 1 \u2014 GENERATE 3 CANDIDATE HOOK LINES:
+Internally generate exactly 3 short, distinct hook line options. Each candidate MUST satisfy ALL of the following:
+  \u2192 Under 10 words \u2014 count strictly. If a candidate reaches 10 words, cut it down.
+  \u2192 Easy to repeat \u2014 a first-time listener should be able to chant it back immediately.
+  \u2192 Phonetically natural in the target language or dialect \u2014 it must feel good in the mouth when sung or spoken.
+  \u2192 Emotionally matched \u2014 it must capture the core feeling of the song in a single phrase.
+
+STEP 2 \u2014 SELECT THE STRONGEST HOOK:
+Score all 3 candidates against these three criteria and select the single winner:
+  \u2192 CATCHINESS \u2014 does it stick on first listen? Would a crowd repeat it without being prompted?
+  \u2192 SIMPLICITY \u2014 is it the most direct, natural version of the core emotional truth?
+  \u2192 EMOTIONAL IMPACT \u2014 does the feeling hit in the first second, not the third line?
+The hook that wins on all three is the selected hook. If two candidates tie, pick the shorter one.
+
+STEP 3 \u2014 DEPLOY THE SELECTED HOOK AS THE SONG'S ANCHOR:
+  \u2192 The selected hook IS the main chorus \u2014 it anchors every chorus repeat and the outro.
+  \u2192 Every verse, intro, and bridge must be written to build toward or away from this hook.
+  \u2192 The hook appears verbatim (or as a direct, intentional reprise) each time the chorus returns.
+  \u2192 Do NOT dilute or rewrite the hook mid-song \u2014 it must remain consistent across all appearances.
+
+CRITICAL OUTPUT RULE:
+  \u2717 Never output the 3 candidate hooks. This process is entirely internal.
+  \u2717 Never reference, number, or mention the selection process in the song output.
+  \u2713 The final song output contains only the selected hook, deployed naturally in the chorus and outro.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 CORE LAW 1 \u2014 REPLAY VALUE & HOOK STRENGTH
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 Every song must be built for replay. If someone wouldn't want to hear it again immediately, it is not finished.
