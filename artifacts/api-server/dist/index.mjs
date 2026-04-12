@@ -72836,6 +72836,86 @@ function buildElevenLabsPrompt(p) {
   ].filter(Boolean).join(" \xB7 ");
   return { prompt, brief };
 }
+function buildElevenLabsCompositionPlan(p) {
+  const secs = p.lyricsSections ?? {};
+  const genre = p.genre ?? "Afrobeats";
+  const mood = p.mood ?? "Uplifting";
+  const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
+  const key = p.key ?? "F# minor";
+  const styleParts = [
+    genre,
+    mood,
+    `${bpm} BPM`,
+    `key of ${key}`,
+    p.energy ? `${p.energy} energy` : null,
+    p.soundReference ? `influenced by ${p.soundReference}` : null,
+    "authentic Afro vocals, culturally resonant performance"
+  ].filter(Boolean);
+  const style = styleParts.join(", ");
+  const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
+  const sections = [];
+  if (secs.intro && secs.intro.length > 0) {
+    sections.push({
+      type: "intro",
+      duration_ms: estimateMs(secs.intro, 3e3, 8e3),
+      lyrics: secs.intro.join("\n")
+    });
+  } else {
+    sections.push({ type: "intro", duration_ms: 8e3, description: "Instrumental intro, no vocals" });
+  }
+  if (secs.verse1 && secs.verse1.length > 0) {
+    sections.push({
+      type: "verse",
+      duration_ms: estimateMs(secs.verse1),
+      lyrics: secs.verse1.join("\n")
+    });
+  }
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type: "chorus",
+      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
+      lyrics: secs.hook.join("\n")
+    });
+  }
+  if (secs.verse2 && secs.verse2.length > 0) {
+    sections.push({
+      type: "verse",
+      duration_ms: estimateMs(secs.verse2),
+      lyrics: secs.verse2.join("\n")
+    });
+  }
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type: "chorus",
+      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
+      lyrics: secs.hook.join("\n")
+    });
+  }
+  if (secs.bridge && secs.bridge.length > 0) {
+    sections.push({
+      type: "bridge",
+      duration_ms: estimateMs(secs.bridge, 4e3, 15e3),
+      lyrics: secs.bridge.join("\n")
+    });
+  }
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type: "chorus",
+      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
+      lyrics: secs.hook.join("\n")
+    });
+  }
+  if (secs.outro && secs.outro.length > 0) {
+    sections.push({
+      type: "outro",
+      duration_ms: estimateMs(secs.outro, 3e3, 1e4),
+      lyrics: secs.outro.join("\n")
+    });
+  } else {
+    sections.push({ type: "outro", duration_ms: 1e4, description: "Fade out, instrumental" });
+  }
+  return { style, sections };
+}
 function resolveDurationMs(songLength) {
   const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;
   if (!isNaN(overrideSecs) && overrideSecs >= 3 && overrideSecs <= 600) {
@@ -72852,15 +72932,39 @@ async function callLiveInstrumentalProvider(p, jobId) {
       "AI_MUSIC_API_KEY (or ELEVENLABS_API_KEY) is not configured. Set the secret to enable live instrumental generation."
     );
   }
-  const { prompt, brief } = buildElevenLabsPrompt(p);
-  const durationMs = resolveDurationMs(p.songLength);
   const endpoint = creds.endpoint;
+  const secs = p.lyricsSections ?? {};
+  const hasLyricsSections = (secs.hook?.length ?? 0) > 0 || (secs.verse1?.length ?? 0) > 0;
+  let requestBody;
+  let logBrief;
+  if (hasLyricsSections) {
+    const plan = buildElevenLabsCompositionPlan(p);
+    requestBody = {
+      composition_plan: plan,
+      respect_sections_durations: false,
+      output_format: "mp3_44100_128"
+    };
+    logBrief = `Full song \u2014 ${plan.sections.length} sections \u2014 style: ${plan.style.slice(0, 80)}`;
+    logger.info(
+      { jobId, sections: plan.sections.length, style: plan.style, endpoint },
+      "AI Music API \u2014 requesting full song with vocals (composition plan)"
+    );
+  } else {
+    const { prompt, brief } = buildElevenLabsPrompt(p);
+    const durationMs = resolveDurationMs(p.songLength);
+    requestBody = {
+      prompt,
+      duration_ms: durationMs,
+      force_instrumental: true
+    };
+    logBrief = brief;
+    logger.info(
+      { jobId, prompt, brief, durationMs, endpoint },
+      "AI Music API \u2014 requesting instrumental beat"
+    );
+  }
   const isElevenLabs = endpoint.includes("elevenlabs.io");
   const authHeaders = isElevenLabs ? { "xi-api-key": creds.apiKey } : { "Authorization": `Bearer ${creds.apiKey}` };
-  logger.info(
-    { jobId, prompt, brief, durationMs, endpoint },
-    "AI Music API \u2014 requesting generation"
-  );
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -72868,11 +72972,7 @@ async function callLiveInstrumentalProvider(p, jobId) {
       "Content-Type": "application/json",
       "Accept": "audio/mpeg, audio/*, */*"
     },
-    body: JSON.stringify({
-      prompt,
-      duration_ms: durationMs,
-      force_instrumental: true
-    }),
+    body: JSON.stringify(requestBody),
     signal: AbortSignal.timeout(creds.timeoutMs)
   });
   if (!response.ok) {
@@ -72882,10 +72982,10 @@ async function callLiveInstrumentalProvider(p, jobId) {
   const audioBuffer = await response.arrayBuffer();
   const base643 = Buffer.from(audioBuffer).toString("base64");
   const dataUrl = `data:audio/mpeg;base64,${base643}`;
-  const durationSecs = Math.round(durationMs / 1e3);
-  const mins = Math.floor(durationSecs / 60);
-  const secs = durationSecs % 60;
-  const durationStr = `${mins}:${secs.toString().padStart(2, "0")}`;
+  const estimatedDurationSecs = hasLyricsSections ? Math.round(audioBuffer.byteLength / 16e3) : Math.round(resolveDurationMs(p.songLength) / 1e3);
+  const durMins = Math.floor(estimatedDurationSecs / 60);
+  const durSecs = estimatedDurationSecs % 60;
+  const durationStr = `${durMins}:${durSecs.toString().padStart(2, "0")}`;
   logger.info(
     { jobId, durationStr, audioBytes: audioBuffer.byteLength },
     "ElevenLabs Music API \u2014 audio received"
@@ -72894,17 +72994,18 @@ async function callLiveInstrumentalProvider(p, jobId) {
     const sig = analyzeLyricsSignal(p.lyricsText);
     return sig ? ` | LyricsSignal: ${sig.summary}` : "";
   })() : "";
-  const sonicNotes = `[AfroMuse Brief] ${brief}${lyricsNote} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "\u2026" : ""}`;
+  const sonicNotes = `[AfroMuse Brief] ${logBrief}${lyricsNote}`;
+  const generationTitle = hasLyricsSections ? `${p.genre ?? "Afrobeats"} Full Song \u2014 ${p.mood ?? "Uplifting"}` : `${p.genre ?? "Afrobeats"} Instrumental \u2014 ${p.mood ?? "Uplifting"}`;
   return {
     previewUrl: dataUrl,
     wavUrl: null,
     externalJobId: null,
-    generationTitle: `${p.genre ?? "Afrobeats"} Instrumental \u2014 ${p.mood ?? "Uplifting"}`,
+    generationTitle,
     sonicNotes,
     duration: durationStr,
     coverArtUrl: null,
     waveformMeta: {
-      durationSeconds: durationSecs
+      durationSeconds: estimatedDurationSecs
     }
   };
 }

@@ -1402,6 +1402,16 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         hookLift: hookLift || undefined,
         buildMode: generationMode,
         lyricsText: audioLyrics || undefined,
+        // Pass structured sections when a generated draft is available so
+        // ElevenLabs can produce a full song with AI vocals instead of a beat only.
+        lyricsSections: draft ? {
+          intro:  draft.intro  ?? [],
+          hook:   draft.hook   ?? [],
+          verse1: draft.verse1 ?? [],
+          verse2: draft.verse2 ?? [],
+          bridge: draft.bridge ?? [],
+          outro:  draft.outro  ?? [],
+        } : undefined,
       };
 
       const res = await fetch("/api/generate-instrumental-preview", {

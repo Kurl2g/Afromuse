@@ -69,6 +69,17 @@ export interface InstrumentalPayload {
   // Lyrics intelligence — raw lyrics text for signal derivation
   // Used to shape the ElevenLabs prompt and NVIDIA AI brief without exposing raw text in the prompt
   lyricsText?: string;
+  // Structured lyrics sections for full-song composition plan mode.
+  // When present with content, ElevenLabs generates a full song with AI vocals
+  // singing the exact lyrics instead of an instrumental-only beat.
+  lyricsSections?: {
+    intro?:  string[];
+    hook?:   string[];
+    verse1?: string[];
+    verse2?: string[];
+    bridge?: string[];
+    outro?:  string[];
+  };
 }
 
 // ─── Live Provider Response Shape ─────────────────────────────────────────────
@@ -669,6 +680,128 @@ export function buildElevenLabsPrompt(p: InstrumentalPayload): BuiltPrompt {
   return { prompt, brief };
 }
 
+// ─── ElevenLabs Composition Plan Builder ──────────────────────────────────────
+// Converts AfroMuse's structured lyrics sections into an ElevenLabs composition
+// plan so the Music API generates a full song with AI vocals singing the exact
+// lyrics — verse by verse, chorus by chorus — in the correct Afro genre style.
+
+interface ElevenLabsSection {
+  type: string;
+  duration_ms: number;
+  lyrics?: string;
+  description?: string;
+}
+
+interface ElevenLabsCompositionPlan {
+  style: string;
+  sections: ElevenLabsSection[];
+}
+
+export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLabsCompositionPlan {
+  const secs   = p.lyricsSections ?? {};
+  const genre  = p.genre ?? "Afrobeats";
+  const mood   = p.mood  ?? "Uplifting";
+  const bpm    = p.bpm   ?? (GENRE_DEFAULTS[genre] ?? 96);
+  const key    = p.key   ?? "F# minor";
+
+  // Style: a compact musical brief that guides the model's sonic palette
+  const styleParts = [
+    genre,
+    mood,
+    `${bpm} BPM`,
+    `key of ${key}`,
+    p.energy ? `${p.energy} energy` : null,
+    p.soundReference ? `influenced by ${p.soundReference}` : null,
+    "authentic Afro vocals, culturally resonant performance",
+  ].filter(Boolean);
+  const style = styleParts.join(", ");
+
+  // Estimate section length from lyric line count (rough heuristic).
+  // ElevenLabs adjusts within ±20% when respect_sections_durations is false.
+  const estimateMs = (lines: string[], msPerLine = 3500, minMs = 15000): number =>
+    Math.max(minMs, lines.length * msPerLine);
+
+  const sections: ElevenLabsSection[] = [];
+
+  // ── Intro ──────────────────────────────────────────────────────────────────
+  if (secs.intro && secs.intro.length > 0) {
+    sections.push({
+      type:        "intro",
+      duration_ms: estimateMs(secs.intro, 3000, 8000),
+      lyrics:      secs.intro.join("\n"),
+    });
+  } else {
+    sections.push({ type: "intro", duration_ms: 8000, description: "Instrumental intro, no vocals" });
+  }
+
+  // ── Verse 1 ────────────────────────────────────────────────────────────────
+  if (secs.verse1 && secs.verse1.length > 0) {
+    sections.push({
+      type:        "verse",
+      duration_ms: estimateMs(secs.verse1),
+      lyrics:      secs.verse1.join("\n"),
+    });
+  }
+
+  // ── Chorus (hook) ──────────────────────────────────────────────────────────
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type:        "chorus",
+      duration_ms: estimateMs(secs.hook, 3000, 15000),
+      lyrics:      secs.hook.join("\n"),
+    });
+  }
+
+  // ── Verse 2 ────────────────────────────────────────────────────────────────
+  if (secs.verse2 && secs.verse2.length > 0) {
+    sections.push({
+      type:        "verse",
+      duration_ms: estimateMs(secs.verse2),
+      lyrics:      secs.verse2.join("\n"),
+    });
+  }
+
+  // ── Chorus repeat ──────────────────────────────────────────────────────────
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type:        "chorus",
+      duration_ms: estimateMs(secs.hook, 3000, 15000),
+      lyrics:      secs.hook.join("\n"),
+    });
+  }
+
+  // ── Bridge ─────────────────────────────────────────────────────────────────
+  if (secs.bridge && secs.bridge.length > 0) {
+    sections.push({
+      type:        "bridge",
+      duration_ms: estimateMs(secs.bridge, 4000, 15000),
+      lyrics:      secs.bridge.join("\n"),
+    });
+  }
+
+  // ── Final chorus ───────────────────────────────────────────────────────────
+  if (secs.hook && secs.hook.length > 0) {
+    sections.push({
+      type:        "chorus",
+      duration_ms: estimateMs(secs.hook, 3000, 15000),
+      lyrics:      secs.hook.join("\n"),
+    });
+  }
+
+  // ── Outro ──────────────────────────────────────────────────────────────────
+  if (secs.outro && secs.outro.length > 0) {
+    sections.push({
+      type:        "outro",
+      duration_ms: estimateMs(secs.outro, 3000, 10000),
+      lyrics:      secs.outro.join("\n"),
+    });
+  } else {
+    sections.push({ type: "outro", duration_ms: 10000, description: "Fade out, instrumental" });
+  }
+
+  return { style, sections };
+}
+
 // ─── ElevenLabs Music API — Duration Mapper ───────────────────────────────────
 
 function resolveDurationMs(songLength?: string): number {
@@ -706,9 +839,45 @@ async function callLiveInstrumentalProvider(
     );
   }
 
-  const { prompt, brief } = buildElevenLabsPrompt(p);
-  const durationMs = resolveDurationMs(p.songLength);
-  const endpoint   = creds.endpoint!; // always set — defaults in providerCredentials.ts
+  const endpoint = creds.endpoint!; // always set — defaults in providerCredentials.ts
+
+  // Determine generation mode:
+  //   Full song  — lyricsSections contains at least a hook or verse → composition plan
+  //   Instrumental — no structured sections → prompt-based instrumental beat
+  const secs = p.lyricsSections ?? {};
+  const hasLyricsSections =
+    (secs.hook?.length   ?? 0) > 0 ||
+    (secs.verse1?.length ?? 0) > 0;
+
+  let requestBody: Record<string, unknown>;
+  let logBrief: string;
+
+  if (hasLyricsSections) {
+    const plan = buildElevenLabsCompositionPlan(p);
+    requestBody = {
+      composition_plan:           plan,
+      respect_sections_durations: false,
+      output_format:              "mp3_44100_128",
+    };
+    logBrief = `Full song — ${plan.sections.length} sections — style: ${plan.style.slice(0, 80)}`;
+    logger.info(
+      { jobId, sections: plan.sections.length, style: plan.style, endpoint },
+      "AI Music API — requesting full song with vocals (composition plan)",
+    );
+  } else {
+    const { prompt, brief } = buildElevenLabsPrompt(p);
+    const durationMs = resolveDurationMs(p.songLength);
+    requestBody = {
+      prompt,
+      duration_ms:        durationMs,
+      force_instrumental: true,
+    };
+    logBrief = brief;
+    logger.info(
+      { jobId, prompt, brief, durationMs, endpoint },
+      "AI Music API — requesting instrumental beat",
+    );
+  }
 
   // Select the correct auth header based on the endpoint.
   // ElevenLabs uses a proprietary xi-api-key header; all other providers
@@ -718,11 +887,6 @@ async function callLiveInstrumentalProvider(
     ? { "xi-api-key": creds.apiKey }
     : { "Authorization": `Bearer ${creds.apiKey}` };
 
-  logger.info(
-    { jobId, prompt, brief, durationMs, endpoint },
-    "AI Music API — requesting generation",
-  );
-
   const response = await fetch(endpoint, {
     method:  "POST",
     headers: {
@@ -730,11 +894,7 @@ async function callLiveInstrumentalProvider(
       "Content-Type": "application/json",
       "Accept":       "audio/mpeg, audio/*, */*",
     },
-    body: JSON.stringify({
-      prompt,
-      duration_ms:        durationMs,
-      force_instrumental: true,
-    }),
+    body:   JSON.stringify(requestBody),
     signal: AbortSignal.timeout(creds.timeoutMs),
   });
 
@@ -749,34 +909,40 @@ async function callLiveInstrumentalProvider(
   const base64      = Buffer.from(audioBuffer).toString("base64");
   const dataUrl     = `data:audio/mpeg;base64,${base64}`;
 
-  const durationSecs = Math.round(durationMs / 1000);
-  const mins  = Math.floor(durationSecs / 60);
-  const secs  = durationSecs % 60;
-  const durationStr = `${mins}:${secs.toString().padStart(2, "0")}`;
+  // Duration: composition plan mode doesn't pre-declare a fixed ms target, so we
+  // estimate from the actual audio size (MP3 at ~128kbps = ~16KB/s).
+  const estimatedDurationSecs = hasLyricsSections
+    ? Math.round(audioBuffer.byteLength / 16000)
+    : Math.round(resolveDurationMs(p.songLength) / 1000);
+  const durMins = Math.floor(estimatedDurationSecs / 60);
+  const durSecs = estimatedDurationSecs % 60;
+  const durationStr = `${durMins}:${durSecs.toString().padStart(2, "0")}`;
 
   logger.info(
     { jobId, durationStr, audioBytes: audioBuffer.byteLength },
     "ElevenLabs Music API — audio received",
   );
 
-  // sonicNotes stores: the diagnostic brief + the first 120 chars of the built prompt.
-  // Includes lyrics signal summary when lyrics were provided.
-  // This is safe for internal inspection/tuning — it is NOT exposed to the main UI.
+  // sonicNotes: diagnostic brief (not exposed in main UI)
   const lyricsNote = p.lyricsText?.trim()
     ? (() => { const sig = analyzeLyricsSignal(p.lyricsText!); return sig ? ` | LyricsSignal: ${sig.summary}` : ""; })()
     : "";
-  const sonicNotes = `[AfroMuse Brief] ${brief}${lyricsNote} | Prompt: ${prompt.slice(0, 120)}${prompt.length > 120 ? "…" : ""}`;
+  const sonicNotes = `[AfroMuse Brief] ${logBrief}${lyricsNote}`;
+
+  const generationTitle = hasLyricsSections
+    ? `${p.genre ?? "Afrobeats"} Full Song — ${p.mood ?? "Uplifting"}`
+    : `${p.genre ?? "Afrobeats"} Instrumental — ${p.mood ?? "Uplifting"}`;
 
   return {
     previewUrl:      dataUrl,
     wavUrl:          null,
     externalJobId:   null,
-    generationTitle: `${p.genre ?? "Afrobeats"} Instrumental — ${p.mood ?? "Uplifting"}`,
+    generationTitle,
     sonicNotes,
     duration:        durationStr,
     coverArtUrl:     null,
     waveformMeta: {
-      durationSeconds: durationSecs,
+      durationSeconds: estimatedDurationSecs,
     },
   };
 }
