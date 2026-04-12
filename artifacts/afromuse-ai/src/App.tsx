@@ -19,6 +19,7 @@ import Auth from "@/pages/Auth";
 import VerifyEmail from "@/pages/VerifyEmail";
 import Projects from "@/pages/Projects";
 import Admin from "@/pages/Admin";
+import PaymentCallback from "@/pages/PaymentCallback";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -108,6 +109,10 @@ function Router() {
 
       <Route path="/verify-email">
         <VerifyEmail />
+      </Route>
+
+      <Route path="/payment/callback">
+        <PaymentCallback />
       </Route>
 
       <Route path="/admin">

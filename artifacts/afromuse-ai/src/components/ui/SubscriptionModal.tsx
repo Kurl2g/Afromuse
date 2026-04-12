@@ -29,10 +29,10 @@ const PLANS: PlanConfig[] = [
     id: "creator-pro",
     name: "Creator Pro",
     icon: Zap,
-    monthly: "$20/mo",
-    yearly: "$16/mo",
-    yearlyLabel: "$192/yr",
-    savings: "Save $48",
+    monthly: "GHS 299/mo",
+    yearly: "GHS 239/mo",
+    yearlyLabel: "GHS 2,870/yr",
+    savings: "Save GHS 718",
     color: "amber",
     headerGradient: "from-amber-500 to-orange-400",
     btnClass: "bg-primary text-primary-foreground hover:opacity-90 shadow-[0_0_24px_rgba(245,158,11,0.3)]",
@@ -51,10 +51,10 @@ const PLANS: PlanConfig[] = [
     id: "artist-pro",
     name: "Artist Pro",
     icon: Crown,
-    monthly: "$40/mo",
-    yearly: "$32/mo",
-    yearlyLabel: "$384/yr",
-    savings: "Save $96",
+    monthly: "GHS 599/mo",
+    yearly: "GHS 479/mo",
+    yearlyLabel: "GHS 5,750/yr",
+    savings: "Save GHS 1,438",
     color: "violet",
     headerGradient: "from-violet-500 to-fuchsia-400",
     btnClass: "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white hover:opacity-90 shadow-[0_0_24px_rgba(167,139,250,0.35)]",
@@ -95,7 +95,7 @@ export function SubscriptionModal({ open, onClose, defaultPlan = "creator-pro" }
 
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/create-checkout-session", {
+      const res = await fetch("/api/paystack/initialize", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -105,18 +105,11 @@ export function SubscriptionModal({ open, onClose, defaultPlan = "creator-pro" }
       const data = await res.json();
 
       if (!res.ok) {
-        if (data.code === "stripe_not_configured") {
-          toast({
-            title: "Payments coming soon",
-            description: "Stripe payments are being set up. Check back soon!",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: data.error ?? "Failed to start checkout.",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Error",
+          description: data.error ?? "Failed to start checkout.",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -220,7 +213,7 @@ export function SubscriptionModal({ open, onClose, defaultPlan = "creator-pro" }
                         </div>
                         {billingPeriod === "yearly" && (
                           <div className="text-xs text-emerald-400 mt-0.5">
-                            {p.savings} billed as {p.yearlyLabel}
+                            {p.savings} · billed as {p.yearlyLabel}
                           </div>
                         )}
                         {p.trial && billingPeriod === "monthly" && (
@@ -268,7 +261,7 @@ export function SubscriptionModal({ open, onClose, defaultPlan = "creator-pro" }
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Starting Checkout...
+                        Redirecting to Paystack...
                       </>
                     ) : (
                       <>
@@ -281,7 +274,7 @@ export function SubscriptionModal({ open, onClose, defaultPlan = "creator-pro" }
                 )}
 
                 <p className="text-center text-xs text-muted-foreground/40 mt-3">
-                  Secure payment via Stripe · Cancel anytime
+                  Secure payment via Paystack · MTN MoMo · Visa / Mastercard · Cancel anytime
                 </p>
               </div>
             </div>

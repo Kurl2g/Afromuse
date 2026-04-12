@@ -8,6 +8,7 @@ import projectsRouter from "./projects";
 import artistDnaRouter from "./artist-dna";
 import voiceCloneRouter from "./voice-clone";
 import stripeRouter from "./stripe";
+import paystackRouter from "./paystack";
 import usageRouter from "./usage";
 
 const router: IRouter = Router();
@@ -21,6 +22,7 @@ router.use(projectsRouter);
 router.use(artistDnaRouter);
 router.use(voiceCloneRouter);
 router.use(stripeRouter);
+router.use(paystackRouter);
 router.use(usageRouter);
 
 export default router;
