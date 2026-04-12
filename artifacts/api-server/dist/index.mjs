@@ -73815,8 +73815,8 @@ router3.get("/audio-job/:jobId", (req, res) => {
   }
   const r = job.response;
   const bp = r.blueprintData ?? {};
-  const isLive = typeof r.audioUrl === "string" && r.audioUrl.startsWith("data:audio/");
-  const isFallback = !isLive && (r.notes?.includes("[Mock fallback]") ?? false);
+  const isFallback = r.notes?.includes("[Mock fallback]") ?? false;
+  const isLive = typeof r.audioUrl === "string" && r.audioUrl.length > 0;
   res.json({
     jobId: job.jobId,
     status: "completed",

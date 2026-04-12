@@ -159,11 +159,12 @@ router.get("/audio-job/:jobId", (req, res) => {
   const bp = r.blueprintData ?? {};
 
   // Derive live/fallback flags from the normalized response.
-  // A real ElevenLabs result carries a data: URL; mock output does not.
-  // fallback.ts annotates notes as "[Mock fallback] ..." (with notes) or
-  // "[Mock fallback active]" (without notes) — check for the shared prefix.
-  const isLive = typeof r.audioUrl === "string" && r.audioUrl.startsWith("data:audio/");
-  const isFallback = !isLive && (r.notes?.includes("[Mock fallback]") ?? false);
+  // Any non-empty audioUrl (data: URL from ElevenLabs, or a public path from
+  // the mock fallback) is considered playable / live from the UI's perspective.
+  // fallback.ts annotates notes as "[Mock fallback] ..." — check for that prefix
+  // to surface the "fallback" badge in the UI.
+  const isFallback = r.notes?.includes("[Mock fallback]") ?? false;
+  const isLive = typeof r.audioUrl === "string" && r.audioUrl.length > 0;
 
   res.json({
     jobId: job.jobId,
