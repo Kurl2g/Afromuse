@@ -19,7 +19,7 @@ const PUBLIC_KEY = process.env["PAYSTACK_PUBLIC_KEY"] ?? "";
 
 const PAYSTACK_API = "https://api.paystack.co";
 
-// Pricing in GHS pesewas (1 GHS = 100 pesewas)
+// Pricing in USD cents (1 USD = 100 cents)
 const PLAN_PRICING: Record<string, {
   planName: string;
   monthly: { amount: number; label: string };
@@ -27,13 +27,13 @@ const PLAN_PRICING: Record<string, {
 }> = {
   "creator-pro": {
     planName: "Creator Pro",
-    monthly: { amount: 29900, label: "GHS 299/mo" },
-    yearly:  { amount: 287040, label: "GHS 2,870/yr", savings: "Save GHS 718" },
+    monthly: { amount: 2000, label: "$20/mo" },
+    yearly:  { amount: 19200, label: "$192/yr", savings: "Save $48" },
   },
   "artist-pro": {
     planName: "Artist Pro",
-    monthly: { amount: 59900, label: "GHS 599/mo" },
-    yearly:  { amount: 575040, label: "GHS 5,750/yr", savings: "Save GHS 1,438" },
+    monthly: { amount: 4000, label: "$40/mo" },
+    yearly:  { amount: 38400, label: "$384/yr", savings: "Save $96" },
   },
 };
 
@@ -87,7 +87,7 @@ router.post("/paystack/initialize", requireAuth, async (req: AuthRequest, res: R
         amount: pricing.amount,
         reference,
         callback_url: callbackUrl,
-        currency: "GHS",
+        currency: "USD",
         metadata: {
           userId: String(req.userId),
           plan,
@@ -252,14 +252,14 @@ router.post("/paystack/webhook", async (req: Request, res: Response) => {
 router.get("/paystack/plans", (_req, res) => {
   res.json({
     publicKey: PUBLIC_KEY,
-    currency: "GHS",
+    currency: "USD",
     plans: [
       {
         id: "creator-pro",
         name: "Creator Pro",
         pricing: {
-          monthly: { amount: 29900, label: "GHS 299/mo" },
-          yearly:  { amount: 287040, label: "GHS 2,870/yr", savings: "Save GHS 718" },
+          monthly: { amount: 2000, label: "$20/mo" },
+          yearly:  { amount: 19200, label: "$192/yr", savings: "Save $48" },
         },
         trial: "7 days free",
         features: [
@@ -275,8 +275,8 @@ router.get("/paystack/plans", (_req, res) => {
         id: "artist-pro",
         name: "Artist Pro",
         pricing: {
-          monthly: { amount: 59900, label: "GHS 599/mo" },
-          yearly:  { amount: 575040, label: "GHS 5,750/yr", savings: "Save GHS 1,438" },
+          monthly: { amount: 4000, label: "$40/mo" },
+          yearly:  { amount: 38400, label: "$384/yr", savings: "Save $96" },
         },
         trial: null,
         features: [
