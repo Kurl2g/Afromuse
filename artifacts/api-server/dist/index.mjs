@@ -72236,7 +72236,9 @@ function buildElevenLabsCompositionPlan(p) {
     Gospel: "piano, choir, bass, drums, organ, electric guitar, full band"
   };
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
+  const userStyleOverride = (p.productionStyle ?? "").trim();
   const styleParts = [
+    userStyleOverride ? userStyleOverride : null,
     `${genre} full song with live instrumentals and vocals`,
     `instruments: ${instruments}`,
     bounceDesc ? `groove: ${bounceDesc}` : null,
@@ -72366,6 +72368,7 @@ function buildElevenLabsCompositionPlan(p) {
   if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
   if (melodyDesc) positiveGlobalStyles.push(melodyDesc);
   if (hookLiftDesc) positiveGlobalStyles.push(hookLiftDesc);
+  if (userStyleOverride) positiveGlobalStyles.push(userStyleOverride);
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
   const negativeGlobalStyles = [
     "acapella",

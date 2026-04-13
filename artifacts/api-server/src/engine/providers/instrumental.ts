@@ -66,6 +66,10 @@ export interface InstrumentalPayload {
   melodyDensity?: string;
   drumCharacter?: string;
   hookLift?: string;
+  // Direct production style override — free-form text fed straight into ElevenLabs as the
+  // style field. When provided it is prepended to the auto-generated style string so the
+  // user's exact production intent reaches the model without being diluted.
+  productionStyle?: string;
   // Lyrics intelligence — raw lyrics text for signal derivation
   // Used to shape the ElevenLabs prompt and NVIDIA AI brief without exposing raw text in the prompt
   lyricsText?: string;
@@ -743,7 +747,11 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
 
   // ── Style: rich production brief combining genre, Beat DNA, mood, instruments ──
+  // If the user provided a direct production style override, it leads the style string
+  // so their exact intent reaches ElevenLabs before the auto-generated descriptors.
+  const userStyleOverride = (p.productionStyle ?? "").trim();
   const styleParts: (string | null)[] = [
+    userStyleOverride ? userStyleOverride : null,
     `${genre} full song with live instrumentals and vocals`,
     `instruments: ${instruments}`,
     bounceDesc   ? `groove: ${bounceDesc}` : null,
@@ -891,11 +899,12 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
     "live instruments audible throughout",
     "culturally authentic",
   ];
-  if (bounceDesc)   positiveGlobalStyles.push(bounceDesc);
-  if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
-  if (melodyDesc)   positiveGlobalStyles.push(melodyDesc);
-  if (hookLiftDesc) positiveGlobalStyles.push(hookLiftDesc);
-  if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
+  if (bounceDesc)      positiveGlobalStyles.push(bounceDesc);
+  if (drumCharDesc)    positiveGlobalStyles.push(drumCharDesc);
+  if (melodyDesc)      positiveGlobalStyles.push(melodyDesc);
+  if (hookLiftDesc)    positiveGlobalStyles.push(hookLiftDesc);
+  if (userStyleOverride) positiveGlobalStyles.push(userStyleOverride);
+  if (p.soundReference)  positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
 
   // negative_global_styles: styles to avoid — required by the ElevenLabs API.
   const negativeGlobalStyles: string[] = [

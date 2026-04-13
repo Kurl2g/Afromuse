@@ -1178,6 +1178,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [audioLyrics,          setAudioLyrics]          = useState("");
   const [audioGenre,           setAudioGenre]           = useState("Afrobeats");
   const [audioStyleReference,  setAudioStyleReference]  = useState("");
+  const [productionStyle,      setProductionStyle]      = useState("");
   const [vocalGender,          setVocalGender]          = useState("male");
   const [vocalStyle,           setVocalStyle]           = useState("Smooth");
   const [generationMode,       setGenerationMode]       = useState("full");
@@ -1389,6 +1390,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         energy: energyLevel,
         hitmakerMode: useHitmakerHookPriority,
         soundReference: audioStyleReference || undefined,
+        productionStyle: productionStyle || undefined,
         mixFeel,
         introBehavior: isProducer ? introBehavior : undefined,
         chorusLift: isProducer ? chorusLift : undefined,
@@ -2343,6 +2345,22 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
                   ))}
                 </div>
                 <p className="text-[10px] text-white/18 mt-1.5 italic">Shapes the tonal and spatial direction of the session build</p>
+              </div>
+
+              {/* Style Direction — direct ElevenLabs style override */}
+              <div className="sm:col-span-2 lg:col-span-3">
+                <label className="block text-[10px] font-bold tracking-widest uppercase text-white/35 mb-2">
+                  Style Direction
+                  <span className="ml-2 text-[8px] normal-case tracking-normal font-normal text-amber-400/50">direct sound instruction</span>
+                </label>
+                <textarea
+                  value={productionStyle}
+                  onChange={(e) => setProductionStyle(e.target.value)}
+                  rows={2}
+                  placeholder="e.g. heavy riddim beat, prominent bass guitar, instruments loud in the mix, full band with clear drums, vocals balanced with backing track..."
+                  className="w-full rounded-xl bg-white/4 border border-white/8 px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-500/40 transition-all resize-none leading-relaxed"
+                />
+                <p className="text-[10px] text-white/18 mt-1.5 italic">Describe exactly how you want the production to sound — this goes straight to the AI generator</p>
               </div>
 
             </div>
