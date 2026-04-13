@@ -72282,7 +72282,16 @@ function buildElevenLabsCompositionPlan(p) {
   } else {
     sections.push({ type: "outro", duration_ms: 1e4, description: "Fade out, instrumental" });
   }
-  return { style, sections };
+  const positiveGlobalStyles = [
+    genre,
+    mood,
+    "Afrocentric",
+    p.energy ? `${p.energy} energy` : "Medium energy",
+    "live vocals",
+    "culturally authentic"
+  ];
+  if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
+  return { style, positive_global_styles: positiveGlobalStyles, sections };
 }
 function resolveDurationMs(songLength) {
   const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;

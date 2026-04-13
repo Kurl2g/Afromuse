@@ -694,6 +694,7 @@ interface ElevenLabsSection {
 
 interface ElevenLabsCompositionPlan {
   style: string;
+  positive_global_styles: string[];
   sections: ElevenLabsSection[];
 }
 
@@ -799,7 +800,20 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
     sections.push({ type: "outro", duration_ms: 10000, description: "Fade out, instrumental" });
   }
 
-  return { style, sections };
+  // positive_global_styles: discrete style tags required by the ElevenLabs API.
+  // These mirror the style string but as individual descriptors so the model
+  // can weight them independently.
+  const positiveGlobalStyles: string[] = [
+    genre,
+    mood,
+    "Afrocentric",
+    p.energy ? `${p.energy} energy` : "Medium energy",
+    "live vocals",
+    "culturally authentic",
+  ];
+  if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
+
+  return { style, positive_global_styles: positiveGlobalStyles, sections };
 }
 
 // ─── ElevenLabs Music API — Duration Mapper ───────────────────────────────────
