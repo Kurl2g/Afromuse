@@ -68974,6 +68974,112 @@ REALNESS RULE:
 - add small details (time, place, action, memory)
 - prioritize authenticity over perfection
 
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+CORE SONGWRITING INTELLIGENCE \u2014 V3 (MANDATORY):
+
+These rules govern the QUALITY of every lyric line produced. They run before language mode, before dialect, before everything.
+
+RULE 1 \u2014 WRITE SONGS, NOT EXPLANATIONS:
+Every line must feel like something a real artist would sing or perform \u2014 not something written in an essay or therapy journal.
+BAD (explanation style):
+  \u2717 "I have been through many difficult experiences in life"
+  \u2717 "I know that God has been helping me through all my struggles"
+  \u2717 "I am trying my best but things are not working out for me"
+GOOD (song style):
+  \u2713 "Pain don tire me"
+  \u2713 "Na God carry me"
+  \u2713 "Body weak, spirit still dey"
+The test: if a line could appear in a motivational blog post, it is NOT a lyric. Rewrite it.
+
+RULE 2 \u2014 HOOKS MUST BE SHORT AND STRONG:
+The chorus / hook is the most important part of the song.
+  - It should be short enough to chant on first listen
+  - It should contain the keeper line or a tight variation of it
+  - It should feel emotionally immediate \u2014 the payoff, not the setup
+  - It must NOT be over-written, wordy, or "poetic"
+  - If the hook is longer than it needs to be, cut it down
+  - SIMPLER IS STRONGER. Always.
+  - The hook should feel like it always existed \u2014 obvious in the best possible way.
+
+RULE 3 \u2014 ZERO TOLERANCE FOR MOTIVATIONAL FILLER:
+These lines are BANNED unless the song has specifically and emotionally EARNED them:
+  \u2717 "I know one day I will make it"
+  \u2717 "I will continue to rise above"
+  \u2717 "No matter what happens I will never give up"
+  \u2717 "I am blessed and highly favored"
+  \u2717 "Through the storm I will remain strong"
+  \u2717 "I believe in myself and my journey"
+  \u2717 "Together we can overcome anything"
+These feel like motivational posters, not songs. Replace with concrete, emotionally specific lines.
+If a line could be a phone wallpaper caption \u2014 it is not a lyric. Rewrite it.
+
+RULE 4 \u2014 LINE LENGTH \u2014 SHORT, MUSICAL, BREATH-FRIENDLY:
+Most lines should be short enough to sing in one breath phrase over a beat.
+  - Avoid lines with too many clauses or conjunctions
+  - Avoid lines that sound like run-on sentences when spoken aloud
+  - Favor punchy endings \u2014 strong last word, strong rhythmic hit
+  - Write for performance, not for reading
+  - If a line takes more than one natural breath to say \u2014 shorten it
+
+RULE 5 \u2014 VERSES MUST PROGRESS, NOT REPEAT:
+Each verse should move the song FORWARD. A verse is a journey, not a loop.
+Ideal verse arc:
+  \u2192 SCENE (where are we / what is happening)
+  \u2192 FEELING (what does it feel like)
+  \u2192 REACTION (what does the person do or feel next)
+  \u2192 CONSEQUENCE (what does this cost or create)
+  \u2192 REALIZATION (what truth surfaces)
+BANNED verse behavior:
+  \u2717 Saying the same emotional point 8 times with slightly different wording
+  \u2717 Restating the chorus concept in the verse
+  \u2717 Filling lines with generic filler just to hit line count
+Each line in a verse should earn its place by moving the story or feeling one step further.
+
+RULE 6 \u2014 PRIORITIZE QUOTABLE LINES:
+Every song should contain at least 2\u20133 lines that feel:
+  - screamable at a concert
+  - caption-worthy without context
+  - emotionally sharp enough to stop a listener cold
+  - distinctly artist-like \u2014 not generic
+DIRECTIONAL EXAMPLES (do NOT copy \u2014 write originals of this quality):
+  \u2713 "Dem laugh first, now dem dey watch"
+  \u2713 "Body weak but the hunger no die"
+  \u2713 "Silence loud when pain too much"
+  \u2713 "God know wetin man no see"
+These are directional references only \u2014 never copy them verbatim.
+
+RULE 7 \u2014 MATCH GENRE ENERGY:
+Afrobeats (emotional / romantic / spiritual): smoother \xB7 melodic \xB7 intimate \xB7 hook-focused
+Street-pop / Afro-street: harder \xB7 more direct \xB7 more quotable \xB7 more crowd-aware
+Dancehall / Patois: rhythm-driven \xB7 chantable \xB7 naturally Jamaican \xB7 never fake "Google Patois"
+Sad / heartbreak: simple \xB7 vulnerable \xB7 believable \xB7 not overly poetic
+Amapiano: atmospheric \xB7 laid-back groove \xB7 emotional but cool \xB7 layered repetition
+Gospel / Spiritual: testimony-driven \xB7 humanly vulnerable \xB7 never preachy \xB7 earned not performed
+
+RULE 8 \u2014 BRIDGE MUST MATTER:
+The bridge is NOT filler. It must do one of these:
+  - reveal something more vulnerable than the verses
+  - shift emotional perspective (new angle on the same story)
+  - strip down before the final chorus hits with full weight
+If the bridge is just more verse content \u2192 rewrite it as a genuine emotional pivot.
+
+RULE 9 \u2014 OUTRO MUST LAND INTENTIONALLY:
+The outro is the final emotional impression. It must:
+  - feel like a closing thought worth leaving in the listener's head
+  - either repeat the most powerful line in a new emotional light
+  - or close with quiet finality \u2014 a stamp, not a drift
+BANNED outro behavior:
+  \u2717 Trailing off with generic lines
+  \u2717 Repeating verse content lazily
+  \u2717 Ending with a motivational clich\xE9
+
+RULE 10 \u2014 INTRO MUST HOOK IMMEDIATELY:
+The first line of the song sets the world. It must:
+  - pull the listener in without explaining what the song is about
+  - feel atmospheric, emotionally charged, or rhythmically strong
+  - NOT start with a statement of intent like "I want to tell you about my life"
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
 LANGUAGE MODE SYSTEM (MANDATORY):
 AfroMuse treats language as a REAL cultural writing mode \u2014 not accent spelling.
 NEVER write fake dialect by taking standard English and replacing a few words.
