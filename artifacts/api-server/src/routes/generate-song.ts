@@ -1442,6 +1442,50 @@ function buildUserPrompt(
       ? `Custom: ${customFlavor.trim()}`
       : languageFlavor;
 
+  const isNonEnglishFlavor = effectiveFlavor !== "Global English" && effectiveFlavor !== "English";
+
+  const flavorInstructionMap: Record<string, string> = {
+    "Jamaican Street":          "make it gritty, hard, chantable, street-real, and performable",
+    "Jamaican Spiritual":       "make it prayerful, testimony-driven, faithful, and emotionally rooted",
+    "Naija Melodic Pidgin":     "make it smooth, catchy, emotional, musical, and naturally Nigerian",
+    "Naija Street Pidgin":      "make it rough, direct, trenches-rooted, and lived-in street speech",
+    "Ghana Urban Pidgin":       "make it cool, sharp, restrained, modern, and Accra-styled",
+    "Afro-fusion Clean Pidgin": "make it polished, clean, emotional, and globally singable",
+  };
+
+  const flavorHint = flavorInstructionMap[effectiveFlavor];
+
+  const languageFlavorInstruction = isNonEnglishFlavor ? [
+    "",
+    "────────────────────────────────────────",
+    "LANGUAGE FLAVOR INSTRUCTION",
+    "────────────────────────────────────────",
+    `Selected language flavor: ${effectiveFlavor}`,
+    "",
+    "You must write in the exact emotional and linguistic style of the selected language flavor.",
+    "",
+    "IMPORTANT:",
+    "Do NOT write \"English with slang.\"",
+    "Do NOT fake the dialect.",
+    "Do NOT overuse generic repeated filler phrases.",
+    "",
+    "The selected language flavor must affect:",
+    "- phrasing",
+    "- rhythm",
+    "- word choice",
+    "- emotional tone",
+    "- cultural realism",
+    "- hook style",
+    "- section flow",
+    "",
+    "Write like a REAL artist from that language world.",
+    ...(flavorHint ? [`\nFor "${effectiveFlavor}" → ${flavorHint}`] : []),
+    "",
+    "Language realism is more important than trying to sound \"deep.\"",
+    "If a line feels fake, rewrite it.",
+    "────────────────────────────────────────",
+  ] : [];
+
   const lines = [
     "INPUT:",
     `theme = ${topic}`,
@@ -1450,6 +1494,7 @@ function buildUserPrompt(
     `style = ${genre}`,
     ...(style?.trim() ? [`artist reference = ${style.trim()}`] : []),
     ...(notes?.trim() ? [`extra notes = ${notes.trim()}`] : []),
+    ...languageFlavorInstruction,
   ];
 
   return lines.join("\n");
@@ -1930,6 +1975,19 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...((languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English") ? [
+      ``,
+      `────────────────────────────────────────`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `────────────────────────────────────────`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `────────────────────────────────────────`,
+      ``,
+    ] : []),
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} — ${hardenDepthNote[lyricalDepth ?? "Balanced"] ?? hardenDepthNote["Balanced"]}`,
@@ -2185,6 +2243,19 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...((languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English") ? [
+      ``,
+      `────────────────────────────────────────`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `────────────────────────────────────────`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `────────────────────────────────────────`,
+      ``,
+    ] : []),
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} — ${catchierDepthNote[lyricalDepth ?? "Balanced"] ?? catchierDepthNote["Balanced"]}`,
@@ -2413,6 +2484,19 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...((languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English") ? [
+      ``,
+      `────────────────────────────────────────`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `────────────────────────────────────────`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `────────────────────────────────────────`,
+      ``,
+    ] : []),
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} — ${humanizeDepthNote[lyricalDepth ?? "Balanced"] ?? humanizeDepthNote["Balanced"]}`,
