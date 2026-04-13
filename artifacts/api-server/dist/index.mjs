@@ -69420,7 +69420,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...getMelodyFriendlyBlock(),
     ...getArtistInspirationBlock(params.artistInspiration),
     ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced"),
-    ...getPerformanceFeelBlock(params.performanceFeel ?? "Smooth")
+    ...getPerformanceFeelBlock(params.performanceFeel ?? "Smooth"),
+    ...getVoiceTextureBlock(params.voiceTexture ?? "Balanced")
   ];
   return lines.join("\n");
 }
@@ -70733,6 +70734,50 @@ function getPerformanceFeelBlock(performanceFeel = "Smooth") {
     "",
     "Write with natural melodic flow, emotional control, and clean performance energy.",
     "Keep the song fluid, musical, and polished."
+  ];
+}
+function getVoiceTextureBlock(voiceTexture = "Balanced") {
+  const voice = voiceTexture.toLowerCase();
+  if (voice.includes("gritty")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F5E3} VOICE TEXTURE: GRITTY",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write for a voice that feels rough-edged, scarred, street-tested, and emotionally weathered.",
+      "Prioritize lines that sound strong, grounded, and lived-in."
+    ];
+  }
+  if (voice.includes("soft")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F5E3} VOICE TEXTURE: SOFT",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write for a softer, more melodic, emotionally open vocal delivery.",
+      "Prioritize warmth, intimacy, and melodic smoothness."
+    ];
+  }
+  if (voice.includes("bold")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F5E3} VOICE TEXTURE: BOLD",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write for a confident, commanding, unmistakable vocal presence.",
+      "Lines should feel strong, memorable, and performance-ready."
+    ];
+  }
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F5E3} VOICE TEXTURE: BALANCED",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Write for a naturally expressive voice with both emotional warmth and confident delivery."
   ];
 }
 

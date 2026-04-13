@@ -1504,6 +1504,7 @@ function buildUserPrompt(
     ...getArtistInspirationBlock(params.artistInspiration),
     ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced"),
     ...getPerformanceFeelBlock(params.performanceFeel ?? "Smooth"),
+    ...getVoiceTextureBlock(params.voiceTexture ?? "Balanced"),
   ];
 
   return lines.join("\n");
