@@ -739,8 +739,35 @@ function sanitizeStyleOverride(raw: string): string {
   return joined.length > 300 ? joined.slice(0, 297) + "..." : joined;
 }
 
+/**
+ * Per-genre sonic fingerprint tags sent to ElevenLabs.
+ * These are the distinctive rhythmic/harmonic markers of each genre
+ * that must appear in both positive_global_styles and section local_styles
+ * so ElevenLabs genre-locks the output.
+ */
+const GENRE_SONIC_TAGS: Record<string, string[]> = {
+  Afrobeats:       ["Afrobeats", "Afropop groove", "talking drum pattern", "shekere rhythm", "Afro hi-hat roll", "Lagos sound", "clave-influenced percussion"],
+  Afropop:         ["Afropop", "catchy melodic hook", "bright pop production", "light percussion groove", "radio-ready Afro sound"],
+  Amapiano:        ["Amapiano", "log drum bass", "deep sub bass", "piano riff loop", "South African house groove", "Joburg sound", "flute melody"],
+  Dancehall:       ["Dancehall", "Jamaican dancehall", "one drop riddim", "skank guitar offbeat", "digital riddim pattern", "bass-heavy dancehall beat", "Kingston sound", "reggae-influenced offbeat"],
+  "R&B":           ["R&B", "smooth soul groove", "neo-soul production", "warm chord voicing", "silky smooth feel", "contemporary R&B"],
+  "Afro-fusion":   ["Afro-fusion", "cross-genre Afro blend", "contemporary African sound", "multicultural groove", "global Afro influence"],
+  "Street Anthem": ["Street Anthem", "urban trap influence", "hard-hitting 808 bass", "aggressive snare", "gritty street sound"],
+  Spiritual:       ["Spiritual", "devotional mood", "gospel-influenced harmony", "reverent atmosphere", "uplifting spiritual energy"],
+  Gospel:          ["Gospel", "mass choir feel", "gospel piano runs", "praise and worship energy", "church organ", "call and response"],
+};
+
 export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLabsCompositionPlan {
-  const secs   = p.lyricsSections ?? {};
+  const rawSecs = p.lyricsSections ?? {};
+  // Cap hook lines at 8 to prevent triple-chorus counting artifacts.
+  // A hook section longer than 8 lines overwhelms ElevenLabs's section layout
+  // and makes the chorus section run too long relative to the verses.
+  const secs = {
+    ...rawSecs,
+    hook: rawSecs.hook && rawSecs.hook.length > 8
+      ? rawSecs.hook.slice(0, 8)
+      : rawSecs.hook,
+  };
   const genre  = p.genre ?? "Afrobeats";
   const mood   = p.mood  ?? "Uplifting";
   const bpm    = p.bpm   ?? (GENRE_DEFAULTS[genre] ?? 96);
@@ -779,12 +806,20 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
   };
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
 
+  // ── Genre sonic fingerprint — core genre-specific tags ───────────────────
+  // These are the distinctive rhythmic/harmonic markers of the genre.
+  // They are injected at the FRONT of the style string so ElevenLabs genre-locks
+  // the output before reading any other descriptors.
+  const genreTags = GENRE_SONIC_TAGS[genre] ?? [genre];
+
   // ── Style: rich production brief combining genre, Beat DNA, mood, instruments ──
   // If the user provided a direct production style override, sanitize it first to
   // strip any internal metadata lines (production notes, DNA headers, etc.) that may
   // have been pasted from the formatted draft, then prepend to the auto-generated style.
   const userStyleOverride = sanitizeStyleOverride(p.productionStyle ?? "");
   const styleParts: (string | null)[] = [
+    // Genre tags lead — this is the single most important genre signal for ElevenLabs
+    genreTags.slice(0, 4).join(", "),
     userStyleOverride ? userStyleOverride : null,
     `${genre} full song with prominent live instrumentals and lead vocals`,
     `live backing band audible throughout: ${instruments}`,
@@ -826,20 +861,24 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
     lines,
   });
 
+  // Top 2 genre tags are embedded in every section's local_styles so the genre
+  // identity is reinforced at each section boundary, not just globally.
+  const [genreTag1 = genre, genreTag2 = genre] = genreTags;
+
   // ── Intro ──────────────────────────────────────────────────────────────────
   if (secs.intro && secs.intro.length > 0) {
     sections.push(makeSection(
       "intro", "Intro",
       secs.intro,
       estimateMs(secs.intro, 3000, 8000),
-      ["atmospheric", "building", "melodic opening", "full band playing", "live instruments"],
+      [genreTag1, "atmospheric", "building", "melodic opening", "full band playing", "live instruments"],
     ));
   } else {
     sections.push(makeSection(
       "intro", "Intro",
       [`Instrumental intro, ${genre} style`],
       8000,
-      ["atmospheric", "instrumental", "building energy", "full band", "live instruments"],
+      [genreTag1, "atmospheric", "instrumental", "building energy", "full band", "live instruments"],
     ));
   }
 
@@ -849,13 +888,13 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "verse", "Verse 1",
       secs.verse1,
       estimateMs(secs.verse1),
-      ["storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"],
+      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"],
     ));
   }
 
   // ── Chorus (hook) ──────────────────────────────────────────────────────────
   if (secs.hook && secs.hook.length > 0) {
-    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
+    const chorusStyles = [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
     if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
     sections.push(makeSection(
       "chorus", "Chorus",
@@ -871,7 +910,7 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "verse", "Verse 2",
       secs.verse2,
       estimateMs(secs.verse2),
-      ["storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"],
+      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"],
     ));
   }
 
@@ -881,7 +920,7 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "chorus", "Chorus 2",
       secs.hook,
       estimateMs(secs.hook, 3000, 15000),
-      ["anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"],
+      [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"],
     ));
   }
 
@@ -891,7 +930,7 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "bridge", "Bridge",
       secs.bridge,
       estimateMs(secs.bridge, 4000, 15000),
-      ["emotional", "transitional", "intimate", "live instruments", "backing band"],
+      [genreTag1, "emotional", "transitional", "intimate", "live instruments", "backing band"],
     ));
   }
 
@@ -901,7 +940,7 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "chorus", "Final Chorus",
       secs.hook,
       estimateMs(secs.hook, 3000, 15000),
-      ["anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"],
+      [genreTag1, genreTag2, "anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"],
     ));
   }
 
@@ -922,9 +961,10 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
     ));
   }
 
-  // positive_global_styles: discrete style tags — Beat DNA + production descriptors
+  // positive_global_styles: discrete style tags — genre fingerprint + Beat DNA + production
+  // Genre sonic tags come first and repeat the genre identity so ElevenLabs gives it maximum weight.
   const positiveGlobalStyles: string[] = [
-    genre,
+    ...genreTags,                                    // All genre-specific fingerprint tags
     mood,
     "Afrocentric",
     p.energy ? `${p.energy} energy` : "Medium energy",

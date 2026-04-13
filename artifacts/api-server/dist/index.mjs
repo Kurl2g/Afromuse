@@ -72230,8 +72230,23 @@ function sanitizeStyleOverride(raw) {
   const joined = clean.join(", ").replace(/,\s*,/g, ",").trim();
   return joined.length > 300 ? joined.slice(0, 297) + "..." : joined;
 }
+var GENRE_SONIC_TAGS = {
+  Afrobeats: ["Afrobeats", "Afropop groove", "talking drum pattern", "shekere rhythm", "Afro hi-hat roll", "Lagos sound", "clave-influenced percussion"],
+  Afropop: ["Afropop", "catchy melodic hook", "bright pop production", "light percussion groove", "radio-ready Afro sound"],
+  Amapiano: ["Amapiano", "log drum bass", "deep sub bass", "piano riff loop", "South African house groove", "Joburg sound", "flute melody"],
+  Dancehall: ["Dancehall", "Jamaican dancehall", "one drop riddim", "skank guitar offbeat", "digital riddim pattern", "bass-heavy dancehall beat", "Kingston sound", "reggae-influenced offbeat"],
+  "R&B": ["R&B", "smooth soul groove", "neo-soul production", "warm chord voicing", "silky smooth feel", "contemporary R&B"],
+  "Afro-fusion": ["Afro-fusion", "cross-genre Afro blend", "contemporary African sound", "multicultural groove", "global Afro influence"],
+  "Street Anthem": ["Street Anthem", "urban trap influence", "hard-hitting 808 bass", "aggressive snare", "gritty street sound"],
+  Spiritual: ["Spiritual", "devotional mood", "gospel-influenced harmony", "reverent atmosphere", "uplifting spiritual energy"],
+  Gospel: ["Gospel", "mass choir feel", "gospel piano runs", "praise and worship energy", "church organ", "call and response"]
+};
 function buildElevenLabsCompositionPlan(p) {
-  const secs = p.lyricsSections ?? {};
+  const rawSecs = p.lyricsSections ?? {};
+  const secs = {
+    ...rawSecs,
+    hook: rawSecs.hook && rawSecs.hook.length > 8 ? rawSecs.hook.slice(0, 8) : rawSecs.hook
+  };
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
   const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
@@ -72262,8 +72277,11 @@ function buildElevenLabsCompositionPlan(p) {
     Gospel: "piano, choir, bass, drums, organ, electric guitar, full band"
   };
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
+  const genreTags = GENRE_SONIC_TAGS[genre] ?? [genre];
   const userStyleOverride = sanitizeStyleOverride(p.productionStyle ?? "");
   const styleParts = [
+    // Genre tags lead — this is the single most important genre signal for ElevenLabs
+    genreTags.slice(0, 4).join(", "),
     userStyleOverride ? userStyleOverride : null,
     `${genre} full song with prominent live instrumentals and lead vocals`,
     `live backing band audible throughout: ${instruments}`,
@@ -72290,13 +72308,14 @@ function buildElevenLabsCompositionPlan(p) {
     negative_local_styles: negativeLocal,
     lines
   });
+  const [genreTag1 = genre, genreTag2 = genre] = genreTags;
   if (secs.intro && secs.intro.length > 0) {
     sections.push(makeSection(
       "intro",
       "Intro",
       secs.intro,
       estimateMs(secs.intro, 3e3, 8e3),
-      ["atmospheric", "building", "melodic opening", "full band playing", "live instruments"]
+      [genreTag1, "atmospheric", "building", "melodic opening", "full band playing", "live instruments"]
     ));
   } else {
     sections.push(makeSection(
@@ -72304,7 +72323,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Intro",
       [`Instrumental intro, ${genre} style`],
       8e3,
-      ["atmospheric", "instrumental", "building energy", "full band", "live instruments"]
+      [genreTag1, "atmospheric", "instrumental", "building energy", "full band", "live instruments"]
     ));
   }
   if (secs.verse1 && secs.verse1.length > 0) {
@@ -72313,11 +72332,11 @@ function buildElevenLabsCompositionPlan(p) {
       "Verse 1",
       secs.verse1,
       estimateMs(secs.verse1),
-      ["storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"]
+      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
-    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
+    const chorusStyles = [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
     if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
     sections.push(makeSection(
       "chorus",
@@ -72333,7 +72352,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Verse 2",
       secs.verse2,
       estimateMs(secs.verse2),
-      ["storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"]
+      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
@@ -72342,7 +72361,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Chorus 2",
       secs.hook,
       estimateMs(secs.hook, 3e3, 15e3),
-      ["anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"]
+      [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"]
     ));
   }
   if (secs.bridge && secs.bridge.length > 0) {
@@ -72351,7 +72370,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Bridge",
       secs.bridge,
       estimateMs(secs.bridge, 4e3, 15e3),
-      ["emotional", "transitional", "intimate", "live instruments", "backing band"]
+      [genreTag1, "emotional", "transitional", "intimate", "live instruments", "backing band"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
@@ -72360,7 +72379,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Final Chorus",
       secs.hook,
       estimateMs(secs.hook, 3e3, 15e3),
-      ["anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"]
+      [genreTag1, genreTag2, "anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"]
     ));
   }
   if (secs.outro && secs.outro.length > 0) {
@@ -72381,7 +72400,8 @@ function buildElevenLabsCompositionPlan(p) {
     ));
   }
   const positiveGlobalStyles = [
-    genre,
+    ...genreTags,
+    // All genre-specific fingerprint tags
     mood,
     "Afrocentric",
     p.energy ? `${p.energy} energy` : "Medium energy",
