@@ -222,6 +222,73 @@ function extractLyricsText(draft: SongDraft | null, genre: string, mood: string)
   return formatDraftForClipboard(draft, genre, mood);
 }
 
+/**
+ * Parses raw lyrics text (pasted or typed) into structured sections for ElevenLabs.
+ * Looks for common section markers: [Hook], [Chorus], [Verse], [Bridge], [Intro], [Outro].
+ * Falls back to treating all lines as a hook/verse when no markers are found.
+ */
+function parseLyricsTextToSections(text: string): {
+  intro?: string[];
+  hook?: string[];
+  verse1?: string[];
+  verse2?: string[];
+  bridge?: string[];
+  outro?: string[];
+} | null {
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (lines.length === 0) return null;
+
+  const sections: {
+    intro: string[]; hook: string[]; verse1: string[];
+    verse2: string[]; bridge: string[]; outro: string[];
+  } = { intro: [], hook: [], verse1: [], verse2: [], bridge: [], outro: [] };
+
+  const MARKERS: Record<string, keyof typeof sections> = {
+    hook: "hook", chorus: "hook", pre_hook: "hook", prehook: "hook",
+    verse_1: "verse1", verse1: "verse1", "verse 1": "verse1",
+    verse_2: "verse2", verse2: "verse2", "verse 2": "verse2",
+    verse: "verse1",
+    bridge: "bridge", breakdown: "bridge",
+    intro: "intro",
+    outro: "outro", outro_fade: "outro",
+  };
+
+  let currentSection: keyof typeof sections = "verse1";
+  let hasMarkers = false;
+
+  for (const line of lines) {
+    const markerMatch = line.match(/^\[([^\]]+)\]$/);
+    if (markerMatch) {
+      hasMarkers = true;
+      const key = markerMatch[1].toLowerCase().replace(/[\s_-]+/g, "_").replace(/^_|_$/g, "");
+      const mapped = MARKERS[key] ?? MARKERS[key.replace(/_\d+$/, "")];
+      if (mapped) currentSection = mapped;
+      continue;
+    }
+    sections[currentSection].push(line);
+  }
+
+  // If no section markers found, split lines evenly between hook and verse1
+  if (!hasMarkers) {
+    const mid = Math.ceil(lines.length / 2);
+    sections.hook = lines.slice(0, mid);
+    sections.verse1 = lines.slice(mid);
+  }
+
+  // Only return if there's meaningful content
+  const hasContent = sections.hook.length > 0 || sections.verse1.length > 0;
+  if (!hasContent) return null;
+
+  return {
+    intro:  sections.intro.length  > 0 ? sections.intro  : undefined,
+    hook:   sections.hook.length   > 0 ? sections.hook   : undefined,
+    verse1: sections.verse1.length > 0 ? sections.verse1 : undefined,
+    verse2: sections.verse2.length > 0 ? sections.verse2 : undefined,
+    bridge: sections.bridge.length > 0 ? sections.bridge : undefined,
+    outro:  sections.outro.length  > 0 ? sections.outro  : undefined,
+  };
+}
+
 function StemBar({ label, color, pct }: { label: string; color: string; pct?: number }) {
   const resolvedPct = pct ?? Math.round(55 + hashString(label) * 35);
   const delay = hashString(label + "_d") * 0.4;
@@ -1404,16 +1471,27 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         hookLift: hookLift || undefined,
         buildMode: generationMode,
         lyricsText: audioLyrics || undefined,
-        // Pass structured sections when a generated draft is available so
-        // ElevenLabs can produce a full song with AI vocals instead of a beat only.
-        lyricsSections: draft ? {
-          intro:  draft.intro  ?? [],
-          hook:   draft.hook   ?? [],
-          verse1: draft.verse1 ?? [],
-          verse2: draft.verse2 ?? [],
-          bridge: draft.bridge ?? [],
-          outro:  draft.outro  ?? [],
-        } : undefined,
+        // Build structured sections for ElevenLabs full-song composition mode.
+        // Priority: generated draft sections → parsed sections from pasted lyrics text.
+        // Skipped entirely in instrumental-only mode.
+        lyricsSections: (() => {
+          if (isInstrumentalMode) return undefined;
+          if (draft) {
+            const secs = {
+              intro:  draft.intro  && draft.intro.length  > 0 ? draft.intro  : undefined,
+              hook:   draft.hook   && draft.hook.length   > 0 ? draft.hook   : undefined,
+              verse1: draft.verse1 && draft.verse1.length > 0 ? draft.verse1 : undefined,
+              verse2: draft.verse2 && draft.verse2.length > 0 ? draft.verse2 : undefined,
+              bridge: draft.bridge && draft.bridge.length > 0 ? draft.bridge : undefined,
+              outro:  draft.outro  && draft.outro.length  > 0 ? draft.outro  : undefined,
+            };
+            // If draft has no actual lyric content, fall through to text parsing
+            if (secs.hook || secs.verse1) return secs;
+          }
+          // Fall back to parsing audioLyrics text (user pasted or typed lyrics)
+          if (audioLyrics.trim()) return parseLyricsTextToSections(audioLyrics);
+          return undefined;
+        })(),
       };
 
       const res = await fetch("/api/generate-instrumental-preview", {

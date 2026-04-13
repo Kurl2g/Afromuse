@@ -63,7 +63,21 @@ router.post("/generate-instrumental-preview", (req, res) => {
 
   dispatch(job.jobId, () => runInstrumental(job.jobId, payload), "Instrumental generation failed");
 
-  logger.info({ jobId: job.jobId, genre: payload.genre, mood: payload.mood }, "Instrumental job created");
+  const secs = payload.lyricsSections ?? {};
+  logger.info({
+    jobId: job.jobId,
+    genre: payload.genre,
+    mood: payload.mood,
+    bounceStyle: payload.bounceStyle,
+    melodyDensity: payload.melodyDensity,
+    drumCharacter: payload.drumCharacter,
+    hookLift: payload.hookLift,
+    buildMode: payload.buildMode,
+    hasLyricsSections: !!(payload.lyricsSections),
+    hookLines: secs.hook?.length ?? 0,
+    verse1Lines: secs.verse1?.length ?? 0,
+    lyricsTextLength: payload.lyricsText?.length ?? 0,
+  }, "Instrumental job created — payload summary");
   res.json({ success: true, jobId: job.jobId, status: "queued" });
 });
 
