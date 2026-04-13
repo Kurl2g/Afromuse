@@ -15,6 +15,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { Link } from "wouter";
 import {
   formatDraftForClipboard,
+  extractLyricsOnlyText,
+  buildStyleStringFromDraft,
   type SongDraft,
 } from "@/lib/songGenerator";
 import { useAuth } from "@/context/AuthContext";
@@ -175,8 +177,11 @@ export default function Studio() {
 
   const handleSendToAudio = (mode: QuickMode) => {
     if (!draft) return;
-    const text = formatDraftForClipboard(draft, genre, mood);
-    audioStudioRef.current?.sendLyrics(text, mode);
+    // Lyrics panel gets only the lyric sections (no production notes)
+    const lyricsText = extractLyricsOnlyText(draft);
+    // Style panel gets a concise production-notes style string
+    const styleText = buildStyleStringFromDraft(draft, genre, mood);
+    audioStudioRef.current?.sendLyrics(lyricsText, mode, styleText);
     setActiveTab("audio");
     setTimeout(() => {
       const el = document.getElementById("audio-studio-v2");

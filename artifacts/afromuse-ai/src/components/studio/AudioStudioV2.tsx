@@ -30,7 +30,7 @@ export interface BeatDNAState {
 }
 
 export interface AudioStudioV2Handle {
-  sendLyrics: (text: string, mode?: QuickMode) => void;
+  sendLyrics: (text: string, mode?: QuickMode, styleText?: string) => void;
   getBeatDNAState: () => BeatDNAState;
   setBeatDNAState: (state: Partial<BeatDNAState>) => void;
 }
@@ -227,6 +227,28 @@ function hashString(s: string): number {
 function extractLyricsText(draft: SongDraft | null, genre: string, mood: string): string {
   if (!draft) return "";
   return formatDraftForClipboard(draft, genre, mood);
+}
+
+/** Extracts ONLY the lyric sections — no production notes, no metadata headers. */
+function extractLyricsOnly(draft: SongDraft): string {
+  const bridgeLabel = draft.diversityReport?.dnaMode === "CHAOS MODE" ? "BREAK" : "BRIDGE";
+  const push = (label: string, lines?: string[]) =>
+    lines?.length ? [{ label, lines }] : [];
+  const orderedSections = [
+    ...push("INTRO", draft.intro),
+    ...push("CHORUS", draft.hook),
+    ...push("VERSE 1", draft.verse1),
+    ...push("CHORUS", draft.hook),
+    ...push("VERSE 2", draft.verse2),
+    ...push("CHORUS", draft.hook),
+    ...push(bridgeLabel, draft.bridge),
+    ...push("OUTRO", draft.outro),
+  ] as { label: string; lines: string[] }[];
+  const lines: string[] = [];
+  for (const sec of orderedSections) {
+    lines.push(`[ ${sec.label} ]`, ...sec.lines, "");
+  }
+  return lines.join("\n").trim();
 }
 
 /**
@@ -1356,9 +1378,13 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   };
 
   useImperativeHandle(ref, () => ({
-    sendLyrics(text: string, mode?: QuickMode) {
+    sendLyrics(text: string, mode?: QuickMode, styleText?: string) {
       setAudioLyrics(text);
       setUseGeneratedLyrics(true);
+      // Auto-fill the Style field with production notes when provided
+      if (styleText) {
+        setProductionStyle(styleText.slice(0, 1000));
+      }
       if (mode === "instrumental") {
         setGenerationMode("instrumental");
       } else if (mode === "hook-only") {
