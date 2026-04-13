@@ -680,20 +680,27 @@ export function buildInstrumentalDescription(p: InstrumentalPayload): BuiltPromp
   const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
 
   // Compact style string for AI Music API custom mode (max 1000 chars for chirp-v4-5+)
-  const styleTagParts: string[] = [
-    genre,
-    `${bpm} BPM`,
-    key,
-    mood,
-    resolveEnergyDescriptor(energy, mood),
-    bounceDesc   ? bounceDesc   : null,
-    melodyDesc   ? melodyDesc   : null,
-    drumCharDesc ? drumCharDesc : null,
-    soundRef     ? `inspired by ${soundRef}` : null,
-    mixFeel      ? resolveMixFeel(mixFeel)   : null,
-    p.productionStyle?.trim() || null,
-  ].filter((s): s is string => Boolean(s));
-  const styleString = styleTagParts.join(", ").slice(0, 950);
+  // When the user provides a direct style string (productionStyle), it is used as-is
+  // (up to 1000 chars) so it reaches the Chirp model without being truncated by the
+  // auto-generated tags. When empty, we auto-build a rich style string from session data.
+  const userStyle = p.productionStyle?.trim() || null;
+  const styleString = userStyle
+    ? userStyle.slice(0, 1000)
+    : (() => {
+        const styleTagParts: string[] = [
+          genre,
+          `${bpm} BPM`,
+          key,
+          mood,
+          resolveEnergyDescriptor(energy, mood),
+          bounceDesc   ? bounceDesc   : null,
+          melodyDesc   ? melodyDesc   : null,
+          drumCharDesc ? drumCharDesc : null,
+          soundRef     ? `inspired by ${soundRef}` : null,
+          mixFeel      ? resolveMixFeel(mixFeel)   : null,
+        ].filter((s): s is string => Boolean(s));
+        return styleTagParts.join(", ").slice(0, 950);
+      })();
 
   // Brief for diagnostic logging (stored in sonicNotes)
   const brief = [
