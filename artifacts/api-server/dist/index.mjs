@@ -69419,7 +69419,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...getAdlibGeneratorBlock(),
     ...getMelodyFriendlyBlock(),
     ...getArtistInspirationBlock(params.artistInspiration),
-    ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced")
+    ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced"),
+    ...getPerformanceFeelBlock(params.performanceFeel ?? "Smooth")
   ];
   return lines.join("\n");
 }
@@ -70687,6 +70688,51 @@ function getLyricalDepthBlock(lyricalDepth = "Balanced") {
     "",
     "Balance emotional clarity with lyrical richness.",
     "Keep the writing meaningful, singable, and accessible."
+  ];
+}
+function getPerformanceFeelBlock(performanceFeel = "Smooth") {
+  const feel = performanceFeel.toLowerCase();
+  if (feel.includes("raw")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F399} PERFORMANCE FEEL: RAW",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write like the artist is emotionally exposed and not hiding behind polish.",
+      "Allow rough honesty, tension, pressure, and vulnerable delivery energy."
+    ];
+  }
+  if (feel.includes("aggressive")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F399} PERFORMANCE FEEL: AGGRESSIVE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write with stronger attack, sharper confidence, and more forceful delivery energy.",
+      "Keep it chantable and rhythmic, not just loud."
+    ];
+  }
+  if (feel.includes("intimate")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F399} PERFORMANCE FEEL: INTIMATE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Write like the artist is speaking directly into one person's ear.",
+      "Keep the delivery close, emotional, and personal."
+    ];
+  }
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F399} PERFORMANCE FEEL: SMOOTH",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Write with natural melodic flow, emotional control, and clean performance energy.",
+    "Keep the song fluid, musical, and polished."
   ];
 }
 

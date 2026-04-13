@@ -1503,6 +1503,7 @@ function buildUserPrompt(
     ...getMelodyFriendlyBlock(),
     ...getArtistInspirationBlock(params.artistInspiration),
     ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced"),
+    ...getPerformanceFeelBlock(params.performanceFeel ?? "Smooth"),
   ];
 
   return lines.join("\n");
