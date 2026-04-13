@@ -208,6 +208,13 @@ const BEAT_DNA_MELODY_DENSITIES = ["Minimal", "Balanced", "Rich", "Lush", "Cinem
 const BEAT_DNA_DRUM_CHARACTERS  = ["Clean", "Punchy", "Raw", "Dusty", "Percussive", "Heavy Groove"];
 const BEAT_DNA_HOOK_LIFTS       = ["Subtle", "Balanced", "Big", "Anthemic", "Explosive"];
 
+const AI_MUSIC_MODELS = [
+  { value: "chirp-v4-0",      label: "Chirp v4.0",      desc: "Balanced · fast",         tier: "standard" },
+  { value: "chirp-v4-5",      label: "Chirp v4.5",      desc: "High quality · default",  tier: "standard" },
+  { value: "chirp-v4-5-plus", label: "Chirp v4.5+",     desc: "Extended lyrics support", tier: "plus"     },
+  { value: "chirp-v5",        label: "Chirp v5",         desc: "Latest · best quality",   tier: "plus"     },
+] as const;
+
 function hashString(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
@@ -1273,6 +1280,14 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
   const [drumCharacter,   setDrumCharacter]   = useState(BEAT_DNA_DRUM_CHARACTERS[1]);
   const [hookLift,        setHookLift]        = useState(BEAT_DNA_HOOK_LIFTS[1]);
 
+  // AI Model & Generation Controls
+  const [aiMusicModel,         setAiMusicModel]         = useState<string>("chirp-v4-5");
+  const [inspirationPrompt,    setInspirationPrompt]    = useState("");
+  const [styleWeight,          setStyleWeight]          = useState<number>(0.65);
+  const [weirdnessConstraint,  setWeirdnessConstraint]  = useState<number>(0.35);
+  const [audioWeight,          setAudioWeight]          = useState<number>(0.65);
+  const [aiAdvancedOpen,       setAiAdvancedOpen]       = useState(false);
+
   const [instrumentalUrl,       setInstrumentalUrl]       = useState("");
   const [instrumentalAudioUrl,  setInstrumentalAudioUrl]  = useState<string | null>(null);
   const [instrumentalIsLive,    setInstrumentalIsLive]    = useState(false);
@@ -1470,6 +1485,13 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         drumCharacter: drumCharacter || undefined,
         hookLift: hookLift || undefined,
         buildMode: generationMode,
+        // AI Model & Advanced Generation Controls
+        aiMusicModel: aiMusicModel || undefined,
+        gender: vocalGender !== "random" ? vocalGender : undefined,
+        styleWeight,
+        weirdnessConstraint,
+        audioWeight,
+        gptDescriptionPrompt: inspirationPrompt.trim() || undefined,
         // Only send raw lyrics text when the user typed/pasted their own lyrics.
         // When using Studio Lyrics (useGeneratedLyrics), audioLyrics is the full
         // formatted clipboard dump — the structured sections already carry the clean
@@ -2591,6 +2613,181 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
               </div>
             </div>
+
+            {/* ── AI Model & Generation Controls ──────────────────────────── */}
+            <div className="mx-4 mb-4 rounded-xl border border-sky-500/15 bg-gradient-to-b from-sky-500/[0.025] to-transparent overflow-hidden">
+              <div className="px-4 py-3 border-b border-sky-500/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-md bg-sky-500/15 flex items-center justify-center">
+                    <Cpu className="w-2.5 h-2.5 text-sky-400" />
+                  </div>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-sky-400/70">AI Model & Generation</span>
+                </div>
+                <span className="text-[9px] text-sky-400/35 italic">chirp engine · aimusicapi.org</span>
+              </div>
+
+              <div className="p-4 space-y-4">
+
+                {/* Model Selection */}
+                <div>
+                  <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-2">
+                    AI Model <span className="text-white/15 font-normal normal-case tracking-normal">generation engine</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {AI_MUSIC_MODELS.map((m) => (
+                      <button
+                        key={m.value}
+                        type="button"
+                        onClick={() => setAiMusicModel(m.value)}
+                        className={`flex flex-col items-start px-3 py-2 rounded-xl transition-all ${
+                          aiMusicModel === m.value
+                            ? "bg-sky-500/14 border border-sky-500/35 text-sky-300"
+                            : "bg-white/[0.03] border border-white/6 text-white/35 hover:border-white/14 hover:text-white/55"
+                        }`}
+                      >
+                        <span className="text-[10.5px] font-bold leading-tight">{m.label}</span>
+                        <span className={`text-[9px] mt-0.5 ${aiMusicModel === m.value ? "text-sky-400/60" : "text-white/20"}`}>{m.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Generation Mode indicator + Inspiration Prompt */}
+                <div>
+                  <div className={`flex items-center gap-2 px-3 py-2 rounded-xl mb-3 ${
+                    hasLyrics
+                      ? "bg-green-500/[0.05] border border-green-500/15"
+                      : "bg-amber-500/[0.05] border border-amber-500/15"
+                  }`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${hasLyrics ? "bg-green-400" : "bg-amber-400"}`} />
+                    <span className={`text-[9.5px] font-semibold ${hasLyrics ? "text-green-300/70" : "text-amber-300/70"}`}>
+                      {hasLyrics
+                        ? "Custom Mode — lyrics loaded, AI will sing your words"
+                        : "Inspiration Mode — describe your sound below"}
+                    </span>
+                  </div>
+
+                  {!hasLyrics && (
+                    <div>
+                      <label className="block text-[9px] font-bold tracking-[0.14em] uppercase text-white/28 mb-1.5">
+                        Inspiration Prompt <span className="text-white/15 font-normal normal-case tracking-normal">describe your sound</span>
+                      </label>
+                      <textarea
+                        value={inspirationPrompt}
+                        onChange={(e) => setInspirationPrompt(e.target.value)}
+                        rows={2}
+                        maxLength={400}
+                        placeholder="e.g. An upbeat Afrobeats track with Amapiano log drums, warm guitar melody, energetic feel, 106 BPM..."
+                        className="w-full rounded-xl bg-white/4 border border-sky-500/12 px-3 py-2.5 text-sm text-white placeholder:text-white/18 focus:outline-none focus:border-sky-500/35 transition-all resize-none leading-relaxed"
+                      />
+                      <div className="flex justify-between mt-1">
+                        <p className="text-[9px] text-white/18 italic">Used when no lyrics are loaded — replaces auto-generated description</p>
+                        <span className={`text-[9px] ${inspirationPrompt.length > 360 ? "text-amber-400/60" : "text-white/18"}`}>{inspirationPrompt.length}/400</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Advanced Controls — collapsible */}
+                <div className="border border-white/[0.05] rounded-xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setAiAdvancedOpen((p) => !p)}
+                    className="w-full flex items-center justify-between px-4 py-2.5 bg-white/[0.015] hover:bg-white/[0.028] transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Sliders className="w-3 h-3 text-sky-400/50" />
+                      <span className="text-[9.5px] font-bold tracking-widest uppercase text-white/35">Advanced Controls</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[8.5px] text-white/20">style · weirdness · audio</span>
+                      <ChevronDown className={`w-3 h-3 text-white/25 transition-transform duration-200 ${aiAdvancedOpen ? "rotate-180" : ""}`} />
+                    </div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {aiAdvancedOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.22, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pt-3 pb-4 space-y-4 bg-white/[0.008]">
+
+                          {/* Style Weight */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-[9px] font-bold tracking-[0.14em] uppercase text-white/30">
+                                Style Weight <span className="text-white/14 font-normal normal-case tracking-normal">adherence to style</span>
+                              </label>
+                              <span className="text-[9px] font-semibold text-sky-400/70 tabular-nums">{styleWeight.toFixed(2)}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[8px] text-white/20 w-8 shrink-0">Loose</span>
+                              <input
+                                type="range" min={0} max={1} step={0.05}
+                                value={styleWeight}
+                                onChange={(e) => setStyleWeight(Number(e.target.value))}
+                                className="flex-1 h-1 appearance-none rounded-full bg-white/8 accent-sky-400 cursor-pointer"
+                              />
+                              <span className="text-[8px] text-white/20 w-8 shrink-0 text-right">Strict</span>
+                            </div>
+                          </div>
+
+                          {/* Weirdness Constraint */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-[9px] font-bold tracking-[0.14em] uppercase text-white/30">
+                                Weirdness <span className="text-white/14 font-normal normal-case tracking-normal">creative deviation</span>
+                              </label>
+                              <span className="text-[9px] font-semibold text-violet-400/70 tabular-nums">{weirdnessConstraint.toFixed(2)}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[8px] text-white/20 w-8 shrink-0">Tame</span>
+                              <input
+                                type="range" min={0} max={1} step={0.05}
+                                value={weirdnessConstraint}
+                                onChange={(e) => setWeirdnessConstraint(Number(e.target.value))}
+                                className="flex-1 h-1 appearance-none rounded-full bg-white/8 accent-violet-400 cursor-pointer"
+                              />
+                              <span className="text-[8px] text-white/20 w-8 shrink-0 text-right">Wild</span>
+                            </div>
+                          </div>
+
+                          {/* Audio Weight */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <label className="text-[9px] font-bold tracking-[0.14em] uppercase text-white/30">
+                                Audio Weight <span className="text-white/14 font-normal normal-case tracking-normal">audio feature balance</span>
+                              </label>
+                              <span className="text-[9px] font-semibold text-amber-400/70 tabular-nums">{audioWeight.toFixed(2)}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[8px] text-white/20 w-8 shrink-0">Light</span>
+                              <input
+                                type="range" min={0} max={1} step={0.05}
+                                value={audioWeight}
+                                onChange={(e) => setAudioWeight(Number(e.target.value))}
+                                className="flex-1 h-1 appearance-none rounded-full bg-white/8 accent-amber-400 cursor-pointer"
+                              />
+                              <span className="text-[8px] text-white/20 w-8 shrink-0 text-right">Heavy</span>
+                            </div>
+                          </div>
+
+                          <p className="text-[9px] text-white/14 italic pt-0.5 leading-relaxed">
+                            These parameters are passed directly to the Chirp model. Defaults (0.65 / 0.35 / 0.65) work well for most Afrobeats sessions.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
 
