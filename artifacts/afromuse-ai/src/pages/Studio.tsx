@@ -11,6 +11,7 @@ import { SubscriptionModal } from "@/components/ui/SubscriptionModal";
 import AudioStudioV2, { type AudioStudioV2Handle, type QuickMode } from "@/components/studio/AudioStudioV2";
 import ProjectLibraryPanel from "@/components/studio/ProjectLibraryPanel";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { Link } from "wouter";
 import {
   formatDraftForClipboard,
@@ -160,6 +161,7 @@ export default function Studio() {
   const [isHumanizing, setIsHumanizing] = useState(false);
   const [isHardening, setIsHardening] = useState(false);
   const [isCatchifying, setIsCatchifying] = useState(false);
+  const [previousDraft, setPreviousDraft] = useState<SongDraft | null>(null);
   const [mutedStems, setMutedStems] = useState<Record<string, boolean>>({});
   const [stemVolumes, setStemVolumes] = useState<Record<string, number>>({
     instrumental: 80, leadVocal: 90, harmony: 60, adlibs: 50, bass: 75, percussion: 85,
@@ -291,6 +293,8 @@ export default function Studio() {
 
   const handleHumanizeLyrics = async () => {
     if (!draft || isHumanizing) return;
+    const snapshot = draft;
+    setPreviousDraft(snapshot);
     setIsHumanizing(true);
     setSaved(false);
     const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
@@ -307,14 +311,21 @@ export default function Studio() {
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };
       setDraft(data.draft);
-      toast({ title: "Lyrics humanized!", description: "AI lines rewritten by your session songwriter." });
+      toast({
+        title: "Lyrics humanized!",
+        description: "AI lines rewritten by your session songwriter.",
+        action: <ToastAction altText="Undo" onClick={() => { setDraft(snapshot); setPreviousDraft(null); }}>Undo</ToastAction>,
+      });
     } catch (err) {
+      setPreviousDraft(null);
       toast({ title: "Humanize failed", description: err instanceof Error ? err.message : "Please try again.", variant: "destructive" });
     } finally { setIsHumanizing(false); }
   };
 
   const handleMakeItCatchier = async () => {
     if (!draft || isCatchifying) return;
+    const snapshot = draft;
+    setPreviousDraft(snapshot);
     setIsCatchifying(true);
     setSaved(false);
     const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
@@ -331,14 +342,21 @@ export default function Studio() {
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };
       setDraft(data.draft);
-      toast({ title: "Hook upgraded.", description: "Your song just got catchier." });
+      toast({
+        title: "Hook upgraded.",
+        description: "Your song just got catchier.",
+        action: <ToastAction altText="Undo" onClick={() => { setDraft(snapshot); setPreviousDraft(null); }}>Undo</ToastAction>,
+      });
     } catch (err) {
+      setPreviousDraft(null);
       toast({ title: "Make It Catchier failed", description: err instanceof Error ? err.message : "Please try again.", variant: "destructive" });
     } finally { setIsCatchifying(false); }
   };
 
   const handleMakeItHarder = async () => {
     if (!draft || isHardening) return;
+    const snapshot = draft;
+    setPreviousDraft(snapshot);
     setIsHardening(true);
     setSaved(false);
     const { languageFlavor: apiLanguageFlavor } = getApiLanguageParams(languageFlavor);
@@ -355,8 +373,13 @@ export default function Studio() {
       if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Rewrite failed"); }
       const data = await res.json() as { draft: SongDraft };
       setDraft(data.draft);
-      toast({ title: "Lyrics hit harder now.", description: "Your session songwriter punched up every line." });
+      toast({
+        title: "Lyrics hit harder now.",
+        description: "Your session songwriter punched up every line.",
+        action: <ToastAction altText="Undo" onClick={() => { setDraft(snapshot); setPreviousDraft(null); }}>Undo</ToastAction>,
+      });
     } catch (err) {
+      setPreviousDraft(null);
       toast({ title: "Make It Harder failed", description: err instanceof Error ? err.message : "Please try again.", variant: "destructive" });
     } finally { setIsHardening(false); }
   };
