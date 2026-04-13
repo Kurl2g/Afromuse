@@ -72210,14 +72210,27 @@ function buildElevenLabsCompositionPlan(p) {
   const mood = p.mood ?? "Uplifting";
   const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
   const key = p.key ?? "F# minor";
+  const GENRE_INSTRUMENTS = {
+    Afrobeats: "talking drum, shekere, electric guitar, bass guitar, Fender Rhodes, percussion",
+    Afropop: "acoustic guitar, synth pads, bass guitar, hi-hats, melodic piano, light percussion",
+    Amapiano: "log drum, piano riff, bass, flute, deep sub-bass, Afro percussion, choir pad",
+    Dancehall: "riddim beat, bass guitar, organ stabs, keyboard, skank guitar, digital percussion",
+    "R&B": "smooth guitar, bass, piano, synth pads, hi-hats, subtle percussion",
+    "Afro-fusion": "electric guitar, talking drum, bass, synth, Afro percussion, piano",
+    "Street Anthem": "808 bass, hi-hats, snare, synth lead, guitar stabs, urban percussion",
+    Spiritual: "choir pads, warm bass guitar, light drums, organ, acoustic guitar",
+    Gospel: "piano, choir, bass, drums, organ, electric guitar, full band"
+  };
+  const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
   const styleParts = [
-    genre,
-    mood,
+    `${genre} full song with instrumentals and vocals`,
+    `instruments: ${instruments}`,
+    `${mood} mood`,
     `${bpm} BPM`,
     `key of ${key}`,
     p.energy ? `${p.energy} energy` : null,
     p.soundReference ? `influenced by ${p.soundReference}` : null,
-    "authentic Afro vocals, culturally resonant performance"
+    "full band mix, clear vocals over backing track"
   ].filter(Boolean);
   const style = styleParts.join(", ");
   const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
@@ -72323,15 +72336,20 @@ function buildElevenLabsCompositionPlan(p) {
     mood,
     "Afrocentric",
     p.energy ? `${p.energy} energy` : "Medium energy",
-    "live vocals",
+    "full band production",
+    "backing track with instruments",
+    "vocals over instrumentals",
+    "live instruments",
     "culturally authentic"
   ];
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
   const negativeGlobalStyles = [
+    "acapella",
+    "vocals only",
+    "no instruments",
     "lo-fi",
     "low quality",
-    "distorted",
-    "noise"
+    "distorted"
   ];
   return {
     style,
