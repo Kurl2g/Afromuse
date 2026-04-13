@@ -69417,7 +69417,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
-    ...getMelodyFriendlyBlock()
+    ...getMelodyFriendlyBlock(),
+    ...getArtistInspirationBlock(params.artistInspiration)
   ];
   return lines.join("\n");
 }
@@ -69486,7 +69487,8 @@ router2.post("/generate-song", async (req, res) => {
     hookRepeat,
     lyricsSource,
     genderVoiceModel,
-    performanceFeel
+    performanceFeel,
+    artistInspiration
   } = req.body;
   if (!topic || typeof topic !== "string") {
     res.status(400).json({ error: "topic is required" });
@@ -69529,7 +69531,8 @@ router2.post("/generate-song", async (req, res) => {
     lyricsSource: lyricsSource ?? "Studio Lyrics",
     genderVoiceModel: selectedGender,
     performanceFeel: selectedFeel,
-    diversityProfile
+    diversityProfile,
+    artistInspiration: artistInspiration?.trim() || void 0
   };
   const ai = new OpenAI({
     apiKey,
@@ -70558,6 +70561,92 @@ function getMelodyFriendlyBlock() {
     "Do NOT write like an essay.",
     "Do NOT write like spoken explanation.",
     "Write like music."
+  ];
+}
+function getArtistInspirationBlock(artistInspiration) {
+  const artist = artistInspiration?.toLowerCase().trim();
+  if (!artist || artist === "random" || artist === "none") return [];
+  if (artist.includes("burna")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F9EC} ARTIST ENERGY MODE: BURNA-TYPE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Use the emotional and songwriting energy of a Burna-type performance:",
+      "  - confident but wounded depth",
+      "  - reflective authority",
+      "  - Afro-fusion realism",
+      "  - lived experience over fake flex",
+      "  - emotionally heavy but cool delivery",
+      "",
+      "Do NOT copy any artist directly.",
+      "Only borrow the emotional weight, confidence, and songwriting energy."
+    ];
+  }
+  if (artist.includes("asake")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F9EC} ARTIST ENERGY MODE: ASAKE-TYPE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Use the songwriting energy of an Asake-type record:",
+      "  - rhythm-first writing",
+      "  - chantable repeated phrases",
+      "  - coded street confidence",
+      "  - spiritual/street duality",
+      "  - highly performable hook energy",
+      "",
+      "Keep it catchy, rhythmic, and instinctive.",
+      "Do NOT copy any artist directly."
+    ];
+  }
+  if (artist.includes("black sherif") || artist.includes("blacko")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F9EC} ARTIST ENERGY MODE: BLACK SHERIF-TYPE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Use the songwriting energy of a Black Sherif-type record:",
+      "  - pain and pressure",
+      "  - spiritual grit",
+      "  - street survival with reflection",
+      "  - emotional realism over polish",
+      "  - raw honesty with chantable phrases",
+      "",
+      "The writing should feel lived, heavy, and deeply human.",
+      "Do NOT copy any artist directly."
+    ];
+  }
+  if (artist.includes("omah lay")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u{1F9EC} ARTIST ENERGY MODE: OMAH LAY-TYPE",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Use the songwriting energy of an Omah Lay-type record:",
+      "  - lonely vulnerability",
+      "  - soft emotional honesty",
+      "  - intimate melodic writing",
+      "  - heartbreak and internal tension",
+      "  - subtle but memorable hooks",
+      "",
+      "Keep the emotion personal, melodic, and quiet-heavy.",
+      "Do NOT copy any artist directly."
+    ];
+  }
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F9EC} ARTIST ENERGY MODE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    `Use the emotional and songwriting energy inspired by: ${artistInspiration}.`,
+    "Do NOT copy any artist directly.",
+    "Only borrow performance feel, emotional structure, and writing energy."
   ];
 }
 

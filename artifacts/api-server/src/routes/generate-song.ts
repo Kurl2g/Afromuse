@@ -1425,6 +1425,7 @@ function buildUserPrompt(
     genderVoiceModel?: string;
     performanceFeel?: string;
     diversityProfile: DiversityProfile;
+    artistInspiration?: string;
   },
   strictMode = false,
 ): string {
@@ -1500,6 +1501,7 @@ function buildUserPrompt(
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
     ...getMelodyFriendlyBlock(),
+    ...getArtistInspirationBlock(params.artistInspiration),
   ];
 
   return lines.join("\n");
@@ -1586,6 +1588,7 @@ router.post("/generate-song", async (req, res) => {
     customLanguage,
     dialectDepth, clarityMode, blendBalance, voiceTexture,
     commercialMode, hitmakerMode, lyricalDepth, hookRepeat, lyricsSource, genderVoiceModel, performanceFeel,
+    artistInspiration,
   } = req.body as {
     topic?: string;
     genre?: string;
@@ -1608,6 +1611,7 @@ router.post("/generate-song", async (req, res) => {
     lyricsSource?: string;
     genderVoiceModel?: string;
     performanceFeel?: string;
+    artistInspiration?: string;
   };
 
   if (!topic || typeof topic !== "string") {
@@ -1655,6 +1659,7 @@ router.post("/generate-song", async (req, res) => {
     genderVoiceModel: selectedGender,
     performanceFeel: selectedFeel,
     diversityProfile,
+    artistInspiration: artistInspiration?.trim() || undefined,
   };
 
   const ai = new OpenAI({
