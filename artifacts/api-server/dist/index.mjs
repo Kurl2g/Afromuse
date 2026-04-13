@@ -72239,8 +72239,9 @@ function buildElevenLabsCompositionPlan(p) {
   const userStyleOverride = (p.productionStyle ?? "").trim();
   const styleParts = [
     userStyleOverride ? userStyleOverride : null,
-    `${genre} full song with live instrumentals and vocals`,
-    `instruments: ${instruments}`,
+    `${genre} full song with prominent live instrumentals and lead vocals`,
+    `live backing band audible throughout: ${instruments}`,
+    `instruments mixed at equal or higher level than vocals`,
     bounceDesc ? `groove: ${bounceDesc}` : null,
     melodyDesc ? `melody: ${melodyDesc}` : null,
     drumCharDesc ? `drums: ${drumCharDesc}` : null,
@@ -72250,7 +72251,7 @@ function buildElevenLabsCompositionPlan(p) {
     mixDesc ? `mix: ${mixDesc}` : null,
     soundLane ? `direction: ${soundLane}` : null,
     p.soundReference ? `influenced by ${p.soundReference}` : null,
-    "full band mix, prominent instruments, clear vocals over backing track"
+    "full band studio production, rich instrumental bed, clear vocals sitting on top of a full mix \u2014 not a cappella"
   ];
   const style = styleParts.filter(Boolean).join(", ");
   const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
@@ -72269,7 +72270,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Intro",
       secs.intro,
       estimateMs(secs.intro, 3e3, 8e3),
-      ["atmospheric", "building", "melodic opening"]
+      ["atmospheric", "building", "melodic opening", "full band playing", "live instruments"]
     ));
   } else {
     sections.push(makeSection(
@@ -72277,7 +72278,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Intro",
       [`Instrumental intro, ${genre} style`],
       8e3,
-      ["atmospheric", "instrumental", "building energy"]
+      ["atmospheric", "instrumental", "building energy", "full band", "live instruments"]
     ));
   }
   if (secs.verse1 && secs.verse1.length > 0) {
@@ -72286,11 +72287,11 @@ function buildElevenLabsCompositionPlan(p) {
       "Verse 1",
       secs.verse1,
       estimateMs(secs.verse1),
-      ["storytelling", "lyrical", "expressive"]
+      ["storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
-    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent"];
+    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
     if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
     sections.push(makeSection(
       "chorus",
@@ -72306,7 +72307,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Verse 2",
       secs.verse2,
       estimateMs(secs.verse2),
-      ["storytelling", "lyrical", "expressive", "backing band playing"]
+      ["storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
@@ -72315,7 +72316,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Chorus 2",
       secs.hook,
       estimateMs(secs.hook, 3e3, 15e3),
-      ["anthemic", "hook", "memorable", "energetic"]
+      ["anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"]
     ));
   }
   if (secs.bridge && secs.bridge.length > 0) {
@@ -72324,7 +72325,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Bridge",
       secs.bridge,
       estimateMs(secs.bridge, 4e3, 15e3),
-      ["emotional", "transitional", "intimate"]
+      ["emotional", "transitional", "intimate", "live instruments", "backing band"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
@@ -72333,7 +72334,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Final Chorus",
       secs.hook,
       estimateMs(secs.hook, 3e3, 15e3),
-      ["anthemic", "climactic", "powerful", "energetic"]
+      ["anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"]
     ));
   }
   if (secs.outro && secs.outro.length > 0) {
@@ -72342,7 +72343,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Outro",
       secs.outro,
       estimateMs(secs.outro, 3e3, 1e4),
-      ["fading", "closing", "reflective"]
+      ["fading", "closing", "reflective", "instruments fading out"]
     ));
   } else {
     sections.push(makeSection(
@@ -72350,7 +72351,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Outro",
       ["Outro fade out"],
       1e4,
-      ["fading", "instrumental", "closing"]
+      ["fading", "instrumental", "closing", "full band fade"]
     ));
   }
   const positiveGlobalStyles = [
@@ -72360,9 +72361,13 @@ function buildElevenLabsCompositionPlan(p) {
     p.energy ? `${p.energy} energy` : "Medium energy",
     "full band production",
     "prominent instrumental backing track",
+    "rich live instrumentation",
     "vocals mixed with instruments",
-    "live instruments audible throughout",
-    "culturally authentic"
+    "live instruments audible throughout the entire track",
+    "drums and bass driving the groove",
+    "melodic instrumental hooks between vocal phrases",
+    "culturally authentic",
+    "studio quality mix"
   ];
   if (bounceDesc) positiveGlobalStyles.push(bounceDesc);
   if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
@@ -72372,8 +72377,12 @@ function buildElevenLabsCompositionPlan(p) {
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
   const negativeGlobalStyles = [
     "acapella",
+    "a cappella",
     "vocals only",
+    "solo voice",
+    "dry vocals",
     "no instruments",
+    "no backing track",
     "lo-fi",
     "low quality",
     "distorted"
