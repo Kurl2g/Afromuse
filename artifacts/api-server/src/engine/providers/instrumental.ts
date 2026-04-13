@@ -85,11 +85,15 @@ export interface InstrumentalPayload {
     outro?:  string[];
   };
   // AI Music API generation controls
-  gender?: string;             // "male" | "female" — vocal gender preference
-  styleWeight?: number;        // 0–1, adherence to style description
-  weirdnessConstraint?: number;// 0–1, creative deviation amount
-  audioWeight?: number;        // 0–1, audio feature balance
-  aiMusicModel?: string;       // chirp-v4-5 | chirp-v4-5-plus | chirp-v5 | chirp-v4-0
+  gender?: string;               // "male" | "female" — vocal gender preference
+  styleWeight?: number;          // 0–1, adherence to style description
+  weirdnessConstraint?: number;  // 0–1, creative deviation amount
+  audioWeight?: number;          // 0–1, audio feature balance
+  aiMusicModel?: string;         // chirp-v4-5 | chirp-v4-5-plus | chirp-v5 | chirp-v4-0
+  // Optional direct Inspiration Mode prompt override.
+  // When set and no lyricsSections are present, this replaces the auto-generated
+  // description prompt sent to the AI Music API (gpt_description_prompt field).
+  gptDescriptionPrompt?: string;
 }
 
 // ─── Live Provider Response Shape ─────────────────────────────────────────────
@@ -811,17 +815,23 @@ async function callLiveInstrumentalProvider(
       "AI Music API — Custom Mode (full song with lyrics)");
   } else {
     // ── Inspiration Mode — description only, instrumental ─────────────────────
+    // Prefer user-supplied gptDescriptionPrompt when set; fall back to auto-generated.
+    const finalPrompt = p.gptDescriptionPrompt?.trim() || descPrompt;
     requestBody = {
       model,
-      gpt_description_prompt: descPrompt,
+      gpt_description_prompt: finalPrompt,
       make_instrumental:      true,
       ...(callbackUrl && { callback_url: callbackUrl }),
       ...(p.styleWeight        != null && { style_weight:          p.styleWeight }),
       ...(p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint }),
       ...(p.audioWeight        != null && { audio_weight:          p.audioWeight }),
     };
-    logger.info({ jobId, model, prompt: descPrompt.slice(0, 100), callbackUrl },
-      "AI Music API — Inspiration Mode (instrumental)");
+    logger.info({
+      jobId, model,
+      prompt: finalPrompt.slice(0, 100),
+      isUserPrompt: Boolean(p.gptDescriptionPrompt?.trim()),
+      callbackUrl,
+    }, "AI Music API — Inspiration Mode (instrumental)");
   }
 
   // ── Step 1: Submit generation job ─────────────────────────────────────────
