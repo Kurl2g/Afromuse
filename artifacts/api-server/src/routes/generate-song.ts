@@ -419,6 +419,25 @@ If writing Nigerian Pidgin:
   "I no go fall" / "Na so e be" / "Only God sabi" / "You dey sweet me die" / "I don arrive" / "E dey happen"
 - Do not make every line sound like social media slang.
 - Keep it musical, believable, and artist-ready.
+MANDATORY WORD-LEVEL RULES (Nigerian/Ghanaian Pidgin):
+- NEVER write "can't" or "cannot" — it is ALWAYS "no fit" / "e no fit"
+    ✗ "I can't explain" → ✓ "I no fit explain"
+- NEVER write "don't" — it is ALWAYS "no"
+    ✗ "don't leave me" → ✓ "no leave me" / "no go"
+- NEVER write "I am" as a continuous state — it is ALWAYS "I dey"
+    ✗ "I am feeling you" → ✓ "I dey feel you"
+- NEVER write "know" (as in understand/know someone) — it is ALWAYS "sabi"
+    ✗ "you know say I love you" → ✓ "you sabi say I love you"
+- NEVER write "left/went away" — it is ALWAYS "comot"
+    ✗ "you left me" → ✓ "you comot from me" / "you just comot like dat"
+- NEVER write "bring me" or "take me" (in an emotional/journey sense) — it is ALWAYS "carry me"
+    ✗ "bring me closer" → ✓ "carry me come" | ✗ "take me away" → ✓ "carry me go"
+- "can" as ability → "fit": ✗ "I can do it" → ✓ "I fit do am"
+- "very / extremely" at line end → "die" / "choke": ✗ "I love you so much" → ✓ "I love you die"
+- "it is" → "na" (emphasis) or "e dey": ✗ "it is you I want" → ✓ "na you I want"
+GHANA-SPECIFIC ENFORCEMENT:
+- Must contain 'chale' / 'massa' / 'dier' / 'barb' / 'aswear' naturally — not as add-ons to English lines
+- NEVER default into Nigerian phrasing — Ghana voice must be distinguishably Accra/urban Ghana
 If the language is Naija Melodic Pidgin:
 - Write smoother, more emotional, more singable lines.
 - Lean into romance, longing, heartbreak, sweetness, memory, and melody.
@@ -809,6 +828,36 @@ function getLanguageRealismEngineBlock(): string[] {
     "  4. Does this language feel lived-in, or AI-generated?",
     "  5. Does this exact line appear anywhere else in the song? If yes — rewrite it.",
     "If ANY answer is weak — rewrite the line before continuing.",
+    "",
+    "── DIALECT WORD TRAP SCAN — MANDATORY FOR ALL MODES ──",
+    "Before output, silently scan every line for these English words that signal dialect failure.",
+    "If found in the context below, REPLACE before writing the final output:",
+    "",
+    "  PATOIS MODE: scan for →",
+    "    'go' (imperative/carry on) → must be 'gwaan'",
+    "    'never' (present negation) → must be 'nuh' or 'nah'",
+    "    'don't' → must be 'nuh'",
+    "    'can't' → must be 'cyaan'",
+    "    'going to' → must be 'a go'",
+    "    'nothing' → must be 'nutten'",
+    "    'little' → must be 'likkle'",
+    "    'make' → must be 'mek'",
+    "    'left' (abandoned) → must be 'lef'",
+    "",
+    "  PIDGIN MODE: scan for →",
+    "    'can't' / 'cannot' → must be 'no fit' / 'e no fit'",
+    "    'don't' → must be 'no'",
+    "    'I am' (continuous) → must be 'I dey'",
+    "    'know' (understand) → must be 'sabi'",
+    "    'left' (departed) → must be 'comot'",
+    "    'bring me' / 'take me' (emotional) → must be 'carry me'",
+    "    'can' (ability) → must be 'fit'",
+    "    'it is' (emphasis) → must be 'na'",
+    "",
+    "  ALL MODES: scan for →",
+    "    Full standard English sentences with one dialect word tacked on → REJECT. Rebuild from native thought.",
+    "    Repeated fallback phrases used more than once → REPLACE with fresh writing.",
+    "    Motivational poster language in any dialect → REWRITE with grounded human emotion.",
     "",
     "── SELF-CHECK BEFORE FINAL OUTPUT ──",
     "Silently test every completed draft against these questions:",
@@ -1379,6 +1428,42 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "  Abi = tag question/confirmation: 'na so e be, abi?' | Sha = softener/emphasis",
       "  Wahala = trouble: 'no wahala' / 'wahala dey' | Sabi = know: 'I sabi', 'nobody sabi'",
       "  Carry = bring/take emotionally: 'God carry me come here' | Comot = leave: 'e comot my life'",
+      "",
+      "── WORD-LEVEL ENFORCEMENT — MANDATORY SUBSTITUTIONS ──",
+      "Before finalizing any line, scan for these English words. If present, replace with the Pidgin form:",
+      "",
+      "  'can't' / 'cannot' → 'no fit' / 'e no fit'",
+      "    ✗ 'I can't stop thinking of you' → ✓ 'I no fit stop think about you'",
+      "    ✗ 'Nobody can stop me' → ✓ 'Nobody fit stop me'",
+      "",
+      "  'don't' → 'no'",
+      "    ✗ 'don't leave me' → ✓ 'no leave me'",
+      "    ✗ 'don't give up' → ✓ 'no give up' / 'no stop'",
+      "",
+      "  'I am' (continuous) → 'I dey'",
+      "    ✗ 'I am here for you' → ✓ 'I dey here for you'",
+      "    ✗ 'I am feeling something' → ✓ 'I dey feel something'",
+      "",
+      "  'know' → 'sabi'",
+      "    ✗ 'you know say I need you' → ✓ 'you sabi say I need you'",
+      "    ✗ 'I know what I want' → ✓ 'I sabi wetin I want'",
+      "",
+      "  'left' / 'went away' → 'comot'",
+      "    ✗ 'you left without a word' → ✓ 'you just comot without word'",
+      "",
+      "  'bring me' / 'take me' (emotional journey) → 'carry me'",
+      "    ✗ 'take me away' → ✓ 'carry me go' | ✗ 'bring me back' → ✓ 'carry me come back'",
+      "",
+      "  'can' (ability) → 'fit'",
+      "    ✗ 'I can handle it' → ✓ 'I fit handle am'",
+      "",
+      "  'it is' / 'this is' (emphasis) → 'na'",
+      "    ✗ 'it is you I want' → ✓ 'na you I want'",
+      "    ✗ 'this is what I feel' → ✓ 'na dis I dey feel'",
+      "",
+      "  'very / so much' at end of thought → 'die' / 'choke'",
+      "    ✗ 'I love you so much' → ✓ 'I love you die'",
+      "    ✗ 'it hurts so bad' → ✓ 'e dey pain me choke'",
       "",
       "── EMOTIONAL PHRASE ANCHORS BY SONG TYPE ──",
       "  AFROBEATS/STREET:    'I don arrive — make dem observe' | 'e dey sweet me anytime I see you' | 'na you ginger me, nobody else fit'",

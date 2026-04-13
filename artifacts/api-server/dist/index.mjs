@@ -69050,6 +69050,25 @@ If writing Nigerian Pidgin:
   "I no go fall" / "Na so e be" / "Only God sabi" / "You dey sweet me die" / "I don arrive" / "E dey happen"
 - Do not make every line sound like social media slang.
 - Keep it musical, believable, and artist-ready.
+MANDATORY WORD-LEVEL RULES (Nigerian/Ghanaian Pidgin):
+- NEVER write "can't" or "cannot" \u2014 it is ALWAYS "no fit" / "e no fit"
+    \u2717 "I can't explain" \u2192 \u2713 "I no fit explain"
+- NEVER write "don't" \u2014 it is ALWAYS "no"
+    \u2717 "don't leave me" \u2192 \u2713 "no leave me" / "no go"
+- NEVER write "I am" as a continuous state \u2014 it is ALWAYS "I dey"
+    \u2717 "I am feeling you" \u2192 \u2713 "I dey feel you"
+- NEVER write "know" (as in understand/know someone) \u2014 it is ALWAYS "sabi"
+    \u2717 "you know say I love you" \u2192 \u2713 "you sabi say I love you"
+- NEVER write "left/went away" \u2014 it is ALWAYS "comot"
+    \u2717 "you left me" \u2192 \u2713 "you comot from me" / "you just comot like dat"
+- NEVER write "bring me" or "take me" (in an emotional/journey sense) \u2014 it is ALWAYS "carry me"
+    \u2717 "bring me closer" \u2192 \u2713 "carry me come" | \u2717 "take me away" \u2192 \u2713 "carry me go"
+- "can" as ability \u2192 "fit": \u2717 "I can do it" \u2192 \u2713 "I fit do am"
+- "very / extremely" at line end \u2192 "die" / "choke": \u2717 "I love you so much" \u2192 \u2713 "I love you die"
+- "it is" \u2192 "na" (emphasis) or "e dey": \u2717 "it is you I want" \u2192 \u2713 "na you I want"
+GHANA-SPECIFIC ENFORCEMENT:
+- Must contain 'chale' / 'massa' / 'dier' / 'barb' / 'aswear' naturally \u2014 not as add-ons to English lines
+- NEVER default into Nigerian phrasing \u2014 Ghana voice must be distinguishably Accra/urban Ghana
 If the language is Naija Melodic Pidgin:
 - Write smoother, more emotional, more singable lines.
 - Lean into romance, longing, heartbreak, sweetness, memory, and melody.
