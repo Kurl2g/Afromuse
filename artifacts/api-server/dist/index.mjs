@@ -69363,6 +69363,47 @@ function buildUserPrompt(params, strictMode = false) {
     diversityProfile
   } = params;
   const effectiveFlavor = customLanguage?.trim() ? customLanguage.trim() : languageFlavor === "Custom" && customFlavor?.trim() ? `Custom: ${customFlavor.trim()}` : languageFlavor;
+  const isNonEnglishFlavor = effectiveFlavor !== "Global English" && effectiveFlavor !== "English";
+  const flavorInstructionMap = {
+    "Jamaican Street": "make it gritty, hard, chantable, street-real, and performable",
+    "Jamaican Spiritual": "make it prayerful, testimony-driven, faithful, and emotionally rooted",
+    "Naija Melodic Pidgin": "make it smooth, catchy, emotional, musical, and naturally Nigerian",
+    "Naija Street Pidgin": "make it rough, direct, trenches-rooted, and lived-in street speech",
+    "Ghana Urban Pidgin": "make it cool, sharp, restrained, modern, and Accra-styled",
+    "Afro-fusion Clean Pidgin": "make it polished, clean, emotional, and globally singable"
+  };
+  const flavorHint = flavorInstructionMap[effectiveFlavor];
+  const languageFlavorInstruction = isNonEnglishFlavor ? [
+    "",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    "LANGUAGE FLAVOR INSTRUCTION",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+    `Selected language flavor: ${effectiveFlavor}`,
+    "",
+    "You must write in the exact emotional and linguistic style of the selected language flavor.",
+    "",
+    "IMPORTANT:",
+    'Do NOT write "English with slang."',
+    "Do NOT fake the dialect.",
+    "Do NOT overuse generic repeated filler phrases.",
+    "",
+    "The selected language flavor must affect:",
+    "- phrasing",
+    "- rhythm",
+    "- word choice",
+    "- emotional tone",
+    "- cultural realism",
+    "- hook style",
+    "- section flow",
+    "",
+    "Write like a REAL artist from that language world.",
+    ...flavorHint ? [`
+For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
+    "",
+    'Language realism is more important than trying to sound "deep."',
+    "If a line feels fake, rewrite it.",
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  ] : [];
   const lines = [
     "INPUT:",
     `theme = ${topic}`,
@@ -69370,7 +69411,9 @@ function buildUserPrompt(params, strictMode = false) {
     `language = ${effectiveFlavor}`,
     `style = ${genre}`,
     ...style?.trim() ? [`artist reference = ${style.trim()}`] : [],
-    ...notes?.trim() ? [`extra notes = ${notes.trim()}`] : []
+    ...notes?.trim() ? [`extra notes = ${notes.trim()}`] : [],
+    ...languageFlavorInstruction,
+    ...getCommercialModeBlock(params.commercialMode)
   ];
   return lines.join("\n");
 }
@@ -69761,6 +69804,19 @@ ${lines.join("\n")}`;
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English" ? [
+      ``,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      ``
+    ] : [],
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${hardenDepthNote[lyricalDepth ?? "Balanced"] ?? hardenDepthNote["Balanced"]}`,
@@ -69768,7 +69824,7 @@ ${lines.join("\n")}`;
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 vocal perspective and phrasing edge must match this voice throughout`,
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 even after hardening, maintain this hook replay intensity`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 preserve this artist's writing DNA and edge while pushing harder`] : [],
-    ...commercialMode ? [`Hitmaker Mode: ON \u2014 hardened lines must still be mass-market singable and commercially viral, not just underground-hard`] : [],
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -69996,6 +70052,19 @@ ${lines.join("\n")}`;
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English" ? [
+      ``,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      ``
+    ] : [],
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${catchierDepthNote[lyricalDepth ?? "Balanced"] ?? catchierDepthNote["Balanced"]}`,
@@ -70003,7 +70072,7 @@ ${lines.join("\n")}`;
     `Performance Feel: ${performanceFeel ?? "Smooth"} \u2014 what "catchy" means depends on this register: Airy = floaty melodic hooks; Street = short quotable bars; Soulful = emotional resonance; Confident = bold declarative phrases`,
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 singability and phrasing feel must naturally match this vocal perspective`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the catchier version must still sound like it belongs in this artist's world`] : [],
-    ...commercialMode ? [`Hitmaker Mode: ON \u2014 maximum commercial catchiness required \u2014 this must work on radio, TikTok, live performance, and streaming hooks`] : [],
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -70204,6 +70273,19 @@ ${lines.join("\n")}`;
     `Genre: ${genre ?? "Afrobeats"}`,
     `Mood: ${mood ?? "Uplifting"}`,
     `Language: ${languageFlavor ?? "Global English"}`,
+    ...languageFlavor && languageFlavor !== "Global English" && languageFlavor !== "English" ? [
+      ``,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `LANGUAGE FLAVOR INSTRUCTION`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      `Selected language flavor: ${languageFlavor}`,
+      ``,
+      `You must write in the exact emotional and linguistic style of this flavor.`,
+      `Do NOT write "English with slang." Do NOT fake the dialect. Do NOT overuse generic filler phrases.`,
+      `Write like a REAL artist from that language world. If a line feels fake, rewrite it.`,
+      `\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500`,
+      ``
+    ] : [],
     `Dialect Depth: ${dialectDepth ?? "Balanced Native"}`,
     `Clarity Mode: ${clarityMode ?? "Artist Real"}`,
     `Lyrical Depth: ${lyricalDepth ?? "Balanced"} \u2014 ${humanizeDepthNote[lyricalDepth ?? "Balanced"] ?? humanizeDepthNote["Balanced"]}`,
@@ -70211,7 +70293,7 @@ ${lines.join("\n")}`;
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 rewrite phrasing to naturally match this vocal perspective \u2014 word choices, contractions, and delivery cues should fit this voice`,
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 preserve the hook's sing-along potential at this intensity level during humanization`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the humanized version must still sound like it belongs authentically in this artist's world`] : [],
-    ...commercialMode ? [`Hitmaker Mode: ON \u2014 keep commercial hook strength fully intact while stripping AI-sounding phrases \u2014 every line must be both human AND commercially viable`] : [],
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
@@ -70280,6 +70362,42 @@ ${lines.join("\n")}`;
   }
 });
 var generate_song_default = router2;
+function getCommercialModeBlock(commercialMode) {
+  if (!commercialMode) return [];
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F4BF} COMMERCIAL MODE \u2014 HIT-FRIENDLY WRITING",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "This song must feel commercially strong and replayable.",
+    "Write with mainstream music appeal while keeping emotional authenticity.",
+    "",
+    "PRIORITIZE:",
+    "  - catchy hooks",
+    "  - short memorable phrases",
+    "  - repeatable chorus lines",
+    "  - melodic simplicity",
+    "  - emotionally direct writing",
+    "  - easy sing-back moments",
+    "",
+    "AVOID:",
+    "  - over-writing",
+    "  - too many complicated metaphors",
+    "  - dense bars that block melody",
+    "  - long explanations",
+    "  - abstract poetry that weakens replay value",
+    "",
+    "COMMERCIAL HOOK LAW:",
+    "The chorus must sound like something listeners can remember after one listen.",
+    "If the hook is smart but not sticky, simplify it.",
+    "",
+    "STREAMING TEST:",
+    "Would this song still hit after 10 replays?",
+    "Would people want to quote the hook in captions or sing it out loud?",
+    "If not, rewrite for stronger replay value."
+  ];
+}
 
 // src/routes/generate-audio.ts
 var import_express3 = __toESM(require_express2(), 1);

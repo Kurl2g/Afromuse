@@ -1495,6 +1495,7 @@ function buildUserPrompt(
     ...(style?.trim() ? [`artist reference = ${style.trim()}`] : []),
     ...(notes?.trim() ? [`extra notes = ${notes.trim()}`] : []),
     ...languageFlavorInstruction,
+    ...getCommercialModeBlock(params.commercialMode),
   ];
 
   return lines.join("\n");
@@ -1995,7 +1996,7 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} — vocal perspective and phrasing edge must match this voice throughout`,
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} — even after hardening, maintain this hook replay intensity`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — preserve this artist's writing DNA and edge while pushing harder`] : []),
-    ...(commercialMode ? [`Hitmaker Mode: ON — hardened lines must still be mass-market singable and commercially viral, not just underground-hard`] : []),
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -2263,7 +2264,7 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     `Performance Feel: ${performanceFeel ?? "Smooth"} — what "catchy" means depends on this register: Airy = floaty melodic hooks; Street = short quotable bars; Soulful = emotional resonance; Confident = bold declarative phrases`,
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} — singability and phrasing feel must naturally match this vocal perspective`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the catchier version must still sound like it belongs in this artist's world`] : []),
-    ...(commercialMode ? [`Hitmaker Mode: ON — maximum commercial catchiness required — this must work on radio, TikTok, live performance, and streaming hooks`] : []),
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -2504,7 +2505,7 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} — rewrite phrasing to naturally match this vocal perspective — word choices, contractions, and delivery cues should fit this voice`,
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} — preserve the hook's sing-along potential at this intensity level during humanization`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the humanized version must still sound like it belongs authentically in this artist's world`] : []),
-    ...(commercialMode ? [`Hitmaker Mode: ON — keep commercial hook strength fully intact while stripping AI-sounding phrases — every line must be both human AND commercially viable`] : []),
+    ...getCommercialModeBlock(commercialMode),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
