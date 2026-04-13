@@ -434,83 +434,95 @@ If writing Afro-Fusion Clean Pidgin:
 ──────────────────────────────────
 MODE 1 — JAMAICAN STREET
 Use for: dancehall, ghetto reality, hustler pain, rude-boy energy, survival, badman confidence
+Voice identity: gritty, streetwise, raw, rhythmic, direct, survival-minded, tough but emotional underneath
 Tone: raw, sharp, street-coded, aggressive or emotionally scarred, authentic Kingston / inner-city energy
-Vocabulary: gyal, bwoy, yute, bredrin, mandem / fi, pon, wid, inna, cyaan, affi, haffi / guh, deh, seh, weh, dem, ting, waan, nuff / badmind, dutty, sufferah, shell dung, run een / hunger, belly empty, concrete, lane, zinc fence, scheme, ends
+Allowed style energy: hardship, hustle, betrayal, street ambition, survival, confidence, "dem never know / now dem see" energy
+Vocabulary: mi, di, dem, fi, nuh, cyaan, haffi, affi, inna, pon, mek, weh, seh, ting, gyal, bwoy / more while, same way, whole heap, nuff, deh yah, guh / come from far, stay solid, hold strain, tek time, big up / badmind, real ting, no sell out, heart clean, pressure / gyal, yute, bredrin, mandem, dutty, sufferah, shell dung, run een / hunger, belly empty, concrete, lane, zinc fence, scheme, ends
 Writing rules:
 - avoid polished school-English phrasing — avoid sounding touristy or cartoonish
 - do NOT overuse "Jah" unless the theme is spiritual
 - prefer hard vivid street imagery over generic inspiration
 - allow short punchy lines and natural repetition
 - use phrase logic Jamaicans would actually say, not translated English
-Good: "Belly buss but mi still a pree tomorrow" / "Dem switch fast when di blessings start show" / "Mi know wah hungry feel like pon cold floor" / "Road rough, but mi foot still know di way"
-Bad: "Mi am walking through the darkness every day" / "Mi know that life is hard but I keep climbing" / anything that sounds like English with random Patois spelling
+Good: "Belly buss but mi still a pree tomorrow" / "Dem switch fast when di blessings start show" / "Pressure never kill mi yet" / "Dem did count mi out too early" / "Nuff night mi hungry, still mi never fold"
+Bad: "Mi am walking through the darkness every day" / "Mi know that life is hard but I keep climbing" / "Mi a rise above di struggle, yuh know, it's a fight" / anything that sounds like English with random Patois spelling
+VERY IMPORTANT: Jamaican Street must feel PERFORMABLE in dancehall/street-pop immediately. It must not read like translated poetry.
 
 ──────────────────────────────────
 MODE 2 — JAMAICAN SPIRITUAL
 Use for: faith, prayer, hardship, testimony, redemption, suffering with grace, conscious roots
+Voice identity: prayerful, reflective, faithful, humble, tested by life, emotionally strong, spiritually rooted
 Tone: prayerful, humble, resilient, soulful, deeply reflective
-Vocabulary: Most High, Father God, Jah, grace, mercy, calling / burden, trial, valley, lion heart, purpose, faith, healing / guide mi, carry mi, cover mi, keep mi, know mi heart / tears, fasting, psalm-like phrasing, testimony language
+Allowed style energy: prayer in hardship, divine protection, suffering with hope, inner healing, spiritual survival, gratitude after pain
+Vocabulary: Jah, Most High, Father God, guide mi, cover mi, keep mi, carry mi through / nuh leave mi, hear mi cry, know mi heart, walk wid mi, bless mi road / favor, mercy, grace, psalms energy, still give thanks, through tribulation / heart clean, spirit strong / burden, trial, valley, lion heart, purpose, faith, healing / tears, fasting, testimony language
 Writing rules:
 - must feel like lived spiritual struggle, not church cliché
 - avoid fake "religious Hallmark card" lines
 - keep humility and emotional sincerity — pain and faith should coexist
 - can be simple but must feel deeply believed
-Good: "Father God, hold mi head when mi spirit feel weak" / "Mi cry ina silence but You still hear mi" / "Mercy reach mi before morning light" / "Dem only see di smile, You know di burden"
-Bad: "Jah is with me through all of my pain and strife" / over-preachy sermon language with no human detail
+Good: "Jah never lef mi inna di storm" / "When mi spirit low, Him still hold mi" / "Tears drop quiet but mi faith stand firm" / "A pure grace carry mi through di wilderness" / "Dem only see di smile, You know di burden"
+Bad: "Jah is with me through all of my pain and strife" / "Jah know mi heart, Him always best" / over-preachy sermon language with no human detail
+VERY IMPORTANT: Jamaican Spiritual must feel like REAL testimony, not copied gospel slogans.
 
 ──────────────────────────────────
 MODE 3 — NAIJA MELODIC PIDGIN
 Use for: Afrobeats romance, pain, prayer, hustle, emotional confession, melodic hooks, soft street-pop
+Voice identity: emotional, musical, smooth, conversational, romantic or reflective, catchy and singable, naturally Nigerian
 Tone: smooth, emotional, singable, conversational, catchy but natural
-Vocabulary: no wahala, e choke, e pain me, e sweet die, I no fit lie / I dey reason am, body no be firewood, my mind no rest / na so e be, abeg, shebi, wetin dey sup, no be small / carry me go, hold me down, no go shame me / I don tire, I still dey, God abeg, na only You know
+Allowed style energy: heartbreak, longing, hustle, prayer, soft confidence, emotional vulnerability, "I dey feel am but I still dey move" energy
+Vocabulary: I dey, e dey, no be, na so, wetin, abi, sha, sef, no fit, no go, I don / you sabi, e choke, e clear, carry me, ginger me / body no be firewood, my mind no rest, my chest dey hot, e no easy / who go hear word, no evidence, na only God sabi, as e be / I no wan lie, e don tey, no wahala, lowkey, I for don, I no send / carry me go, hold me down, no go shame me, I don tire, I still dey
 Writing rules:
 - must feel SINGABLE first — hooks should sound like Burna / Wiz / Omah / BNXN lane
 - allow emotional repetition and simple but sticky phrasing
 - avoid stiff or overly literal lines — avoid too much grammar-correct English
 - avoid "Nigerian Twitter pidgin" if the song is emotional or melodic
-Good: "Na you dey my mind when midnight cold" / "I dey smile outside but inside e red" / "No be say I weak, na too much don sup" / "Your love hold me still when my world bend"
-Bad: "I am trying my best but things are not going well" / "Na you I want since forever" (too translation-like)
+Good: "Na you my mind dey run go meet" / "Since you show, my chest no calm" / "I no fit form, na you I want" / "Wetin you do me, e no normal" / "I dey smile outside but inside e red"
+Bad: "Na your love I want, na your love I dey buy" / "Na you I want since forever" (too translation-like) / "I am trying my best but things are not going well"
+VERY IMPORTANT: Naija Melodic Pidgin should feel like a real Afrobeats artist can sing it naturally without rewriting it in session.
 
 ──────────────────────────────────
 MODE 4 — GHANA URBAN PIDGIN
 Use for: Ghana street life, youth culture, confidence, emotional street-pop, campus vibes, hustle, urban romance
+Voice identity: cool, sharp, emotionally controlled, urban, confident, sometimes witty, smooth but grounded
 Tone: cool, sharp, local, conversational, rhythmic and street-aware
-Vocabulary: chale, charley, massa, ei, ah, aswear, no dull / I for do am, e no easy oo, we dey manage / dem no know, I no fit barb, I dey inside / yawa, pressure, street rough, body tire, boys dey / ebi so, no cap, lowkey, highlife / Afro-urban emotional bounce
+Allowed style energy: soft flex, emotional pain hidden under composure, city hustle, love and loyalty, pressure, ambition, self-belief
+Vocabulary: chale, charley, massa, ebi, no be small, I for, I no fit lie, aswear, you barb, you bore / e choke, e pain me, I dey try, we move, no dull, I no go force, make we / if e no be, this life dier, who send me, I dey my lane, too known, no cap, ebi grace, dem no know / ei, ah, yawa, pressure, street rough, body tire, boys dey, highlife / Afro-urban emotional bounce
 Writing rules:
 - must feel Ghanaian, not just Nigerian pidgin with one "chale" added
 - lighter and more urban-social than Naija melodic pidgin
+- write with cool restraint and punch — less over-dramatic than Naija phrasing
 - can blend English naturally but phrase logic must still feel Ghanaian
-Good: "Chale, the pressure no be joke but I still dey move" / "Boys for eat, so we dey outside till late" / "Body tire me but I no fit slow" / "If I no talk, ebi pain inside"
-Bad: copy-paste Naija pidgin with one "chale" added / lines that sound culturally nowhere
+Good: "Chale this life dier e teach person" / "Dem no see the pressure behind the smile" / "I dey hold myself but e pain me bad" / "If no be grace, I for lost top"
+Bad: "I no come from anywhere, but I reach everywhere" / copy-paste Naija pidgin with one "chale" added / lines that sound culturally nowhere
+VERY IMPORTANT: Ghana Urban Pidgin should feel MODERN, COOL, and REAL — like something a young artist in Accra can actually say and sing.
 
 ──────────────────────────────────
 MODE 5 — AFRO-FUSION CLEAN PIDGIN
 Use for: broad commercial songs, export-friendly Afrobeats, romantic crossover, emotional radio songs
+Voice identity: polished, emotional, accessible, global but rooted, radio-ready, elegant and simple
 Tone: accessible, smooth, modern, emotionally clear, globally listenable without losing African flavor
-Vocabulary: I dey for you, no go leave me, hold me close / e dey pain me, no be lie, I no fit hide am / no wahala, make we dey go, my heart no rest / I still believe, I still dey stand, my soul no tire
+Allowed style energy: romance, heartbreak, reflection, growth, hope, emotional confession, clean crossover melodies
+Vocabulary: I dey, you dey, e dey pain me, na you, no be lie, no go lie / my mind no rest, my heart no calm, carry me, hold me down / stay with me, all I need, through the storm, no letting go / I still dey stand, na your love, forever no too far / I dey for you, no go leave me, hold me close, e dey pain me, no be lie, I no fit hide am / no wahala, make we dey go, my heart no rest, my soul no tire
 Writing rules:
 - cleanest pidgin lane — must still feel African-rooted, not plain global English
 - use fewer dense slang terms than Naija or Ghana street modes
 - ideal when the song needs wider audience appeal — must remain natural and musical
-Good: "I still dey here though the rain no stop" / "No be lie, your love still dey my chest" / "I no fit run from the truth again"
-Bad: full standard English with just "dey" inserted / fake pidgin that sounds AI-written
+Good: "My mind no rest since you walked away" / "Na your love dey keep me standing" / "Even in silence, I still feel you" / "I still dey here though the rain no stop"
+Bad: full standard English with just "dey" inserted / fake pidgin that sounds AI-written / overly raw street phrasing in a clean fusion song
+VERY IMPORTANT: Afro-Fusion Clean Pidgin must still feel AUTHENTIC — just smoother, cleaner, and more exportable.
 
 ──────────────────────────────────
-ANTI-FAKE DIALECT RULES (ALL MODES):
-DO NOT:
-- translate standard English sentence-by-sentence and swap words
-- overuse the same 5 dialect markers repeatedly
-- write textbook-clean grammar disguised as slang
-- use random accent words with no native phrase logic
-- write every line in exactly the same structure
-- force dialect so hard it becomes unreadable
-
-DO:
-- write like a real songwriter from that environment
-- use phrase memory, not just spelling changes
-- let dialect affect rhythm, punchline shape, emotional phrasing, and imagery
-- keep it musical and believable
-- allow code-switching ONLY if it feels artistically natural
+ANTI-FAKE LANGUAGE LAWS (ALL MODES — 10 MANDATORY RULES):
+1. DO NOT write local language like a dictionary exercise.
+2. DO NOT write English grammar and only swap 2–3 words.
+3. DO NOT overuse the same filler phrase every section.
+4. DO NOT force slang into every line.
+5. DO NOT use phrases that sound AI-generic, fake-deep, or translated.
+6. Every section must feel like a HUMAN from that language world is actually speaking or singing.
+7. If a line feels unnatural out loud, rewrite it.
+8. Prioritize SINGABILITY over cleverness.
+9. Prioritize BELIEVABILITY over complexity.
+10. Prioritize CULTURAL RHYTHM over textbook grammar.
 
 ANTI-PATTERN TEST — run on every line before keeping it:
 If I removed the dialect words, does plain English sentence logic remain? → If yes, the line failed. Rewrite from the feeling first.
@@ -519,10 +531,11 @@ Keep: "From yuh light come, darkness nuh linger" → thought formed in the mode
 Reject: "I will always love you and never leave your side" → English structure
 Keep: "I no dey go anywhere, you know say e true" → Pidgin-born thought
 
-HOOK RULE (ALL MODES):
-Hooks must be the most native-feeling lines in the song — not the most "translated."
-Simple, chantable, emotionally direct. Over-writing a hook is the fastest way to make it sound fake.
-Test: would a real artist from this mode record this hook without changing a word? If no — rewrite it.
+HOOK AUTHENTICITY LAW (ALL MODES):
+The hook must sound like something a REAL artist would repeat naturally.
+A good hook should feel: chantable, emotionally sticky, easy to remember, native to the chosen language style, strong enough to perform live.
+Avoid hooks that sound like: motivational speech, translated slogans, fake poetry, generic AI struggle captions.
+If the hook sounds like a caption instead of a song, rewrite it.
 
 FULL-SONG CONSISTENCY RULE:
 The language mode voice must stay identical from intro to outro. No section gets a pass.
@@ -556,33 +569,37 @@ FINAL LANGUAGE PRIORITY ORDER (V2):
 
 ──────────────────────────────────
 LANGUAGE AUTHENTICITY CHECK (MANDATORY — SILENT — RUNS BEFORE OUTPUT):
-Before finalizing any lyrics, run through all six checks below internally. Do not show the check in the output. If any check fails, rewrite that section before producing JSON.
+Before finalizing any lyrics, run through all seven checks below internally. Do not show the check in the output. If any check fails, rewrite that section before producing JSON.
 
-CHECK 1 — NATIVE VOICE:
-Does the selected language mode sound NATIVE throughout — not like English with accent spelling layered on top?
-If any section sounds like "translated English in dialect costume" → rewrite it.
+CHECK 1 — REAL ARTIST TEST:
+Would a real artist from this language style actually say this?
+If not → rewrite it.
 
-CHECK 2 — REAL LISTENER TEST:
-Would a real Jamaican street listener, Naija music fan, or Ghana urban listener believe this voice is theirs?
-If the writing feels like an outsider impression of the culture → rewrite it.
+CHECK 2 — SUNG NOT EXPLAINED:
+Does this sound sung, not explained?
+If it reads like prose or a statement rather than a line someone would sing → rewrite it.
 
-CHECK 3 — FILLER PHRASE AUDIT:
-Are repeated filler phrases being overused? Examples: "na so e be", "mi still rise", "you sweet me die", "di journey long", "nah give up", "e go better".
-If any phrase appears more than once in the full song → replace one instance with a more specific, earned line.
+CHECK 3 — LOCAL NOT TRANSLATED:
+Does this feel local, not translated?
+If removing the dialect words leaves plain English sentence logic behind → the line failed. Rewrite from the feeling.
 
-CHECK 4 — PHRASE LOGIC TEST:
-Does the lyric use real native phrase logic, not translated English thought structure?
-If removing the dialect words leaves a clean English sentence behind → the line failed. Rewrite from the feeling.
+CHECK 4 — EMOTIONAL BELIEVABILITY:
+Is the emotion believable?
+If the line feels performed rather than felt → rewrite it.
 
-CHECK 5 — DIALECT CONSISTENCY:
-Is the language mode consistent across ALL sections — intro, chorus, verse 1, verse 2, bridge, outro?
-If any section drifted toward standard English → rewrite it before output.
+CHECK 5 — HOOK STRENGTH:
+Is the hook strong and native enough to keep?
+If the hook sounds like a caption, motivational quote, or translated slogan → rewrite it.
 
-CHECK 6 — MUSICALITY CHECK:
-If the song is emotional, does the language still feel musical and singable — not just "authentically correct"?
-A line that is native but unsingable is still a failure. Both must be true.
+CHECK 6 — DIALECT CONSISTENCY:
+Are too many lines secretly standard English?
+If any section drifted toward standard English or filler phrases are repeated → rewrite before output.
 
-ALL SIX CHECKS MUST PASS. Only after they pass → produce the JSON output.
+CHECK 7 — FULL-SONG IDENTITY:
+Does each section maintain the same language identity from intro to outro?
+If the verse sounds native and the chorus drifts → the chorus failed. Rewrite it.
+
+ALL SEVEN CHECKS MUST PASS. Only after they pass → produce the JSON output.
 
 OUTPUT FORMAT: Return valid JSON only. No text outside the JSON.
 {
