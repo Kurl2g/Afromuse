@@ -69022,8 +69022,17 @@ If writing Jamaican Patois:
 - Avoid fake poetic English disguised as patois.
 - Use stronger native phrasing, compression, and lived-in yard realism.
 - Prioritize realism over sounding "poetic."
+MANDATORY WORD-LEVEL RULES (Jamaican Patois):
+- NEVER write "go" when the meaning is "carry on / proceed / go ahead" \u2014 it is ALWAYS "gwaan"
+    \u2717 "go on" / "let it go" (proceed) \u2192 \u2713 "gwaan" / "mek it gwaan"
+- NEVER write "never" as a present-tense instruction or negation \u2014 it is ALWAYS "nuh" or "nah"
+    \u2717 "never leave me" / "never give up" \u2192 \u2713 "nuh lef mi" / "nuh gi up"
+    "neva" is only valid as past tense: "dem neva rate mi" = they never rated me (past) \u2014 correct
+- NEVER write "don't" \u2014 it is ALWAYS "nuh"
+- NEVER write "can't" \u2014 it is ALWAYS "cyaan"
 FORBIDDEN STYLE EXAMPLES (Jamaican Patois):
-  \u2717 "Mi walk through di fire, but mi never get burned"
+  \u2717 "Mi walk through di fire, but mi never get burned" \u2192 use "nuh" not "never"
+  \u2717 "Go on and rise above it" \u2192 use "gwaan" not "go on"
   \u2717 "Mi did deh inna di darkness, where di light nuh shine"
   \u2717 "Mi will survive and thrive in life"
   \u2717 "Mi heart full of determination"

@@ -391,8 +391,17 @@ If writing Jamaican Patois:
 - Avoid fake poetic English disguised as patois.
 - Use stronger native phrasing, compression, and lived-in yard realism.
 - Prioritize realism over sounding "poetic."
+MANDATORY WORD-LEVEL RULES (Jamaican Patois):
+- NEVER write "go" when the meaning is "carry on / proceed / go ahead" — it is ALWAYS "gwaan"
+    ✗ "go on" / "let it go" (proceed) → ✓ "gwaan" / "mek it gwaan"
+- NEVER write "never" as a present-tense instruction or negation — it is ALWAYS "nuh" or "nah"
+    ✗ "never leave me" / "never give up" → ✓ "nuh lef mi" / "nuh gi up"
+    "neva" is only valid as past tense: "dem neva rate mi" = they never rated me (past) — correct
+- NEVER write "don't" — it is ALWAYS "nuh"
+- NEVER write "can't" — it is ALWAYS "cyaan"
 FORBIDDEN STYLE EXAMPLES (Jamaican Patois):
-  ✗ "Mi walk through di fire, but mi never get burned"
+  ✗ "Mi walk through di fire, but mi never get burned" → use "nuh" not "never"
+  ✗ "Go on and rise above it" → use "gwaan" not "go on"
   ✗ "Mi did deh inna di darkness, where di light nuh shine"
   ✗ "Mi will survive and thrive in life"
   ✗ "Mi heart full of determination"
@@ -1235,6 +1244,36 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "  fi = to/for | weh = that/where/which | deh = there/here",
       "  seh = say/that | pon = on | ya = here | ting = thing/situation",
       "  likkle = little | pickney = child | dutty = dirty/bad | wicked = great",
+      "",
+      "── WORD-LEVEL ENFORCEMENT — MANDATORY SUBSTITUTIONS ──",
+      "Using the English form below when a Patois form exists is a DIALECT FAILURE. Fix it before output.",
+      "",
+      "  'go' (imperative / carry on / proceed) → MUST BE 'gwaan'",
+      "    ✗ 'go on' / 'go deh' / 'let me go' (carry on) → ✓ 'gwaan' / 'gwaan deh' / 'mek mi gwaan'",
+      "    ✗ 'go through it' → ✓ 'gwaan through it'",
+      "    NOTE: directional 'go' is still valid — 'mi a go home' / 'we a go road' is correct Patois",
+      "    RULE: if 'go' could be replaced by 'carry on / proceed / go ahead' — it MUST be 'gwaan'",
+      "",
+      "  'never' (as present-tense negation / don't / won't) → MUST BE 'nuh' or 'nah'",
+      "    ✗ 'never leave me' → ✓ 'nuh lef mi'",
+      "    ✗ 'never give up' → ✓ 'nuh gi up' / 'nuh stop'",
+      "    ✗ 'never mind' → ✓ 'nuh worry' / 'nuh bodda'",
+      "    ✗ 'I would never do that' → ✓ 'mi nah do dat' / 'mi cyaan do dat'",
+      "    ✓ 'neva' = past-tense 'never' — 'dem neva rate mi' is CORRECT (they never rated me)",
+      "    RULE: 'never' as a present instruction or ongoing negation = 'nuh'/'nah'. Only keep 'neva' for true past.",
+      "",
+      "  'don't' → 'nuh'",
+      "    ✗ 'don't leave' → ✓ 'nuh lef'",
+      "    ✗ 'don't stop' → ✓ 'nuh stop'",
+      "",
+      "  'can't' → 'cyaan'",
+      "    ✗ 'can't stop' → ✓ 'cyaan stop'",
+      "",
+      "  'going to' → 'a go'",
+      "    ✗ 'I'm going to rise' → ✓ 'mi a go rise'",
+      "",
+      "  'something' → 'supn' / 'sinting' | 'nothing' → 'nutten' | 'everything' → 'everyting'",
+      "  'little' → 'likkle' | 'make' → 'mek' | 'where' → 'weh' | 'left' (abandoned) → 'lef'",
       "",
       "── EMOTIONAL PHRASE ANCHORS BY SONG TYPE ──",
       "  STRUGGLE SONGS:   'di road nuh easy but mi nuh stop moving' | 'poverty try mi — mi stronger now' | 'mi eat off di struggle, make it sweet'",
