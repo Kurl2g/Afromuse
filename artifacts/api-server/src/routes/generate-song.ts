@@ -1807,11 +1807,12 @@ function validateStructure(draft: SongDraft, profile: DiversityProfile): Validat
 }
 
 // ─── Models ───────────────────────────────────────────────────────────────────
-// Llama-4-Maverick:  primary lyrics author (creative writing, dialect authenticity)
+// Nemotron-70B:      primary lyrics model (70B, best at dense instruction-following + dialect purity)
+// Llama-4-Maverick:  lyrics fallback (if Nemotron fails) + flow backup
 // Llama-3.3-70B:     primary flow / production details (metadata, stems, guidance, notes)
-// Llama-4-Maverick:  flow backup (used if Llama-3.3-70B fails)
 
-const LLAMA_MAVERICK_MODEL   = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick",  temperature: 0.92 };
+const NEMOTRON_LYRICS_MODEL  = { id: "nvidia/llama-3.1-nemotron-70b-instruct",  name: "Nemotron-70B",     temperature: 0.90 };
+const MAVERICK_LYRICS_BACKUP = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick",  temperature: 0.92 };
 const LLAMA_70B_FLOW_MODEL   = { id: "meta/llama-3.3-70b-instruct",             name: "Llama-3.3-70B",    temperature: 0.80 };
 const MAVERICK_FLOW_BACKUP   = { id: "meta/llama-4-maverick-17b-128e-instruct", name: "Llama-4-Maverick", temperature: 0.78 };
 
@@ -2016,31 +2017,38 @@ router.post("/generate-song", async (req, res) => {
   try {
     const userPrompt = buildUserPrompt(promptParams, false);
 
-    // ── Round 1 — Llama-4-Maverick lyrics generation ──────────────────────
-    logger.info("Starting Llama-4-Maverick lyrics generation (round 1)");
-    const result1 = await callLyricsModel(LLAMA_MAVERICK_MODEL, userPrompt);
+    // ── Round 1 — Nemotron-70B primary lyrics generation ──────────────────
+    logger.info("Starting Nemotron-70B lyrics generation (round 1)");
+    const result1 = await callLyricsModel(NEMOTRON_LYRICS_MODEL, userPrompt);
 
     let finalLyricsDraft: SongDraft | null = null;
 
     if (result1.validation.valid) {
-      logger.info({ model: result1.model }, "Llama-4-Maverick passed structure validation (round 1)");
+      logger.info({ model: result1.model }, "Nemotron-70B passed structure validation (round 1)");
       finalLyricsDraft = result1.draft;
     } else {
-      logger.warn({ model: result1.model, failures: result1.validation.failures }, "Llama-4-Maverick failed structure validation — triggering strict retry");
+      logger.warn({ model: result1.model, failures: result1.validation.failures }, "Nemotron-70B failed structure validation — triggering strict retry");
 
-      // ── Round 2 — strict retry ─────────────────────────────────────────
+      // ── Round 2 — strict retry with Nemotron ──────────────────────────
       const strictPrompt = buildUserPrompt(promptParams, true);
-      const result2 = await callLyricsModel(LLAMA_MAVERICK_MODEL, strictPrompt);
+      const result2 = await callLyricsModel(NEMOTRON_LYRICS_MODEL, strictPrompt);
 
       if (result2.validation.valid) {
-        logger.info({ model: result2.model }, "Llama-4-Maverick passed structure validation (round 2)");
+        logger.info({ model: result2.model }, "Nemotron-70B passed structure validation (round 2)");
         finalLyricsDraft = result2.draft;
       } else {
-        logger.warn({ model: result2.model, failures: result2.validation.failures }, "Llama-4-Maverick failed both rounds — using best available draft");
-        // Use whichever round had fewer failures
-        finalLyricsDraft = (result1.draft && result2.draft)
-          ? (result2.validation.failures.length <= result1.validation.failures.length ? result2.draft : result1.draft)
-          : (result1.draft ?? result2.draft);
+        logger.warn({ model: result2.model, failures: result2.validation.failures }, "Nemotron-70B failed both rounds — falling back to Llama-4-Maverick");
+
+        // ── Round 3 — Maverick fallback ──────────────────────────────────
+        const result3 = await callLyricsModel(MAVERICK_LYRICS_BACKUP, strictPrompt);
+        if (result3.validation.valid) {
+          logger.info({ model: result3.model }, "Maverick fallback passed structure validation");
+          finalLyricsDraft = result3.draft;
+        } else {
+          logger.warn({ model: result3.model, failures: result3.validation.failures }, "All models failed validation — using best available draft");
+          const allResults = [result1, result2, result3].filter(r => r.draft !== null);
+          finalLyricsDraft = allResults.sort((a, b) => a.validation.failures.length - b.validation.failures.length)[0]?.draft ?? null;
+        }
       }
     }
 
@@ -2301,7 +2309,7 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     logger.info({ genre, mood, languageFlavor }, "Starting Make It Harder rewrite");
 
     const response = await ai.chat.completions.create({
-      model: LLAMA_MAVERICK_MODEL.id,
+      model: NEMOTRON_LYRICS_MODEL.id,
       messages: [
         { role: "system", content: HARDER_REWRITER_SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
@@ -2573,7 +2581,7 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     logger.info({ genre, mood, languageFlavor }, "Starting Make It Catchier rewrite");
 
     const response = await ai.chat.completions.create({
-      model: LLAMA_MAVERICK_MODEL.id,
+      model: NEMOTRON_LYRICS_MODEL.id,
       messages: [
         { role: "system", content: CATCHIER_REWRITER_SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
@@ -2817,7 +2825,7 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     logger.info({ genre, mood, languageFlavor }, "Starting lyrics humanization (rewrite)");
 
     const response = await ai.chat.completions.create({
-      model: LLAMA_MAVERICK_MODEL.id,
+      model: NEMOTRON_LYRICS_MODEL.id,
       messages: [
         { role: "system", content: REWRITER_SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
