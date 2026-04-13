@@ -72222,65 +72222,101 @@ function buildElevenLabsCompositionPlan(p) {
   const style = styleParts.join(", ");
   const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
   const sections = [];
+  const makeSection = (type, section_name, lines, duration_ms, positiveLocal, negativeLocal = ["monotone", "off-key", "low quality"]) => ({
+    type,
+    section_name,
+    duration_ms,
+    positive_local_styles: positiveLocal,
+    negative_local_styles: negativeLocal,
+    lines
+  });
   if (secs.intro && secs.intro.length > 0) {
-    sections.push({
-      type: "intro",
-      duration_ms: estimateMs(secs.intro, 3e3, 8e3),
-      lyrics: secs.intro.join("\n")
-    });
+    sections.push(makeSection(
+      "intro",
+      "Intro",
+      secs.intro,
+      estimateMs(secs.intro, 3e3, 8e3),
+      ["atmospheric", "building", "melodic opening"]
+    ));
   } else {
-    sections.push({ type: "intro", duration_ms: 8e3, description: "Instrumental intro, no vocals" });
+    sections.push(makeSection(
+      "intro",
+      "Intro",
+      [`Instrumental intro, ${genre} style`],
+      8e3,
+      ["atmospheric", "instrumental", "building energy"]
+    ));
   }
   if (secs.verse1 && secs.verse1.length > 0) {
-    sections.push({
-      type: "verse",
-      duration_ms: estimateMs(secs.verse1),
-      lyrics: secs.verse1.join("\n")
-    });
+    sections.push(makeSection(
+      "verse",
+      "Verse 1",
+      secs.verse1,
+      estimateMs(secs.verse1),
+      ["storytelling", "lyrical", "expressive"]
+    ));
   }
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type: "chorus",
-      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
-      lyrics: secs.hook.join("\n")
-    });
+    sections.push(makeSection(
+      "chorus",
+      "Chorus",
+      secs.hook,
+      estimateMs(secs.hook, 3e3, 15e3),
+      ["anthemic", "hook", "memorable", "energetic"]
+    ));
   }
   if (secs.verse2 && secs.verse2.length > 0) {
-    sections.push({
-      type: "verse",
-      duration_ms: estimateMs(secs.verse2),
-      lyrics: secs.verse2.join("\n")
-    });
+    sections.push(makeSection(
+      "verse",
+      "Verse 2",
+      secs.verse2,
+      estimateMs(secs.verse2),
+      ["storytelling", "lyrical", "expressive"]
+    ));
   }
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type: "chorus",
-      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
-      lyrics: secs.hook.join("\n")
-    });
+    sections.push(makeSection(
+      "chorus",
+      "Chorus 2",
+      secs.hook,
+      estimateMs(secs.hook, 3e3, 15e3),
+      ["anthemic", "hook", "memorable", "energetic"]
+    ));
   }
   if (secs.bridge && secs.bridge.length > 0) {
-    sections.push({
-      type: "bridge",
-      duration_ms: estimateMs(secs.bridge, 4e3, 15e3),
-      lyrics: secs.bridge.join("\n")
-    });
+    sections.push(makeSection(
+      "bridge",
+      "Bridge",
+      secs.bridge,
+      estimateMs(secs.bridge, 4e3, 15e3),
+      ["emotional", "transitional", "intimate"]
+    ));
   }
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type: "chorus",
-      duration_ms: estimateMs(secs.hook, 3e3, 15e3),
-      lyrics: secs.hook.join("\n")
-    });
+    sections.push(makeSection(
+      "chorus",
+      "Final Chorus",
+      secs.hook,
+      estimateMs(secs.hook, 3e3, 15e3),
+      ["anthemic", "climactic", "powerful", "energetic"]
+    ));
   }
   if (secs.outro && secs.outro.length > 0) {
-    sections.push({
-      type: "outro",
-      duration_ms: estimateMs(secs.outro, 3e3, 1e4),
-      lyrics: secs.outro.join("\n")
-    });
+    sections.push(makeSection(
+      "outro",
+      "Outro",
+      secs.outro,
+      estimateMs(secs.outro, 3e3, 1e4),
+      ["fading", "closing", "reflective"]
+    ));
   } else {
-    sections.push({ type: "outro", duration_ms: 1e4, description: "Fade out, instrumental" });
+    sections.push(makeSection(
+      "outro",
+      "Outro",
+      ["Outro fade out"],
+      1e4,
+      ["fading", "instrumental", "closing"]
+    ));
   }
   const positiveGlobalStyles = [
     genre,
@@ -72291,7 +72327,18 @@ function buildElevenLabsCompositionPlan(p) {
     "culturally authentic"
   ];
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
-  return { style, positive_global_styles: positiveGlobalStyles, sections };
+  const negativeGlobalStyles = [
+    "lo-fi",
+    "low quality",
+    "distorted",
+    "noise"
+  ];
+  return {
+    style,
+    positive_global_styles: positiveGlobalStyles,
+    negative_global_styles: negativeGlobalStyles,
+    sections
+  };
 }
 function resolveDurationMs(songLength) {
   const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;

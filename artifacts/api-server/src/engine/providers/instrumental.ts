@@ -687,14 +687,18 @@ export function buildElevenLabsPrompt(p: InstrumentalPayload): BuiltPrompt {
 
 interface ElevenLabsSection {
   type: string;
+  section_name: string;
   duration_ms: number;
-  lyrics?: string;
+  positive_local_styles: string[];
+  negative_local_styles: string[];
+  lines: string[];
   description?: string;
 }
 
 interface ElevenLabsCompositionPlan {
   style: string;
   positive_global_styles: string[];
+  negative_global_styles: string[];
   sections: ElevenLabsSection[];
 }
 
@@ -724,80 +728,115 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
 
   const sections: ElevenLabsSection[] = [];
 
+  // Helper to build a section with all required ElevenLabs fields
+  const makeSection = (
+    type: string,
+    section_name: string,
+    lines: string[],
+    duration_ms: number,
+    positiveLocal: string[],
+    negativeLocal: string[] = ["monotone", "off-key", "low quality"],
+  ): ElevenLabsSection => ({
+    type,
+    section_name,
+    duration_ms,
+    positive_local_styles: positiveLocal,
+    negative_local_styles: negativeLocal,
+    lines,
+  });
+
   // ── Intro ──────────────────────────────────────────────────────────────────
   if (secs.intro && secs.intro.length > 0) {
-    sections.push({
-      type:        "intro",
-      duration_ms: estimateMs(secs.intro, 3000, 8000),
-      lyrics:      secs.intro.join("\n"),
-    });
+    sections.push(makeSection(
+      "intro", "Intro",
+      secs.intro,
+      estimateMs(secs.intro, 3000, 8000),
+      ["atmospheric", "building", "melodic opening"],
+    ));
   } else {
-    sections.push({ type: "intro", duration_ms: 8000, description: "Instrumental intro, no vocals" });
+    sections.push(makeSection(
+      "intro", "Intro",
+      [`Instrumental intro, ${genre} style`],
+      8000,
+      ["atmospheric", "instrumental", "building energy"],
+    ));
   }
 
   // ── Verse 1 ────────────────────────────────────────────────────────────────
   if (secs.verse1 && secs.verse1.length > 0) {
-    sections.push({
-      type:        "verse",
-      duration_ms: estimateMs(secs.verse1),
-      lyrics:      secs.verse1.join("\n"),
-    });
+    sections.push(makeSection(
+      "verse", "Verse 1",
+      secs.verse1,
+      estimateMs(secs.verse1),
+      ["storytelling", "lyrical", "expressive"],
+    ));
   }
 
   // ── Chorus (hook) ──────────────────────────────────────────────────────────
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type:        "chorus",
-      duration_ms: estimateMs(secs.hook, 3000, 15000),
-      lyrics:      secs.hook.join("\n"),
-    });
+    sections.push(makeSection(
+      "chorus", "Chorus",
+      secs.hook,
+      estimateMs(secs.hook, 3000, 15000),
+      ["anthemic", "hook", "memorable", "energetic"],
+    ));
   }
 
   // ── Verse 2 ────────────────────────────────────────────────────────────────
   if (secs.verse2 && secs.verse2.length > 0) {
-    sections.push({
-      type:        "verse",
-      duration_ms: estimateMs(secs.verse2),
-      lyrics:      secs.verse2.join("\n"),
-    });
+    sections.push(makeSection(
+      "verse", "Verse 2",
+      secs.verse2,
+      estimateMs(secs.verse2),
+      ["storytelling", "lyrical", "expressive"],
+    ));
   }
 
   // ── Chorus repeat ──────────────────────────────────────────────────────────
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type:        "chorus",
-      duration_ms: estimateMs(secs.hook, 3000, 15000),
-      lyrics:      secs.hook.join("\n"),
-    });
+    sections.push(makeSection(
+      "chorus", "Chorus 2",
+      secs.hook,
+      estimateMs(secs.hook, 3000, 15000),
+      ["anthemic", "hook", "memorable", "energetic"],
+    ));
   }
 
   // ── Bridge ─────────────────────────────────────────────────────────────────
   if (secs.bridge && secs.bridge.length > 0) {
-    sections.push({
-      type:        "bridge",
-      duration_ms: estimateMs(secs.bridge, 4000, 15000),
-      lyrics:      secs.bridge.join("\n"),
-    });
+    sections.push(makeSection(
+      "bridge", "Bridge",
+      secs.bridge,
+      estimateMs(secs.bridge, 4000, 15000),
+      ["emotional", "transitional", "intimate"],
+    ));
   }
 
   // ── Final chorus ───────────────────────────────────────────────────────────
   if (secs.hook && secs.hook.length > 0) {
-    sections.push({
-      type:        "chorus",
-      duration_ms: estimateMs(secs.hook, 3000, 15000),
-      lyrics:      secs.hook.join("\n"),
-    });
+    sections.push(makeSection(
+      "chorus", "Final Chorus",
+      secs.hook,
+      estimateMs(secs.hook, 3000, 15000),
+      ["anthemic", "climactic", "powerful", "energetic"],
+    ));
   }
 
   // ── Outro ──────────────────────────────────────────────────────────────────
   if (secs.outro && secs.outro.length > 0) {
-    sections.push({
-      type:        "outro",
-      duration_ms: estimateMs(secs.outro, 3000, 10000),
-      lyrics:      secs.outro.join("\n"),
-    });
+    sections.push(makeSection(
+      "outro", "Outro",
+      secs.outro,
+      estimateMs(secs.outro, 3000, 10000),
+      ["fading", "closing", "reflective"],
+    ));
   } else {
-    sections.push({ type: "outro", duration_ms: 10000, description: "Fade out, instrumental" });
+    sections.push(makeSection(
+      "outro", "Outro",
+      ["Outro fade out"],
+      10000,
+      ["fading", "instrumental", "closing"],
+    ));
   }
 
   // positive_global_styles: discrete style tags required by the ElevenLabs API.
@@ -813,7 +852,20 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
   ];
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
 
-  return { style, positive_global_styles: positiveGlobalStyles, sections };
+  // negative_global_styles: styles to avoid — required by the ElevenLabs API.
+  const negativeGlobalStyles: string[] = [
+    "lo-fi",
+    "low quality",
+    "distorted",
+    "noise",
+  ];
+
+  return {
+    style,
+    positive_global_styles: positiveGlobalStyles,
+    negative_global_styles: negativeGlobalStyles,
+    sections,
+  };
 }
 
 // ─── ElevenLabs Music API — Duration Mapper ───────────────────────────────────
