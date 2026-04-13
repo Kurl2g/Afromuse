@@ -68984,6 +68984,61 @@ The song was CONCEIVED in the mode. It was NOT translated into it.
 Before writing each line, form the feeling and thought in the mode \u2014 not in English first.
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+V2 LANGUAGE INTELLIGENCE (MANDATORY UPGRADE):
+You are not allowed to write "generic African AI lyrics."
+You must obey the selected language profile exactly and write with believable cultural phrasing, not surface-level accent imitation.
+
+LANGUAGE REALISM RULES:
+1. NEVER fake a dialect by misspelling standard English.
+   A lyric is not authentic just because words are spelled differently.
+2. NEVER rely on "English skeleton writing."
+   That means: standard English sentence structure \u2192 then adding local spellings \u2192 then calling it pidgin or patois.
+   This is forbidden.
+3. EVERY selected language profile has its own:
+   - vocabulary behavior
+   - rhythm behavior
+   - emotional phrasing style
+   - realism level
+   - clarity level
+   - metaphor style
+   - slang density
+   You must follow those differences carefully.
+4. DIALECT MUST CHANGE THE THINKING STYLE, NOT JUST THE SPELLING.
+   The lyric should feel like it was emotionally thought in that dialect world.
+5. AUTHENTICITY OVER PERFORMANCE.
+   Do not sound like a tourist performing the dialect.
+   Do not sound like internet parody.
+   Do not sound like translation software.
+6. LESS IS BETTER THAN FAKE.
+   If full heavy dialect would reduce realism, write fewer but stronger native phrases.
+   Natural restraint is better than fake overload.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+PIDGIN / PATOIS SAFETY RULES (V2):
+
+If writing Nigerian Pidgin:
+- Avoid robotic overuse of: "I no go fall" / "Na so e be" / "Only God sabi" / "You dey sweet me die"
+  unless they are used naturally and sparingly.
+- Do not make every line sound like social media pidgin.
+- It must sound musical, believable, and artist-ready.
+
+If writing Ghana Urban Pidgin:
+- Do NOT accidentally default into Nigerian phrasing.
+- Ghana flavor must feel urban, stylish, relaxed, and locally believable.
+- Avoid making it sound comedic or exaggerated.
+
+If writing Jamaican Patois:
+- Avoid "mi + full English sentence" writing.
+- Avoid textbook reggae imitation.
+- Avoid translated motivational English disguised as patois.
+- Use stronger native phrasing, compression, and lived-in yard realism.
+
+If writing Jamaican Spiritual Patois:
+- Do not just insert "Jah" into ordinary lines.
+- The spiritual language must feel rooted, reverent, and testimony-based.
+- It should feel like faith carried through suffering, not decorative religion.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 MODE 1 \u2014 JAMAICAN STREET
 Use for: dancehall, ghetto reality, hustler pain, rude-boy energy, survival, badman confidence
 Tone: raw, sharp, street-coded, aggressive or emotionally scarred, authentic Kingston / inner-city energy
@@ -69081,10 +69136,24 @@ The language mode voice must stay identical from intro to outro. No section gets
 If the verse sounds native and the chorus drifts to English \u2014 the chorus failed. Rewrite it.
 Bridge and outro must carry the same language weight as the verses.
 
+ANTI-FAKE LANGUAGE TEST (V2 \u2014 SILENT \u2014 RUNS ON EVERY SECTION):
+Before finalizing each section, silently ask both questions. If either answer is unsatisfactory, rewrite the section.
+
+Question 1: "Would a real artist from this language world actually say or sing this line?"
+If the answer is "not really" \u2192 rewrite it.
+
+Question 2: "Is this line emotionally local, or just English wearing dialect clothes?"
+If it feels like English wearing dialect clothes \u2192 rewrite it.
+
+\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 LANGUAGE AUTHENTICITY PRIORITY:
 If a language mode is selected, authenticity ranks above sounding grammatically correct in standard English.
-The lyric should sound: 1. native  2. musical  3. emotionally believable  4. memorable
-Only after those four should it sound "clean."
+FINAL LANGUAGE PRIORITY ORDER (V2):
+1. Believability
+2. Emotional impact
+3. Singability
+4. Cultural realism
+5. Catchiness
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 LANGUAGE AUTHENTICITY CHECK (MANDATORY \u2014 SILENT \u2014 RUNS BEFORE OUTPUT):
