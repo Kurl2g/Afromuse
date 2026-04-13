@@ -1502,6 +1502,7 @@ function buildUserPrompt(
     ...getAdlibGeneratorBlock(),
     ...getMelodyFriendlyBlock(),
     ...getArtistInspirationBlock(params.artistInspiration),
+    ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced"),
   ];
 
   return lines.join("\n");

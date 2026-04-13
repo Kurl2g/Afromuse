@@ -69418,7 +69418,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
     ...getMelodyFriendlyBlock(),
-    ...getArtistInspirationBlock(params.artistInspiration)
+    ...getArtistInspirationBlock(params.artistInspiration),
+    ...getLyricalDepthBlock(params.lyricalDepth ?? "Balanced")
   ];
   return lines.join("\n");
 }
@@ -70647,6 +70648,45 @@ function getArtistInspirationBlock(artistInspiration) {
     `Use the emotional and songwriting energy inspired by: ${artistInspiration}.`,
     "Do NOT copy any artist directly.",
     "Only borrow performance feel, emotional structure, and writing energy."
+  ];
+}
+function getLyricalDepthBlock(lyricalDepth = "Balanced") {
+  const depth = lyricalDepth.toLowerCase();
+  if (depth.includes("simple")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u270D\uFE0F LYRICAL DEPTH MODE: SIMPLE & DIRECT",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Keep the writing emotionally direct and easy to understand.",
+      "Prioritize clarity, repetition, and memorable phrasing over layered complexity.",
+      "",
+      "Write like a real artist trying to connect fast \u2014 not trying to impress with too many ideas."
+    ];
+  }
+  if (depth.includes("deep")) {
+    return [
+      "",
+      "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+      "  \u270D\uFE0F LYRICAL DEPTH MODE: DEEPER EMOTIONAL WRITING",
+      "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+      "",
+      "Allow deeper emotional nuance, stronger reflection, and more layered meaning.",
+      "Still keep it singable and natural.",
+      "",
+      "Do NOT become abstract, fake-poetic, or over-written.",
+      "Depth must still feel performable and human."
+    ];
+  }
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u270D\uFE0F LYRICAL DEPTH MODE: BALANCED",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Balance emotional clarity with lyrical richness.",
+    "Keep the writing meaningful, singable, and accessible."
   ];
 }
 
