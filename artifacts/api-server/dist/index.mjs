@@ -69415,7 +69415,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...languageFlavorInstruction,
     ...getCommercialModeBlock(params.commercialMode),
     ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
-    ...getVerseVariationBlock()
+    ...getVerseVariationBlock(),
+    ...getAdlibGeneratorBlock()
   ];
   return lines.join("\n");
 }
@@ -69829,6 +69830,7 @@ ${lines.join("\n")}`;
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
+    ...getAdlibGeneratorBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -70079,6 +70081,7 @@ ${lines.join("\n")}`;
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
+    ...getAdlibGeneratorBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -70302,6 +70305,7 @@ ${lines.join("\n")}`;
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
+    ...getAdlibGeneratorBlock(),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
@@ -70478,6 +70482,38 @@ function getVerseVariationBlock() {
     "",
     "Every verse must earn its place.",
     "If a section adds nothing new, rewrite it."
+  ];
+}
+function getAdlibGeneratorBlock() {
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F3A4} ADLIB GENERATOR MODE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Where appropriate, lightly include natural adlib moments.",
+    "Adlibs must feel artist-real, not excessive or cartoonish.",
+    "",
+    "ADLIB STYLE RULES:",
+    "  - keep them short",
+    "  - place them where emotion or rhythm naturally opens space",
+    "  - use them more in hooks, intros, outros, and transitions",
+    "  - do NOT overload every line",
+    "",
+    "GOOD ADLIB TYPES:",
+    "  - emotional echoes",
+    "  - quiet emphasis",
+    "  - melodic call-backs",
+    "  - reaction sounds",
+    "  - spiritual exclamations (if theme fits)",
+    "  - street emphasis (if theme fits)",
+    "",
+    "BAD ADLIB BEHAVIOR:",
+    "  - too many after every line",
+    "  - random generic 'yeah yeah' spam",
+    "  - adlibs that break emotional tone",
+    "",
+    "Adlibs should support performance feel \u2014 not distract from the writing."
   ];
 }
 
