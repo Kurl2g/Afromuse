@@ -72210,6 +72210,20 @@ function buildElevenLabsCompositionPlan(p) {
   const mood = p.mood ?? "Uplifting";
   const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
   const key = p.key ?? "F# minor";
+  const energy = p.energy ?? "Mid";
+  const bounceStyleRaw = (p.bounceStyle ?? "").trim();
+  const melodyDensRaw = (p.melodyDensity ?? "").trim();
+  const drumCharRaw = (p.drumCharacter ?? "").trim();
+  const hookLiftRaw = (p.hookLift ?? "").trim();
+  const bounceDesc = bounceStyleRaw ? resolveBounceStyle(bounceStyleRaw) : null;
+  const melodyDesc = melodyDensRaw ? resolveMelodyDensityLayer(melodyDensRaw) : null;
+  const drumCharDesc = drumCharRaw ? resolveDrumCharacterLayer(drumCharRaw) : null;
+  const hookLiftDesc = hookLiftRaw ? resolveHookLiftLayer(hookLiftRaw) : null;
+  const moodProfile = getMoodProfile(mood);
+  const energyDesc = resolveEnergyDescriptor(energy, mood);
+  const percLine = resolvePercussionLine(p.drumDensity ?? "Mid", p.bassWeight ?? "Balanced", genre, energy);
+  const mixDesc = p.mixFeel ? resolveMixFeel(p.mixFeel) : null;
+  const soundLane = p.soundReference ? interpretSoundReference(p.soundReference) : null;
   const GENRE_INSTRUMENTS = {
     Afrobeats: "talking drum, shekere, electric guitar, bass guitar, Fender Rhodes, percussion",
     Afropop: "acoustic guitar, synth pads, bass guitar, hi-hats, melodic piano, light percussion",
@@ -72223,16 +72237,20 @@ function buildElevenLabsCompositionPlan(p) {
   };
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
   const styleParts = [
-    `${genre} full song with instrumentals and vocals`,
+    `${genre} full song with live instrumentals and vocals`,
     `instruments: ${instruments}`,
-    `${mood} mood`,
-    `${bpm} BPM`,
-    `key of ${key}`,
-    p.energy ? `${p.energy} energy` : null,
+    bounceDesc ? `groove: ${bounceDesc}` : null,
+    melodyDesc ? `melody: ${melodyDesc}` : null,
+    drumCharDesc ? `drums: ${drumCharDesc}` : null,
+    `${moodProfile.lane} mood \u2014 ${moodProfile.texture}`,
+    `${energyDesc}`,
+    `${bpm} BPM, key of ${key}`,
+    mixDesc ? `mix: ${mixDesc}` : null,
+    soundLane ? `direction: ${soundLane}` : null,
     p.soundReference ? `influenced by ${p.soundReference}` : null,
-    "full band mix, clear vocals over backing track"
-  ].filter(Boolean);
-  const style = styleParts.join(", ");
+    "full band mix, prominent instruments, clear vocals over backing track"
+  ];
+  const style = styleParts.filter(Boolean).join(", ");
   const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
   const sections = [];
   const makeSection = (type, section_name, lines, duration_ms, positiveLocal, negativeLocal = ["monotone", "off-key", "low quality"]) => ({
@@ -72270,12 +72288,14 @@ function buildElevenLabsCompositionPlan(p) {
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
+    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent"];
+    if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
     sections.push(makeSection(
       "chorus",
       "Chorus",
       secs.hook,
       estimateMs(secs.hook, 3e3, 15e3),
-      ["anthemic", "hook", "memorable", "energetic"]
+      chorusStyles
     ));
   }
   if (secs.verse2 && secs.verse2.length > 0) {
@@ -72284,7 +72304,7 @@ function buildElevenLabsCompositionPlan(p) {
       "Verse 2",
       secs.verse2,
       estimateMs(secs.verse2),
-      ["storytelling", "lyrical", "expressive"]
+      ["storytelling", "lyrical", "expressive", "backing band playing"]
     ));
   }
   if (secs.hook && secs.hook.length > 0) {
@@ -72337,11 +72357,15 @@ function buildElevenLabsCompositionPlan(p) {
     "Afrocentric",
     p.energy ? `${p.energy} energy` : "Medium energy",
     "full band production",
-    "backing track with instruments",
-    "vocals over instrumentals",
-    "live instruments",
+    "prominent instrumental backing track",
+    "vocals mixed with instruments",
+    "live instruments audible throughout",
     "culturally authentic"
   ];
+  if (bounceDesc) positiveGlobalStyles.push(bounceDesc);
+  if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
+  if (melodyDesc) positiveGlobalStyles.push(melodyDesc);
+  if (hookLiftDesc) positiveGlobalStyles.push(hookLiftDesc);
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
   const negativeGlobalStyles = [
     "acapella",

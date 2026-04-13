@@ -708,33 +708,56 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
   const mood   = p.mood  ?? "Uplifting";
   const bpm    = p.bpm   ?? (GENRE_DEFAULTS[genre] ?? 96);
   const key    = p.key   ?? "F# minor";
+  const energy = p.energy ?? "Mid";
 
-  // Genre-specific instrument palette for the composition plan style
+  // ── Beat DNA field extraction (same as instrumental prompt builder) ────────
+  const bounceStyleRaw  = (p.bounceStyle   ?? "").trim();
+  const melodyDensRaw   = (p.melodyDensity ?? "").trim();
+  const drumCharRaw     = (p.drumCharacter ?? "").trim();
+  const hookLiftRaw     = (p.hookLift      ?? "").trim();
+
+  const bounceDesc   = bounceStyleRaw  ? resolveBounceStyle(bounceStyleRaw)        : null;
+  const melodyDesc   = melodyDensRaw   ? resolveMelodyDensityLayer(melodyDensRaw)  : null;
+  const drumCharDesc = drumCharRaw     ? resolveDrumCharacterLayer(drumCharRaw)    : null;
+  const hookLiftDesc = hookLiftRaw     ? resolveHookLiftLayer(hookLiftRaw)         : null;
+
+  // ── Production context ────────────────────────────────────────────────────
+  const moodProfile  = getMoodProfile(mood);
+  const energyDesc   = resolveEnergyDescriptor(energy, mood);
+  const percLine     = resolvePercussionLine(p.drumDensity ?? "Mid", p.bassWeight ?? "Balanced", genre, energy);
+  const mixDesc      = p.mixFeel ? resolveMixFeel(p.mixFeel) : null;
+  const soundLane    = p.soundReference ? interpretSoundReference(p.soundReference) : null;
+
+  // Genre-specific instrument palette
   const GENRE_INSTRUMENTS: Record<string, string> = {
-    Afrobeats:      "talking drum, shekere, electric guitar, bass guitar, Fender Rhodes, percussion",
-    Afropop:        "acoustic guitar, synth pads, bass guitar, hi-hats, melodic piano, light percussion",
-    Amapiano:       "log drum, piano riff, bass, flute, deep sub-bass, Afro percussion, choir pad",
-    Dancehall:      "riddim beat, bass guitar, organ stabs, keyboard, skank guitar, digital percussion",
-    "R&B":          "smooth guitar, bass, piano, synth pads, hi-hats, subtle percussion",
-    "Afro-fusion":  "electric guitar, talking drum, bass, synth, Afro percussion, piano",
+    Afrobeats:       "talking drum, shekere, electric guitar, bass guitar, Fender Rhodes, percussion",
+    Afropop:         "acoustic guitar, synth pads, bass guitar, hi-hats, melodic piano, light percussion",
+    Amapiano:        "log drum, piano riff, bass, flute, deep sub-bass, Afro percussion, choir pad",
+    Dancehall:       "riddim beat, bass guitar, organ stabs, keyboard, skank guitar, digital percussion",
+    "R&B":           "smooth guitar, bass, piano, synth pads, hi-hats, subtle percussion",
+    "Afro-fusion":   "electric guitar, talking drum, bass, synth, Afro percussion, piano",
     "Street Anthem": "808 bass, hi-hats, snare, synth lead, guitar stabs, urban percussion",
-    Spiritual:      "choir pads, warm bass guitar, light drums, organ, acoustic guitar",
-    Gospel:         "piano, choir, bass, drums, organ, electric guitar, full band",
+    Spiritual:       "choir pads, warm bass guitar, light drums, organ, acoustic guitar",
+    Gospel:          "piano, choir, bass, drums, organ, electric guitar, full band",
   };
   const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
 
-  // Style: a full production brief — instruments, energy, mood, BPM and key
-  const styleParts = [
-    `${genre} full song with instrumentals and vocals`,
+  // ── Style: rich production brief combining genre, Beat DNA, mood, instruments ──
+  const styleParts: (string | null)[] = [
+    `${genre} full song with live instrumentals and vocals`,
     `instruments: ${instruments}`,
-    `${mood} mood`,
-    `${bpm} BPM`,
-    `key of ${key}`,
-    p.energy ? `${p.energy} energy` : null,
+    bounceDesc   ? `groove: ${bounceDesc}` : null,
+    melodyDesc   ? `melody: ${melodyDesc}` : null,
+    drumCharDesc ? `drums: ${drumCharDesc}` : null,
+    `${moodProfile.lane} mood — ${moodProfile.texture}`,
+    `${energyDesc}`,
+    `${bpm} BPM, key of ${key}`,
+    mixDesc      ? `mix: ${mixDesc}` : null,
+    soundLane    ? `direction: ${soundLane}` : null,
     p.soundReference ? `influenced by ${p.soundReference}` : null,
-    "full band mix, clear vocals over backing track",
-  ].filter(Boolean);
-  const style = styleParts.join(", ");
+    "full band mix, prominent instruments, clear vocals over backing track",
+  ];
+  const style = styleParts.filter(Boolean).join(", ");
 
   // Estimate section length from lyric line count (rough heuristic).
   // ElevenLabs adjusts within ±20% when respect_sections_durations is false.
@@ -789,11 +812,13 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
 
   // ── Chorus (hook) ──────────────────────────────────────────────────────────
   if (secs.hook && secs.hook.length > 0) {
+    const chorusStyles = ["anthemic", "hook", "memorable", "energetic", "instruments prominent"];
+    if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
     sections.push(makeSection(
       "chorus", "Chorus",
       secs.hook,
       estimateMs(secs.hook, 3000, 15000),
-      ["anthemic", "hook", "memorable", "energetic"],
+      chorusStyles,
     ));
   }
 
@@ -803,7 +828,7 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
       "verse", "Verse 2",
       secs.verse2,
       estimateMs(secs.verse2),
-      ["storytelling", "lyrical", "expressive"],
+      ["storytelling", "lyrical", "expressive", "backing band playing"],
     ));
   }
 
@@ -854,20 +879,22 @@ export function buildElevenLabsCompositionPlan(p: InstrumentalPayload): ElevenLa
     ));
   }
 
-  // positive_global_styles: discrete style tags required by the ElevenLabs API.
-  // These mirror the style string but as individual descriptors so the model
-  // can weight them independently.
+  // positive_global_styles: discrete style tags — Beat DNA + production descriptors
   const positiveGlobalStyles: string[] = [
     genre,
     mood,
     "Afrocentric",
     p.energy ? `${p.energy} energy` : "Medium energy",
     "full band production",
-    "backing track with instruments",
-    "vocals over instrumentals",
-    "live instruments",
+    "prominent instrumental backing track",
+    "vocals mixed with instruments",
+    "live instruments audible throughout",
     "culturally authentic",
   ];
+  if (bounceDesc)   positiveGlobalStyles.push(bounceDesc);
+  if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
+  if (melodyDesc)   positiveGlobalStyles.push(melodyDesc);
+  if (hookLiftDesc) positiveGlobalStyles.push(hookLiftDesc);
   if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
 
   // negative_global_styles: styles to avoid — required by the ElevenLabs API.
