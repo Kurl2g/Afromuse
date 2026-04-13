@@ -17,40 +17,25 @@
 
 import type { ProviderCategory } from "./types.js";
 
-// ─── ElevenLabs Instrumental Mode Resolution ──────────────────────────────────
-// Reads ELEVENLABS_PROVIDER_MODE (explicit override) and ELEVENLABS_MUSIC_ENABLED
+// ─── AI Music API Instrumental Mode Resolution ────────────────────────────────
+// Reads AI_MUSIC_API_PROVIDER_MODE (explicit override) and AI_MUSIC_API_ENABLED
 // (convenience toggle) to determine the instrumental engine mode at startup.
 // If neither is set, defaults to "mock" so existing behaviour is unchanged.
 
-function resolveElevenLabsInstrumentalMode(): EngineMode {
-  const explicit = (process.env.ELEVENLABS_PROVIDER_MODE ?? "").trim().toLowerCase();
+function resolveAiMusicInstrumentalMode(): EngineMode {
+  const explicit = (process.env.AI_MUSIC_API_PROVIDER_MODE ?? "").trim().toLowerCase();
   if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
     return explicit as EngineMode;
   }
-  const enabled = (process.env.ELEVENLABS_MUSIC_ENABLED ?? "").trim().toLowerCase();
+  const enabled = (process.env.AI_MUSIC_API_ENABLED ?? "").trim().toLowerCase();
   if (enabled === "true" || enabled === "1" || enabled === "yes") return "live";
+  // Also activate live mode whenever AI_MUSIC_API_KEY is present.
+  if (process.env.AI_MUSIC_API_KEY) return "live";
   return "mock";
 }
 
-const ELEVENLABS_INSTRUMENTAL_MODE: EngineMode = resolveElevenLabsInstrumentalMode();
-// Allow live calls in dev whenever ElevenLabs is explicitly enabled.
-const ELEVENLABS_ALLOW_LIVE_IN_DEV: boolean = ELEVENLABS_INSTRUMENTAL_MODE === "live";
-
-// ─── ElevenLabs Vocal Mode Resolution ────────────────────────────────────────
-// Resolves to "live" whenever ELEVENLABS_API_KEY is present in the environment.
-// The vocal provider self-gates on the key — if it is absent at call time, it
-// falls back gracefully to mock (text brief only) without throwing.
-
-function resolveElevenLabsVocalMode(): EngineMode {
-  const explicit = (process.env.ELEVENLABS_VOCAL_MODE ?? "").trim().toLowerCase();
-  if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
-    return explicit as EngineMode;
-  }
-  // Auto-enable live mode whenever the API key is present.
-  return process.env.ELEVENLABS_API_KEY ? "live" : "mock";
-}
-
-const ELEVENLABS_VOCAL_MODE: EngineMode = resolveElevenLabsVocalMode();
+const AI_MUSIC_INSTRUMENTAL_MODE: EngineMode = resolveAiMusicInstrumentalMode();
+const AI_MUSIC_ALLOW_LIVE_IN_DEV: boolean = AI_MUSIC_INSTRUMENTAL_MODE === "live";
 
 // ─── Engine Mode ──────────────────────────────────────────────────────────────
 
@@ -106,13 +91,13 @@ export interface EngineEnvironmentConfig {
 const DEVELOPMENT_CONFIG: EngineEnvironmentConfig = {
   environment: "development",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal:        { mode: ELEVENLABS_VOCAL_MODE,        fallbackToMock: true },
-    mastering:    { mode: "mock", fallbackToMock: true },
-    stems:        { mode: "mock", fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal:        { mode: "mock",                     fallbackToMock: true },
+    mastering:    { mode: "mock",                     fallbackToMock: true },
+    stems:        { mode: "mock",                     fallbackToMock: true },
   },
   safety: {
-    allowLiveInDev: ELEVENLABS_ALLOW_LIVE_IN_DEV || ELEVENLABS_VOCAL_MODE === "live",
+    allowLiveInDev: AI_MUSIC_ALLOW_LIVE_IN_DEV,
     strictMode: false,
   },
 };
@@ -120,10 +105,10 @@ const DEVELOPMENT_CONFIG: EngineEnvironmentConfig = {
 const STAGING_CONFIG: EngineEnvironmentConfig = {
   environment: "staging",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal:        { mode: ELEVENLABS_VOCAL_MODE,        fallbackToMock: true },
-    mastering:    { mode: "mock", fallbackToMock: true },
-    stems:        { mode: "mock", fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal:        { mode: "mock",                     fallbackToMock: true },
+    mastering:    { mode: "mock",                     fallbackToMock: true },
+    stems:        { mode: "mock",                     fallbackToMock: true },
   },
   safety: {
     allowLiveInDev: true,
@@ -134,10 +119,10 @@ const STAGING_CONFIG: EngineEnvironmentConfig = {
 const PRODUCTION_CONFIG: EngineEnvironmentConfig = {
   environment: "production",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal:        { mode: ELEVENLABS_VOCAL_MODE,        fallbackToMock: false },
-    mastering:    { mode: "mock", fallbackToMock: false },
-    stems:        { mode: "mock", fallbackToMock: false },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal:        { mode: "mock",                     fallbackToMock: false },
+    mastering:    { mode: "mock",                     fallbackToMock: false },
+    stems:        { mode: "mock",                     fallbackToMock: false },
   },
   safety: {
     allowLiveInDev: false,

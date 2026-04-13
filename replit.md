@@ -11,6 +11,16 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - The development PostgreSQL database is provisioned through Replit and the Drizzle schema has been pushed for local startup.
 - Vite is configured with `allowedHosts: true` and a strict configured port for predictable Replit preview behavior.
 
+## Audio Provider: AI Music API
+
+- **Instrumental generation** is handled by [AI Music API](https://aimusicapi.org) (`AI_MUSIC_API_KEY` env var required).
+- POST `/api/v2/generate` → receive `task_id` → poll GET `/api/v2/query?task_id=` every 6 s (up to 30 attempts).
+- **Custom Mode** (lyrics present): `prompt` (lyrics text) + `style` string + `title` + `gender`.
+- **Inspiration Mode** (no lyrics): `gpt_description_prompt` + `make_instrumental: true`.
+- Auth header: `Authorization: Bearer <AI_MUSIC_API_KEY>`.
+- **ElevenLabs has been fully removed** — no `xi-api-key`, no IVC (Instant Voice Clone), no ElevenLabs TTS. All vocal routes now return an AI text brief only; real vocal synthesis is pending a new provider.
+- Key files: `artifacts/api-server/src/engine/providers/instrumental.ts`, `providerCredentials.ts`, `engineConfig.ts`, `providers/registry.ts`, `providers/vocal.ts`.
+
 ## AfroMuse Engine
 
 - The lyrics generation system prompt has been replaced with the AFROMUSE_ENGINE, a clean structured prompt with a fixed song structure (INTRO → CHORUS → VERSE1 → CHORUS → VERSE2 → CHORUS → BRIDGE → OUTRO) and simple rules: catchy chorus, storytelling verses, natural phrasing, short rhythmic lines.

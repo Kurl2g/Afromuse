@@ -16,7 +16,6 @@ import OpenAI from "openai";
 import { logger } from "../../lib/logger.js";
 import type { NormalizedResponse, SessionBlueprintData } from "../types.js";
 import { adaptVocal, type RawVocalResponse } from "../adapters.js";
-import { storeAudioBuffer } from "../audioBufferStore.js";
 
 // ─── Payloads ─────────────────────────────────────────────────────────────────
 
@@ -351,140 +350,16 @@ async function fetchVoiceCloneBrief(p: VoiceClonePayload): Promise<Partial<Sessi
   return JSON.parse(cleaned.slice(start, end + 1)) as Partial<SessionBlueprintData>;
 }
 
-// ─── ElevenLabs Live Voice Clone Provider ─────────────────────────────────────
-// Step 1: Upload the user's audio sample → ElevenLabs Instant Voice Clone → voice_id
-// Step 2: Call ElevenLabs TTS with that voice_id + lyrics → audio buffer (MP3)
-// Step 3: Store the buffer in audioBufferStore → return a /api/voice-clone/audio/:jobId URL
-// Step 4: Delete the temporary cloned voice from ElevenLabs account (cleanup)
-//
-// Falls back gracefully to null audioUrl if ELEVENLABS_API_KEY is not set or any
-// step fails — the NVIDIA text brief is still returned in that case.
-
-async function deleteElevenLabsVoice(
-  apiKey: string,
-  voiceId: string,
-  jobId: string,
-): Promise<void> {
-  try {
-    const res = await fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
-      method: "DELETE",
-      headers: { "xi-api-key": apiKey },
-    });
-    if (res.ok) {
-      logger.info({ jobId, voiceId }, "ElevenLabs cloned voice deleted after synthesis");
-    } else {
-      logger.warn({ jobId, voiceId, status: res.status }, "ElevenLabs voice delete failed — may need manual cleanup");
-    }
-  } catch (err) {
-    logger.warn({ err, jobId, voiceId }, "ElevenLabs voice delete threw an error");
-  }
-}
+// ─── Voice Clone Provider — Mock Only ────────────────────────────────────────
+// ElevenLabs has been removed. Voice clone returns an AI text brief only
+// until a new vocal synthesis provider is connected.
 
 async function callLiveVoiceCloneProvider(
   jobId: string,
-  p: VoiceClonePayload,
+  _p: VoiceClonePayload,
 ): Promise<{ audioUrl: string | null; externalVoiceId: string | null }> {
-  const apiKey = process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY;
-  if (!apiKey) {
-    logger.warn({ jobId }, "ELEVENLABS_API_KEY not set — voice clone live path skipped, returning text brief only");
-    return { audioUrl: null, externalVoiceId: null };
-  }
-
-  if (!p.voiceSampleBase64) {
-    logger.warn({ jobId }, "No voiceSampleBase64 provided — live path skipped");
-    return { audioUrl: null, externalVoiceId: null };
-  }
-
-  // ── 1. Decode voice sample ───────────────────────────────────────────────────
-  // Accept both raw base64 and data URIs (data:audio/webm;base64,...)
-  const rawB64 = p.voiceSampleBase64.replace(/^data:[^;]+;base64,/, "");
-  const audioBuffer = Buffer.from(rawB64, "base64");
-
-  // Detect MIME type from data URI prefix (default webm — MediaRecorder output)
-  const mimeMatch = p.voiceSampleBase64.match(/^data:([^;]+);base64,/);
-  const mimeType = mimeMatch?.[1] ?? "audio/webm";
-  const ext = mimeType.split("/")[1]?.replace("mpeg", "mp3") ?? "webm";
-
-  logger.info({ jobId, mimeType, bytes: audioBuffer.byteLength }, "Voice sample decoded — uploading to ElevenLabs IVC");
-
-  // ── 2. Instant Voice Clone — create a temporary cloned voice ─────────────────
-  const voiceName = `afromuse-vc-${jobId.slice(0, 8)}`;
-  const formData = new FormData();
-  const blob = new Blob([audioBuffer], { type: mimeType });
-  formData.append("name", voiceName);
-  formData.append("files", blob, `voice-sample.${ext}`);
-  formData.append("description", `AfroMuse Voice Clone Demo — Job ${jobId}`);
-  formData.append("remove_background_noise", "false");
-
-  const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
-    method: "POST",
-    headers: { "xi-api-key": apiKey },
-    body: formData,
-  });
-
-  if (!cloneRes.ok) {
-    const errText = await cloneRes.text().catch(() => "(no body)");
-    throw new Error(`ElevenLabs IVC failed (${cloneRes.status}): ${errText.slice(0, 300)}`);
-  }
-
-  const cloneData = (await cloneRes.json()) as { voice_id: string };
-  const voiceId = cloneData.voice_id;
-  logger.info({ jobId, voiceId }, "ElevenLabs instant voice clone created");
-
-  // ── 3. Prepare TTS text ───────────────────────────────────────────────────────
-  // Use provided lyrics; if absent generate a contextual demo phrase.
-  const genre = p.genre ?? "Afrobeats";
-  const feel  = p.performanceFeel ?? "Smooth";
-
-  let ttsText = (p.lyrics ?? "").trim().slice(0, 2000);
-  if (!ttsText) {
-    ttsText =
-      `This is a personal vocal demo in ${genre} style. ` +
-      `A ${feel.toLowerCase()} delivery, with ${(p.voiceTexture ?? "Warm").toLowerCase()} texture and ` +
-      `${(p.dialectDepth ?? "Medium").toLowerCase()} dialect depth. ` +
-      `The rhythm flows naturally — rooted in culture, shaped by soul, and true to my own voice.`;
-  }
-
-  // ── 4. Text-to-Speech with the cloned voice ───────────────────────────────────
-  const model  = process.env.VOCAL_MODEL ?? "eleven_multilingual_v2";
-  const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-    method: "POST",
-    headers: {
-      "xi-api-key":   apiKey,
-      "Accept":       "audio/mpeg",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text: ttsText,
-      model_id: model,
-      voice_settings: {
-        stability:        0.45,
-        similarity_boost: 0.80,
-        style:            p.hitmakerMode ? 0.60 : 0.45,
-        use_speaker_boost: true,
-      },
-    }),
-  });
-
-  if (!ttsRes.ok) {
-    const errText = await ttsRes.text().catch(() => "(no body)");
-    // Always clean up the voice clone even on TTS failure
-    await deleteElevenLabsVoice(apiKey, voiceId, jobId);
-    throw new Error(`ElevenLabs TTS failed (${ttsRes.status}): ${errText.slice(0, 300)}`);
-  }
-
-  const mp3ArrayBuffer = await ttsRes.arrayBuffer();
-  const mp3Buffer = Buffer.from(mp3ArrayBuffer);
-  storeAudioBuffer(jobId, mp3Buffer, "audio/mpeg");
-  logger.info({ jobId, voiceId, bytes: mp3Buffer.byteLength }, "ElevenLabs TTS audio generated and stored in memory");
-
-  // ── 5. Cleanup — delete the temporary cloned voice ───────────────────────────
-  await deleteElevenLabsVoice(apiKey, voiceId, jobId);
-
-  return {
-    audioUrl: `/api/voice-clone/audio/${jobId}`,
-    externalVoiceId: voiceId,
-  };
+  logger.info({ jobId }, "Voice clone live provider not configured — returning AI brief only");
+  return { audioUrl: null, externalVoiceId: null };
 }
 
 export async function runVoiceCloneSing(jobId: string, p: VoiceClonePayload): Promise<NormalizedResponse> {
@@ -509,7 +384,7 @@ export async function runVoiceCloneSing(jobId: string, p: VoiceClonePayload): Pr
     },
   };
 
-  // Run NVIDIA AI brief and ElevenLabs voice synthesis in parallel.
+  // Run NVIDIA AI brief and voice synthesis stub in parallel.
   // Each step is independently fault-tolerant — failures are logged,
   // not thrown, so the other result is always returned.
   const [briefResult, liveResult] = await Promise.allSettled([
@@ -529,7 +404,7 @@ export async function runVoiceCloneSing(jobId: string, p: VoiceClonePayload): Pr
     audioUrl    = liveResult.value.audioUrl;
     externalJobId = liveResult.value.externalVoiceId;
   } else if (liveResult.status === "rejected") {
-    logger.error({ err: liveResult.reason, jobId }, "ElevenLabs voice clone synthesis failed — text brief returned without audio");
+    logger.error({ err: liveResult.reason, jobId }, "Voice synthesis stub failed — text brief returned without audio");
   }
 
   const blueprintData: Partial<SessionBlueprintData> = {

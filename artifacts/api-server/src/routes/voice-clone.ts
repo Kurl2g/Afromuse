@@ -164,15 +164,12 @@ router.get("/voice-clone/audio/:jobId", requireAuth, (req, res) => {
 // ─── GET /api/voice-clone/status ─────────────────────────────────────────────
 
 router.get("/voice-clone/status", requireAuth, (_req, res) => {
-  const hasApiKey = Boolean(process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY);
   res.json({
     available: true,
     status: "active",
-    mode: hasApiKey ? "live" : "ai-brief",
-    audioEnabled: hasApiKey,
-    message: hasApiKey
-      ? "Voice Clone Singing Engine is live — record your voice to generate a real vocal demo in your own voice."
-      : "Voice Clone Singing Engine is active (AI brief mode). Connect ELEVENLABS_API_KEY to enable real audio generation.",
+    mode: "ai-brief",
+    audioEnabled: false,
+    message: "Voice Clone Singing Engine is active (AI brief mode). A vocal synthesis provider will be added in a future update.",
   });
 });
 

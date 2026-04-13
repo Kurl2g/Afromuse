@@ -38,22 +38,22 @@ export interface ProviderConfig {
 const REGISTRY: Record<ProviderCategory, ProviderConfig> = {
   instrumental: {
     category: "instrumental",
-    name: "AfroMuse Instrumental Engine — ElevenLabs Music",
+    name: "AfroMuse Instrumental Engine — AI Music API",
     description:
-      "Generates real instrumental audio via ElevenLabs Music API, " +
-      "enriched with an AI session brief from the NVIDIA producer brain.",
+      "Generates real instrumental and full-song audio via AI Music API (aimusicapi.org), " +
+      "enriched with an AI session brief from the NVIDIA producer brain. " +
+      "Requires AI_MUSIC_API_KEY.",
     status: "live-ready",
     isLive: true,
   },
   vocal: {
     category: "vocal",
-    name: "AfroMuse Vocal Engine — ElevenLabs Voice Clone",
+    name: "AfroMuse Vocal Engine — AI Brief (mock audio)",
     description:
-      "Clones the user's voice via ElevenLabs Instant Voice Clone and generates " +
-      "a real audio vocal demo via ElevenLabs TTS. Enriched with an NVIDIA " +
-      "AI singing directive. Requires ELEVENLABS_API_KEY.",
-    status: "live-ready",
-    isLive: true,
+      "Generates a detailed AI vocal session brief via NVIDIA. " +
+      "ElevenLabs has been removed — real audio synthesis pending a new provider.",
+    status: "mock",
+    isLive: false,
   },
   mastering: {
     category: "mastering",

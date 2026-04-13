@@ -71075,43 +71075,36 @@ function adaptStems(raw) {
 }
 
 // src/engine/engineConfig.ts
-function resolveElevenLabsInstrumentalMode() {
-  const explicit = (process.env.ELEVENLABS_PROVIDER_MODE ?? "").trim().toLowerCase();
+function resolveAiMusicInstrumentalMode() {
+  const explicit = (process.env.AI_MUSIC_API_PROVIDER_MODE ?? "").trim().toLowerCase();
   if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
     return explicit;
   }
-  const enabled = (process.env.ELEVENLABS_MUSIC_ENABLED ?? "").trim().toLowerCase();
+  const enabled = (process.env.AI_MUSIC_API_ENABLED ?? "").trim().toLowerCase();
   if (enabled === "true" || enabled === "1" || enabled === "yes") return "live";
+  if (process.env.AI_MUSIC_API_KEY) return "live";
   return "mock";
 }
-var ELEVENLABS_INSTRUMENTAL_MODE = resolveElevenLabsInstrumentalMode();
-var ELEVENLABS_ALLOW_LIVE_IN_DEV = ELEVENLABS_INSTRUMENTAL_MODE === "live";
-function resolveElevenLabsVocalMode() {
-  const explicit = (process.env.ELEVENLABS_VOCAL_MODE ?? "").trim().toLowerCase();
-  if (explicit === "live" || explicit === "mock" || explicit === "disabled") {
-    return explicit;
-  }
-  return process.env.ELEVENLABS_API_KEY ? "live" : "mock";
-}
-var ELEVENLABS_VOCAL_MODE = resolveElevenLabsVocalMode();
+var AI_MUSIC_INSTRUMENTAL_MODE = resolveAiMusicInstrumentalMode();
+var AI_MUSIC_ALLOW_LIVE_IN_DEV = AI_MUSIC_INSTRUMENTAL_MODE === "live";
 var DEVELOPMENT_CONFIG = {
   environment: "development",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
   },
   safety: {
-    allowLiveInDev: ELEVENLABS_ALLOW_LIVE_IN_DEV || ELEVENLABS_VOCAL_MODE === "live",
+    allowLiveInDev: AI_MUSIC_ALLOW_LIVE_IN_DEV,
     strictMode: false
   }
 };
 var STAGING_CONFIG = {
   environment: "staging",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: true },
     mastering: { mode: "mock", fallbackToMock: true },
     stems: { mode: "mock", fallbackToMock: true }
   },
@@ -71123,8 +71116,8 @@ var STAGING_CONFIG = {
 var PRODUCTION_CONFIG = {
   environment: "production",
   providerModes: {
-    instrumental: { mode: ELEVENLABS_INSTRUMENTAL_MODE, fallbackToMock: true },
-    vocal: { mode: ELEVENLABS_VOCAL_MODE, fallbackToMock: false },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    vocal: { mode: "mock", fallbackToMock: false },
     mastering: { mode: "mock", fallbackToMock: false },
     stems: { mode: "mock", fallbackToMock: false }
   },
@@ -71229,17 +71222,17 @@ function getCapabilities(category) {
 var REGISTRY = {
   instrumental: {
     category: "instrumental",
-    name: "AfroMuse Instrumental Engine \u2014 ElevenLabs Music",
-    description: "Generates real instrumental audio via ElevenLabs Music API, enriched with an AI session brief from the NVIDIA producer brain.",
+    name: "AfroMuse Instrumental Engine \u2014 AI Music API",
+    description: "Generates real instrumental and full-song audio via AI Music API (aimusicapi.org), enriched with an AI session brief from the NVIDIA producer brain. Requires AI_MUSIC_API_KEY.",
     status: "live-ready",
     isLive: true
   },
   vocal: {
     category: "vocal",
-    name: "AfroMuse Vocal Engine \u2014 ElevenLabs Voice Clone",
-    description: "Clones the user's voice via ElevenLabs Instant Voice Clone and generates a real audio vocal demo via ElevenLabs TTS. Enriched with an NVIDIA AI singing directive. Requires ELEVENLABS_API_KEY.",
-    status: "live-ready",
-    isLive: true
+    name: "AfroMuse Vocal Engine \u2014 AI Brief (mock audio)",
+    description: "Generates a detailed AI vocal session brief via NVIDIA. ElevenLabs has been removed \u2014 real audio synthesis pending a new provider.",
+    status: "mock",
+    isLive: false
   },
   mastering: {
     category: "mastering",
@@ -71273,41 +71266,32 @@ function isProviderActive(category) {
 // src/engine/providerCredentials.ts
 var CREDENTIAL_SLOTS = {
   /**
-   * Instrumental / Beat Generation — ElevenLabs Music API
-   * Primary key: ELEVENLABS_API_KEY
+   * Instrumental / Beat Generation — AI Music API (aimusicapi.org)
+   * Primary key: AI_MUSIC_API_KEY
    * Fallback key: INSTRUMENTAL_API_KEY (legacy slot)
-   * Endpoint defaults to the ElevenLabs Music compose endpoint so that
-   * isCredentialReady() returns true as soon as ELEVENLABS_API_KEY is set.
+   * Endpoint: https://aimusicapi.org/api/v2/generate
+   * Polling:  https://aimusicapi.org/api/v2/query?task_id=<id>
    */
   instrumental: {
-    apiKey: process.env.ELEVENLABS_API_KEY ?? process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint: process.env.INSTRUMENTAL_API_ENDPOINT ?? process.env.AI_MUSIC_API_BASE ?? "https://api.elevenlabs.io/v1/music/compose",
-    model: process.env.INSTRUMENTAL_MODEL ?? null,
-    region: process.env.INSTRUMENTAL_REGION ?? null,
+    apiKey: process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint: "https://aimusicapi.org/api/v2/generate",
+    model: process.env.AI_MUSIC_MODEL ?? "chirp-v4-5",
+    region: null,
     timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 9e4)
   },
   /**
-   * Vocal Synthesis — ElevenLabs Instant Voice Clone + TTS
-   *
-   * Live path uses two ElevenLabs endpoints:
-   *   1. POST /v1/voices/add          — Instant Voice Clone (upload user's audio sample)
-   *   2. POST /v1/text-to-speech/{id} — TTS with the cloned voice
-   *   3. DELETE /v1/voices/{id}        — Cleanup after generation
-   *
-   * Required env var:
-   *   ELEVENLABS_API_KEY — same key used by the instrumental provider
+   * Vocal Synthesis — NVIDIA AI brief (mock audio placeholder)
+   * ElevenLabs has been removed. Voice clone route returns an AI text brief only
+   * until a new vocal synthesis provider is connected.
    *
    * Optional overrides:
-   *   VOCAL_API_KEY      — alternative key slot (falls back to ELEVENLABS_API_KEY)
-   *   VOCAL_API_ENDPOINT — override base URL (defaults to ElevenLabs API)
-   *   VOCAL_MODEL        — TTS model override (defaults to eleven_multilingual_v2)
-   *   VOCAL_TIMEOUT_MS   — request timeout in ms (defaults to 90 000)
+   *   VOCAL_TIMEOUT_MS — request timeout in ms (defaults to 90 000)
    */
   vocal: {
-    apiKey: process.env.VOCAL_API_KEY ?? process.env.ELEVENLABS_API_KEY ?? null,
-    endpoint: process.env.VOCAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1",
-    model: process.env.VOCAL_MODEL ?? "eleven_multilingual_v2",
-    region: process.env.VOCAL_REGION ?? null,
+    apiKey: null,
+    endpoint: null,
+    model: null,
+    region: null,
     timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 9e4)
   },
   /**
@@ -71333,9 +71317,6 @@ var CREDENTIAL_SLOTS = {
     timeoutMs: Number(process.env.STEMS_TIMEOUT_MS ?? 12e4)
   }
 };
-function getProviderCredentials(category) {
-  return CREDENTIAL_SLOTS[category];
-}
 function isCredentialReady(category) {
   const slot = CREDENTIAL_SLOTS[category];
   return slot.apiKey !== null && slot.endpoint !== null;
@@ -72143,7 +72124,7 @@ function resolveHookLiftLayer(hookLift) {
   if (lift === "explosive") return "Explosive chorus release \u2014 full arrangement detonation, massive drop payoff, and electric crowd momentum";
   return null;
 }
-function buildElevenLabsPrompt(p) {
+function buildInstrumentalDescription(p) {
   const genre = p.genre ?? "Afrobeats";
   const mood = p.mood ?? "Uplifting";
   const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
@@ -72190,6 +72171,20 @@ function buildElevenLabsPrompt(p) {
   const sentence6 = lyricsSignal ? resolveLyricsInfluence(lyricsSignal) : null;
   const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5, sentence6].filter((s) => Boolean(s?.trim()));
   const prompt = sentences.join(" ") + " Instrumental only, no vocals.";
+  const styleTagParts = [
+    genre,
+    `${bpm} BPM`,
+    key,
+    mood,
+    resolveEnergyDescriptor(energy, mood),
+    bounceDesc ? bounceDesc : null,
+    melodyDesc ? melodyDesc : null,
+    drumCharDesc ? drumCharDesc : null,
+    soundRef ? `inspired by ${soundRef}` : null,
+    mixFeel ? resolveMixFeel(mixFeel) : null,
+    p.productionStyle?.trim() || null
+  ].filter((s) => Boolean(s));
+  const styleString = styleTagParts.join(", ").slice(0, 950);
   const brief = [
     `Genre: ${genre} | BPM: ${bpm} | Key: ${key} | Energy: ${energy} | Mood: ${mood}`,
     soundRef ? `Sound ref: ${soundRef}` : null,
@@ -72202,335 +72197,134 @@ function buildElevenLabsPrompt(p) {
     hookLiftRaw ? `Hook lift: ${hookLiftRaw}` : null,
     lyricsSignal ? `Lyrics: ${lyricsSignal.summary}` : null
   ].filter(Boolean).join(" \xB7 ");
-  return { prompt, brief };
+  return { prompt, styleString, brief };
 }
-function sanitizeStyleOverride(raw) {
-  const METADATA_PATTERNS = [
-    /^─+$/,
-    // separator lines
-    /^={3,}$/,
-    // === separators
-    /^-{3,}$/,
-    // --- separators
-    /^(DNA Mode|Emotional Lens|Arrangement|Energy Curve)\s*:/i,
-    /^(PRODUCTION NOTES|DIVERSITY ENGINE|KEEPER LINE|CHORUS|VERSE|INTRO|OUTRO|BRIDGE|BREAK)\s*$/i,
-    /^\[\s*(CHORUS|VERSE\s*\d*|INTRO|OUTRO|BRIDGE|HOOK|BREAK|PRE-HOOK)\s*\]$/i,
-    /^(BPM|Key|Energy|Hook Strength|Lyrical Depth|Melody Direction|Chord \/ Vibe|Arrangement)\s*:/i,
-    /^Generated by /i,
-    /^Main\s*:/i,
-    /^Backup\s+\d+\s*:/i,
-    /^[A-Z][A-Z\s]+$/
-    // ALL-CAPS section headers like "PAIN AH MI GLORY" would be false positives — skip if length < 4
-  ];
-  const lines = raw.split("\n").map((l) => l.trim()).filter(Boolean);
-  const clean = lines.filter((line2) => {
-    if (/^[A-Z][A-Z\s\-]{3,}$/.test(line2) && line2.length > 4) return false;
-    return !METADATA_PATTERNS.some((re) => re.test(line2));
-  });
-  const joined = clean.join(", ").replace(/,\s*,/g, ",").trim();
-  return joined.length > 300 ? joined.slice(0, 297) + "..." : joined;
+function buildLyricsText(secs) {
+  const parts = [];
+  if (secs.intro?.length) parts.push("[Intro]\n" + secs.intro.join("\n"));
+  if (secs.verse1?.length) parts.push("[Verse 1]\n" + secs.verse1.join("\n"));
+  if (secs.hook?.length) parts.push("[Chorus]\n" + secs.hook.join("\n"));
+  if (secs.verse2?.length) parts.push("[Verse 2]\n" + secs.verse2.join("\n"));
+  if (secs.hook?.length) parts.push("[Chorus]\n" + secs.hook.join("\n"));
+  if (secs.bridge?.length) parts.push("[Bridge]\n" + secs.bridge.join("\n"));
+  if (secs.hook?.length) parts.push("[Outro Chorus]\n" + secs.hook.join("\n"));
+  if (secs.outro?.length) parts.push("[Outro]\n" + secs.outro.join("\n"));
+  return parts.join("\n\n").slice(0, 4800);
 }
-var GENRE_SONIC_TAGS = {
-  Afrobeats: ["Afrobeats", "Afropop groove", "talking drum pattern", "shekere rhythm", "Afro hi-hat roll", "Lagos sound", "clave-influenced percussion"],
-  Afropop: ["Afropop", "catchy melodic hook", "bright pop production", "light percussion groove", "radio-ready Afro sound"],
-  Amapiano: ["Amapiano", "log drum bass", "deep sub bass", "piano riff loop", "South African house groove", "Joburg sound", "flute melody"],
-  Dancehall: ["Dancehall", "Jamaican dancehall", "one drop riddim", "skank guitar offbeat", "digital riddim pattern", "bass-heavy dancehall beat", "Kingston sound", "reggae-influenced offbeat"],
-  "R&B": ["R&B", "smooth soul groove", "neo-soul production", "warm chord voicing", "silky smooth feel", "contemporary R&B"],
-  "Afro-fusion": ["Afro-fusion", "cross-genre Afro blend", "contemporary African sound", "multicultural groove", "global Afro influence"],
-  "Street Anthem": ["Street Anthem", "urban trap influence", "hard-hitting 808 bass", "aggressive snare", "gritty street sound"],
-  Spiritual: ["Spiritual", "devotional mood", "gospel-influenced harmony", "reverent atmosphere", "uplifting spiritual energy"],
-  Gospel: ["Gospel", "mass choir feel", "gospel piano runs", "praise and worship energy", "church organ", "call and response"]
-};
-function buildElevenLabsCompositionPlan(p) {
-  const rawSecs = p.lyricsSections ?? {};
-  const secs = {
-    ...rawSecs,
-    hook: rawSecs.hook && rawSecs.hook.length > 8 ? rawSecs.hook.slice(0, 8) : rawSecs.hook
-  };
-  const genre = p.genre ?? "Afrobeats";
-  const mood = p.mood ?? "Uplifting";
-  const bpm = p.bpm ?? (GENRE_DEFAULTS[genre] ?? 96);
-  const key = p.key ?? "F# minor";
-  const energy = p.energy ?? "Mid";
-  const bounceStyleRaw = (p.bounceStyle ?? "").trim();
-  const melodyDensRaw = (p.melodyDensity ?? "").trim();
-  const drumCharRaw = (p.drumCharacter ?? "").trim();
-  const hookLiftRaw = (p.hookLift ?? "").trim();
-  const bounceDesc = bounceStyleRaw ? resolveBounceStyle(bounceStyleRaw) : null;
-  const melodyDesc = melodyDensRaw ? resolveMelodyDensityLayer(melodyDensRaw) : null;
-  const drumCharDesc = drumCharRaw ? resolveDrumCharacterLayer(drumCharRaw) : null;
-  const hookLiftDesc = hookLiftRaw ? resolveHookLiftLayer(hookLiftRaw) : null;
-  const moodProfile = getMoodProfile(mood);
-  const energyDesc = resolveEnergyDescriptor(energy, mood);
-  const percLine = resolvePercussionLine(p.drumDensity ?? "Mid", p.bassWeight ?? "Balanced", genre, energy);
-  const mixDesc = p.mixFeel ? resolveMixFeel(p.mixFeel) : null;
-  const soundLane = p.soundReference ? interpretSoundReference(p.soundReference) : null;
-  const GENRE_INSTRUMENTS = {
-    Afrobeats: "talking drum, shekere, electric guitar, bass guitar, Fender Rhodes, percussion",
-    Afropop: "acoustic guitar, synth pads, bass guitar, hi-hats, melodic piano, light percussion",
-    Amapiano: "log drum, piano riff, bass, flute, deep sub-bass, Afro percussion, choir pad",
-    Dancehall: "riddim beat, bass guitar, organ stabs, keyboard, skank guitar, digital percussion",
-    "R&B": "smooth guitar, bass, piano, synth pads, hi-hats, subtle percussion",
-    "Afro-fusion": "electric guitar, talking drum, bass, synth, Afro percussion, piano",
-    "Street Anthem": "808 bass, hi-hats, snare, synth lead, guitar stabs, urban percussion",
-    Spiritual: "choir pads, warm bass guitar, light drums, organ, acoustic guitar",
-    Gospel: "piano, choir, bass, drums, organ, electric guitar, full band"
-  };
-  const instruments = GENRE_INSTRUMENTS[genre] ?? "guitar, bass, drums, keyboard, percussion";
-  const genreTags = GENRE_SONIC_TAGS[genre] ?? [genre];
-  const userStyleOverride = sanitizeStyleOverride(p.productionStyle ?? "");
-  const styleParts = [
-    // Genre tags lead — this is the single most important genre signal for ElevenLabs
-    genreTags.slice(0, 4).join(", "),
-    userStyleOverride ? userStyleOverride : null,
-    `${genre} full song with prominent live instrumentals and lead vocals`,
-    `live backing band audible throughout: ${instruments}`,
-    `instruments mixed at equal or higher level than vocals`,
-    bounceDesc ? `groove: ${bounceDesc}` : null,
-    melodyDesc ? `melody: ${melodyDesc}` : null,
-    drumCharDesc ? `drums: ${drumCharDesc}` : null,
-    `${moodProfile.lane} mood \u2014 ${moodProfile.texture}`,
-    `${energyDesc}`,
-    `${bpm} BPM, key of ${key}`,
-    mixDesc ? `mix: ${mixDesc}` : null,
-    soundLane ? `direction: ${soundLane}` : null,
-    p.soundReference ? `influenced by ${p.soundReference}` : null,
-    "full band studio production, rich instrumental bed, clear vocals sitting on top of a full mix \u2014 not a cappella"
-  ];
-  const style = styleParts.filter(Boolean).join(", ");
-  const estimateMs = (lines, msPerLine = 3500, minMs = 15e3) => Math.max(minMs, lines.length * msPerLine);
-  const sections = [];
-  const makeSection = (type, section_name, lines, duration_ms, positiveLocal, negativeLocal = ["monotone", "off-key", "low quality"]) => ({
-    type,
-    section_name,
-    duration_ms,
-    positive_local_styles: positiveLocal,
-    negative_local_styles: negativeLocal,
-    lines
-  });
-  const [genreTag1 = genre, genreTag2 = genre] = genreTags;
-  if (secs.intro && secs.intro.length > 0) {
-    sections.push(makeSection(
-      "intro",
-      "Intro",
-      secs.intro,
-      estimateMs(secs.intro, 3e3, 8e3),
-      [genreTag1, "atmospheric", "building", "melodic opening", "full band playing", "live instruments"]
-    ));
-  } else {
-    sections.push(makeSection(
-      "intro",
-      "Intro",
-      [`Instrumental intro, ${genre} style`],
-      8e3,
-      [genreTag1, "atmospheric", "instrumental", "building energy", "full band", "live instruments"]
-    ));
-  }
-  if (secs.verse1 && secs.verse1.length > 0) {
-    sections.push(makeSection(
-      "verse",
-      "Verse 1",
-      secs.verse1,
-      estimateMs(secs.verse1),
-      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "full backing band", "drums and bass prominent", "instruments audible"]
-    ));
-  }
-  if (secs.hook && secs.hook.length > 0) {
-    const chorusStyles = [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "instruments prominent", "full band lift", "rich instrumentation"];
-    if (hookLiftDesc) chorusStyles.push(hookLiftDesc);
-    sections.push(makeSection(
-      "chorus",
-      "Chorus",
-      secs.hook,
-      estimateMs(secs.hook, 3e3, 15e3),
-      chorusStyles
-    ));
-  }
-  if (secs.verse2 && secs.verse2.length > 0) {
-    sections.push(makeSection(
-      "verse",
-      "Verse 2",
-      secs.verse2,
-      estimateMs(secs.verse2),
-      [genreTag1, genreTag2, "storytelling", "lyrical", "expressive", "backing band playing", "live instruments", "groove driven"]
-    ));
-  }
-  if (secs.hook && secs.hook.length > 0) {
-    sections.push(makeSection(
-      "chorus",
-      "Chorus 2",
-      secs.hook,
-      estimateMs(secs.hook, 3e3, 15e3),
-      [genreTag1, genreTag2, "anthemic", "hook", "memorable", "energetic", "full band", "instruments prominent"]
-    ));
-  }
-  if (secs.bridge && secs.bridge.length > 0) {
-    sections.push(makeSection(
-      "bridge",
-      "Bridge",
-      secs.bridge,
-      estimateMs(secs.bridge, 4e3, 15e3),
-      [genreTag1, "emotional", "transitional", "intimate", "live instruments", "backing band"]
-    ));
-  }
-  if (secs.hook && secs.hook.length > 0) {
-    sections.push(makeSection(
-      "chorus",
-      "Final Chorus",
-      secs.hook,
-      estimateMs(secs.hook, 3e3, 15e3),
-      [genreTag1, genreTag2, "anthemic", "climactic", "powerful", "energetic", "full band at peak", "maximum instrumentation"]
-    ));
-  }
-  if (secs.outro && secs.outro.length > 0) {
-    sections.push(makeSection(
-      "outro",
-      "Outro",
-      secs.outro,
-      estimateMs(secs.outro, 3e3, 1e4),
-      ["fading", "closing", "reflective", "instruments fading out"]
-    ));
-  } else {
-    sections.push(makeSection(
-      "outro",
-      "Outro",
-      ["Outro fade out"],
-      1e4,
-      ["fading", "instrumental", "closing", "full band fade"]
-    ));
-  }
-  const positiveGlobalStyles = [
-    ...genreTags,
-    // All genre-specific fingerprint tags
-    mood,
-    "Afrocentric",
-    p.energy ? `${p.energy} energy` : "Medium energy",
-    "full band production",
-    "prominent instrumental backing track",
-    "rich live instrumentation",
-    "vocals mixed with instruments",
-    "live instruments audible throughout the entire track",
-    "drums and bass driving the groove",
-    "melodic instrumental hooks between vocal phrases",
-    "culturally authentic",
-    "studio quality mix"
-  ];
-  if (bounceDesc) positiveGlobalStyles.push(bounceDesc);
-  if (drumCharDesc) positiveGlobalStyles.push(drumCharDesc);
-  if (melodyDesc) positiveGlobalStyles.push(melodyDesc);
-  if (hookLiftDesc) positiveGlobalStyles.push(hookLiftDesc);
-  if (userStyleOverride) positiveGlobalStyles.push(userStyleOverride);
-  if (p.soundReference) positiveGlobalStyles.push(`inspired by ${p.soundReference}`);
-  const negativeGlobalStyles = [
-    "acapella",
-    "a cappella",
-    "vocals only",
-    "solo voice",
-    "dry vocals",
-    "no instruments",
-    "no backing track",
-    "lo-fi",
-    "low quality",
-    "distorted"
-  ];
-  return {
-    style,
-    positive_global_styles: positiveGlobalStyles,
-    negative_global_styles: negativeGlobalStyles,
-    sections
-  };
-}
-function resolveDurationMs(songLength) {
-  const overrideSecs = process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS ? parseInt(process.env.ELEVENLABS_DEFAULT_DURATION_SECONDS, 10) : NaN;
-  if (!isNaN(overrideSecs) && overrideSecs >= 3 && overrideSecs <= 600) {
-    return overrideSecs * 1e3;
-  }
-  if (songLength === "Short") return 135e3;
-  if (songLength === "Full") return 27e4;
-  return 2e5;
-}
+var AI_MUSIC_API_BASE = "https://aimusicapi.org";
 async function callLiveInstrumentalProvider(p, jobId) {
-  const creds = getProviderCredentials("instrumental");
-  if (!creds.apiKey) {
+  const apiKey = process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY;
+  if (!apiKey) {
     throw new Error(
-      "AI_MUSIC_API_KEY (or ELEVENLABS_API_KEY) is not configured. Set the secret to enable live instrumental generation."
+      "AI_MUSIC_API_KEY is not configured. Set the secret to enable live music generation."
     );
   }
-  const endpoint = creds.endpoint;
+  const model = p.aiMusicModel ?? process.env.AI_MUSIC_MODEL ?? "chirp-v4-5";
   const secs = p.lyricsSections ?? {};
-  const hasLyricsSections = (secs.hook?.length ?? 0) > 0 || (secs.verse1?.length ?? 0) > 0;
+  const hasLyrics = (secs.hook?.length ?? 0) > 0 || (secs.verse1?.length ?? 0) > 0;
+  const { prompt: descPrompt, styleString, brief } = buildInstrumentalDescription(p);
   let requestBody;
-  let logBrief;
-  if (hasLyricsSections) {
-    const plan = buildElevenLabsCompositionPlan(p);
+  if (hasLyrics) {
+    const lyricsText = buildLyricsText(secs);
     requestBody = {
-      composition_plan: plan,
-      respect_sections_durations: false,
-      output_format: "mp3_44100_128"
+      model,
+      prompt: lyricsText,
+      style: styleString,
+      title: p.title ?? `${p.genre ?? "Afrobeats"} \u2014 ${p.mood ?? "Uplifting"}`,
+      make_instrumental: false,
+      gender: p.gender ?? "male",
+      ...p.styleWeight != null && { style_weight: p.styleWeight },
+      ...p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint },
+      ...p.audioWeight != null && { audio_weight: p.audioWeight }
     };
-    logBrief = `Full song \u2014 ${plan.sections.length} sections \u2014 style: ${plan.style.slice(0, 80)}`;
     logger.info(
-      { jobId, sections: plan.sections.length, style: plan.style, endpoint },
-      "AI Music API \u2014 requesting full song with vocals (composition plan)"
+      { jobId, model, style: styleString.slice(0, 80), lyricsChars: lyricsText.length },
+      "AI Music API \u2014 Custom Mode (full song with lyrics)"
     );
   } else {
-    const { prompt, brief } = buildElevenLabsPrompt(p);
-    const durationMs = resolveDurationMs(p.songLength);
     requestBody = {
-      prompt,
-      duration_ms: durationMs,
-      force_instrumental: true
+      model,
+      gpt_description_prompt: descPrompt,
+      make_instrumental: true,
+      ...p.styleWeight != null && { style_weight: p.styleWeight },
+      ...p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint },
+      ...p.audioWeight != null && { audio_weight: p.audioWeight }
     };
-    logBrief = brief;
     logger.info(
-      { jobId, prompt, brief, durationMs, endpoint },
-      "AI Music API \u2014 requesting instrumental beat"
+      { jobId, model, prompt: descPrompt.slice(0, 100) },
+      "AI Music API \u2014 Inspiration Mode (instrumental)"
     );
   }
-  const isElevenLabs = endpoint.includes("elevenlabs.io");
-  const authHeaders = isElevenLabs ? { "xi-api-key": creds.apiKey } : { "Authorization": `Bearer ${creds.apiKey}` };
-  const response = await fetch(endpoint, {
+  const genRes = await fetch(`${AI_MUSIC_API_BASE}/api/v2/generate`, {
     method: "POST",
     headers: {
-      ...authHeaders,
-      "Content-Type": "application/json",
-      "Accept": "audio/mpeg, audio/*, */*"
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(requestBody),
-    signal: AbortSignal.timeout(creds.timeoutMs)
+    signal: AbortSignal.timeout(3e4)
   });
-  if (!response.ok) {
-    const errText = await response.text().catch(() => response.statusText);
-    throw new Error(`AI Music API error: ${response.status} \u2014 ${errText}`);
+  if (!genRes.ok) {
+    const errText = await genRes.text().catch(() => genRes.statusText);
+    throw new Error(`AI Music API generate failed: ${genRes.status} \u2014 ${errText.slice(0, 300)}`);
   }
-  const audioBuffer = await response.arrayBuffer();
-  const base643 = Buffer.from(audioBuffer).toString("base64");
-  const dataUrl = `data:audio/mpeg;base64,${base643}`;
-  const estimatedDurationSecs = hasLyricsSections ? Math.round(audioBuffer.byteLength / 16e3) : Math.round(resolveDurationMs(p.songLength) / 1e3);
-  const durMins = Math.floor(estimatedDurationSecs / 60);
-  const durSecs = estimatedDurationSecs % 60;
-  const durationStr = `${durMins}:${durSecs.toString().padStart(2, "0")}`;
-  logger.info(
-    { jobId, durationStr, audioBytes: audioBuffer.byteLength },
-    "ElevenLabs Music API \u2014 audio received"
-  );
-  const lyricsNote = p.lyricsText?.trim() ? (() => {
-    const sig = analyzeLyricsSignal(p.lyricsText);
-    return sig ? ` | LyricsSignal: ${sig.summary}` : "";
-  })() : "";
-  const sonicNotes = `[AfroMuse Brief] ${logBrief}${lyricsNote}`;
-  const generationTitle = hasLyricsSections ? `${p.genre ?? "Afrobeats"} Full Song \u2014 ${p.mood ?? "Uplifting"}` : `${p.genre ?? "Afrobeats"} Instrumental \u2014 ${p.mood ?? "Uplifting"}`;
-  return {
-    previewUrl: dataUrl,
-    wavUrl: null,
-    externalJobId: null,
-    generationTitle,
-    sonicNotes,
-    duration: durationStr,
-    coverArtUrl: null,
-    waveformMeta: {
-      durationSeconds: estimatedDurationSecs
+  const genData = await genRes.json();
+  const taskId = genData.data?.task_id ?? genData.workId;
+  if (!taskId) throw new Error("AI Music API: no task_id in generate response");
+  logger.info({ jobId, taskId }, "AI Music API \u2014 generation submitted, polling for result");
+  const POLL_URL = `${AI_MUSIC_API_BASE}/api/v2/query?task_id=${taskId}`;
+  const POLL_INTERVAL_MS = 6e3;
+  const MAX_POLLS = 30;
+  let audioUrl = null;
+  let generationTitle = null;
+  let coverArtUrl = null;
+  for (let attempt = 0; attempt < MAX_POLLS; attempt++) {
+    await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+    const pollRes = await fetch(POLL_URL, {
+      headers: { "Authorization": `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(15e3)
+    }).catch((err) => {
+      logger.warn({ jobId, attempt, err }, "AI Music API poll request error \u2014 retrying");
+      return null;
+    });
+    if (!pollRes?.ok) continue;
+    const pollData = await pollRes.json();
+    const data = pollData.data;
+    const tracks = Array.isArray(data) ? data : data ? [data] : [];
+    const failed = tracks.find(
+      (t) => t.status === "failed" || t.status === "error" || t.error
+    );
+    if (failed) {
+      throw new Error(`AI Music API generation failed: ${failed.error ?? failed.status ?? "unknown"}`);
     }
+    const done = tracks.find(
+      (t) => t.status === "completed" || t.status === "succeed" || t.audio_url
+    );
+    if (done) {
+      audioUrl = done.audio_url ?? done.stream_audio_url ?? null;
+      generationTitle = done.title ?? null;
+      coverArtUrl = done.image_url ?? done.cover_url ?? null;
+      logger.info(
+        { jobId, taskId, attempt, audioUrl: audioUrl?.slice(0, 60) },
+        "AI Music API \u2014 generation complete"
+      );
+      break;
+    }
+    logger.info({ jobId, taskId, attempt }, "AI Music API \u2014 still processing, polling again");
+  }
+  if (!audioUrl) {
+    throw new Error(`AI Music API: timed out after ${MAX_POLLS} polls (task_id: ${taskId})`);
+  }
+  const sonicNotes = `[AfroMuse Brief] ${brief}`;
+  return {
+    previewUrl: audioUrl,
+    wavUrl: null,
+    externalJobId: taskId,
+    generationTitle: generationTitle ?? `${p.genre ?? "Afrobeats"} ${hasLyrics ? "Full Song" : "Instrumental"}`,
+    sonicNotes,
+    duration: null,
+    coverArtUrl,
+    waveformMeta: null
   };
 }
 async function runLive(jobId, p) {
@@ -72609,22 +72403,6 @@ async function run(jobId, p) {
     }
   }
   return runMock(jobId, p);
-}
-
-// src/engine/audioBufferStore.ts
-var BUFFER_TTL_MS = 30 * 60 * 1e3;
-var store2 = /* @__PURE__ */ new Map();
-setInterval(() => {
-  const now = Date.now();
-  for (const [id, entry] of store2) {
-    if (now - entry.createdAt > BUFFER_TTL_MS) store2.delete(id);
-  }
-}, 5 * 60 * 1e3).unref();
-function storeAudioBuffer(jobId, buffer, contentType = "audio/mpeg") {
-  store2.set(jobId, { buffer, contentType, createdAt: Date.now() });
-}
-function getAudioBuffer(jobId) {
-  return store2.get(jobId) ?? null;
 }
 
 // src/engine/providers/vocal.ts
@@ -72880,95 +72658,9 @@ async function fetchVoiceCloneBrief(p) {
   if (start === -1 || end === -1) throw new Error("No JSON in voice clone brief response");
   return JSON.parse(cleaned.slice(start, end + 1));
 }
-async function deleteElevenLabsVoice(apiKey, voiceId, jobId) {
-  try {
-    const res = await fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
-      method: "DELETE",
-      headers: { "xi-api-key": apiKey }
-    });
-    if (res.ok) {
-      logger.info({ jobId, voiceId }, "ElevenLabs cloned voice deleted after synthesis");
-    } else {
-      logger.warn({ jobId, voiceId, status: res.status }, "ElevenLabs voice delete failed \u2014 may need manual cleanup");
-    }
-  } catch (err) {
-    logger.warn({ err, jobId, voiceId }, "ElevenLabs voice delete threw an error");
-  }
-}
-async function callLiveVoiceCloneProvider(jobId, p) {
-  const apiKey = process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY;
-  if (!apiKey) {
-    logger.warn({ jobId }, "ELEVENLABS_API_KEY not set \u2014 voice clone live path skipped, returning text brief only");
-    return { audioUrl: null, externalVoiceId: null };
-  }
-  if (!p.voiceSampleBase64) {
-    logger.warn({ jobId }, "No voiceSampleBase64 provided \u2014 live path skipped");
-    return { audioUrl: null, externalVoiceId: null };
-  }
-  const rawB64 = p.voiceSampleBase64.replace(/^data:[^;]+;base64,/, "");
-  const audioBuffer = Buffer.from(rawB64, "base64");
-  const mimeMatch = p.voiceSampleBase64.match(/^data:([^;]+);base64,/);
-  const mimeType = mimeMatch?.[1] ?? "audio/webm";
-  const ext = mimeType.split("/")[1]?.replace("mpeg", "mp3") ?? "webm";
-  logger.info({ jobId, mimeType, bytes: audioBuffer.byteLength }, "Voice sample decoded \u2014 uploading to ElevenLabs IVC");
-  const voiceName = `afromuse-vc-${jobId.slice(0, 8)}`;
-  const formData = new FormData();
-  const blob = new Blob([audioBuffer], { type: mimeType });
-  formData.append("name", voiceName);
-  formData.append("files", blob, `voice-sample.${ext}`);
-  formData.append("description", `AfroMuse Voice Clone Demo \u2014 Job ${jobId}`);
-  formData.append("remove_background_noise", "false");
-  const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
-    method: "POST",
-    headers: { "xi-api-key": apiKey },
-    body: formData
-  });
-  if (!cloneRes.ok) {
-    const errText = await cloneRes.text().catch(() => "(no body)");
-    throw new Error(`ElevenLabs IVC failed (${cloneRes.status}): ${errText.slice(0, 300)}`);
-  }
-  const cloneData = await cloneRes.json();
-  const voiceId = cloneData.voice_id;
-  logger.info({ jobId, voiceId }, "ElevenLabs instant voice clone created");
-  const genre = p.genre ?? "Afrobeats";
-  const feel = p.performanceFeel ?? "Smooth";
-  let ttsText = (p.lyrics ?? "").trim().slice(0, 2e3);
-  if (!ttsText) {
-    ttsText = `This is a personal vocal demo in ${genre} style. A ${feel.toLowerCase()} delivery, with ${(p.voiceTexture ?? "Warm").toLowerCase()} texture and ${(p.dialectDepth ?? "Medium").toLowerCase()} dialect depth. The rhythm flows naturally \u2014 rooted in culture, shaped by soul, and true to my own voice.`;
-  }
-  const model = process.env.VOCAL_MODEL ?? "eleven_multilingual_v2";
-  const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-    method: "POST",
-    headers: {
-      "xi-api-key": apiKey,
-      "Accept": "audio/mpeg",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      text: ttsText,
-      model_id: model,
-      voice_settings: {
-        stability: 0.45,
-        similarity_boost: 0.8,
-        style: p.hitmakerMode ? 0.6 : 0.45,
-        use_speaker_boost: true
-      }
-    })
-  });
-  if (!ttsRes.ok) {
-    const errText = await ttsRes.text().catch(() => "(no body)");
-    await deleteElevenLabsVoice(apiKey, voiceId, jobId);
-    throw new Error(`ElevenLabs TTS failed (${ttsRes.status}): ${errText.slice(0, 300)}`);
-  }
-  const mp3ArrayBuffer = await ttsRes.arrayBuffer();
-  const mp3Buffer = Buffer.from(mp3ArrayBuffer);
-  storeAudioBuffer(jobId, mp3Buffer, "audio/mpeg");
-  logger.info({ jobId, voiceId, bytes: mp3Buffer.byteLength }, "ElevenLabs TTS audio generated and stored in memory");
-  await deleteElevenLabsVoice(apiKey, voiceId, jobId);
-  return {
-    audioUrl: `/api/voice-clone/audio/${jobId}`,
-    externalVoiceId: voiceId
-  };
+async function callLiveVoiceCloneProvider(jobId, _p) {
+  logger.info({ jobId }, "Voice clone live provider not configured \u2014 returning AI brief only");
+  return { audioUrl: null, externalVoiceId: null };
 }
 async function runVoiceCloneSing(jobId, p) {
   const genre = p.genre ?? "Afrobeats";
@@ -73004,7 +72696,7 @@ async function runVoiceCloneSing(jobId, p) {
     audioUrl = liveResult.value.audioUrl;
     externalJobId = liveResult.value.externalVoiceId;
   } else if (liveResult.status === "rejected") {
-    logger.error({ err: liveResult.reason, jobId }, "ElevenLabs voice clone synthesis failed \u2014 text brief returned without audio");
+    logger.error({ err: liveResult.reason, jobId }, "Voice synthesis stub failed \u2014 text brief returned without audio");
   }
   const blueprintData = {
     ...metadata,
@@ -75015,6 +74707,21 @@ var artist_dna_default = router7;
 
 // src/routes/voice-clone.ts
 var import_express8 = __toESM(require_express2(), 1);
+
+// src/engine/audioBufferStore.ts
+var BUFFER_TTL_MS = 30 * 60 * 1e3;
+var store2 = /* @__PURE__ */ new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, entry] of store2) {
+    if (now - entry.createdAt > BUFFER_TTL_MS) store2.delete(id);
+  }
+}, 5 * 60 * 1e3).unref();
+function getAudioBuffer(jobId) {
+  return store2.get(jobId) ?? null;
+}
+
+// src/routes/voice-clone.ts
 var router8 = (0, import_express8.Router)();
 function dispatch2(jobId, runner, errorMessage) {
   advanceJob(jobId, "processing");
@@ -75111,13 +74818,12 @@ router8.get("/voice-clone/audio/:jobId", requireAuth, (req, res) => {
   res.send(entry.buffer);
 });
 router8.get("/voice-clone/status", requireAuth, (_req, res) => {
-  const hasApiKey = Boolean(process.env.ELEVENLABS_API_KEY ?? process.env.VOCAL_API_KEY);
   res.json({
     available: true,
     status: "active",
-    mode: hasApiKey ? "live" : "ai-brief",
-    audioEnabled: hasApiKey,
-    message: hasApiKey ? "Voice Clone Singing Engine is live \u2014 record your voice to generate a real vocal demo in your own voice." : "Voice Clone Singing Engine is active (AI brief mode). Connect ELEVENLABS_API_KEY to enable real audio generation."
+    mode: "ai-brief",
+    audioEnabled: false,
+    message: "Voice Clone Singing Engine is active (AI brief mode). A vocal synthesis provider will be added in a future update."
   });
 });
 var voice_clone_default = router8;

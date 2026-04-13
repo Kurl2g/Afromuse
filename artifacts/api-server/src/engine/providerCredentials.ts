@@ -44,42 +44,33 @@ export interface ProviderCredentialSlot {
 
 const CREDENTIAL_SLOTS: Record<ProviderCategory, ProviderCredentialSlot> = {
   /**
-   * Instrumental / Beat Generation — ElevenLabs Music API
-   * Primary key: ELEVENLABS_API_KEY
+   * Instrumental / Beat Generation — AI Music API (aimusicapi.org)
+   * Primary key: AI_MUSIC_API_KEY
    * Fallback key: INSTRUMENTAL_API_KEY (legacy slot)
-   * Endpoint defaults to the ElevenLabs Music compose endpoint so that
-   * isCredentialReady() returns true as soon as ELEVENLABS_API_KEY is set.
+   * Endpoint: https://aimusicapi.org/api/v2/generate
+   * Polling:  https://aimusicapi.org/api/v2/query?task_id=<id>
    */
   instrumental: {
-    apiKey:    process.env.ELEVENLABS_API_KEY ?? process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
-    endpoint:  process.env.INSTRUMENTAL_API_ENDPOINT ?? process.env.AI_MUSIC_API_BASE ?? "https://api.elevenlabs.io/v1/music/compose",
-    model:     process.env.INSTRUMENTAL_MODEL ?? null,
-    region:    process.env.INSTRUMENTAL_REGION ?? null,
+    apiKey:    process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY ?? null,
+    endpoint:  "https://aimusicapi.org/api/v2/generate",
+    model:     process.env.AI_MUSIC_MODEL ?? "chirp-v4-5",
+    region:    null,
     timeoutMs: Number(process.env.INSTRUMENTAL_TIMEOUT_MS ?? 90_000),
   },
 
   /**
-   * Vocal Synthesis — ElevenLabs Instant Voice Clone + TTS
-   *
-   * Live path uses two ElevenLabs endpoints:
-   *   1. POST /v1/voices/add          — Instant Voice Clone (upload user's audio sample)
-   *   2. POST /v1/text-to-speech/{id} — TTS with the cloned voice
-   *   3. DELETE /v1/voices/{id}        — Cleanup after generation
-   *
-   * Required env var:
-   *   ELEVENLABS_API_KEY — same key used by the instrumental provider
+   * Vocal Synthesis — NVIDIA AI brief (mock audio placeholder)
+   * ElevenLabs has been removed. Voice clone route returns an AI text brief only
+   * until a new vocal synthesis provider is connected.
    *
    * Optional overrides:
-   *   VOCAL_API_KEY      — alternative key slot (falls back to ELEVENLABS_API_KEY)
-   *   VOCAL_API_ENDPOINT — override base URL (defaults to ElevenLabs API)
-   *   VOCAL_MODEL        — TTS model override (defaults to eleven_multilingual_v2)
-   *   VOCAL_TIMEOUT_MS   — request timeout in ms (defaults to 90 000)
+   *   VOCAL_TIMEOUT_MS — request timeout in ms (defaults to 90 000)
    */
   vocal: {
-    apiKey:    process.env.VOCAL_API_KEY ?? process.env.ELEVENLABS_API_KEY ?? null,
-    endpoint:  process.env.VOCAL_API_ENDPOINT ?? "https://api.elevenlabs.io/v1",
-    model:     process.env.VOCAL_MODEL ?? "eleven_multilingual_v2",
-    region:    process.env.VOCAL_REGION ?? null,
+    apiKey:    null,
+    endpoint:  null,
+    model:     null,
+    region:    null,
     timeoutMs: Number(process.env.VOCAL_TIMEOUT_MS ?? 90_000),
   },
 
