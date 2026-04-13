@@ -872,7 +872,7 @@ async function callLiveInstrumentalProvider(
   // We check the callback store on each iteration to short-circuit polling.
   const POLL_URL           = `${AI_MUSIC_API_BASE}/api/v2/query?task_id=${taskId}`;
   const POLL_INTERVAL_MS   = 6_000;   // 6 s between polls
-  const MAX_POLLS          = 30;      // up to 3 minutes total
+  const MAX_POLLS          = 60;      // up to 6 minutes total (Chirp v4.5+ can be slow)
 
   let audioUrl:        string | null = null;
   let generationTitle: string | null = null;
@@ -938,7 +938,11 @@ async function callLiveInstrumentalProvider(
   clearTask(taskId);
 
   if (!audioUrl) {
-    throw new Error(`AI Music API: timed out after ${MAX_POLLS} polls (task_id: ${taskId})`);
+    throw new Error(
+      `Generation timed out — the AI is still processing your track (task: ${taskId}). ` +
+      `Your API credit was consumed. This happens when Chirp takes longer than ${Math.round((MAX_POLLS * POLL_INTERVAL_MS) / 60000)} minutes. ` +
+      `Please try again; the next attempt may complete faster.`,
+    );
   }
 
   const sonicNotes = `[AfroMuse Brief] ${brief}`;

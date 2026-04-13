@@ -88,10 +88,17 @@ export interface EngineEnvironmentConfig {
 
 // ─── Environment Definitions ──────────────────────────────────────────────────
 
+// When instrumental is in live mode, fallbackToMock MUST be false.
+// The AI Music API charges credits at submission time — if generation times out
+// or fails, falling back to mock would silently serve a fake track while the
+// user's real credit is already consumed. Always fail cleanly so the UI can
+// surface a clear error and the user knows what happened.
+const INSTRUMENTAL_FALLBACK_TO_MOCK = AI_MUSIC_INSTRUMENTAL_MODE === "mock";
+
 const DEVELOPMENT_CONFIG: EngineEnvironmentConfig = {
   environment: "development",
   providerModes: {
-    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: INSTRUMENTAL_FALLBACK_TO_MOCK },
     vocal:        { mode: "mock",                     fallbackToMock: true },
     mastering:    { mode: "mock",                     fallbackToMock: true },
     stems:        { mode: "mock",                     fallbackToMock: true },
@@ -105,7 +112,7 @@ const DEVELOPMENT_CONFIG: EngineEnvironmentConfig = {
 const STAGING_CONFIG: EngineEnvironmentConfig = {
   environment: "staging",
   providerModes: {
-    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: INSTRUMENTAL_FALLBACK_TO_MOCK },
     vocal:        { mode: "mock",                     fallbackToMock: true },
     mastering:    { mode: "mock",                     fallbackToMock: true },
     stems:        { mode: "mock",                     fallbackToMock: true },
@@ -119,7 +126,7 @@ const STAGING_CONFIG: EngineEnvironmentConfig = {
 const PRODUCTION_CONFIG: EngineEnvironmentConfig = {
   environment: "production",
   providerModes: {
-    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: true },
+    instrumental: { mode: AI_MUSIC_INSTRUMENTAL_MODE, fallbackToMock: INSTRUMENTAL_FALLBACK_TO_MOCK },
     vocal:        { mode: "mock",                     fallbackToMock: false },
     mastering:    { mode: "mock",                     fallbackToMock: false },
     stems:        { mode: "mock",                     fallbackToMock: false },
