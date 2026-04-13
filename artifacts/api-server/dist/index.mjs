@@ -68974,6 +68974,47 @@ REALNESS RULE:
 - add small details (time, place, action, memory)
 - prioritize authenticity over perfection
 
+DIALECT AUTHENTICITY LAYER:
+When the language field specifies Jamaican Patois or West African Pidgin, activate the dialect mode below. These are NOT the same writing style. Treat them as separate language behaviors.
+
+IF LANGUAGE = JAMAICAN PATOIS:
+- Think and feel from inside Jamaican culture \u2014 do NOT write English then convert
+- Sentence construction should follow Patois natural flow, not English grammar
+- Pain expression: "mi tired now", "di crosses dem heavy", "nowhere fi turn" \u2014 not "I am exhausted and have nowhere to turn"
+- Romance expression: "yuh mek mi feel way", "mi nah look nowhere else", "from mi eyes land pon yuh" \u2014 not "you make me feel something special"
+- Struggle expression: "hustle from morning", "dem never rate mi", "still rise same way" \u2014 not "I have been working hard despite being underestimated"
+- Faith expression: "Jah know mi heart", "blessing reach mi slow but sure", "nah give up di faith" \u2014 not "God knows my journey"
+- Confidence expression: "dem cyaan stop di wave", "mi born fi shine a different way", "nuh worry wid di noise" \u2014 not "they cannot stop me"
+- Hook phrasing must be short, chantable, and feel like a soundsystem anthem \u2014 not poetry
+- Avoid "I am", "you are", "we will" \u2014 use Patois contractions and sentence breaks naturally
+- Lines must feel SINGABLE by a real Jamaican or dancehall-rooted artist in one breath
+
+IF LANGUAGE = WEST AFRICAN PIDGIN (Nigerian / Ghanaian / Afro-urban):
+- Write from inside African urban street culture \u2014 Naija street, Accra youth, Afro-pop conversational tone
+- Sentence construction must follow natural Pidgin flow \u2014 not English dressed up
+- Pain expression: "e don do me", "e heavy for body", "I no even fit talk am" \u2014 not "I am going through something painful"
+- Romance expression: "you dey catch my eye since day one", "I no wan see another face", "na you be the one wey I dey feel" \u2014 not "I have had feelings for you since we first met"
+- Hustle expression: "we grind from the gutter", "nobody dash us anything", "we carry our own load" \u2014 not "we worked hard without any assistance"
+- Faith expression: "God dey, e no go leave us", "e promise no go waste", "I trust the process e dey write" \u2014 not "I believe God has a plan for me"
+- Flex expression: "dem dey watch, we no send", "level wey dem no reach", "e don reach where e suppose reach" \u2014 not "we have achieved success and they are watching"
+- Hook phrasing must feel naturally spoken \u2014 something a real Naija or Ghanaian artist would actually record
+- Avoid overly formal English sentence bones \u2014 the Pidgin rhythm must run the line, not decorate it
+- Lines must feel CONVERSATIONAL and musically natural \u2014 not textbook
+
+DIALECT GUARDRAILS (applies to both modes):
+- do NOT make it unreadable or chaotic
+- do NOT pile slang so heavily that a chorus cannot be followed
+- do NOT write parody or caricature
+- keep it singable and commercially usable
+- authenticity does NOT mean incomprehensibility
+- one honest native-feeling line is worth ten forced slang-heavy lines
+
+DIALECT CONSISTENCY RULE:
+- The dialect level must stay consistent across ALL sections: intro, chorus, verse 1, verse 2, bridge, outro
+- If verse 1 sounds native, the chorus must also sound native \u2014 not flip back to plain English
+- If the intro opens in dialect, the outro must close in dialect
+- Before finalizing, check every section: if any section drifted toward plain English construction \u2014 rewrite it
+
 OUTPUT FORMAT: Return valid JSON only. No text outside the JSON.
 {
   "title": "song title (1-5 words)",
