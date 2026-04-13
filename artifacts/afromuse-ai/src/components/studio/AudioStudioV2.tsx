@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SongDraft } from "@/lib/songGenerator";
-import { formatDraftForClipboard } from "@/lib/songGenerator";
+import { formatDraftForClipboard, extractLyricsOnlyText } from "@/lib/songGenerator";
 import { buildFullIntelligence, type FullIntelligence, type ExportNoteBlock } from "@/lib/audioIntelligence";
 import AudioPlayer from "@/components/audio/AudioPlayer";
 
@@ -1361,7 +1361,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
 
   useEffect(() => {
     if (useGeneratedLyrics && draft) {
-      setAudioLyrics(extractLyricsText(draft, genre, mood));
+      setAudioLyrics(extractLyricsOnlyText(draft));
     }
   }, [draft, useGeneratedLyrics, genre, mood]);
 
@@ -1370,7 +1370,7 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
       toast({ title: "No lyrics yet", description: "Generate lyrics first or paste your own lyrics.", variant: "destructive" });
       return;
     }
-    const text = extractLyricsText(draft, genre, mood);
+    const text = extractLyricsOnlyText(draft);
     setAudioLyrics(text);
     setUseGeneratedLyrics(true);
     toast({ title: "Lyrics loaded", description: "Your generated lyrics are ready for audio production." });
