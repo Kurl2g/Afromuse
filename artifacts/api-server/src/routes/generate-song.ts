@@ -336,6 +336,13 @@ RULES:
 - no robotic or translated language
 - short, rhythmic lines
 
+REALNESS RULE:
+- avoid common love phrases (e.g. "my heart beats", "shine like light", "forever love")
+- use specific moments instead of general statements
+- make lines feel like something someone would actually say or remember
+- add small details (time, place, action, memory)
+- prioritize authenticity over perfection
+
 OUTPUT FORMAT: Return valid JSON only. No text outside the JSON.
 {
   "title": "song title (1-5 words)",
