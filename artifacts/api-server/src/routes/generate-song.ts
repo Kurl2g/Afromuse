@@ -1499,6 +1499,7 @@ function buildUserPrompt(
     ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
   ];
 
   return lines.join("\n");
@@ -2003,6 +2004,7 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -2274,6 +2276,7 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -2518,6 +2521,7 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,

@@ -69416,7 +69416,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...getCommercialModeBlock(params.commercialMode),
     ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
-    ...getAdlibGeneratorBlock()
+    ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock()
   ];
   return lines.join("\n");
 }
@@ -69831,6 +69832,7 @@ ${lines.join("\n")}`;
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -70082,6 +70084,7 @@ ${lines.join("\n")}`;
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -70306,6 +70309,7 @@ ${lines.join("\n")}`;
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
     ...getVerseVariationBlock(),
     ...getAdlibGeneratorBlock(),
+    ...getMelodyFriendlyBlock(),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
@@ -70514,6 +70518,37 @@ function getAdlibGeneratorBlock() {
     "  - adlibs that break emotional tone",
     "",
     "Adlibs should support performance feel \u2014 not distract from the writing."
+  ];
+}
+function getMelodyFriendlyBlock() {
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F3B6} MELODY-FIRST WRITING MODE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Write every section so it sits naturally on melody.",
+    "The lyrics must feel SINGABLE before they feel clever.",
+    "",
+    "MELODY RULES:",
+    "  - prefer shorter lines over overloaded lines",
+    "  - allow breathing space",
+    "  - leave room for rhythm and vocal bounce",
+    "  - avoid too many hard-to-sing word clusters",
+    "  - keep vowel flow smooth where possible",
+    "",
+    "TEST EVERY LINE:",
+    "Can a real artist sing this without rewriting it in studio?",
+    "If not, simplify or reshape the line.",
+    "",
+    "A strong line should:",
+    "  - bounce naturally",
+    "  - land emotionally fast",
+    "  - leave room for delivery style",
+    "",
+    "Do NOT write like an essay.",
+    "Do NOT write like spoken explanation.",
+    "Write like music."
   ];
 }
 
