@@ -951,3 +951,49 @@ export function persistProjects(projects: SavedProject[]): void {
 export function loadProjectsFromStorage(): SavedProject[] {
   return JSON.parse(localStorage.getItem("afromuse_projects") ?? "[]");
 }
+
+/**
+ * Extracts only the lyric sections from a draft — no metadata headers,
+ * no production notes block. Safe to drop straight into the Lyrics panel.
+ */
+export function extractLyricsOnlyText(draft: SongDraft): string {
+  const bridgeLabel = draft.diversityReport?.dnaMode === "CHAOS MODE" ? "BREAK" : "BRIDGE";
+  const push = (label: string, lines?: string[]) =>
+    lines?.length ? [{ label, lines }] : [];
+  const orderedSections = [
+    ...push("INTRO", draft.intro),
+    ...push("CHORUS", draft.hook),
+    ...push("VERSE 1", draft.verse1),
+    ...push("CHORUS", draft.hook),
+    ...push("VERSE 2", draft.verse2),
+    ...push("CHORUS", draft.hook),
+    ...push(bridgeLabel, draft.bridge),
+    ...push("OUTRO", draft.outro),
+  ] as { label: string; lines: string[] }[];
+  const lines: string[] = [];
+  for (const sec of orderedSections) {
+    lines.push(`[ ${sec.label} ]`, ...sec.lines, "");
+  }
+  return lines.join("\n").trim();
+}
+
+/**
+ * Builds a concise style string from a draft's production notes suitable
+ * for auto-populating the Audio Studio Style field.
+ */
+export function buildStyleStringFromDraft(
+  draft: SongDraft,
+  genre: string,
+  mood: string,
+): string {
+  const pn = draft.productionNotes;
+  const parts: string[] = [genre, mood];
+  if (pn?.bpm)             parts.push(`${pn.bpm} BPM`);
+  if (pn?.key)             parts.push(pn.key);
+  if (pn?.energy)          parts.push(`${pn.energy} energy`);
+  if (pn?.arrangement)     parts.push(pn.arrangement);
+  if (pn?.melodyDirection) parts.push(pn.melodyDirection);
+  if (pn?.hookStrength)    parts.push(`Hook: ${pn.hookStrength}`);
+  if (draft.chordVibe)     parts.push(draft.chordVibe);
+  return parts.filter(Boolean).join(", ").slice(0, 1000);
+}
