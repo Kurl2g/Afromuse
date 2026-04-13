@@ -69413,7 +69413,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...style?.trim() ? [`artist reference = ${style.trim()}`] : [],
     ...notes?.trim() ? [`extra notes = ${notes.trim()}`] : [],
     ...languageFlavorInstruction,
-    ...getCommercialModeBlock(params.commercialMode)
+    ...getCommercialModeBlock(params.commercialMode),
+    ...getHookEngineBlock(params.hookRepeat ?? "Medium")
   ];
   return lines.join("\n");
 }
@@ -69825,6 +69826,7 @@ ${lines.join("\n")}`;
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 even after hardening, maintain this hook replay intensity`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 preserve this artist's writing DNA and edge while pushing harder`] : [],
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -70073,6 +70075,7 @@ ${lines.join("\n")}`;
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} \u2014 singability and phrasing feel must naturally match this vocal perspective`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the catchier version must still sound like it belongs in this artist's world`] : [],
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -70294,6 +70297,7 @@ ${lines.join("\n")}`;
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} \u2014 preserve the hook's sing-along potential at this intensity level during humanization`,
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the humanized version must still sound like it belongs authentically in this artist's world`] : [],
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
@@ -70397,6 +70401,53 @@ function getCommercialModeBlock(commercialMode) {
     "Would people want to quote the hook in captions or sing it out loud?",
     "If not, rewrite for stronger replay value."
   ];
+}
+function getHookEngineBlock(hookRepeat = "Medium") {
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F3AF} HOOK ENGINE \u2014 CHORUS PRIORITY MODE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "The hook is the MOST IMPORTANT part of the song.",
+    "It must feel natural, memorable, emotionally obvious, and instantly singable.",
+    "",
+    "HOOK REQUIREMENTS:",
+    "  - easy to remember",
+    "  - emotionally clear",
+    "  - native to the chosen language style",
+    "  - performable live",
+    "  - strong enough to carry the whole song",
+    "",
+    "A weak verse can survive.",
+    "A weak hook kills the song.",
+    "",
+    "GOOD HOOKS FEEL LIKE:",
+    "  - something a real artist would repeat naturally",
+    "  - something fans can shout back",
+    "  - something simple enough to stick fast",
+    "",
+    "AVOID:",
+    "  - over-explaining in the chorus",
+    "  - too many changing ideas in one hook",
+    "  - long poetic sentences",
+    "  - fake-deep lines that are not chantable"
+  ].concat(
+    hookRepeat === "Low" ? [
+      "",
+      "HOOK REPETITION MODE: LOW",
+      "Use lighter repetition. Keep the chorus memorable without repeating too aggressively."
+    ] : hookRepeat === "High" ? [
+      "",
+      "HOOK REPETITION MODE: HIGH",
+      "Use stronger repetition for maximum catchiness and chantability.",
+      "Lean into key emotional phrases repeating naturally."
+    ] : [
+      "",
+      "HOOK REPETITION MODE: MEDIUM",
+      "Balance repetition and variation for strong replay value."
+    ]
+  );
 }
 
 // src/routes/generate-audio.ts

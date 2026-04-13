@@ -1496,6 +1496,7 @@ function buildUserPrompt(
     ...(notes?.trim() ? [`extra notes = ${notes.trim()}`] : []),
     ...languageFlavorInstruction,
     ...getCommercialModeBlock(params.commercialMode),
+    ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
   ];
 
   return lines.join("\n");
@@ -1997,6 +1998,7 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} — even after hardening, maintain this hook replay intensity`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — preserve this artist's writing DNA and edge while pushing harder`] : []),
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -2265,6 +2267,7 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     `Gender / Voice Model: ${genderVoiceModel ?? "Random"} — singability and phrasing feel must naturally match this vocal perspective`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the catchier version must still sound like it belongs in this artist's world`] : []),
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -2506,6 +2509,7 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     `Hook Repeat Level: ${hookRepeat ?? "Medium"} — preserve the hook's sing-along potential at this intensity level during humanization`,
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the humanized version must still sound like it belongs authentically in this artist's world`] : []),
     ...getCommercialModeBlock(commercialMode),
+    ...getHookEngineBlock(hookRepeat ?? "Medium"),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
