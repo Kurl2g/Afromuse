@@ -69414,7 +69414,8 @@ For "${effectiveFlavor}" \u2192 ${flavorHint}`] : [],
     ...notes?.trim() ? [`extra notes = ${notes.trim()}`] : [],
     ...languageFlavorInstruction,
     ...getCommercialModeBlock(params.commercialMode),
-    ...getHookEngineBlock(params.hookRepeat ?? "Medium")
+    ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock()
   ];
   return lines.join("\n");
 }
@@ -69827,6 +69828,7 @@ ${lines.join("\n")}`;
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 preserve this artist's writing DNA and edge while pushing harder`] : [],
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -70076,6 +70078,7 @@ ${lines.join("\n")}`;
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the catchier version must still sound like it belongs in this artist's world`] : [],
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" \u2014 protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -70298,6 +70301,7 @@ ${lines.join("\n")}`;
     ...style?.trim() ? [`Sound Reference: ${style.trim()} \u2014 the humanized version must still sound like it belongs authentically in this artist's world`] : [],
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
@@ -70448,6 +70452,33 @@ function getHookEngineBlock(hookRepeat = "Medium") {
       "Balance repetition and variation for strong replay value."
     ]
   );
+}
+function getVerseVariationBlock() {
+  return [
+    "",
+    "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557",
+    "  \u{1F9E0} VERSE VARIATION ENGINE",
+    "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D",
+    "",
+    "Each verse must feel like it has a DIFFERENT job.",
+    "Do NOT let every verse repeat the same emotional angle.",
+    "",
+    "VERSE DESIGN RULES:",
+    "  - Verse 1 should introduce the world, emotion, or problem.",
+    "  - Verse 2 should deepen the story, pressure, desire, or conflict.",
+    "  - If there is Verse 3 or a bridge, it should reveal truth, reflection, or climax.",
+    "",
+    "Each section must add NEW emotional value.",
+    "Do NOT keep saying the same thing in slightly different words.",
+    "",
+    "AVOID:",
+    "  - repeated emotional summaries",
+    "  - multiple verses with identical message",
+    "  - saying the hook idea again without new detail",
+    "",
+    "Every verse must earn its place.",
+    "If a section adds nothing new, rewrite it."
+  ];
 }
 
 // src/routes/generate-audio.ts

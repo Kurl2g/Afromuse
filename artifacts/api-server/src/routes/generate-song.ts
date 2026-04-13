@@ -1497,6 +1497,7 @@ function buildUserPrompt(
     ...languageFlavorInstruction,
     ...getCommercialModeBlock(params.commercialMode),
     ...getHookEngineBlock(params.hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
   ];
 
   return lines.join("\n");
@@ -1999,6 +2000,7 @@ router.post("/harden-lyrics", requireAuth, attachPlanFromDb, requireFeature("can
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — preserve this artist's writing DNA and edge while pushing harder`] : []),
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if strong, sharpen if weak` : "",
     ``,
     `LYRICS TO HARDEN:`,
@@ -2268,6 +2270,7 @@ router.post("/catchier-lyrics", requireAuth, attachPlanFromDb, requireFeature("c
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the catchier version must still sound like it belongs in this artist's world`] : []),
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Current Keeper Line: "${keeperLine}" — protect if already catchy, sharpen if weak` : "",
     ``,
     `LYRICS TO MAKE CATCHIER:`,
@@ -2510,6 +2513,7 @@ router.post("/rewrite-lyrics", requireAuth, attachPlanFromDb, requireFeature("ca
     ...(style?.trim() ? [`Sound Reference: ${style.trim()} — the humanized version must still sound like it belongs authentically in this artist's world`] : []),
     ...getCommercialModeBlock(commercialMode),
     ...getHookEngineBlock(hookRepeat ?? "Medium"),
+    ...getVerseVariationBlock(),
     keeperLine ? `Main Keeper Line to preserve: "${keeperLine}"` : "",
     ``,
     `ORIGINAL AI LYRICS TO REWRITE:`,
