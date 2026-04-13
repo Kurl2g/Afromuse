@@ -20499,27 +20499,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router13;
+    module.exports = Router14;
     module.exports.Route = Route;
-    function Router13(options) {
-      if (!(this instanceof Router13)) {
-        return new Router13(options);
+    function Router14(options) {
+      if (!(this instanceof Router14)) {
+        return new Router14(options);
       }
       const opts = options || {};
-      function router13(req, res, next) {
-        router13.handle(req, res, next);
+      function router14(req, res, next) {
+        router14.handle(req, res, next);
       }
-      Object.setPrototypeOf(router13, this);
-      router13.caseSensitive = opts.caseSensitive;
-      router13.mergeParams = opts.mergeParams;
-      router13.params = {};
-      router13.strict = opts.strict;
-      router13.stack = [];
-      return router13;
+      Object.setPrototypeOf(router14, this);
+      router14.caseSensitive = opts.caseSensitive;
+      router14.mergeParams = opts.mergeParams;
+      router14.params = {};
+      router14.strict = opts.strict;
+      router14.stack = [];
+      return router14;
     }
-    Router13.prototype = function() {
+    Router14.prototype = function() {
     };
-    Router13.prototype.param = function param(name, fn) {
+    Router14.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20539,7 +20539,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router13.prototype.handle = function handle(req, res, callback) {
+    Router14.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20666,7 +20666,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router13.prototype.use = function use(handler) {
+    Router14.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20699,7 +20699,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router13.prototype.route = function route(path2) {
+    Router14.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20714,7 +20714,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router13.prototype[method] = function(path2) {
+      Router14.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20897,13 +20897,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router13 = require_router();
+    var Router14 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router13 = null;
+      var router14 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20912,13 +20912,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router13 === null) {
-            router13 = new Router13({
+          if (router14 === null) {
+            router14 = new Router14({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router13;
+          return router14;
         }
       });
     };
@@ -20989,15 +20989,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router13 = this.router;
+      var router14 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router13.use(path2, fn2);
+          return router14.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router13.use(path2, function mounted_app(req, res, next) {
+        router14.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23524,7 +23524,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router13 = require_router();
+    var Router14 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23546,8 +23546,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router13.Route;
-    exports.Router = Router13;
+    exports.Route = Router14.Route;
+    exports.Router = Router14;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -26530,7 +26530,7 @@ var require_tools = __commonJS({
     } else {
       asJsonChan = {
         hasSubscribers: false,
-        traceSync(fn, store3, thisArg, ...args) {
+        traceSync(fn, store4, thisArg, ...args) {
           return fn.call(thisArg, ...args);
         }
       };
@@ -26600,8 +26600,8 @@ var require_tools = __commonJS({
       if (asJsonChan.hasSubscribers === false) {
         return _asJson.call(this, obj, msg, num, time4);
       }
-      const store3 = { instance: this, arguments };
-      return asJsonChan.traceSync(_asJson, store3, this, obj, msg, num, time4);
+      const store4 = { instance: this, arguments };
+      return asJsonChan.traceSync(_asJson, store4, this, obj, msg, num, time4);
     }
     function _asJson(obj, msg, num, time4) {
       const stringify3 = this[stringifySym];
@@ -39190,13 +39190,13 @@ var require_bcryptjs = __commonJS({
 });
 
 // src/app.ts
-var import_express13 = __toESM(require_express2(), 1);
+var import_express14 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 
 // src/routes/index.ts
-var import_express12 = __toESM(require_express2(), 1);
+var import_express13 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -71752,6 +71752,37 @@ function buildLyricsAiContext(signal) {
   return lines.join("\n");
 }
 
+// src/engine/callbackStore.ts
+var TTL_MS = 10 * 60 * 1e3;
+var store2 = /* @__PURE__ */ new Map();
+function pruneExpired() {
+  const now = Date.now();
+  for (const [key, entry] of store2.entries()) {
+    if (entry.expiresAt < now) store2.delete(key);
+  }
+}
+function registerTask(taskId) {
+  pruneExpired();
+  if (!store2.has(taskId)) {
+    store2.set(taskId, { result: null, resolvers: [], expiresAt: Date.now() + TTL_MS });
+  }
+}
+function deliverCallback(taskId, result) {
+  const entry = store2.get(taskId);
+  if (!entry) return false;
+  entry.result = result;
+  entry.expiresAt = Date.now() + TTL_MS;
+  for (const resolve of entry.resolvers) resolve(result);
+  entry.resolvers = [];
+  return true;
+}
+function getCallbackResult(taskId) {
+  return store2.get(taskId)?.result ?? null;
+}
+function clearTask(taskId) {
+  store2.delete(taskId);
+}
+
 // src/engine/providers/instrumental.ts
 function parseBpm(chordVibe, genre) {
   const m = chordVibe?.match(/(\d{2,3})\s*BPM/i);
@@ -72212,6 +72243,17 @@ function buildLyricsText(secs) {
   return parts.join("\n\n").slice(0, 4800);
 }
 var AI_MUSIC_API_BASE = "https://aimusicapi.org";
+function buildCallbackUrl() {
+  const override = process.env.CALLBACK_BASE_URL?.replace(/\/$/, "");
+  if (override) return `${override}/api/instrumental/callback`;
+  const replitDomain = process.env.REPLIT_DEV_DOMAIN;
+  if (replitDomain) {
+    const host = replitDomain.replace(/\/$/, "");
+    const apiPort = process.env.API_PORT ?? "8080";
+    return `https://${host}:${apiPort}/api/instrumental/callback`;
+  }
+  return null;
+}
 async function callLiveInstrumentalProvider(p, jobId) {
   const apiKey = process.env.AI_MUSIC_API_KEY ?? process.env.INSTRUMENTAL_API_KEY;
   if (!apiKey) {
@@ -72223,6 +72265,7 @@ async function callLiveInstrumentalProvider(p, jobId) {
   const secs = p.lyricsSections ?? {};
   const hasLyrics = (secs.hook?.length ?? 0) > 0 || (secs.verse1?.length ?? 0) > 0;
   const { prompt: descPrompt, styleString, brief } = buildInstrumentalDescription(p);
+  const callbackUrl = buildCallbackUrl();
   let requestBody;
   if (hasLyrics) {
     const lyricsText = buildLyricsText(secs);
@@ -72233,12 +72276,13 @@ async function callLiveInstrumentalProvider(p, jobId) {
       title: p.title ?? `${p.genre ?? "Afrobeats"} \u2014 ${p.mood ?? "Uplifting"}`,
       make_instrumental: false,
       gender: p.gender ?? "male",
+      ...callbackUrl && { callback_url: callbackUrl },
       ...p.styleWeight != null && { style_weight: p.styleWeight },
       ...p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint },
       ...p.audioWeight != null && { audio_weight: p.audioWeight }
     };
     logger.info(
-      { jobId, model, style: styleString.slice(0, 80), lyricsChars: lyricsText.length },
+      { jobId, model, style: styleString.slice(0, 80), lyricsChars: lyricsText.length, callbackUrl },
       "AI Music API \u2014 Custom Mode (full song with lyrics)"
     );
   } else {
@@ -72246,12 +72290,13 @@ async function callLiveInstrumentalProvider(p, jobId) {
       model,
       gpt_description_prompt: descPrompt,
       make_instrumental: true,
+      ...callbackUrl && { callback_url: callbackUrl },
       ...p.styleWeight != null && { style_weight: p.styleWeight },
       ...p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint },
       ...p.audioWeight != null && { audio_weight: p.audioWeight }
     };
     logger.info(
-      { jobId, model, prompt: descPrompt.slice(0, 100) },
+      { jobId, model, prompt: descPrompt.slice(0, 100), callbackUrl },
       "AI Music API \u2014 Inspiration Mode (instrumental)"
     );
   }
@@ -72271,7 +72316,11 @@ async function callLiveInstrumentalProvider(p, jobId) {
   const genData = await genRes.json();
   const taskId = genData.data?.task_id ?? genData.workId;
   if (!taskId) throw new Error("AI Music API: no task_id in generate response");
-  logger.info({ jobId, taskId }, "AI Music API \u2014 generation submitted, polling for result");
+  registerTask(taskId);
+  logger.info(
+    { jobId, taskId, callbackUrl },
+    "AI Music API \u2014 generation submitted, polling for result (callback also active)"
+  );
   const POLL_URL = `${AI_MUSIC_API_BASE}/api/v2/query?task_id=${taskId}`;
   const POLL_INTERVAL_MS = 6e3;
   const MAX_POLLS = 30;
@@ -72279,6 +72328,17 @@ async function callLiveInstrumentalProvider(p, jobId) {
   let generationTitle = null;
   let coverArtUrl = null;
   for (let attempt = 0; attempt < MAX_POLLS; attempt++) {
+    const cbResult = getCallbackResult(taskId);
+    if (cbResult) {
+      audioUrl = cbResult.audioUrl;
+      generationTitle = cbResult.title ?? null;
+      coverArtUrl = cbResult.imageUrl ?? null;
+      logger.info(
+        { jobId, taskId, attempt, audioUrl: audioUrl.slice(0, 60) },
+        "AI Music API \u2014 result delivered via callback (skipping remaining polls)"
+      );
+      break;
+    }
     await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
     const pollRes = await fetch(POLL_URL, {
       headers: { "Authorization": `Bearer ${apiKey}` },
@@ -72295,6 +72355,7 @@ async function callLiveInstrumentalProvider(p, jobId) {
       (t) => t.status === "failed" || t.status === "error" || t.error
     );
     if (failed) {
+      clearTask(taskId);
       throw new Error(`AI Music API generation failed: ${failed.error ?? failed.status ?? "unknown"}`);
     }
     const done = tracks.find(
@@ -72306,12 +72367,13 @@ async function callLiveInstrumentalProvider(p, jobId) {
       coverArtUrl = done.image_url ?? done.cover_url ?? null;
       logger.info(
         { jobId, taskId, attempt, audioUrl: audioUrl?.slice(0, 60) },
-        "AI Music API \u2014 generation complete"
+        "AI Music API \u2014 generation complete (poll)"
       );
       break;
     }
     logger.info({ jobId, taskId, attempt }, "AI Music API \u2014 still processing, polling again");
   }
+  clearTask(taskId);
   if (!audioUrl) {
     throw new Error(`AI Music API: timed out after ${MAX_POLLS} polls (task_id: ${taskId})`);
   }
@@ -74710,15 +74772,15 @@ var import_express8 = __toESM(require_express2(), 1);
 
 // src/engine/audioBufferStore.ts
 var BUFFER_TTL_MS = 30 * 60 * 1e3;
-var store2 = /* @__PURE__ */ new Map();
+var store3 = /* @__PURE__ */ new Map();
 setInterval(() => {
   const now = Date.now();
-  for (const [id, entry] of store2) {
-    if (now - entry.createdAt > BUFFER_TTL_MS) store2.delete(id);
+  for (const [id, entry] of store3) {
+    if (now - entry.createdAt > BUFFER_TTL_MS) store3.delete(id);
   }
 }, 5 * 60 * 1e3).unref();
 function getAudioBuffer(jobId) {
-  return store2.get(jobId) ?? null;
+  return store3.get(jobId) ?? null;
 }
 
 // src/routes/voice-clone.ts
@@ -75281,23 +75343,58 @@ router11.get("/usage/admin/funnel", requireAuth, async (req, res) => {
 });
 var usage_default = router11;
 
-// src/routes/index.ts
+// src/routes/instrumental-callback.ts
+var import_express12 = __toESM(require_express2(), 1);
 var router12 = (0, import_express12.Router)();
-router12.use(auth_default);
-router12.use(health_default);
-router12.use(generate_song_default);
-router12.use(generate_audio_default);
-router12.use(admin_default);
-router12.use(projects_default);
-router12.use(artist_dna_default);
-router12.use(voice_clone_default);
-router12.use(stripe_default);
-router12.use(paystack_default);
-router12.use(usage_default);
-var routes_default = router12;
+router12.post("/instrumental/callback", (req, res) => {
+  try {
+    const body = req.body;
+    const entries = Array.isArray(body?.data) ? body.data : body?.data ? [body.data] : [];
+    let delivered = 0;
+    for (const entry of entries) {
+      if (!entry || typeof entry !== "object") continue;
+      const e = entry;
+      const taskId = String(e.task_id ?? e.workId ?? "");
+      const audioUrl = String(e.audio_url ?? e.audioUrl ?? "");
+      if (!taskId || !audioUrl) continue;
+      const delivered_ = deliverCallback(taskId, {
+        audioUrl,
+        imageUrl: e.image_url ?? e.imageUrl ?? null,
+        title: e.title ?? null,
+        receivedAt: Date.now()
+      });
+      logger.info(
+        { taskId, audioUrl: audioUrl.slice(0, 80), delivered: delivered_ },
+        "AI Music API callback received"
+      );
+      delivered++;
+    }
+    res.status(200).json({ ok: true, delivered });
+  } catch (err) {
+    logger.error({ err }, "AI Music API callback handler threw");
+    res.status(200).json({ ok: true, delivered: 0 });
+  }
+});
+var instrumental_callback_default = router12;
+
+// src/routes/index.ts
+var router13 = (0, import_express13.Router)();
+router13.use(auth_default);
+router13.use(health_default);
+router13.use(generate_song_default);
+router13.use(generate_audio_default);
+router13.use(instrumental_callback_default);
+router13.use(admin_default);
+router13.use(projects_default);
+router13.use(artist_dna_default);
+router13.use(voice_clone_default);
+router13.use(stripe_default);
+router13.use(paystack_default);
+router13.use(usage_default);
+var routes_default = router13;
 
 // src/app.ts
-var app = (0, import_express13.default)();
+var app = (0, import_express14.default)();
 app.use(
   (0, import_pino_http.default)({
     logger,
@@ -75319,7 +75416,7 @@ app.use(
 );
 app.use((0, import_cors.default)({ origin: true, credentials: true }));
 app.use((0, import_cookie_parser.default)());
-app.use("/api/stripe/webhook", import_express13.default.raw({ type: "application/json" }));
+app.use("/api/stripe/webhook", import_express14.default.raw({ type: "application/json" }));
 app.use("/api/paystack/webhook", (req, _res, next) => {
   let rawData = Buffer.alloc(0);
   req.on("data", (chunk) => {
@@ -75335,8 +75432,8 @@ app.use("/api/paystack/webhook", (req, _res, next) => {
     next();
   });
 });
-app.use(import_express13.default.json());
-app.use(import_express13.default.urlencoded({ extended: true }));
+app.use(import_express14.default.json());
+app.use(import_express14.default.urlencoded({ extended: true }));
 app.use("/api", routes_default);
 var app_default = app;
 

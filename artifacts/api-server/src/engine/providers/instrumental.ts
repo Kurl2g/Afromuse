@@ -33,6 +33,7 @@ import { executeFallback, buildFailureResponse } from "../fallback.js";
 import { getProviderCredentials } from "../providerCredentials.js";
 import { resolveModelAndClient } from "../nvidiaClient.js";
 import { analyzeLyricsSignal, resolveLyricsInfluence, buildLyricsAiContext } from "../lyricsSignal.js";
+import { registerTask, getCallbackResult, clearTask } from "../callbackStore.js";
 
 // ─── Payload ──────────────────────────────────────────────────────────────────
 
@@ -743,6 +744,31 @@ function buildLyricsText(secs: NonNullable<InstrumentalPayload["lyricsSections"]
 
 const AI_MUSIC_API_BASE = "https://aimusicapi.org";
 
+/**
+ * Build the publicly accessible callback URL that AI Music API will POST to
+ * when a generation job completes. Falls back to null if the host is unknown
+ * (callback will be omitted from the request, polling alone handles completion).
+ *
+ * Override with CALLBACK_BASE_URL env var for production deployments:
+ *   CALLBACK_BASE_URL=https://my-app.replit.app
+ */
+function buildCallbackUrl(): string | null {
+  const override = process.env.CALLBACK_BASE_URL?.replace(/\/$/, "");
+  if (override) return `${override}/api/instrumental/callback`;
+
+  const replitDomain = process.env.REPLIT_DEV_DOMAIN;
+  if (replitDomain) {
+    const host = replitDomain.replace(/\/$/, "");
+    // API server always listens on 8080 (set in the workflow command).
+    // Do NOT use process.env.PORT here — in the API server process that is
+    // already 8080, but the env may leak 5000 from the frontend workflow.
+    const apiPort = process.env.API_PORT ?? "8080";
+    return `https://${host}:${apiPort}/api/instrumental/callback`;
+  }
+
+  return null;
+}
+
 async function callLiveInstrumentalProvider(
   p: InstrumentalPayload,
   jobId: string,
@@ -762,6 +788,8 @@ async function callLiveInstrumentalProvider(
 
   const { prompt: descPrompt, styleString, brief } = buildInstrumentalDescription(p);
 
+  const callbackUrl = buildCallbackUrl();
+
   let requestBody: Record<string, unknown>;
 
   if (hasLyrics) {
@@ -774,11 +802,12 @@ async function callLiveInstrumentalProvider(
       title:                p.title ?? `${p.genre ?? "Afrobeats"} — ${p.mood ?? "Uplifting"}`,
       make_instrumental:    false,
       gender:               p.gender ?? "male",
+      ...(callbackUrl && { callback_url: callbackUrl }),
       ...(p.styleWeight        != null && { style_weight:          p.styleWeight }),
       ...(p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint }),
       ...(p.audioWeight        != null && { audio_weight:          p.audioWeight }),
     };
-    logger.info({ jobId, model, style: styleString.slice(0, 80), lyricsChars: lyricsText.length },
+    logger.info({ jobId, model, style: styleString.slice(0, 80), lyricsChars: lyricsText.length, callbackUrl },
       "AI Music API — Custom Mode (full song with lyrics)");
   } else {
     // ── Inspiration Mode — description only, instrumental ─────────────────────
@@ -786,11 +815,12 @@ async function callLiveInstrumentalProvider(
       model,
       gpt_description_prompt: descPrompt,
       make_instrumental:      true,
+      ...(callbackUrl && { callback_url: callbackUrl }),
       ...(p.styleWeight        != null && { style_weight:          p.styleWeight }),
       ...(p.weirdnessConstraint != null && { weirdness_constraint: p.weirdnessConstraint }),
       ...(p.audioWeight        != null && { audio_weight:          p.audioWeight }),
     };
-    logger.info({ jobId, model, prompt: descPrompt.slice(0, 100) },
+    logger.info({ jobId, model, prompt: descPrompt.slice(0, 100), callbackUrl },
       "AI Music API — Inspiration Mode (instrumental)");
   }
 
@@ -814,9 +844,15 @@ async function callLiveInstrumentalProvider(
   const taskId  = genData.data?.task_id ?? genData.workId;
   if (!taskId) throw new Error("AI Music API: no task_id in generate response");
 
-  logger.info({ jobId, taskId }, "AI Music API — generation submitted, polling for result");
+  // Register task in callback store so the webhook handler can deliver results early.
+  registerTask(taskId);
+
+  logger.info({ jobId, taskId, callbackUrl },
+    "AI Music API — generation submitted, polling for result (callback also active)");
 
   // ── Step 2: Poll /api/v2/query?task_id= until completed ───────────────────
+  // The callback endpoint delivers results faster when callback_url is set.
+  // We check the callback store on each iteration to short-circuit polling.
   const POLL_URL           = `${AI_MUSIC_API_BASE}/api/v2/query?task_id=${taskId}`;
   const POLL_INTERVAL_MS   = 6_000;   // 6 s between polls
   const MAX_POLLS          = 30;      // up to 3 minutes total
@@ -826,6 +862,17 @@ async function callLiveInstrumentalProvider(
   let coverArtUrl:     string | null = null;
 
   for (let attempt = 0; attempt < MAX_POLLS; attempt++) {
+    // ── Check callback store first — callback path delivers results faster ────
+    const cbResult = getCallbackResult(taskId);
+    if (cbResult) {
+      audioUrl        = cbResult.audioUrl;
+      generationTitle = cbResult.title ?? null;
+      coverArtUrl     = cbResult.imageUrl ?? null;
+      logger.info({ jobId, taskId, attempt, audioUrl: audioUrl.slice(0, 60) },
+        "AI Music API — result delivered via callback (skipping remaining polls)");
+      break;
+    }
+
     await new Promise<void>((r) => setTimeout(r, POLL_INTERVAL_MS));
 
     const pollRes = await fetch(POLL_URL, {
@@ -851,6 +898,7 @@ async function callLiveInstrumentalProvider(
       t.status === "failed" || t.status === "error" || t.error,
     );
     if (failed) {
+      clearTask(taskId);
       throw new Error(`AI Music API generation failed: ${failed.error ?? failed.status ?? "unknown"}`);
     }
 
@@ -863,12 +911,14 @@ async function callLiveInstrumentalProvider(
       generationTitle = done.title            ?? null;
       coverArtUrl     = done.image_url        ?? done.cover_url        ?? null;
       logger.info({ jobId, taskId, attempt, audioUrl: audioUrl?.slice(0, 60) },
-        "AI Music API — generation complete");
+        "AI Music API — generation complete (poll)");
       break;
     }
 
     logger.info({ jobId, taskId, attempt }, "AI Music API — still processing, polling again");
   }
+
+  clearTask(taskId);
 
   if (!audioUrl) {
     throw new Error(`AI Music API: timed out after ${MAX_POLLS} polls (task_id: ${taskId})`);
