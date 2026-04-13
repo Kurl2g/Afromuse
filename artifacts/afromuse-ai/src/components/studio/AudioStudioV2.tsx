@@ -1470,7 +1470,11 @@ const AudioStudioV2 = forwardRef<AudioStudioV2Handle, Props>(function AudioStudi
         drumCharacter: drumCharacter || undefined,
         hookLift: hookLift || undefined,
         buildMode: generationMode,
-        lyricsText: audioLyrics || undefined,
+        // Only send raw lyrics text when the user typed/pasted their own lyrics.
+        // When using Studio Lyrics (useGeneratedLyrics), audioLyrics is the full
+        // formatted clipboard dump — the structured sections already carry the clean
+        // lyric lines and sending this blob would pollute ElevenLabs' prompt.
+        lyricsText: (!useGeneratedLyrics && audioLyrics) ? audioLyrics : undefined,
         // Build structured sections for ElevenLabs full-song composition mode.
         // Priority: generated draft sections → parsed sections from pasted lyrics text.
         // Skipped entirely in instrumental-only mode.
