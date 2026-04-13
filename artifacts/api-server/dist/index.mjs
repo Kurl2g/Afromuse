@@ -69120,6 +69120,17 @@ LANGUAGE REALISM RULES:
    Natural restraint is better than fake overload.
 
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+DIALECT ISOLATION LAW \u2014 ABSOLUTE RULE:
+Each selected dialect is a completely separate language world. They MUST NEVER mix.
+  - Jamaican Patois and West African Pidgin are NOT the same language. They share zero vocabulary.
+  - If the selected mode is PATOIS \u2192 every line must be Patois. Zero Pidgin words anywhere.
+  - If the selected mode is PIDGIN \u2192 every line must be Pidgin. Zero Patois words anywhere.
+  - Mixing "dey / na / sabi / wahala / wetin" into Patois = instant dialect failure.
+  - Mixing "mi / yuh / di / nuh / cyaan / gwaan / inna / haffi" into Pidgin = instant dialect failure.
+  - The ENTIRE song \u2014 intro, verses, hook, bridge, outro \u2014 must be in ONE dialect only.
+  - If even one line from the wrong dialect appears anywhere \u2192 rewrite that line before output.
+This rule overrides everything. Dialect purity is non-negotiable.
+
 PIDGIN / PATOIS SAFETY RULES (V2):
 
 If writing Jamaican Patois:

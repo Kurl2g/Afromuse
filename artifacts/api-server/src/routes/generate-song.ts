@@ -489,6 +489,17 @@ LANGUAGE REALISM RULES:
    Natural restraint is better than fake overload.
 
 ──────────────────────────────────
+DIALECT ISOLATION LAW — ABSOLUTE RULE:
+Each selected dialect is a completely separate language world. They MUST NEVER mix.
+  - Jamaican Patois and West African Pidgin are NOT the same language. They share zero vocabulary.
+  - If the selected mode is PATOIS → every line must be Patois. Zero Pidgin words anywhere.
+  - If the selected mode is PIDGIN → every line must be Pidgin. Zero Patois words anywhere.
+  - Mixing "dey / na / sabi / wahala / wetin" into Patois = instant dialect failure.
+  - Mixing "mi / yuh / di / nuh / cyaan / gwaan / inna / haffi" into Pidgin = instant dialect failure.
+  - The ENTIRE song — intro, verses, hook, bridge, outro — must be in ONE dialect only.
+  - If even one line from the wrong dialect appears anywhere → rewrite that line before output.
+This rule overrides everything. Dialect purity is non-negotiable.
+
 PIDGIN / PATOIS SAFETY RULES (V2):
 
 If writing Jamaican Patois:
@@ -1349,6 +1360,13 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "  ⚡ ACTIVE MODE: JAMAICAN PATOIS — DIALECT-FIRST",
       "╚══════════════════════════════════════════════╝",
       "",
+      "DIALECT ISOLATION — PATOIS MODE IS ACTIVE:",
+      "This song must contain ZERO West African Pidgin vocabulary.",
+      "The following words are BANNED in this mode — they belong to a different dialect family:",
+      "  BANNED: dey · na · abi · sha · wahala · sabi · wetin · no fit · e dey · chale · massa · charley · ebi · aswear · comot (as Pidgin) · don (as Pidgin completion)",
+      "If any of these appear in a line → that line is a dialect contamination failure. Rewrite it in pure Patois.",
+      "Patois and Pidgin are completely different languages. Mixing them = rejection.",
+      "",
       "FUNDAMENTAL RULE: This song is CONCEIVED in Patois, not translated into it.",
       "Do not write English thoughts and convert them. Think in Patois from the very first word.",
       "CONSISTENCY RULE: Every single line — intro through outro — must pass the dialect test. One English-skeleton line anywhere is a failure.",
@@ -1477,6 +1495,13 @@ function getDialectBlock(effectiveFlavor: string, dialectStyle?: string): string
       "╔══════════════════════════════════════════════╗",
       "  ⚡ ACTIVE MODE: WEST AFRICAN PIDGIN — DIALECT-FIRST",
       "╚══════════════════════════════════════════════╝",
+      "",
+      "DIALECT ISOLATION — PIDGIN MODE IS ACTIVE:",
+      "This song must contain ZERO Jamaican Patois vocabulary.",
+      "The following words are BANNED in this mode — they belong to a completely different dialect family:",
+      "  BANNED: mi · yuh · di · dem (as Patois 'them') · nuh · cyaan · gwaan · inna · haffi · affi · waan · pon · deh · wid · likkle · pickney · dutty · bredrin · mandem · Jah · Most High (unless genuinely spiritual in context) · yard · zinc fence",
+      "If any of these appear in a line → that line is a dialect contamination failure. Rewrite it in pure Pidgin.",
+      "West African Pidgin and Jamaican Patois are completely different languages. Mixing them = rejection.",
       "",
       "FUNDAMENTAL RULE: This song is CONCEIVED in Pidgin, not translated into it.",
       "Do not write English thoughts and convert them. Think in Pidgin from the very first word.",
